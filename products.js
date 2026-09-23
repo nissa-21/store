@@ -14,7 +14,7 @@ const products = [
     price3: 95000,
     price5: 90000,
     price20: 85000,
-    image: "pack-apple-original-certificado-20w.jpg"
+    image: "pack-apple-original-certificado-20w.png"
   },
   {
     id: 2,
