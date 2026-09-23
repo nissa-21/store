@@ -10,10 +10,10 @@ const products = [
     id: 1,
     name: "Pack Apple Original Certificado 20W",
     category: "celulares",
-    price: 100000,
-    price3: 95000,
-    price5: 90000,
-    price20: 85000,
+    price: 35000,
+    price3: 32000,
+    price5: 29000,
+    price20: 24000,
     image: "pack-apple-original-certificado-20w.png"
   },
   {
