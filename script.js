@@ -66,19 +66,31 @@ function handleProductImgError(img, productId) {
   const filename = currentSrc.split("/").pop() || "";
   const dotIndex = filename.lastIndexOf(".");
   const nameWithoutExt = dotIndex !== -1 ? filename.substring(0, dotIndex) : filename;
-  const currentExt = dotIndex !== -1 ? filename.substring(dotIndex).toLowerCase() : "";
+  const currentExt = dotIndex !== -1 ? filename.substring(dotIndex).toLowerCase() : ".jpg";
 
-  // Extensiones alternativas para probar automáticamente en GitHub Pages
+  // Intentos inteligentes:
+  // 1. Probar en './fotos/' con extensiones alternativas (.png, .jpg, .jpeg)
+  // 2. Probar en la raíz './' (por si las fotos se subieron sueltas en GitHub junto a banner-nissa.jpg)
   const candidateExtensions = [".png", ".jpg", ".jpeg", ".webp", ".PNG", ".JPG"];
-  const alternatives = candidateExtensions.filter(ext => ext.toLowerCase() !== currentExt);
+  const alternateExts = candidateExtensions.filter(ext => ext.toLowerCase() !== currentExt);
 
-  if (step < alternatives.length) {
+  // Pasos para la carpeta fotos/
+  if (step < alternateExts.length) {
     img.dataset.retryStep = String(step + 1);
-    img.src = `./${PRODUCT_IMAGES_DIR}/${nameWithoutExt}${alternatives[step]}`;
+    img.src = `./${PRODUCT_IMAGES_DIR}/${nameWithoutExt}${alternateExts[step]}`;
     return;
   }
 
-  // Si fallan todas las extensiones en fotos/, ocultar imagen y mostrar emoji fallback
+  // Pasos para la raíz ./ (sin subcarpeta fotos/)
+  const rootStep = step - alternateExts.length;
+  const allExts = [currentExt, ...alternateExts];
+  if (rootStep < allExts.length) {
+    img.dataset.retryStep = String(step + 1);
+    img.src = `./${nameWithoutExt}${allExts[rootStep]}`;
+    return;
+  }
+
+  // Si fallan todas las rutas en fotos/ y en raíz, ocultar imagen y mostrar emoji fallback
   img.style.display = "none";
   if (img.nextElementSibling) {
     img.nextElementSibling.style.display = "block";

@@ -50,23 +50,23 @@
   <!-- FRANJA DE CONFIANZA -->
   <section class="trust-strip" aria-label="Información rápida">
     <div class="trust-strip-inner">
-      <div>
+      <div class="trust-item">
         <span class="trust-icon">📦</span>
-        <div>
+        <div class="trust-text">
           <b>Productos seleccionados</b>
           <small>Calidad testeada y garantía de fábrica</small>
         </div>
       </div>
-      <div>
+      <div class="trust-item">
         <span class="trust-icon">🛡️</span>
-        <div>
+        <div class="trust-text">
           <b>Hasta 90 días de garantía oficial</b>
           <small>Garantía escrita en laboratorio</small>
         </div>
       </div>
-      <div>
+      <div class="trust-item">
         <span class="trust-icon">💬</span>
-        <div>
+        <div class="trust-text">
           <b>Atención directa por WhatsApp</b>
           <small>Hablá sin intermediarios con nuestro equipo</small>
         </div>
@@ -142,14 +142,36 @@
               </div>
             </div>
 
-            <div id="wrapper-custom-celular" class="re-custom-inputs" style="display: none;">
-              <div>
-                <div class="re-section-label">¿Qué marca es?</div>
-                <input type="text" id="custom-brand" placeholder="Ej: Xiaomi, LG, Realme" oninput="customInputChanged()">
+            <div id="wrapper-custom-celular" style="display: none; width: 100%;">
+              <!-- TARJETA COMPACTA DE EQUIPO PERSONALIZADO CUANDO AVANZÓ -->
+              <div id="re-custom-phone-selected-badge" class="re-selected-summary-badge" style="display: none; margin-bottom: 12px;">
+                <div class="re-selected-summary-left">
+                  <div class="re-selected-check-icon">✓</div>
+                  <div class="re-selected-info-text">
+                    <span class="re-selected-tag">Equipo a cotizar</span>
+                    <h4 class="re-selected-name" id="re-custom-selected-title"></h4>
+                    <span class="re-selected-sub">Marca y modelo ingresados</span>
+                  </div>
+                </div>
+                <button type="button" class="re-change-btn" onclick="editCustomPhone()">Cambiar</button>
               </div>
-              <div>
-                <div class="re-section-label">¿Qué modelo es?</div>
-                <input type="text" id="custom-model" placeholder="Ej: Redmi Note 13" oninput="customInputChanged()">
+
+              <!-- CAMPOS DE TEXTO PARA MARCA Y MODELO -->
+              <div id="re-custom-inputs-box">
+                <div class="re-custom-inputs">
+                  <div>
+                    <div class="re-section-label">Marca de tu celular</div>
+                    <input type="text" id="custom-brand" placeholder="Ej: Xiaomi, LG, Realme, etc." oninput="customInputChanged()" onkeydown="if(event.key==='Enter') advanceCustomPhone()">
+                  </div>
+                  <div>
+                    <div class="re-section-label">Modelo específico</div>
+                    <input type="text" id="custom-model" placeholder="Ej: Redmi Note 13, G8, Poco, etc." oninput="customInputChanged()" onkeydown="if(event.key==='Enter') advanceCustomPhone()">
+                  </div>
+                </div>
+                <button type="button" class="re-btn-submit" id="btn-custom-advance" onclick="advanceCustomPhone()" style="display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%; height: 48px; margin-top: 10px; border-radius: 14px; font-weight: 800; font-size: 13px; text-transform: uppercase;">
+                  <span>Avanzar a seleccionar reparación</span>
+                  <span style="font-size: 15px;">➔</span>
+                </button>
               </div>
             </div>
 

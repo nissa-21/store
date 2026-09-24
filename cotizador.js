@@ -119,8 +119,12 @@ function updateSelectionTracker() {
     }
     if (selectedModelObj) {
       pillsHtml += arrow;
-      pillsHtml += `<button type="button" onclick="changeModel()" title="Cambiar modelo" style="display:inline-flex;align-items:center;gap:6px;background:#eff6ff;color:#1d4ed8;border:1px solid #bfdbfe;padding:4px 10px;border-radius:20px;font-size:11px;font-weight:700;cursor:pointer;box-shadow:0 1px 2px rgba(0,0,0,0.05);transition:all 0.15s;">
-        <span>📱 ${selectedModelObj.name}</span>
+      const modelDisplayName = selectedModelObj.isCustom
+        ? `${selectedModelObj.customBrand || ''} ${selectedModelObj.name || ''}`.trim()
+        : selectedModelObj.name;
+      const changeAction = selectedModelObj.isCustom ? 'editCustomPhone()' : 'changeModel()';
+      pillsHtml += `<button type="button" onclick="${changeAction}" title="Cambiar modelo" style="display:inline-flex;align-items:center;gap:6px;background:#eff6ff;color:#1d4ed8;border:1px solid #bfdbfe;padding:4px 10px;border-radius:20px;font-size:11px;font-weight:700;cursor:pointer;box-shadow:0 1px 2px rgba(0,0,0,0.05);transition:all 0.15s;">
+        <span>📱 ${modelDisplayName}</span>
         <span style="font-size:10px;color:#3b82f6;font-weight:900;">✕</span>
       </button>`;
     }
@@ -215,6 +219,8 @@ function clearSelections() {
   safeSetStyle('widget-brands-grid', 'display', 'grid');
   safeSetStyle('wrapper-dropdown-modelo', 'display', 'none');
   safeSetStyle('wrapper-custom-celular', 'display', 'none');
+  safeSetStyle('re-custom-phone-selected-badge', 'display', 'none');
+  safeSetStyle('re-custom-inputs-box', 'display', 'block');
   safeSetStyle('re-phone-repair-selected-badge', 'display', 'none');
   safeSetStyle('widget-phone-repairs-grid', 'display', 'grid');
   safeSetStyle('wrapper-phone-repairs-section', 'display', 'none');
@@ -267,11 +273,22 @@ function selectBrand(brand) {
   // Ocultar sección de marcas para ahorrar espacio en pantalla
   safeSetStyle('wrapper-brand-selection', 'display', 'none');
 
-  safeSetStyle('wrapper-dropdown-modelo', 'display', 'block');
-  safeSetStyle('wrapper-custom-celular', 'display', 'none');
-  safeSetStyle('wrapper-phone-repairs-section', 'display', 'none');
-
-  filterModels();
+  if (brand === 'Otros') {
+    safeSetStyle('wrapper-dropdown-modelo', 'display', 'none');
+    safeSetStyle('wrapper-custom-celular', 'display', 'block');
+    safeSetStyle('re-custom-phone-selected-badge', 'display', 'none');
+    safeSetStyle('re-custom-inputs-box', 'display', 'block');
+    safeSetStyle('wrapper-phone-repairs-section', 'display', 'none');
+    setTimeout(() => {
+      const inp = document.getElementById('custom-brand');
+      if (inp) inp.focus();
+    }, 50);
+  } else {
+    safeSetStyle('wrapper-dropdown-modelo', 'display', 'block');
+    safeSetStyle('wrapper-custom-celular', 'display', 'none');
+    safeSetStyle('wrapper-phone-repairs-section', 'display', 'none');
+    filterModels();
+  }
   updateSelectionTracker();
 }
 
@@ -280,6 +297,8 @@ function changeBrand() {
   selectedModelObj = null;
   selectedRepairId = '';
   safeSetValue('widget-model-search', '');
+  safeSetValue('custom-brand', '');
+  safeSetValue('custom-model', '');
   hideBudgetBox();
 
   safeSetStyle('wrapper-brand-selection', 'display', 'block');
@@ -287,6 +306,8 @@ function changeBrand() {
   safeSetStyle('widget-brands-grid', 'display', 'grid');
   safeSetStyle('wrapper-dropdown-modelo', 'display', 'none');
   safeSetStyle('wrapper-custom-celular', 'display', 'none');
+  safeSetStyle('re-custom-phone-selected-badge', 'display', 'none');
+  safeSetStyle('re-custom-inputs-box', 'display', 'block');
   safeSetStyle('wrapper-phone-repairs-section', 'display', 'none');
 
   populateBrands();
@@ -360,18 +381,77 @@ function changeModel() {
 }
 
 function customInputChanged() {
+  if (selectedModelObj && selectedModelObj.isCustom) {
+    const brandVal = (document.getElementById('custom-brand')?.value || '').trim();
+    const modelVal = (document.getElementById('custom-model')?.value || '').trim();
+    selectedModelObj.customBrand = brandVal || 'Otra marca';
+    selectedModelObj.name = modelVal || 'Modelo a consultar';
+  }
+}
+
+function advanceCustomPhone() {
+  const brandVal = (document.getElementById('custom-brand')?.value || '').trim();
+  const modelVal = (document.getElementById('custom-model')?.value || '').trim();
+
+  if (!brandVal && !modelVal) {
+    const brandInput = document.getElementById('custom-brand');
+    if (brandInput) {
+      brandInput.focus();
+      brandInput.placeholder = 'Ingresá la marca de tu celular';
+      brandInput.style.borderColor = '#ef4444';
+      setTimeout(() => {
+        brandInput.style.borderColor = '';
+        brandInput.placeholder = 'Ej: Xiaomi, LG, Realme, etc.';
+      }, 2000);
+    }
+    return;
+  }
+
+  selectedModelObj = {
+    name: modelVal || 'Modelo a consultar',
+    customBrand: brandVal || 'Otra marca',
+    isCustom: true
+  };
+
+  const displayName = `${brandVal || 'Otra marca'} ${modelVal ? '- ' + modelVal : ''}`;
+  safeSetText('re-custom-selected-title', displayName);
+  safeSetStyle('re-custom-phone-selected-badge', 'display', 'flex');
+  safeSetStyle('re-custom-inputs-box', 'display', 'none');
+
   safeSetStyle('wrapper-phone-repairs-section', 'display', 'block');
+  safeSetStyle('widget-phone-repairs-grid', 'display', 'grid');
+  safeSetStyle('re-phone-repair-selected-badge', 'display', 'none');
   populatePhoneRepairs();
   updateSelectionTracker();
+
+  // Scroll suave hacia la sección de reparaciones
+  const repSec = document.getElementById('wrapper-phone-repairs-section');
+  if (repSec) {
+    repSec.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  }
+}
+
+function editCustomPhone() {
+  selectedModelObj = null;
+  selectedRepairId = '';
+  hideBudgetBox();
+  safeSetStyle('re-custom-phone-selected-badge', 'display', 'none');
+  safeSetStyle('re-custom-inputs-box', 'display', 'block');
+  safeSetStyle('wrapper-phone-repairs-section', 'display', 'none');
+  updateSelectionTracker();
+  const brandInput = document.getElementById('custom-brand');
+  if (brandInput) brandInput.focus();
 }
 
 function getFullRepairsForModel(modelObj) {
-  if (!modelObj) {
+  if (!modelObj || modelObj.isCustom) {
     return [
-      { id: 'screen', name: '📱 Pantalla / Módulo', price: 'Consultar', note: 'Repuesto de calidad testeado' },
-      { id: 'battery', name: '🔋 Batería / Autonomía', price: 'Consultar', note: 'Reemplazo de batería' },
-      { id: 'port', name: '🔌 Puerto de Carga', price: 'Consultar', note: 'Reparación de conector' },
-      { id: 'camera', name: '📸 Cámaras Frontal / Trasera', price: 'Consultar', note: 'Módulos originales' },
+      { id: 'screen', name: '📱 Pantalla / Módulo', price: 'Consultar', note: 'Cotización personalizada en laboratorio' },
+      { id: 'battery', name: '🔋 Batería / Autonomía', price: 'Consultar', note: 'Reemplazo de batería testeada' },
+      { id: 'port', name: '🔌 Pin / Puerto de Carga', price: 'Consultar', note: 'Reparación o cambio de conector' },
+      { id: 'camera', name: '📸 Cámaras Frontal / Trasera', price: 'Consultar', note: 'Módulos y lentes testeados' },
+      { id: 'back', name: '🛡️ Tapa Trasera / Carcasa', price: 'Consultar', note: 'Reemplazo estético' },
+      { id: 'glass', name: '💎 Cambio de Vidrio / Glass', price: 'Consultar', note: 'Conserva el display original' },
       { id: 'no_desb', name: '🔓 Desbloqueo (Google / iCloud / PIN)', price: 'NO REALIZAMOS', note: 'NO REALIZAMOS ESTE SERVICIO', isUnavailable: true },
       { id: 'no_lib', name: '📶 Liberación de Banda', price: 'NO REALIZAMOS', note: 'NO REALIZAMOS ESTE SERVICIO', isUnavailable: true }
     ];
@@ -683,8 +763,17 @@ function calculateAndShowWidgetBudget() {
   let isQuote = false;
 
   if (widgetCategory === 'Celular') {
-    const cBrand = (document.getElementById('custom-brand')?.value || selectedBrand || 'Otro').trim();
-    const cModel = (selectedModelObj ? selectedModelObj.name : (document.getElementById('custom-model')?.value || 'Equipo')).trim();
+    const customBrandVal = (document.getElementById('custom-brand')?.value || '').trim();
+    const customModelVal = (document.getElementById('custom-model')?.value || '').trim();
+
+    let cBrand = selectedBrand;
+    let cModel = selectedModelObj ? selectedModelObj.name : '';
+
+    if (selectedBrand === 'Otros' || (selectedModelObj && selectedModelObj.isCustom)) {
+      cBrand = customBrandVal || selectedModelObj?.customBrand || 'Otra marca';
+      cModel = customModelVal || selectedModelObj?.name || 'Modelo a consultar';
+    }
+
     const allReps = getFullRepairsForModel(selectedModelObj);
     const matched = allReps.find(r => r.id === selectedRepairId);
 
@@ -694,7 +783,7 @@ function calculateAndShowWidgetBudget() {
       sBadge = `Celular | ${cBrand} ${cModel}`;
       sPrice = reFormatPrice(matched.price);
       sDesc = matched.note || 'Reparación profesional en nuestro laboratorio con repuestos de alta calidad y garantía oficial.';
-      if (sPrice === 'Consultar' || !matched.price) isQuote = true;
+      if (sPrice === 'Consultar' || !matched.price || matched.price === 'Consultar') isQuote = true;
     }
   } else if (widgetCategory === 'Consola') {
     const cObj = PRECIOS_WIDGET.consolas.find(c => c.id === selectedConsoleId);
