@@ -22,15 +22,16 @@
       <a href="#productos" id="nav-productos">Tienda</a>
       <a href="#informacion" id="nav-informacion">Información</a>
       <a href="#resenas" id="nav-resenas">Opiniones Google</a>
+      <a href="#terminos" id="nav-terminos" class="nav-terms-link">Términos y condiciones</a>
     </nav>
     <div class="header-actions">
       <button class="cart-button" id="open-cart" aria-label="Abrir carrito">🛒 <span id="cart-count">0</span></button>
-      <button class="menu-button" id="menu-button" aria-label="Abrir menú">☰</button>
+      <button class="menu-button" id="menu-button" aria-label="Abrir menú" title="Menú y Términos y condiciones">☰</button>
     </div>
   </div>
 </header>
 
-<main>
+<main id="main-content">
   <!-- BANNER SUPERIOR DE BIENVENIDA (INICIO) -->
   <section class="welcome-banner-section" id="inicio">
     <div class="welcome-banner-card" id="welcome-banner">
@@ -584,6 +585,210 @@
   </section>
 </main>
 
+<!-- ========================================================
+     APARTADO FUERA DE LA PÁGINA PRINCIPAL: TÉRMINOS Y CONDICIONES
+     ======================================================== -->
+<section id="terminos-section" class="terms-page-section" style="display: none;" aria-label="Términos y Condiciones y Garantía Oficial NISSA">
+  <div class="terms-page-container">
+    
+    <!-- BARRA SUPERIOR DE RETORNO -->
+    <div class="terms-nav-bar">
+      <a href="#inicio" class="terms-back-btn" onclick="goToMainPage('#inicio'); return false;">
+        ← Volver a la página principal
+      </a>
+      <span class="terms-badge-pill">🛡️ GARANTÍA OFICIAL Y CONDICIONES LEGALES</span>
+    </div>
+
+    <!-- ENCABEZADO PRINCIPAL -->
+    <div class="terms-header-card">
+      <div class="terms-tag">DOCUMENTO OFICIAL NISSA</div>
+      <h1 class="terms-title">Términos y Condiciones del Servicio Técnico y Tienda</h1>
+      <p class="terms-subtitle">
+        Conocé en detalle nuestra política oficial de garantía escrita de laboratorio de hasta 90 días, procedimientos de diagnóstico sin costo, condiciones de retiro de equipos y normativas legales de nuestra tienda.
+      </p>
+      <div class="terms-meta-strip">
+        <span>📅 Actualizado: 2026</span>
+        <span>📍 Laboratorio Central NISSA</span>
+        <span>💬 Atención directa por WhatsApp</span>
+      </div>
+    </div>
+
+    <!-- ÍNDICE DE NAVEGACIÓN RÁPIDA -->
+    <div class="terms-quick-index">
+      <span class="terms-index-title">Índice rápido:</span>
+      <div class="terms-index-links">
+        <a href="#terminos-garantia">1. Póliza de Garantía Oficial</a>
+        <a href="#terminos-exclusiones">2. Exclusiones de Garantía</a>
+        <a href="#terminos-presupuestos">3. Diagnóstico y Presupuestos</a>
+        <a href="#terminos-retiro">4. Plazos de Retiro y Guarda</a>
+        <a href="#terminos-tienda">5. Tienda Online y Accesorios</a>
+        <a href="#terminos-privacidad">6. Datos y Privacidad</a>
+      </div>
+    </div>
+
+    <!-- CUERPO DE ARTÍCULOS LEGALES -->
+    <div class="terms-content-cards">
+      
+      <!-- 1. PÓLIZA DE GARANTÍA -->
+      <article class="terms-card" id="terminos-garantia">
+        <div class="terms-card-header">
+          <div class="terms-card-num">01</div>
+          <div>
+            <h2>Póliza Oficial de Garantía Escrita de Laboratorio (Hasta 90 Días)</h2>
+            <small>Respaldo técnico en cada trabajo realizado</small>
+          </div>
+        </div>
+        <div class="terms-card-body">
+          <p>
+            En <strong>NISSA</strong> todas nuestras reparaciones y reemplazo de componentes de hardware cuentan con <strong>garantía oficial escrita de hasta 90 días corridos</strong> (3 meses) contados a partir de la fecha de entrega o retiro del equipo por parte del cliente.
+          </p>
+          <div class="terms-highlight-box green">
+            <b>✓ ¿Qué cubre la garantía oficial de laboratorio?</b>
+            <ul>
+              <li>Defectos de fabricación intrínsecos de los componentes o repuestos instalados (módulos táctiles, pantallas OLED/LCD, baterías de alta densidad, pines de carga, componentes microelectrónicos SMD).</li>
+              <li>Fallas de montaje o soldadura atribuibles a la mano de obra del laboratorio técnico NISSA.</li>
+              <li>Ingreso prioritario: ante cualquier anomalía cubierta por la garantía, el dispositivo ingresa con turno preferencial para revisión inmediata y cambio de pieza sin costo alguno.</li>
+            </ul>
+          </div>
+          <p>
+            Para solicitar la garantía, el cliente solo debe presentar su comprobante, número de orden de reparación o el historial de contacto en nuestro canal oficial de WhatsApp.
+          </p>
+        </div>
+      </article>
+
+      <!-- 2. EXCLUSIONES DE GARANTÍA -->
+      <article class="terms-card" id="terminos-exclusiones">
+        <div class="terms-card-header">
+          <div class="terms-card-num red">02</div>
+          <div>
+            <h2>Exclusiones Expresas de la Garantía</h2>
+            <small>Casos en que la garantía no aplica o queda sin efecto</small>
+          </div>
+        </div>
+        <div class="terms-card-body">
+          <p>
+            La garantía de laboratorio no aplicará y quedará invalidada de pleno derecho ante los siguientes supuestos comprobables tras la revisión física:
+          </p>
+          <div class="terms-highlight-box red">
+            <b>✕ Supuestos no cubiertos por la garantía:</b>
+            <ul>
+              <li><strong>Daño físico o mecánico posterior:</strong> Golpes, caídas, aplastamiento, fisuras internas o externas, roturas en vidrios templados o displays con líneas de fractura ("tinta corrida", líneas verticales por impacto).</li>
+              <li><strong>Contacto con líquidos o humedad:</strong> Inmersión, salpicaduras, vapor excesivo, condensación o presencia de sulfato y corrosión en conectores o placa madre, posterior a la entrega.</li>
+              <li><strong>Manipulación de terceros:</strong> Apertura, desarme o intervención por parte del usuario o de talleres técnicos no autorizados por NISSA.</li>
+              <li><strong>Rotura de fajas de seguridad:</strong> Adulteración, rotura o remoción de los sellos o etiquetas de seguridad térmicas colocadas por nuestro laboratorio.</li>
+              <li><strong>Fallas por sobretensión externa:</strong> Daños provocados por descargas eléctricas atmosféricas o utilización de cargadores genéricos defectuosos sin certificación.</li>
+              <li><strong>Alteraciones de software:</strong> Brickeos por intentos de rooteo, jailbreak, flasheos erróneos o instalación de ROMs no oficiales.</li>
+            </ul>
+          </div>
+        </div>
+      </article>
+
+      <!-- 3. DIAGNÓSTICO Y PRESUPUESTOS -->
+      <article class="terms-card" id="terminos-presupuestos">
+        <div class="terms-card-header">
+          <div class="terms-card-num">03</div>
+          <div>
+            <h2>Diagnóstico, Desarme y Validez de Presupuestos</h2>
+            <small>Transparencia total antes de iniciar cualquier reparación</small>
+          </div>
+        </div>
+        <div class="terms-card-body">
+          <p>
+            <strong>Revisión física sin cargo:</strong> La recepción y desarme inicial para diagnóstico en nuestro local no tiene costo para el cliente en caso de no aceptarse el presupuesto.
+          </p>
+          <p>
+            <strong>Validez de precios presupuestados:</strong> Los importes cotizados a través de nuestro presupuestador online o por WhatsApp tienen una validez de <strong>15 días corridos</strong> desde su emisión. Si durante el trabajo se detectan fallas ocultas no visibles previamente (ej. daños en líneas de placa adicionales), se informará inmediatamente al cliente antes de efectuar cualquier gasto.
+          </p>
+          <p>
+            <strong>Autorización de trabajo:</strong> Al confirmar el presupuesto, el cliente autoriza al equipo técnico de NISSA a realizar las maniobras de desarme, soldadura, microelectrónica y pruebas de carga pertinentes.
+          </p>
+        </div>
+      </article>
+
+      <!-- 4. PLAZOS DE RETIRO Y GUARDA -->
+      <article class="terms-card" id="terminos-retiro">
+        <div class="terms-card-header">
+          <div class="terms-card-num">04</div>
+          <div>
+            <h2>Plazos de Retiro, Guarda y Custodia</h2>
+            <small>Condiciones de retiro y almacenamiento de dispositivos</small>
+          </div>
+        </div>
+        <div class="terms-card-body">
+          <p>
+            Una vez finalizada la reparación o emitida la resolución técnica, NISSA informará al cliente por WhatsApp y/o llamada telefónica que el dispositivo se encuentra listo para su retiro o entrega coordinada.
+          </p>
+          <div class="terms-highlight-box blue">
+            <b>ℹ Guarda y custodia:</b>
+            <p style="margin: 6px 0 0; font-size: 13px; line-height: 1.5;">
+              El cliente cuenta con un plazo de <strong>90 días corridos</strong> desde la primera notificación para retirar el equipo abonando el saldo pendiente. Vencido este plazo sin retiro ni comunicación fehaciente, el dispositivo será considerado en condición de abandono de acuerdo al Código Civil y Comercial de la Nación (Art. 2525 y conc.), facultando al laboratorio a disponer del mismo para cubrir los costos de guarda, depósito y repuestos insumidos.
+            </p>
+          </div>
+        </div>
+      </article>
+
+      <!-- 5. TIENDA ONLINE Y ACCESORIOS -->
+      <article class="terms-card" id="terminos-tienda">
+        <div class="terms-card-header">
+          <div class="terms-card-num">05</div>
+          <div>
+            <h2>Tienda Online, Accesorios y Políticas de Cambio</h2>
+            <small>Garantía de productos nuevos y atención de pedidos</small>
+          </div>
+        </div>
+        <div class="terms-card-body">
+          <p>
+            Todos los accesorios y productos comercializados en la tienda online (cargadores, cables de datos, fundas MagSafe, vidrios templados, mandos de PlayStation y auriculares) son testeados previamente y cuentan con garantía de funcionamiento.
+          </p>
+          <ul>
+            <li><strong>Cambio directo por falla de fábrica:</strong> Plazo de 72 horas hábiles desde la entrega para cambio inmediato, conservando empaque original y accesorios completos.</li>
+            <li><strong>Descuentos por volumen:</strong> Los precios especiales por 3 u., 5 u. o +20 u. (mayorista) son aplicables de forma automática según la cantidad de unidades solicitadas en el carrito.</li>
+            <li><strong>Formas de pago:</strong> Aceptamos efectivo, transferencias bancarias y plataformas digitales (Mercado Pago).</li>
+          </ul>
+        </div>
+      </article>
+
+      <!-- 6. DATOS Y PRIVACIDAD -->
+      <article class="terms-card" id="terminos-privacidad">
+        <div class="terms-card-header">
+          <div class="terms-card-num">06</div>
+          <div>
+            <h2>Privacidad de Datos y Respaldo de Información</h2>
+            <small>Cuidado de tu información personal</small>
+          </div>
+        </div>
+        <div class="terms-card-body">
+          <p>
+            <strong>Confidencialidad absoluta:</strong> El personal técnico de NISSA opera bajo estrictos protocolos de confidencialidad y ética profesional conforme a la Ley N° 25.326 de Protección de los Datos Personales. En ningún caso se accederá a fotos, conversaciones o archivos privados que no sean estrictamente necesarios para verificar el funcionamiento del hardware (ej. cámara o micrófono con consentimiento del cliente).
+          </p>
+          <p>
+            <strong>Recomendación de Copia de Seguridad (Backup):</strong> Se aconseja al usuario realizar un respaldo de su información antes de ingresar el equipo. NISSA no se responsabiliza por pérdidas fortuitas de datos atribuibles a fallas de memoria flash preexistentes o daños lógicos del sistema operativo.
+          </p>
+        </div>
+      </article>
+
+    </div>
+
+    <!-- BOTONES DE ACCIÓN INFERIORES -->
+    <div class="terms-footer-actions">
+      <a href="#inicio" class="btn btn-primary" onclick="goToMainPage('#inicio'); return false;">
+        ← Volver a la página principal
+      </a>
+      <a href="https://wa.me/541136620653?text=%C2%A1Hola%20NISSA!%20Tengo%20una%20consulta%20sobre%20los%20T%C3%A9rminos%20y%20Condiciones%20y%20Garant%C3%ADa." target="_blank" rel="noopener" class="btn btn-secondary" style="border-color:#25d366; color:#15803d;">
+        💬 Consultar dudas por WhatsApp
+      </a>
+    </div>
+
+  </div>
+</section>
+
+<!-- MODAL DE DETALLE Y PRESENTACIÓN DE PRODUCTO -->
+<div class="product-modal-backdrop" id="product-modal-backdrop" aria-hidden="true">
+  <div class="product-modal-container" id="product-modal-container" role="dialog" aria-modal="true" aria-labelledby="modal-product-title">
+    <!-- El contenido se inyecta dinámicamente desde script.js -->
+  </div>
+</div>
+
 <!-- CARRITO LATERAL -->
 <aside class="cart" id="cart">
   <div class="cart-header">
@@ -621,14 +826,15 @@
       <p>Tu tecnología en buenas manos. Servicio técnico y accesorios oficiales.</p>
     </div>
     <div class="footer-links">
-      <a href="#inicio">Inicio</a>
-      <a href="#cotizador">Presupuestar</a>
-      <a href="#productos">Tienda</a>
-      <a href="#informacion">Información</a>
-      <a href="#resenas">Opiniones Google</a>
+      <a href="#inicio" onclick="goToMainPage('#inicio'); return false;">Inicio</a>
+      <a href="#cotizador" onclick="goToMainPage('#cotizador'); return false;">Presupuestar</a>
+      <a href="#productos" onclick="goToMainPage('#productos'); return false;">Tienda</a>
+      <a href="#informacion" onclick="goToMainPage('#informacion'); return false;">Información</a>
+      <a href="#resenas" onclick="goToMainPage('#resenas'); return false;">Opiniones Google</a>
+      <a href="#terminos" onclick="goToTermsPage(); return false;">Términos y condiciones</a>
     </div>
   </div>
-  <div class="footer-bottom">© <span id="year"></span> NISSA. Todos los derechos reservados.</div>
+  <div class="footer-bottom">© <span id="year"></span> NISSA. Todos los derechos reservados. · <a href="#terminos" onclick="goToTermsPage(); return false;" style="color: #94a3b8; text-decoration: underline;">Términos, condiciones y póliza de garantía</a></div>
 </footer>
 
 <!-- SCRIPTS DE FUNCIONALIDAD -->
