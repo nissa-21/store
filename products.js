@@ -18,8 +18,8 @@ const products = [
     image: "pack-apple-original-certificado-20w.jpg",
     images: [
       "pack-apple-original-certificado-20w.jpg",
-      "pack-apple.jpg",
-      "pack-apple-original-certificado-20w.png"
+      "pack-apple-caja.jpg",
+      "pack-apple-cable-detalle.jpg"
     ],
     description: "Combo completo de cargador de pared 20W Power Delivery + Cable USB-C a Lightning reforzado. Diseñado bajo estándares certificados para cuidar la salud de la batería de tu iPhone, proporcionando una recarga rápida y segura del 0% al 50% en solo 30 minutos.",
     features: [
@@ -49,7 +49,7 @@ const products = [
     image: "cargador-rapido-usb-c-25w-samsung-super-fast.jpg",
     images: [
       "cargador-rapido-usb-c-25w-samsung-super-fast.jpg",
-      "cargador-samsung.jpg"
+      "cargador-samsung-detalle.jpg"
     ],
     description: "Cargador de pared de 25W con protocolo Super Fast Charging (Power Delivery 3.0 PPS). Brinda recarga acelerada para smartphones Samsung Galaxy Series A, S, Z y Note, así como para dispositivos Android y consolas portátiles.",
     features: [
@@ -79,7 +79,7 @@ const products = [
     image: "cable-usb-c-a-lightning-1m-trenzado-reforzado.jpg",
     images: [
       "cable-usb-c-a-lightning-1m-trenzado-reforzado.jpg",
-      "cable-iphone.jpg"
+      "cable-iphone-conectores.jpg"
     ],
     description: "Cable de alta gama con revestimiento trenzado de nylon de grado militar y cabezales metálicos sellados. Diseñado para resistir más de 20.000 dobleces sin perder conductividad ni pelarse, admitiendo carga rápida de hasta 27W.",
     features: [
@@ -109,7 +109,7 @@ const products = [
     image: "mando-dualsense-ps5-inalambrico-original.jpg",
     images: [
       "mando-dualsense-ps5-inalambrico-original.jpg",
-      "mando-ps5.jpg"
+      "mando-ps5-gatillos.jpg"
     ],
     description: "El joystick oficial de PlayStation 5 que redefine la experiencia de juego. Cuenta con gatillos adaptativos dinámicos, retroalimentación háptica inmersiva de doble motor y micrófono integrado con botón mute directo.",
     features: [
@@ -139,7 +139,7 @@ const products = [
     image: "auriculares-bluetooth-in-ear-true-wireless-hifi.jpg",
     images: [
       "auriculares-bluetooth-in-ear-true-wireless-hifi.jpg",
-      "auriculares-bluetooth.jpg"
+      "auriculares-bluetooth-detalle.jpg"
     ],
     description: "Auriculares inalámbricos True Wireless con diafragma de 13mm para una acústica nítida y graves profundos. Cuentan con estuche de carga magnético con conector USB-C y autonomía total de hasta 24 horas.",
     features: [
@@ -169,7 +169,7 @@ const products = [
     image: "vidrio-templado-9d-full-cover-antigolpe.jpg",
     images: [
       "vidrio-templado-9d-full-cover-antigolpe.jpg",
-      "vidrio-templado.jpg"
+      "vidrio-templado-aplicado.jpg"
     ],
     description: "Protector de pantalla 9D de cobertura completa con bordes biselados negros y pegamento estático en toda la superficie. Absorbe impactos directos y caídas protegiendo el módulo original de tu smartphone.",
     features: [
@@ -199,7 +199,7 @@ const products = [
     image: "funda-case-magnetica-silicona-suave-magsafe.jpg",
     images: [
       "funda-case-magnetica-silicona-suave-magsafe.jpg",
-      "funda-magsafe.jpg"
+      "funda-magsafe-interior.jpg"
     ],
     description: "Funda de silicona líquida premium con anillo magnético MagSafe de 38 imanes de neodimio integrados. Su interior de microfibra aterciopelada previene ralladuras en la tapa trasera del celular.",
     features: [
@@ -229,7 +229,7 @@ const products = [
     image: "mando-dualshock-4-ps4-inalambrico.jpg",
     images: [
       "mando-dualshock-4-ps4-inalambrico.jpg",
-      "mando-ps4.jpg"
+      "mando-ps4-trasera.jpg"
     ],
     description: "El clásico joystick inalámbrico DualShock 4 para PlayStation 4 y PC. Equipado con panel multitáctil, sensor de movimiento SixAxis, barra luminosa reactiva y palancas analógicas de alta precisión.",
     features: [

@@ -525,6 +525,66 @@ function getDiscountPercent(basePrice, discountedPrice) {
   return Math.round(((basePrice - discountedPrice) / basePrice) * 100);
 }
 
+function handleModalSlideImgError(img, productId, originalFilename) {
+  if (!img) return;
+  const currentSrc = img.getAttribute("src") || "";
+  const step = Number(img.dataset.retryStep || 0);
+
+  const filename = currentSrc.split("/").pop() || originalFilename || "";
+  const dotIndex = filename.lastIndexOf(".");
+  const nameWithoutExt = dotIndex !== -1 ? filename.substring(0, dotIndex) : filename;
+  const currentExt = dotIndex !== -1 ? filename.substring(dotIndex).toLowerCase() : ".jpg";
+
+  const candidateExtensions = [".jpg", ".png", ".jpeg", ".webp", ".JPG", ".PNG"];
+  const alternateExts = candidateExtensions.filter(ext => ext.toLowerCase() !== currentExt);
+
+  if (step < alternateExts.length) {
+    img.dataset.retryStep = String(step + 1);
+    img.src = `./${PRODUCT_IMAGES_DIR}/${nameWithoutExt}${alternateExts[step]}`;
+    return;
+  }
+
+  const rootStep = step - alternateExts.length;
+  const allExts = [currentExt, ...alternateExts];
+  if (rootStep < allExts.length) {
+    img.dataset.retryStep = String(step + 1);
+    img.src = `./${nameWithoutExt}${allExts[rootStep]}`;
+    return;
+  }
+
+  img.style.display = "none";
+  if (img.nextElementSibling && img.nextElementSibling.classList.contains("pm-main-image-fallback")) {
+    img.nextElementSibling.style.display = "flex";
+  }
+}
+
+function handleModalThumbImgError(img, productId, originalFilename) {
+  if (!img) return;
+  const currentSrc = img.getAttribute("src") || "";
+  const step = Number(img.dataset.retryStep || 0);
+
+  const filename = currentSrc.split("/").pop() || originalFilename || "";
+  const dotIndex = filename.lastIndexOf(".");
+  const nameWithoutExt = dotIndex !== -1 ? filename.substring(0, dotIndex) : filename;
+  const currentExt = dotIndex !== -1 ? filename.substring(dotIndex).toLowerCase() : ".jpg";
+
+  const alternateExts = [".jpg", ".png", ".jpeg", ".webp"].filter(e => e !== currentExt);
+  if (step < alternateExts.length) {
+    img.dataset.retryStep = String(step + 1);
+    img.src = `./${PRODUCT_IMAGES_DIR}/${nameWithoutExt}${alternateExts[step]}`;
+    return;
+  }
+
+  img.style.display = "none";
+  if (img.parentElement && !img.parentElement.querySelector(".pm-thumb-fallback")) {
+    const span = document.createElement("span");
+    span.className = "pm-thumb-fallback";
+    span.textContent = "📦";
+    span.style.fontSize = "22px";
+    img.parentElement.appendChild(span);
+  }
+}
+
 function renderProductModalContent() {
   const container = document.getElementById("product-modal-container");
   if (!container || !currentModalProduct) return;
@@ -533,10 +593,6 @@ function renderProductModalContent() {
   const images = getProductImagesList(p);
   if (currentModalImageIndex >= images.length) currentModalImageIndex = 0;
   if (currentModalImageIndex < 0) currentModalImageIndex = images.length - 1;
-
-  const activeImgFile = images[currentModalImageIndex] || p.image;
-  const activeImgSrc = resolvePhotoUrl(activeImgFile, p);
-  const isImagePath = activeImgSrc && (activeImgSrc.startsWith("data:image/") || activeImgSrc.includes("/") || activeImgSrc.includes("."));
 
   const unitPrice = getUnitPriceForQty(p, currentModalQty);
   const subtotal = unitPrice * currentModalQty;
@@ -551,13 +607,13 @@ function renderProductModalContent() {
   let thumbsHtml = "";
   if (images.length > 1) {
     thumbsHtml = `
-      <div class="pm-thumbnails-strip" aria-label="Fotos del producto">
+      <div class="pm-thumbnails-strip" aria-label="Fotos del producto" id="pm-thumbnails-strip">
         ${images.map((img, idx) => {
           const thumbSrc = resolvePhotoUrl(img, p);
           const isActive = idx === currentModalImageIndex;
           return `
-            <button type="button" class="pm-thumbnail-btn ${isActive ? 'active' : ''}" onclick="setModalImageIndex(${idx})" aria-label="Ver foto ${idx + 1}">
-              <img src="${escapeAttr(thumbSrc)}" alt="Miniatura ${idx + 1}" onerror="handleProductImgError(this, ${p.id})">
+            <button type="button" class="pm-thumbnail-btn ${isActive ? 'active' : ''}" onclick="setModalImageIndex(${idx})" aria-label="Ver foto ${idx + 1}" data-thumb-index="${idx}">
+              <img src="${escapeAttr(thumbSrc)}" alt="Miniatura ${idx + 1}" onerror="handleModalThumbImgError(this, ${p.id}, '${escapeAttr(img)}')">
             </button>
           `;
         }).join("")}
@@ -591,6 +647,7 @@ function renderProductModalContent() {
   container.innerHTML = `
     <!-- BARRA SUPERIOR -->
     <div class="pm-top-bar">
+      <div class="pm-drag-handle" aria-hidden="true"></div>
       <button type="button" class="pm-back-btn" onclick="closeProductModal()">
         ← Volver a la tienda
       </button>
@@ -602,23 +659,36 @@ function renderProductModalContent() {
     <!-- CUERPO PRINCIPAL -->
     <div class="pm-body-grid">
       
-      <!-- COLUMNA IZQUIERDA: GALERÍA DE FOTOS -->
+      <!-- COLUMNA IZQUIERDA: CARRUSEL DESPLAZABLE DE FOTOS -->
       <div class="pm-gallery-col">
-        <div class="pm-main-image-wrap">
+        <div class="pm-main-image-wrap" id="pm-carousel-wrap">
           ${p.tag ? `<span class="pm-gallery-badge-tag">${escapeAttr(p.tag)}</span>` : ''}
-          ${images.length > 1 ? `<span class="pm-gallery-counter">📷 Foto ${currentModalImageIndex + 1} de ${images.length}</span>` : ''}
+          ${images.length > 1 ? `<span class="pm-gallery-counter" id="pm-counter">📷 Foto ${currentModalImageIndex + 1} de ${images.length}</span>` : ''}
 
           ${images.length > 1 ? `
-            <button type="button" class="pm-gallery-arrow pm-gallery-arrow-prev" onclick="prevModalImage()" aria-label="Foto anterior">‹</button>
-            <button type="button" class="pm-gallery-arrow pm-gallery-arrow-next" onclick="nextModalImage()" aria-label="Foto siguiente">›</button>
+            <button type="button" class="pm-gallery-arrow pm-gallery-arrow-prev" onclick="prevModalImage(event)" aria-label="Foto anterior">‹</button>
+            <button type="button" class="pm-gallery-arrow pm-gallery-arrow-next" onclick="nextModalImage(event)" aria-label="Foto siguiente">›</button>
           ` : ''}
 
-          ${isImagePath ? `
-            <img src="${escapeAttr(activeImgSrc)}" alt="${escapeAttr(p.name)}" id="pm-active-photo" onerror="handleProductImgError(this, ${p.id})">
-            <span class="pm-main-image-fallback" style="display:none;">📦</span>
-          ` : `
-            <span class="pm-main-image-fallback">${escapeAttr(activeImgSrc || "📦")}</span>
-          `}
+          <div class="pm-carousel-track" id="pm-carousel-track" style="transform: translateX(-${currentModalImageIndex * 100}%);">
+            ${images.map((imgFile, idx) => {
+              const imgSrc = resolvePhotoUrl(imgFile, p);
+              return `
+                <div class="pm-carousel-slide" data-slide-index="${idx}">
+                  <img src="${escapeAttr(imgSrc)}" alt="${escapeAttr(p.name)} - Foto ${idx + 1}" class="pm-slide-img" onerror="handleModalSlideImgError(this, ${p.id}, '${escapeAttr(imgFile)}')">
+                  <span class="pm-main-image-fallback" style="display:none;">📦</span>
+                </div>
+              `;
+            }).join('')}
+          </div>
+
+          ${images.length > 1 ? `
+            <div class="pm-carousel-dots" id="pm-dots">
+              ${images.map((_, idx) => `
+                <button type="button" class="pm-dot ${idx === currentModalImageIndex ? 'active' : ''}" onclick="setModalImageIndex(${idx})" aria-label="Ir a foto ${idx + 1}"></button>
+              `).join('')}
+            </div>
+          ` : ''}
         </div>
 
         ${thumbsHtml}
@@ -638,16 +708,16 @@ function renderProductModalContent() {
         <!-- TARJETA DE PRECIOS Y DESCUENTOS POR VOLUMEN -->
         <div class="pm-pricing-card">
           <div class="pm-pricing-header">
-            <div>
-              <span class="pm-pricing-label">Precio Unitario Aplicado:</span>
-              <div style="display:flex; align-items:baseline; margin-top:2px;">
+            <div class="pm-pricing-unit-col">
+              <span class="pm-pricing-label">Precio Unitario:</span>
+              <div class="pm-pricing-unit-line">
                 <span class="pm-pricing-main-value" id="pm-price-display">${formatPrice(unitPrice)}</span>
                 <span class="pm-pricing-unit-tag">/ unidad</span>
               </div>
             </div>
-            <div style="text-align:right;">
+            <div class="pm-pricing-subtotal-col">
               <span class="pm-pricing-label">Subtotal (${currentModalQty} u.):</span>
-              <div style="font-size:18px; font-weight:900; color:#0f172a; margin-top:2px;" id="pm-subtotal-display">
+              <div class="pm-pricing-subtotal-val" id="pm-subtotal-display">
                 ${formatPrice(subtotal)}
               </div>
             </div>
@@ -686,16 +756,18 @@ function renderProductModalContent() {
           </div>
 
           <!-- BANNER DE AHORRO DINÁMICO -->
-          ${totalSavings > 0 ? `
-            <div class="pm-savings-box">
-              <span class="pm-savings-icon">🎉</span>
-              <span>¡Descuento activo! Ahorrás <strong>${formatPrice(totalSavings)}</strong> en tu compra.</span>
-            </div>
-          ` : `
-            <div style="font-size:11.5px; color:#64748b; background:#ffffff; border:1px dashed #cbd5e1; border-radius:10px; padding:8px 12px; text-align:center;">
-              ⚡ Llevando <strong>3 unidades o más</strong> accedés a precios con descuento.
-            </div>
-          `}
+          <div id="pm-savings-container">
+            ${totalSavings > 0 ? `
+              <div class="pm-savings-box">
+                <span class="pm-savings-icon">🎉</span>
+                <span>¡Descuento activo! Ahorrás <strong>${formatPrice(totalSavings)}</strong> en tu compra.</span>
+              </div>
+            ` : `
+              <div style="font-size:11.5px; color:#64748b; background:#ffffff; border:1px dashed #cbd5e1; border-radius:10px; padding:8px 12px; text-align:center;">
+                ⚡ Llevando <strong>3 unidades o más</strong> accedés a precios con descuento.
+              </div>
+            `}
+          </div>
         </div>
 
         <!-- ACCIONES DE COMPRA -->
@@ -724,58 +796,212 @@ function renderProductModalContent() {
       </div>
     </div>
   `;
+
+  // Inicializar gestos táctiles de desplazamiento (swipe) en celulares y tablets
+  initModalCarouselGestures();
+}
+
+function initModalCarouselGestures() {
+  const wrap = document.getElementById("pm-carousel-wrap");
+  const track = document.getElementById("pm-carousel-track");
+  if (!wrap || !track) return;
+
+  let startX = 0;
+  let startY = 0;
+  let currentDiffX = 0;
+  let isSwiping = false;
+  let isHorizontal = false;
+
+  wrap.addEventListener("touchstart", (e) => {
+    if (!e.touches || e.touches.length !== 1) return;
+    startX = e.touches[0].clientX;
+    startY = e.touches[0].clientY;
+    currentDiffX = 0;
+    isSwiping = true;
+    isHorizontal = false;
+    track.style.transition = "none";
+  }, { passive: true });
+
+  wrap.addEventListener("touchmove", (e) => {
+    if (!isSwiping || !e.touches || e.touches.length !== 1) return;
+    const diffX = e.touches[0].clientX - startX;
+    const diffY = e.touches[0].clientY - startY;
+
+    if (!isHorizontal) {
+      if (Math.abs(diffX) > 10 || Math.abs(diffY) > 10) {
+        if (Math.abs(diffX) > Math.abs(diffY)) {
+          isHorizontal = true;
+        } else {
+          // Es un scroll vertical de la página: cancelar swipe
+          isSwiping = false;
+          track.style.transition = "transform 0.3s cubic-bezier(0.2, 0.8, 0.2, 1)";
+          track.style.transform = `translateX(-${currentModalImageIndex * 100}%)`;
+          return;
+        }
+      }
+    }
+
+    if (isHorizontal) {
+      if (e.cancelable) e.preventDefault();
+      currentDiffX = diffX;
+      // Desplazamiento dinámico continuo bajo el dedo
+      track.style.transform = `translateX(calc(-${currentModalImageIndex * 100}% + ${diffX}px))`;
+    }
+  }, { passive: false });
+
+  const handleGestureEnd = () => {
+    if (!isSwiping) return;
+    isSwiping = false;
+    track.style.transition = "transform 0.3s cubic-bezier(0.2, 0.8, 0.2, 1)";
+
+    if (isHorizontal && Math.abs(currentDiffX) > 35) {
+      if (currentDiffX < 0) {
+        nextModalImage();
+      } else {
+        prevModalImage();
+      }
+    } else {
+      // Revertir a la diapositiva actual
+      track.style.transform = `translateX(-${currentModalImageIndex * 100}%)`;
+    }
+
+    isHorizontal = false;
+    currentDiffX = 0;
+  };
+
+  wrap.addEventListener("touchend", handleGestureEnd, { passive: true });
+  wrap.addEventListener("touchcancel", handleGestureEnd, { passive: true });
 }
 
 function setModalImageIndex(idx) {
   if (!currentModalProduct) return;
   const images = getProductImagesList(currentModalProduct);
-  if (idx < 0 || idx >= images.length) return;
+  if (!images || images.length === 0) return;
+
+  // Manejo de índice circular (permite ir de la última a la primera y viceversa)
+  const total = images.length;
+  idx = ((idx % total) + total) % total;
   currentModalImageIndex = idx;
 
-  const activeImgFile = images[currentModalImageIndex] || currentModalProduct.image;
-  const activeImgSrc = resolvePhotoUrl(activeImgFile, currentModalProduct);
-
-  const mainImg = document.getElementById("pm-active-photo");
-  if (mainImg) {
-    mainImg.src = activeImgSrc;
+  const track = document.getElementById("pm-carousel-track");
+  if (track) {
+    track.style.transition = "transform 0.3s cubic-bezier(0.2, 0.8, 0.2, 1)";
+    track.style.transform = `translateX(-${currentModalImageIndex * 100}%)`;
   }
 
+  // Actualizar clase activa en miniaturas y desplazarlas suavemente a la vista
   const thumbs = document.querySelectorAll(".pm-thumbnail-btn");
   thumbs.forEach((t, i) => {
-    if (i === idx) t.classList.add("active");
-    else t.classList.remove("active");
+    if (i === currentModalImageIndex) {
+      t.classList.add("active");
+      try {
+        t.scrollIntoView({ behavior: "smooth", block: "nearest", inline: "center" });
+      } catch (err) {}
+    } else {
+      t.classList.remove("active");
+    }
   });
 
-  const counter = document.querySelector(".pm-gallery-counter");
+  // Actualizar puntos de navegación (dots)
+  const dots = document.querySelectorAll(".pm-dot");
+  dots.forEach((d, i) => {
+    if (i === currentModalImageIndex) d.classList.add("active");
+    else d.classList.remove("active");
+  });
+
+  // Actualizar contador numérico
+  const counter = document.getElementById("pm-counter");
   if (counter) {
-    counter.textContent = `📷 Foto ${idx + 1} de ${images.length}`;
+    counter.textContent = `📷 Foto ${currentModalImageIndex + 1} de ${total}`;
   }
 }
 
-function prevModalImage() {
+function prevModalImage(e) {
+  if (e) {
+    if (e.stopPropagation) e.stopPropagation();
+    if (e.preventDefault) e.preventDefault();
+  }
   if (!currentModalProduct) return;
   const images = getProductImagesList(currentModalProduct);
   if (images.length <= 1) return;
-  const nextIdx = (currentModalImageIndex - 1 + images.length) % images.length;
-  setModalImageIndex(nextIdx);
+  setModalImageIndex(currentModalImageIndex - 1);
 }
 
-function nextModalImage() {
+function nextModalImage(e) {
+  if (e) {
+    if (e.stopPropagation) e.stopPropagation();
+    if (e.preventDefault) e.preventDefault();
+  }
   if (!currentModalProduct) return;
   const images = getProductImagesList(currentModalProduct);
   if (images.length <= 1) return;
-  const nextIdx = (currentModalImageIndex + 1) % images.length;
-  setModalImageIndex(nextIdx);
+  setModalImageIndex(currentModalImageIndex + 1);
 }
 
 function changeModalQty(delta) {
-  const newQty = Math.max(1, currentModalQty + delta);
-  setModalQty(newQty);
+  setModalQty(currentModalQty + delta);
 }
 
 function setModalQty(newQty) {
   currentModalQty = Math.max(1, newQty);
-  renderProductModalContent();
+  updateModalPricingUI();
+}
+
+function updateModalPricingUI() {
+  if (!currentModalProduct) return;
+  const p = currentModalProduct;
+  const unitPrice = getUnitPriceForQty(p, currentModalQty);
+  const subtotal = unitPrice * currentModalQty;
+  const standardSubtotal = p.price * currentModalQty;
+  const totalSavings = standardSubtotal - subtotal;
+
+  const priceDisp = document.getElementById("pm-price-display");
+  if (priceDisp) priceDisp.textContent = formatPrice(unitPrice);
+
+  const subtotalDisp = document.getElementById("pm-subtotal-display");
+  if (subtotalDisp) subtotalDisp.textContent = formatPrice(subtotal);
+
+  const stepperNum = document.getElementById("pm-stepper-num");
+  if (stepperNum) stepperNum.textContent = currentModalQty;
+
+  const addBtn = document.getElementById("pm-add-cart-btn");
+  if (addBtn && !addBtn.classList.contains("added")) {
+    addBtn.innerHTML = `<span>🛒 Agregar al Carrito</span><span style="font-size:12px; opacity:0.9;">(${formatPrice(subtotal)})</span>`;
+  }
+
+  const tierBtns = document.querySelectorAll(".pm-tier-btn");
+  if (tierBtns.length === 4) {
+    tierBtns[0].classList.toggle("active", currentModalQty < 3);
+    tierBtns[1].classList.toggle("active", currentModalQty >= 3 && currentModalQty < 5);
+    tierBtns[2].classList.toggle("active", currentModalQty >= 5 && currentModalQty < 20);
+    tierBtns[3].classList.toggle("active", currentModalQty >= 20);
+  }
+
+  const savingsBox = document.getElementById("pm-savings-container");
+  if (savingsBox) {
+    if (totalSavings > 0) {
+      savingsBox.innerHTML = `
+        <div class="pm-savings-box">
+          <span class="pm-savings-icon">🎉</span>
+          <span>¡Descuento activo! Ahorrás <strong>${formatPrice(totalSavings)}</strong> en tu compra.</span>
+        </div>
+      `;
+    } else {
+      savingsBox.innerHTML = `
+        <div style="font-size:11.5px; color:#64748b; background:#ffffff; border:1px dashed #cbd5e1; border-radius:10px; padding:8px 12px; text-align:center;">
+          ⚡ Llevando <strong>3 unidades o más</strong> accedés a precios con descuento.
+        </div>
+      `;
+    }
+  }
+
+  const waBtn = document.querySelector(".pm-btn-whatsapp");
+  if (waBtn) {
+    const waText = encodeURIComponent(
+      `¡Hola NISSA! 👋 Me interesa comprar ${currentModalQty} u. de "${p.name}" por ${formatPrice(subtotal)} (${getTierLabel(currentModalQty)}).\n\n¿Tienen stock disponible para retiro o entrega en el día? ¡Muchas gracias!`
+    );
+    waBtn.href = `https://wa.me/${WHATSAPP_NUMBER}?text=${waText}`;
+  }
 }
 
 function addModalProductToCart() {

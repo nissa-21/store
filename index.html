@@ -262,6 +262,15 @@
             </div>
           </div>
 
+          <!-- ÚLTIMO PASO: SELECCIÓN DE TIEMPO DE GARANTÍA -->
+          <div id="wrapper-garantia-selection" class="re-sub-section" style="display: none; margin-top: 14px;">
+            <div class="re-section-label" style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px;">
+              <span>🛡️ Tiempo de Garantía para tu reparación:</span>
+              <span style="font-size: 10px; font-weight: 800; background: #e0f2fe; color: #0284c7; padding: 2px 8px; border-radius: 6px; text-transform: uppercase;">Último paso</span>
+            </div>
+            <div class="re-garantias-grid" id="widget-garantias-grid"></div>
+          </div>
+
           <!-- CAJA DE RESUMEN DE PRESUPUESTO -->
           <div id="budget-summary-box" class="re-summary-container" style="display: none;">
             <div class="re-summary-card">
@@ -269,12 +278,15 @@
                 <div class="re-summary-badge-ok">✓ PRESUPUESTO ESTIMADO</div>
                 <h4 id="summary-title" class="re-summary-title"></h4>
                 <p id="summary-desc" class="re-summary-desc"></p>
-                <div id="summary-badge" class="re-summary-tag"></div>
+                <div style="display: flex; flex-wrap: wrap; gap: 6px; align-items: center; margin-top: 4px;">
+                  <div id="summary-badge" class="re-summary-tag"></div>
+                  <div id="summary-warranty-badge" class="re-summary-tag" style="background-color: #fef3c7; border-color: #fde68a; color: #92400e;"></div>
+                </div>
               </div>
               <div class="re-summary-price-box">
                 <span class="re-summary-price-lbl">Total Estimado</span>
                 <span id="summary-price" class="re-summary-price"></span>
-                <span class="re-summary-price-sub">✓ Revisión física sin costo</span>
+                <span class="re-summary-price-sub" id="summary-warranty-sub">✓ Revisión física sin costo</span>
               </div>
             </div>
 
