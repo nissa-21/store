@@ -19,6 +19,27 @@ const nav = document.getElementById("nav");
 
 let selectedCategory = "todos";
 let shoppingCart = JSON.parse(localStorage.getItem("nissaCart")) || [];
+
+// Sincronizar el carrito local con los precios y datos más recientes definidos en products.js
+function syncCartWithLatestProducts() {
+  if (typeof products === "undefined" || !Array.isArray(products)) return;
+  let changed = false;
+  shoppingCart = shoppingCart.map(item => {
+    const live = products.find(p => Number(p.id) === Number(item.id));
+    if (!live) return item;
+    changed = true;
+    return {
+      ...live,
+      image: getProductImage(live),
+      quantity: item.quantity
+    };
+  });
+  if (changed) {
+    saveCart();
+  }
+}
+syncCartWithLatestProducts();
+
 // Limpieza de estados anteriores de fotos cargadas desde UI para usar las fotos individuales
 try {
   localStorage.removeItem("nissaProductImages");
@@ -103,12 +124,28 @@ function escapeAttr(value) {
   return String(value).replace(/&/g, "&amp;").replace(/"/g, "&quot;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
 }
 
+function parseNumericPrice(val) {
+  if (typeof val === "number") return isNaN(val) ? 0 : val;
+  if (!val) return 0;
+  let s = String(val).trim().replace(/\$/g, "").trim();
+  if (/^\d{1,3}(\.\d{3})+(,\d+)?$/.test(s)) {
+    s = s.replace(/\./g, "").replace(",", ".");
+  } else if (/^\d{1,3}(,\d{3})+(\.\d+)?$/.test(s)) {
+    s = s.replace(/,/g, "");
+  } else {
+    s = s.replace(/,/g, ".");
+  }
+  const n = parseFloat(s);
+  return isNaN(n) ? 0 : n;
+}
+
 function formatPrice(price) {
+  const num = typeof price === "number" ? price : parseNumericPrice(price);
   return new Intl.NumberFormat("es-AR", {
     style: "currency",
     currency: "ARS",
     maximumFractionDigits: 0
-  }).format(price);
+  }).format(num);
 }
 
 function renderProductButtonHtml(productId, qty) {
@@ -259,10 +296,11 @@ function addToCart(productId) {
 }
 
 function getUnitPrice(item) {
-  if (item.quantity >= 20) return item.price20 || item.price;
-  if (item.quantity >= 5) return item.price5 || item.price;
-  if (item.quantity >= 3) return item.price3 || item.price;
-  return item.price;
+  const live = (typeof products !== "undefined" && Array.isArray(products))
+    ? products.find(p => Number(p.id) === Number(item.id))
+    : null;
+  const target = live || item;
+  return getUnitPriceForQty(target, item.quantity);
 }
 
 function getTierLabel(quantity) {
@@ -409,10 +447,11 @@ if (menuButton && nav) {
     nav.classList.toggle("active");
   });
   document.querySelectorAll(".nav a").forEach(link => {
-    link.addEventListener("click", () => {
+    link.addEventListener("click", (e) => {
       nav.classList.remove("active");
       const href = link.getAttribute("href");
-      if (href === "#terminos" || href === "#terminos-y-condiciones") {
+      if (href && (href.includes("terminos") || href.includes("terminos-y-condiciones"))) {
+        e.preventDefault();
         goToTermsPage();
       } else if (href && href.startsWith("#")) {
         goToMainPage(href);
@@ -426,10 +465,9 @@ if (menuButton && nav) {
   });
 }
 
-// Router para alternar entre la página principal y Términos y Condiciones
+// Navegar a la página canónica de Términos y Condiciones (/terminos-y-condiciones)
 function goToTermsPage() {
-  window.location.hash = "#terminos";
-  checkRoute();
+  window.location.href = "/terminos-y-condiciones";
 }
 
 function goToMainPage(targetHash) {
@@ -444,24 +482,21 @@ function checkRoute() {
   if (nav) nav.classList.remove("active");
 
   if (hash === "#terminos" || hash === "#terminos-y-condiciones") {
-    if (mainContent) mainContent.style.display = "none";
-    if (terminosSection) {
-      terminosSection.style.display = "block";
-      window.scrollTo({ top: 0, behavior: "smooth" });
-    }
-    document.title = "NISSA - Términos y Condiciones y Garantía Oficial";
-  } else {
-    if (mainContent) mainContent.style.display = "block";
-    if (terminosSection) terminosSection.style.display = "none";
-    document.title = "NISSA - Tienda Online y Servicio Técnico";
+    // Redirigir limpiamente a la URL canónica solicitada: nissa.com.ar/terminos-y-condiciones
+    window.location.replace("/terminos-y-condiciones");
+    return;
+  }
 
-    if (hash && hash !== "#" && hash !== "#inicio") {
-      const targetEl = document.querySelector(hash);
-      if (targetEl) {
-        setTimeout(() => {
-          targetEl.scrollIntoView({ behavior: "smooth" });
-        }, 50);
-      }
+  if (mainContent) mainContent.style.display = "block";
+  if (terminosSection) terminosSection.style.display = "none";
+  document.title = "NISSA - Tienda Online y Servicio Técnico";
+
+  if (hash && hash !== "#" && hash !== "#inicio") {
+    const targetEl = document.querySelector(hash);
+    if (targetEl) {
+      setTimeout(() => {
+        targetEl.scrollIntoView({ behavior: "smooth" });
+      }, 50);
     }
   }
 }
@@ -514,10 +549,15 @@ function resolvePhotoUrl(imgName, product) {
 
 function getUnitPriceForQty(product, qty) {
   if (!product) return 0;
-  if (qty >= 20) return product.price20 || product.price;
-  if (qty >= 5) return product.price5 || product.price;
-  if (qty >= 3) return product.price3 || product.price;
-  return product.price;
+  const p = parseNumericPrice(product.price);
+  const p3 = product.price3 !== undefined ? parseNumericPrice(product.price3) : p;
+  const p5 = product.price5 !== undefined ? parseNumericPrice(product.price5) : p;
+  const p20 = product.price20 !== undefined ? parseNumericPrice(product.price20) : p;
+
+  if (qty >= 20) return p20;
+  if (qty >= 5) return p5;
+  if (qty >= 3) return p3;
+  return p;
 }
 
 function getDiscountPercent(basePrice, discountedPrice) {
@@ -1097,8 +1137,10 @@ window.addModalProductToCart = addModalProductToCart;
 
 // Initialize on DOM load
 document.addEventListener("DOMContentLoaded", () => {
+  syncCartWithLatestProducts();
   renderProducts();
   renderCart();
 });
+syncCartWithLatestProducts();
 renderProducts();
 renderCart();

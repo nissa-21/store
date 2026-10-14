@@ -4604,7 +4604,7 @@ const PRECIOS_WIDGET = {
         },
         {
           "id": "joy_ps3_2",
-          "name": "🕹️ Cambio de analógicos (x2)",
+          "name": "🕹️ Cambio de analógicos (Ambos)",
           "price": 25000
         },
         {
@@ -4625,12 +4625,12 @@ const PRECIOS_WIDGET = {
       "repairs": [
         {
           "id": "joy_ps4_1",
-          "name": "🕹️ Cambio de analógico (x1)",
+          "name": "🕹️ Cambio de analógico normal (x1)",
           "price": 17000
         },
         {
           "id": "joy_ps4_2",
-          "name": "🕹️ Cambio de analógico (x2)",
+          "name": "🕹️ Cambio de analógico Hall Effect (x1 - Antidrift)",
           "price": 28000
         },
         {
@@ -4656,13 +4656,13 @@ const PRECIOS_WIDGET = {
       "repairs": [
         {
           "id": "joy_ps5_1",
-          "name": "🕹️ Cambio de analógico (x1)",
+          "name": "🕹️ Cambio de analógico normal (x1)",
           "price": 20000
         },
         {
           "id": "joy_ps5_2",
-          "name": "🕹️ Cambio de analógico (x2)",
-          "price": 35000
+          "name": "🕹️ Cambio de analógico Hall Effect (x1 - Antidrift)",
+          "price": 33000
         },
         {
           "id": "joy_ps5_3",
@@ -4677,7 +4677,7 @@ const PRECIOS_WIDGET = {
         {
           "id": "joy_ps5_5",
           "name": "🔋 Cambio de batería interna",
-          "price": 35000
+          "price": 25000
         }
       ]
     }
@@ -4686,13 +4686,13 @@ const PRECIOS_WIDGET = {
     {
       "id": "pc_maint",
       "name": "💻 Mantenimiento General (Físico y Pasta Térmica)",
-      "price": 42000,
+      "price": "Consultar",
       "note": "Limpieza interna profunda y cambio de pasta térmica."
     },
     {
       "id": "pc_opt",
       "name": "⚙️ Optimización de Rendimiento & Limpieza de Software",
-      "price": 38000,
+      "price": "Consultar",
       "note": "Limpieza de virus, temporales y aceleración del arranque."
     },
     {

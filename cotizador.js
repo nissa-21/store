@@ -56,9 +56,29 @@ function safeSetValue(id, val) {
   if (el) el.value = val;
 }
 
+function parseRepairNumeric(val) {
+  if (typeof val === 'number') return isNaN(val) ? NaN : val;
+  if (!val) return NaN;
+  let s = String(val).trim().replace(/\$/g, '').trim();
+  if (/^\d{1,3}(\.\d{3})+(,\d+)?$/.test(s)) {
+    s = s.replace(/\./g, '').replace(',', '.');
+  } else if (/^\d{1,3}(,\d{3})+(\.\d+)?$/.test(s)) {
+    s = s.replace(/,/g, '');
+  }
+  return parseFloat(s);
+}
+
 function reFormatPrice(val) {
   if (val === undefined || val === null) return '';
-  const num = Number(val);
+  if (typeof val === 'string') {
+    const s = val.trim();
+    if (s.toLowerCase().includes('consultar') || s.toLowerCase().includes('no realizamos')) return s;
+    if (s.toLowerCase().includes('usd')) {
+      const numPart = parseFloat(s.replace(/[^0-9.]/g, ''));
+      return isNaN(numPart) ? s : `${Math.round(numPart)} USD`;
+    }
+  }
+  const num = parseRepairNumeric(val);
   if (isNaN(num)) {
     let s = String(val).trim();
     if (s.startsWith('$')) s = s.substring(1).trim();
@@ -89,8 +109,7 @@ function getBaseRepairPrice() {
       return serv ? serv.price : null;
     }
   } else if (widgetCategory === 'Computadora') {
-    const serv = (PRECIOS_WIDGET.computadoras || []).find(c => c.id === selectedCompServiceId);
-    return serv ? serv.price : null;
+    return 'Consultar';
   }
   return null;
 }
@@ -127,7 +146,7 @@ function computeWarrantyPrice(rawPrice, warrantyId) {
     }
   }
 
-  const cleanNum = parseFloat(s.replace(/[^0-9.]/g, ''));
+  const cleanNum = parseRepairNumeric(s);
   if (!isNaN(cleanNum) && cleanNum > 0) {
     const adjusted = calculateNumeric(cleanNum);
     return reFormatPrice(adjusted);
@@ -975,7 +994,7 @@ function populateComputadoras() {
       <span class="re-service-title">${serv.name}</span>
       ${serv.note ? `<span style="font-size:9px;color:#64748b;">${serv.note}</span>` : ''}
     </div>
-    <span class="re-service-price">${reFormatPrice(serv.price)}</span>`;
+    <span class="re-service-price">Consultar</span>`;
     btn.onclick = () => selectCompService(serv.id);
     grid.appendChild(btn);
   });
@@ -986,7 +1005,7 @@ function selectCompService(sId) {
   const serv = (PRECIOS_WIDGET.computadoras || []).find(c => c.id === sId);
   if (serv) {
     safeSetText('re-selected-comp-service-name', serv.name);
-    safeSetText('re-selected-comp-service-note', `${reFormatPrice(serv.price)} • ${serv.note || 'Optimización y laboratorio'}`);
+    safeSetText('re-selected-comp-service-note', `Consultar • ${serv.note || 'Optimización y laboratorio'}`);
   }
   // Ocultar lista completa para ahorrar espacio y mostrar tarjeta compacta seleccionada
   safeSetStyle('pc-services-grid', 'display', 'none');
@@ -1069,7 +1088,7 @@ function calculateAndShowWidgetBudget() {
     const serv = (PRECIOS_WIDGET.computadoras || []).find(c => c.id === selectedCompServiceId);
     if (serv) {
       isValid = true;
-      rawPrice = serv.price;
+      rawPrice = 'Consultar';
       sTitle = serv.name;
       sBadge = 'PC / Notebook';
       sDesc = serv.note || 'Servicio técnico profesional y ampliación de componentes para notebooks y computadoras.';
