@@ -8,38 +8,38 @@ let selectedConsoleServiceId = '';
 let selectedMandoId = '';
 let selectedMandoServiceId = '';
 let selectedCompServiceId = '';
-let selectedWarrantyId = 'basic';
+let selectedWarrantyId = 'estandar';
 
 const WIDGET_WARRANTIES = [
   {
     id: 'basic',
     name: 'Basic',
     dias: 3,
-    extraPct: 0,
     icon: '🛡️',
     badgeClass: 'basic',
-    badgeText: '3 DÍAS (0%)',
-    desc: '3 días de garantía de verificación (funciona y listo).'
+    badgeText: '-15%',
+    extraLabel: 'Opción económica (-15%)',
+    duracionText: '3 días de garantía'
   },
   {
     id: 'estandar',
-    name: 'Estándar',
+    name: 'Standard',
     dias: 30,
-    extraPct: 0.15,
     icon: '⭐',
     badgeClass: 'estandar',
-    badgeText: '30 DÍAS (+15%)',
-    desc: '30 días de garantía oficial por un extra del 15%.'
+    badgeText: 'OFICIAL',
+    extraLabel: 'Precio oficial estándar',
+    duracionText: '30 días de garantía'
   },
   {
     id: 'ultra',
-    name: 'ULTRA',
+    name: 'Standard',
     dias: 90,
-    extraPct: 0.30,
     icon: '🚀',
     badgeClass: 'ultra',
-    badgeText: '90 DÍAS (+30%)',
-    desc: '90 días de garantía ULTRA con cobertura total (+30% adicional).'
+    badgeText: '+30%',
+    extraLabel: '+30% adicional',
+    duracionText: '90 días de garantía'
   }
 ];
 
@@ -68,7 +68,7 @@ function reFormatPrice(val) {
 }
 
 function getSelectedWarrantyObj() {
-  return WIDGET_WARRANTIES.find(w => w.id === selectedWarrantyId) || WIDGET_WARRANTIES[0];
+  return WIDGET_WARRANTIES.find(w => w.id === selectedWarrantyId) || WIDGET_WARRANTIES[1];
 }
 
 function getBaseRepairPrice() {
@@ -95,26 +95,41 @@ function getBaseRepairPrice() {
   return null;
 }
 
-function computeWarrantyPrice(rawPrice, extraPct) {
+function computeWarrantyPrice(rawPrice, warrantyId) {
   if (rawPrice === undefined || rawPrice === null) return '';
-  if (typeof rawPrice === 'number' && !isNaN(rawPrice)) {
-    const adjusted = Math.round(rawPrice * (1 + extraPct));
-    return reFormatPrice(adjusted);
-  }
   let s = String(rawPrice).trim();
   if (s.toLowerCase().includes('consultar') || s === '' || s.toLowerCase().includes('no realizamos')) {
     return s || 'Consultar';
   }
+
+  const calculateNumeric = (num) => {
+    if (warrantyId === 'basic') {
+      // Basic es la opción económica de 3 días: el precio base de Estándar es +15% de Basic
+      return Math.round(num / 1.15);
+    } else if (warrantyId === 'ultra') {
+      // ULTRA es 90 días con +30% adicional
+      return Math.round(num * 1.30);
+    }
+    // Estándar (30 días): precio oficial de la reparación (base del cotizador)
+    return Math.round(num);
+  };
+
+  if (typeof rawPrice === 'number' && !isNaN(rawPrice)) {
+    const adjusted = calculateNumeric(rawPrice);
+    return reFormatPrice(adjusted);
+  }
+
   if (s.toLowerCase().includes('usd')) {
     const numPart = parseFloat(s.replace(/[^0-9.]/g, ''));
     if (!isNaN(numPart)) {
-      const adjusted = Math.round(numPart * (1 + extraPct));
+      const adjusted = calculateNumeric(numPart);
       return `${adjusted} USD`;
     }
   }
+
   const cleanNum = parseFloat(s.replace(/[^0-9.]/g, ''));
   if (!isNaN(cleanNum) && cleanNum > 0) {
-    const adjusted = Math.round(cleanNum * (1 + extraPct));
+    const adjusted = calculateNumeric(cleanNum);
     return reFormatPrice(adjusted);
   }
   return s;
@@ -129,30 +144,32 @@ function renderWarrantyCards() {
   container.innerHTML = '';
   WIDGET_WARRANTIES.forEach(w => {
     const isAct = w.id === selectedWarrantyId;
-    const finalPriceStr = computeWarrantyPrice(rawBase, w.extraPct);
+    const finalPriceStr = computeWarrantyPrice(rawBase, w.id);
     const card = document.createElement('button');
     card.type = 'button';
     card.className = `re-garantia-btn ${isAct ? 'active' : ''}`;
+    card.setAttribute('aria-pressed', isAct ? 'true' : 'false');
     card.onclick = () => selectWarranty(w.id);
 
     let priceTagHtml = '';
     if (finalPriceStr && finalPriceStr !== 'Consultar' && finalPriceStr !== 'NO REALIZAMOS') {
       priceTagHtml = `<div class="re-garantia-price-line">
         <span class="re-garantia-price-val">${finalPriceStr}</span>
-        <span class="re-garantia-extra-label">${w.extraPct === 0 ? 'Precio base' : `(+${Math.round(w.extraPct * 100)}%)`}</span>
       </div>`;
     } else {
       priceTagHtml = `<div class="re-garantia-price-line">
-        <span class="re-garantia-price-val" style="font-size:12px; color:#64748b;">${w.extraPct === 0 ? 'Sin recargo' : `+${Math.round(w.extraPct * 100)}%`}</span>
+        <span class="re-garantia-price-val" style="font-size:12px; color:#64748b;">A confirmar</span>
       </div>`;
     }
 
     card.innerHTML = `
       <div class="re-garantia-header">
-        <span class="re-garantia-title">${w.icon} ${w.name}</span>
+        <div class="re-garantia-title-group">
+          <span class="re-garantia-title">${w.name}</span>
+          <span class="re-garantia-sub">${w.duracionText}</span>
+        </div>
         <span class="re-garantia-badge ${w.badgeClass}">${w.badgeText}</span>
       </div>
-      <p class="re-garantia-desc">${w.desc}</p>
       ${priceTagHtml}
     `;
     container.appendChild(card);
@@ -361,7 +378,7 @@ function clearSelections() {
   selectedMandoId = '';
   selectedMandoServiceId = '';
   selectedCompServiceId = '';
-  selectedWarrantyId = 'basic';
+  selectedWarrantyId = 'estandar';
 
   safeSetValue('widget-model-search', '');
   safeSetValue('custom-brand', '');
@@ -396,9 +413,38 @@ function clearSelections() {
   updateSelectionTracker();
 }
 
+function isTermsAccepted() {
+  const chk = document.getElementById('re-terms-checkbox');
+  return chk ? chk.checked : false;
+}
+
+function handleTermsConsentChange() {
+  const chk = document.getElementById('re-terms-checkbox');
+  const btn = document.getElementById('btn-submit-widget');
+  const warn = document.getElementById('re-terms-warning');
+  const accepted = chk ? chk.checked : false;
+
+  if (warn && accepted) {
+    warn.style.display = 'none';
+  }
+
+  if (btn) {
+    if (accepted) {
+      btn.classList.remove('is-disabled');
+      btn.removeAttribute('aria-disabled');
+    } else {
+      btn.classList.add('is-disabled');
+      btn.setAttribute('aria-disabled', 'true');
+    }
+  }
+}
+
 function hideBudgetBox() {
   safeSetStyle('budget-summary-box', 'display', 'none');
   safeSetStyle('wrapper-garantia-selection', 'display', 'none');
+  const chk = document.getElementById('re-terms-checkbox');
+  if (chk) chk.checked = false;
+  handleTermsConsentChange();
 }
 
 function populateBrands() {
@@ -985,15 +1031,23 @@ function calculateAndShowWidgetBudget() {
   const box = document.getElementById('budget-summary-box');
   if (isValid && box) {
     const wObj = getSelectedWarrantyObj();
-    sPrice = computeWarrantyPrice(rawPrice, wObj.extraPct);
+    sPrice = computeWarrantyPrice(rawPrice, wObj.id);
     if (sPrice === 'Consultar' || !rawPrice || rawPrice === 'Consultar' || sPrice === 'A consultar') isQuote = true;
 
     safeSetText('summary-title', sTitle);
     safeSetText('summary-desc', sDesc);
     safeSetText('summary-badge', sBadge);
     safeSetText('summary-price', sPrice);
-    safeSetText('summary-warranty-badge', `🛡️ Garantía ${wObj.name}: ${wObj.dias} días`);
-    safeSetText('summary-warranty-sub', wObj.extraPct === 0 ? '✓ Garantía Basic (3 días) incluida' : `✓ Incluye garantía ${wObj.name} (${wObj.dias} días)`);
+    safeSetText('summary-warranty-badge', `${wObj.icon} Garantía ${wObj.name}: ${wObj.dias} días`);
+
+    let subWarrantyText = '✓ Garantía oficial Estándar (30 días) incluida';
+    if (wObj.id === 'basic') {
+      subWarrantyText = '✓ Garantía Basic de verificación (3 días)';
+    } else if (wObj.id === 'ultra') {
+      subWarrantyText = '✓ Cobertura total extendida ULTRA (90 días)';
+    }
+    safeSetText('summary-warranty-sub', subWarrantyText);
+
     safeSetText('re-btn-text', isQuote ? 'Solicitar Presupuesto por WhatsApp' : 'Enviar Presupuesto por WhatsApp');
     box.style.display = 'flex';
   } else if (box) {
@@ -1002,6 +1056,17 @@ function calculateAndShowWidgetBudget() {
 }
 
 function sendWidgetWhatsApp() {
+  if (!isTermsAccepted()) {
+    const warn = document.getElementById('re-terms-warning');
+    if (warn) {
+      warn.style.display = 'block';
+      warn.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }
+    const chk = document.getElementById('re-terms-checkbox');
+    if (chk) chk.focus();
+    return;
+  }
+
   const title = document.getElementById('summary-title')?.innerText || '';
   const badge = document.getElementById('summary-badge')?.innerText || '';
   const price = document.getElementById('summary-price')?.innerText || '';
@@ -1011,8 +1076,9 @@ function sendWidgetWhatsApp() {
   text += `⚙️ *Categoría:* ${widgetCategory}\n`;
   text += `📦 *Servicio:* ${title}\n`;
   text += `📋 *Detalle:* ${badge}\n`;
-  text += `🛡️ *Garantía elegida:* ${wObj.name} (${wObj.dias} días - ${wObj.extraPct === 0 ? '3 días prueba inicial' : `+${Math.round(wObj.extraPct * 100)}%`})\n`;
+  text += `🛡️ *Garantía elegida:* ${wObj.name} (${wObj.dias} días - ${wObj.extraLabel || wObj.badgeText})\n`;
   text += `💰 *Presupuesto Estimado:* *${price}*\n\n`;
+  text += `✓ He leído y acepto los términos y condiciones de servicio técnico.\n\n`;
   text += `¿Tienen disponibilidad de turnos para llevarlo? ¡Muchas gracias!`;
 
   const url = `https://wa.me/${PRECIOS_WIDGET.whatsapp.replace(/\D/g, '')}?text=${encodeURIComponent(text)}`;
@@ -1035,6 +1101,7 @@ document.addEventListener('click', (e) => {
 // Auto-init on page load: estado inicial limpio
 window.selectWarranty = selectWarranty;
 window.focusWarrantySection = focusWarrantySection;
+window.handleTermsConsentChange = handleTermsConsentChange;
 
 document.addEventListener('DOMContentLoaded', () => {
   resetWidget();

@@ -37,39 +37,14 @@
     <div class="welcome-banner-card" id="welcome-banner">
       <img src="./banner-nissa.jpg" alt="Servicio técnico NISSA - Reparación y desarme de iPhone 16 Pro Max en banco de trabajo profesional" class="welcome-banner-img" loading="eager" referrerPolicy="no-referrer" onerror="if (!this.dataset.retry) { this.dataset.retry = '1'; this.src = 'banner-nissa.jpg'; }">
       <div class="welcome-banner-overlay">
-        <div class="welcome-badge">✦ BIENVENIDO A NISSA</div>
-        <h1 class="welcome-banner-title">REPARAMOS TU EQUIPO</h1>
-        <p class="welcome-banner-subtitle">Servicio técnico profesional de celulares, consolas, mandos y notebooks con hasta 90 días de garantía de laboratorio.</p>
-        <div class="welcome-banner-actions">
-          <a href="#cotizador" class="btn btn-banner-primary">Cotizar reparación ahora ➔</a>
-          <a href="#productos" class="btn btn-banner-secondary">Explorar tienda online</a>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- FRANJA DE CONFIANZA -->
-  <section class="trust-strip" aria-label="Información rápida">
-    <div class="trust-strip-inner">
-      <div class="trust-item">
-        <span class="trust-icon">📦</span>
-        <div class="trust-text">
-          <b>Productos seleccionados</b>
-          <small>Calidad testeada y garantía de fábrica</small>
-        </div>
-      </div>
-      <div class="trust-item">
-        <span class="trust-icon">🛡️</span>
-        <div class="trust-text">
-          <b>Hasta 90 días de garantía oficial</b>
-          <small>Garantía escrita en laboratorio</small>
-        </div>
-      </div>
-      <div class="trust-item">
-        <span class="trust-icon">💬</span>
-        <div class="trust-text">
-          <b>Atención directa por WhatsApp</b>
-          <small>Hablá sin intermediarios con nuestro equipo</small>
+        <div class="welcome-banner-container">
+          <div class="welcome-badge">✦ BIENVENIDO A NISSA</div>
+          <h1 class="welcome-banner-title">REPARAMOS TU EQUIPO</h1>
+          <p class="welcome-banner-subtitle">Servicio técnico profesional de celulares, consolas, mandos y notebooks con hasta 90 días de garantía de laboratorio.</p>
+          <div class="welcome-banner-actions">
+            <a href="#cotizador" class="btn btn-banner-primary">Cotizar reparación ahora ➔</a>
+            <a href="#productos" class="btn btn-banner-secondary">Explorar tienda online</a>
+          </div>
         </div>
       </div>
     </div>
@@ -295,8 +270,22 @@
               <p>Este presupuesto es de referencia y está sujeto a confirmación tras la revisión física en nuestro local. No cobramos costo de revisión ni desarme.</p>
             </div>
 
+            <!-- CHECKBOX DE ACEPTACIÓN DE TÉRMINOS Y CONDICIONES -->
+            <div class="re-terms-consent-box">
+              <label class="re-terms-label" for="re-terms-checkbox">
+                <input type="checkbox" id="re-terms-checkbox" class="re-terms-checkbox" onchange="handleTermsConsentChange()">
+                <span class="re-terms-custom-check" aria-hidden="true"></span>
+                <span class="re-terms-text">
+                  Leí, entiendo y acepto los <a href="terminos.html" target="_blank" rel="noopener noreferrer" class="re-terms-link">términos y condiciones</a> brindados por NISSA.
+                </span>
+              </label>
+              <div id="re-terms-warning" class="re-terms-warning" style="display: none;">
+                ⚠️ Debes aceptar los términos y condiciones para poder avanzar con tu presupuesto.
+              </div>
+            </div>
+
             <div class="re-actions">
-              <button type="button" id="btn-submit-widget" class="re-btn-submit" onclick="sendWidgetWhatsApp()">
+              <button type="button" id="btn-submit-widget" class="re-btn-submit is-disabled" onclick="sendWidgetWhatsApp()">
                 <svg class="re-wa-svg" viewBox="0 0 24 24">
                   <path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946C.06 5.348 5.397.01 11.966.01c3.179.001 6.169 1.24 8.409 3.485 2.24 2.246 3.473 5.239 3.471 8.417-.004 6.616-5.34 11.954-11.91 11.954a11.91 11.91 0 0 1-5.69-1.444L0 24zm5.824-3.482l.415.247a9.92 9.92 0 0 0 5.174 1.456c5.825 0 10.563-4.73 10.567-10.548.002-2.822-1.096-5.474-3.09-7.472-1.995-2-4.65-3.1-7.468-3.102-5.83 0-10.57 4.73-10.574 10.551a10.5 10.5 0 0 0 1.426 5.142l.271.431-1.01 3.687 3.791-.995z"/>
                 </svg>
