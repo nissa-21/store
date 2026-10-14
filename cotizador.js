@@ -423,8 +423,7 @@ function handleTermsConsentChange() {
   const btn = document.getElementById('btn-submit-widget');
   const warn = document.getElementById('re-terms-warning');
   const box = document.getElementById('re-terms-box');
-  const badge = document.getElementById('re-terms-status-badge');
-  const accepted = chk ? chk.checked : false;
+  const accepted = chk ? chk.checked : true;
 
   if (warn && accepted) {
     warn.style.display = 'none';
@@ -436,16 +435,6 @@ function handleTermsConsentChange() {
       box.classList.remove('re-terms-attention-alert');
     } else {
       box.classList.remove('is-accepted');
-    }
-  }
-
-  if (badge) {
-    if (accepted) {
-      badge.className = 're-terms-status-badge accepted';
-      badge.innerHTML = '<span class="re-terms-badge-dot"></span>✓ Términos Aceptados';
-    } else {
-      badge.className = 're-terms-status-badge pending';
-      badge.innerHTML = '<span class="re-terms-badge-dot"></span>Paso previo obligatorio';
     }
   }
 
@@ -487,14 +476,14 @@ function triggerTermsAttention() {
 
 function toggleTermsCheckbox(event) {
   if (!event) return;
-  // Si hizo clic directamente en el input o en el enlace de términos, dejar que actúe su evento nativo
-  if (event.target.id === 're-terms-checkbox' || (event.target.closest && event.target.closest('.re-terms-link'))) {
+  // Si hizo clic en el enlace a términos, evitar que se altere el estado
+  if (event.target.closest && event.target.closest('.re-terms-link')) {
     return;
   }
-  const chk = document.getElementById('re-terms-checkbox');
-  if (chk) {
-    chk.checked = !chk.checked;
+  // Si el clic fue en el input, el navegador ya realizó el cambio nativo
+  if (event.target.id === 're-terms-checkbox') {
     handleTermsConsentChange();
+    return;
   }
 }
 
@@ -502,7 +491,7 @@ function hideBudgetBox() {
   safeSetStyle('budget-summary-box', 'display', 'none');
   safeSetStyle('wrapper-garantia-selection', 'display', 'none');
   const chk = document.getElementById('re-terms-checkbox');
-  if (chk) chk.checked = false;
+  if (chk) chk.checked = true;
   handleTermsConsentChange();
 }
 
@@ -1109,6 +1098,7 @@ function calculateAndShowWidgetBudget() {
 
     safeSetText('re-btn-text', isQuote ? 'Solicitar Presupuesto por WhatsApp' : 'Enviar Presupuesto por WhatsApp');
     box.style.display = 'flex';
+    handleTermsConsentChange();
   } else if (box) {
     box.style.display = 'none';
   }
