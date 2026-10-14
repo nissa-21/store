@@ -4604,7 +4604,7 @@ const PRECIOS_WIDGET = {
         },
         {
           "id": "joy_ps3_2",
-          "name": "🕹️ Cambio de analógicos (Ambos)",
+          "name": "🕹️ Cambio de analógicos (x2)",
           "price": 25000
         },
         {
@@ -4625,12 +4625,12 @@ const PRECIOS_WIDGET = {
       "repairs": [
         {
           "id": "joy_ps4_1",
-          "name": "🕹️ Cambio de analógico normal (x1)",
+          "name": "🕹️ Cambio de analógico (x1)",
           "price": 17000
         },
         {
           "id": "joy_ps4_2",
-          "name": "🕹️ Cambio de analógico Hall Effect (x1 - Antidrift)",
+          "name": "🕹️ Cambio de analógico (x2)",
           "price": 28000
         },
         {
@@ -4656,13 +4656,13 @@ const PRECIOS_WIDGET = {
       "repairs": [
         {
           "id": "joy_ps5_1",
-          "name": "🕹️ Cambio de analógico normal (x1)",
+          "name": "🕹️ Cambio de analógico (x1)",
           "price": 20000
         },
         {
           "id": "joy_ps5_2",
-          "name": "🕹️ Cambio de analógico Hall Effect (x1 - Antidrift)",
-          "price": 33000
+          "name": "🕹️ Cambio de analógico (x2)",
+          "price": 35000
         },
         {
           "id": "joy_ps5_3",
@@ -4677,7 +4677,7 @@ const PRECIOS_WIDGET = {
         {
           "id": "joy_ps5_5",
           "name": "🔋 Cambio de batería interna",
-          "price": 25000
+          "price": 35000
         }
       ]
     }
@@ -4686,43 +4686,43 @@ const PRECIOS_WIDGET = {
     {
       "id": "pc_maint",
       "name": "💻 Mantenimiento General (Físico y Pasta Térmica)",
-      "price": 18000,
+      "price": 42000,
       "note": "Limpieza interna profunda y cambio de pasta térmica."
     },
     {
       "id": "pc_opt",
       "name": "⚙️ Optimización de Rendimiento & Limpieza de Software",
-      "price": 12000,
+      "price": 38000,
       "note": "Limpieza de virus, temporales y aceleración del arranque."
     },
     {
       "id": "pc_ram8",
       "name": "🚀 Ampliación de Memoria RAM (+8GB DDR3/DDR4)",
-      "price": 18000,
+      "price": "Consultar",
       "note": "Módulo de memoria de 8GB instalado y testeado."
     },
     {
       "id": "pc_ram16",
       "name": "🚀 Ampliación de Memoria RAM (+16GB DDR4/DDR5)",
-      "price": 32000,
+      "price": "Consultar",
       "note": "Módulo de memoria de 16GB de alta velocidad."
     },
     {
       "id": "pc_ssd240",
       "name": "💾 Ampliación Almacenamiento SSD 240GB + Sistema",
-      "price": 25000,
+      "price": "Consultar",
       "note": "Disco sólido de 240GB con instalación limpia de sistema operativo."
     },
     {
       "id": "pc_ssd480",
       "name": "💾 Ampliación Almacenamiento SSD 480GB + Sistema",
-      "price": 38000,
+      "price": "Consultar",
       "note": "Disco sólido de 480GB con instalación limpia de sistema operativo."
     },
     {
       "id": "pc_ssd1tb",
       "name": "💾 Ampliación Almacenamiento SSD 1TB Ultra Rápido",
-      "price": 65000,
+      "price": "Consultar",
       "note": "Disco sólido de 1TB NVMe de máxima velocidad."
     }
   ]
