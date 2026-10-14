@@ -24,6 +24,7 @@
     </nav>
     <div class="header-actions">
       <a href="/#inicio" class="btn btn-secondary" style="font-size:12px; padding:8px 14px; border-radius:10px;">← Volver a Inicio</a>
+      <button class="menu-button" id="menu-button" aria-label="Abrir menú" style="display:none;">☰</button>
     </div>
   </div>
 </header>
@@ -486,5 +487,14 @@
   <div class="footer-bottom">© 2026 NISSA. Todos los derechos reservados.</div>
 </footer>
 
+<script>
+  const menuBtn = document.getElementById("menu-button");
+  const navEl = document.getElementById("nav");
+  if (menuBtn && navEl) {
+    menuBtn.addEventListener("click", () => {
+      navEl.classList.toggle("active");
+    });
+  }
+</script>
 </body>
 </html>

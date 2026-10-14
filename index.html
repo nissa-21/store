@@ -22,7 +22,7 @@
       <a href="#productos" id="nav-productos">Tienda</a>
       <a href="#informacion" id="nav-informacion">Información</a>
       <a href="#resenas" id="nav-resenas">Opiniones Google</a>
-      <a href="/terminos-y-condiciones" id="nav-terminos" class="nav-terms-link">Términos y condiciones</a>
+      <a href="/terminos-y-condiciones" id="nav-terminos" class="nav-terms-link" onclick="goToTermsPage(); return false;">Términos y condiciones</a>
     </nav>
     <div class="header-actions">
       <button class="cart-button" id="open-cart" aria-label="Abrir carrito">🛒 <span id="cart-count">0</span></button>
@@ -276,7 +276,7 @@
                 <input type="checkbox" id="re-terms-checkbox" class="re-terms-checkbox" checked onchange="handleTermsConsentChange()">
                 <span class="re-terms-custom-check" aria-hidden="true"></span>
                 <span class="re-terms-text">
-                  Leí, entiendo y acepto los <a href="https://nissa.com.ar/terminos-y-condiciones" target="_blank" rel="noopener noreferrer" class="re-terms-link" onclick="event.stopPropagation()">términos y condiciones</a>
+                  Leí, entiendo y acepto los <a href="/terminos-y-condiciones" class="re-terms-link" onclick="goToTermsPage(); return false;">términos y condiciones</a>
                 </span>
               </label>
               <div id="re-terms-warning" class="re-terms-warning" style="display: none;">
@@ -1076,10 +1076,10 @@
       <a href="#productos" onclick="goToMainPage('#productos'); return false;">Tienda</a>
       <a href="#informacion" onclick="goToMainPage('#informacion'); return false;">Información</a>
       <a href="#resenas" onclick="goToMainPage('#resenas'); return false;">Opiniones Google</a>
-      <a href="/terminos-y-condiciones">Términos y condiciones</a>
+      <a href="/terminos-y-condiciones" onclick="goToTermsPage(); return false;">Términos y condiciones</a>
     </div>
   </div>
-  <div class="footer-bottom">© <span id="year"></span> NISSA. Todos los derechos reservados. · <a href="/terminos-y-condiciones" style="color: #94a3b8; text-decoration: underline;">Términos, condiciones y póliza de garantía</a></div>
+  <div class="footer-bottom">© <span id="year"></span> NISSA. Todos los derechos reservados. · <a href="/terminos-y-condiciones" onclick="goToTermsPage(); return false;" style="color: #94a3b8; text-decoration: underline;">Términos, condiciones y póliza de garantía</a></div>
 </footer>
 
 <!-- SCRIPTS DE FUNCIONALIDAD -->

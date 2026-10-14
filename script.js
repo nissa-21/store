@@ -465,31 +465,84 @@ if (menuButton && nav) {
   });
 }
 
-// Navegar a la página canónica de Términos y Condiciones (/terminos-y-condiciones)
+// Navegar a la página o sección de Términos y Condiciones
 function goToTermsPage() {
-  window.location.href = "/terminos-y-condiciones";
-}
-
-function goToMainPage(targetHash) {
-  window.location.hash = targetHash || "#inicio";
-  checkRoute();
-}
-
-function checkRoute() {
-  const hash = window.location.hash;
   const mainContent = document.getElementById("main-content");
   const terminosSection = document.getElementById("terminos-section");
   if (nav) nav.classList.remove("active");
 
-  if (hash === "#terminos" || hash === "#terminos-y-condiciones") {
-    // Redirigir limpiamente a la URL canónica solicitada: nissa.com.ar/terminos-y-condiciones
-    window.location.replace("/terminos-y-condiciones");
-    return;
-  }
+  if (mainContent && terminosSection) {
+    mainContent.style.display = "none";
+    terminosSection.style.display = "block";
+    document.title = "Términos y Condiciones - NISSA";
+    window.scrollTo({ top: 0, behavior: "smooth" });
 
-  if (mainContent) mainContent.style.display = "block";
-  if (terminosSection) terminosSection.style.display = "none";
-  document.title = "NISSA - Tienda Online y Servicio Técnico";
+    try {
+      if (window.location.pathname !== "/terminos-y-condiciones") {
+        window.history.pushState({ page: "terminos" }, "Términos y Condiciones - NISSA", "/terminos-y-condiciones");
+      }
+    } catch (e) {
+      window.location.hash = "#terminos-y-condiciones";
+    }
+  } else {
+    window.location.href = "/terminos-y-condiciones.html";
+  }
+}
+
+function goToMainPage(targetHash) {
+  const mainContent = document.getElementById("main-content");
+  const terminosSection = document.getElementById("terminos-section");
+  if (nav) nav.classList.remove("active");
+
+  if (mainContent && terminosSection) {
+    mainContent.style.display = "block";
+    terminosSection.style.display = "none";
+    document.title = "NISSA - Tienda Online y Servicio Técnico";
+
+    try {
+      const cleanUrl = targetHash ? `/${targetHash}` : "/#inicio";
+      window.history.pushState(null, "NISSA", cleanUrl);
+    } catch (e) {
+      window.location.hash = targetHash || "#inicio";
+    }
+
+    if (targetHash && targetHash !== "#" && targetHash !== "#inicio") {
+      const targetEl = document.querySelector(targetHash);
+      if (targetEl) {
+        setTimeout(() => {
+          targetEl.scrollIntoView({ behavior: "smooth" });
+        }, 50);
+      }
+    } else {
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+  } else {
+    window.location.href = `/${targetHash || "#inicio"}`;
+  }
+}
+
+function checkRoute() {
+  const pathname = window.location.pathname || "";
+  const hash = window.location.hash || "";
+  const mainContent = document.getElementById("main-content");
+  const terminosSection = document.getElementById("terminos-section");
+  if (nav) nav.classList.remove("active");
+
+  const isTerms = pathname.includes("terminos") || hash.includes("terminos");
+
+  if (mainContent && terminosSection) {
+    if (isTerms) {
+      mainContent.style.display = "none";
+      terminosSection.style.display = "block";
+      document.title = "Términos y Condiciones - NISSA";
+      window.scrollTo(0, 0);
+      return;
+    } else {
+      mainContent.style.display = "block";
+      terminosSection.style.display = "none";
+      document.title = "NISSA - Tienda Online y Servicio Técnico";
+    }
+  }
 
   if (hash && hash !== "#" && hash !== "#inicio") {
     const targetEl = document.querySelector(hash);
@@ -502,6 +555,7 @@ function checkRoute() {
 }
 
 window.addEventListener("hashchange", checkRoute);
+window.addEventListener("popstate", checkRoute);
 window.addEventListener("load", checkRoute);
 
 const headerLogo = document.getElementById("header-logo");
