@@ -13,7 +13,7 @@ let selectedWarrantyId = 'estandar';
 const WIDGET_WARRANTIES = [
   {
     id: 'basic',
-    name: 'Basic',
+    name: 'Básica',
     dias: 3,
     icon: '🛡️',
     badgeClass: 'basic',
@@ -23,7 +23,7 @@ const WIDGET_WARRANTIES = [
   },
   {
     id: 'estandar',
-    name: 'Standard',
+    name: 'Estándar',
     dias: 30,
     icon: '⭐',
     badgeClass: 'estandar',
@@ -33,7 +33,7 @@ const WIDGET_WARRANTIES = [
   },
   {
     id: 'ultra',
-    name: 'Standard',
+    name: 'Extendida',
     dias: 90,
     icon: '🚀',
     badgeClass: 'ultra',
@@ -422,10 +422,31 @@ function handleTermsConsentChange() {
   const chk = document.getElementById('re-terms-checkbox');
   const btn = document.getElementById('btn-submit-widget');
   const warn = document.getElementById('re-terms-warning');
+  const box = document.getElementById('re-terms-box');
+  const badge = document.getElementById('re-terms-status-badge');
   const accepted = chk ? chk.checked : false;
 
   if (warn && accepted) {
     warn.style.display = 'none';
+  }
+
+  if (box) {
+    if (accepted) {
+      box.classList.add('is-accepted');
+      box.classList.remove('re-terms-attention-alert');
+    } else {
+      box.classList.remove('is-accepted');
+    }
+  }
+
+  if (badge) {
+    if (accepted) {
+      badge.className = 're-terms-status-badge accepted';
+      badge.innerHTML = '<span class="re-terms-badge-dot"></span>✓ Términos Aceptados';
+    } else {
+      badge.className = 're-terms-status-badge pending';
+      badge.innerHTML = '<span class="re-terms-badge-dot"></span>Paso previo obligatorio';
+    }
   }
 
   if (btn) {
@@ -436,6 +457,44 @@ function handleTermsConsentChange() {
       btn.classList.add('is-disabled');
       btn.setAttribute('aria-disabled', 'true');
     }
+  }
+}
+
+function triggerTermsAttention() {
+  const box = document.getElementById('re-terms-box');
+  const warn = document.getElementById('re-terms-warning');
+  const chk = document.getElementById('re-terms-checkbox');
+
+  if (warn) {
+    warn.style.display = 'block';
+  }
+
+  if (box) {
+    box.classList.remove('re-terms-attention-alert');
+    // Force DOM reflow to restart CSS animation
+    void box.offsetWidth;
+    box.classList.add('re-terms-attention-alert');
+    box.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    setTimeout(() => {
+      if (box) box.classList.remove('re-terms-attention-alert');
+    }, 1500);
+  }
+
+  if (chk) {
+    chk.focus();
+  }
+}
+
+function toggleTermsCheckbox(event) {
+  if (!event) return;
+  // Si hizo clic directamente en el input o en el enlace de términos, dejar que actúe su evento nativo
+  if (event.target.id === 're-terms-checkbox' || (event.target.closest && event.target.closest('.re-terms-link'))) {
+    return;
+  }
+  const chk = document.getElementById('re-terms-checkbox');
+  if (chk) {
+    chk.checked = !chk.checked;
+    handleTermsConsentChange();
   }
 }
 
@@ -1042,9 +1101,9 @@ function calculateAndShowWidgetBudget() {
 
     let subWarrantyText = '✓ Garantía oficial Estándar (30 días) incluida';
     if (wObj.id === 'basic') {
-      subWarrantyText = '✓ Garantía Basic de verificación (3 días)';
+      subWarrantyText = '✓ Garantía Básica de verificación (3 días)';
     } else if (wObj.id === 'ultra') {
-      subWarrantyText = '✓ Cobertura total extendida ULTRA (90 días)';
+      subWarrantyText = '✓ Cobertura total Extendida (90 días)';
     }
     safeSetText('summary-warranty-sub', subWarrantyText);
 
@@ -1057,13 +1116,7 @@ function calculateAndShowWidgetBudget() {
 
 function sendWidgetWhatsApp() {
   if (!isTermsAccepted()) {
-    const warn = document.getElementById('re-terms-warning');
-    if (warn) {
-      warn.style.display = 'block';
-      warn.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-    }
-    const chk = document.getElementById('re-terms-checkbox');
-    if (chk) chk.focus();
+    triggerTermsAttention();
     return;
   }
 
@@ -1102,6 +1155,8 @@ document.addEventListener('click', (e) => {
 window.selectWarranty = selectWarranty;
 window.focusWarrantySection = focusWarrantySection;
 window.handleTermsConsentChange = handleTermsConsentChange;
+window.triggerTermsAttention = triggerTermsAttention;
+window.toggleTermsCheckbox = toggleTermsCheckbox;
 
 document.addEventListener('DOMContentLoaded', () => {
   resetWidget();

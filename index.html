@@ -270,17 +270,29 @@
               <p>Este presupuesto es de referencia y está sujeto a confirmación tras la revisión física en nuestro local. No cobramos costo de revisión ni desarme.</p>
             </div>
 
-            <!-- CHECKBOX DE ACEPTACIÓN DE TÉRMINOS Y CONDICIONES -->
-            <div class="re-terms-consent-box">
+            <!-- CHECKBOX DE ACEPTACIÓN DE TÉRMINOS Y CONDICIONES (PASO OBLIGATORIO Y DESTACADO) -->
+            <div id="re-terms-box" class="re-terms-consent-box" onclick="toggleTermsCheckbox(event)">
+              <div class="re-terms-top-bar">
+                <span id="re-terms-status-badge" class="re-terms-status-badge pending">
+                  <span class="re-terms-badge-dot"></span>
+                  Paso previo obligatorio
+                </span>
+                <span class="re-terms-hint-click">Toca el recuadro para marcar</span>
+              </div>
               <label class="re-terms-label" for="re-terms-checkbox">
                 <input type="checkbox" id="re-terms-checkbox" class="re-terms-checkbox" onchange="handleTermsConsentChange()">
                 <span class="re-terms-custom-check" aria-hidden="true"></span>
-                <span class="re-terms-text">
-                  Leí, entiendo y acepto los <a href="terminos.html" target="_blank" rel="noopener noreferrer" class="re-terms-link">términos y condiciones</a> brindados por NISSA.
-                </span>
+                <div class="re-terms-text-group">
+                  <span class="re-terms-text">
+                    <strong>Leí, entiendo y acepto</strong> los <a href="terminos.html" target="_blank" rel="noopener noreferrer" class="re-terms-link" onclick="event.stopPropagation()">términos y condiciones</a> brindados por NISSA y la póliza de garantía.
+                  </span>
+                  <span class="re-terms-subtext">
+                    🔒 Requisito obligatorio: debes marcar esta casilla para habilitar el botón y enviar tu presupuesto por WhatsApp.
+                  </span>
+                </div>
               </label>
               <div id="re-terms-warning" class="re-terms-warning" style="display: none;">
-                ⚠️ Debes aceptar los términos y condiciones para poder avanzar con tu presupuesto.
+                ⚠️ <strong>¡Atención!</strong> Debes marcar la casilla para aceptar los términos y condiciones antes de enviar el presupuesto.
               </div>
             </div>
 

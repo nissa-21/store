@@ -259,14 +259,14 @@ function addToCart(productId) {
 }
 
 function getUnitPrice(item) {
-  if (item.quantity > 20) return item.price20 || item.price;
+  if (item.quantity >= 20) return item.price20 || item.price;
   if (item.quantity >= 5) return item.price5 || item.price;
   if (item.quantity >= 3) return item.price3 || item.price;
   return item.price;
 }
 
 function getTierLabel(quantity) {
-  if (quantity > 20) return "Precio +20 u.";
+  if (quantity >= 20) return "Precio +20 u.";
   if (quantity >= 5) return "Precio x5 u.";
   if (quantity >= 3) return "Precio x3 u.";
   return "Precio x1 u.";
