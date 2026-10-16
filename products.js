@@ -44,10 +44,9 @@ const products = [
     price3: 32000,
     price5: 29500,
     price20: 27000,
-    image: "cargador-rapido-usb-c-25w-samsung-super-fast.jpg",
+    image: "aipodspro2gen1.jpg",
     images: [
-      "cargador-rapido-usb-c-25w-samsung-super-fast.jpg",
-      "cargador-samsung-detalle.jpg"
+      "aipodspro2gen.jpg"
     ],
     description: "Disfrutá de una experiencia auditiva inmersiva con estos auriculares In-ear de segunda generación. Con un diseño compacto y ergonómico, ofrecen un sonido más claro y envolvente, ideales para música, llamadas y contenido multimedia. Su tecnología avanzada optimiza el audio en tiempo real y se adapta a tu entorno, brindándote un nivel de detalle y comodidad excepcional.",
     features: [
