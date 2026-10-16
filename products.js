@@ -43,9 +43,10 @@ const products = [
     price: 35000,
     price3: 32000,
     price5: 29500,
-    price20: 27000,
-    image: "aipodspro2gen1.jpg",
+    price20: 25000,
+    image: "aipodspro2gen1.png",
     images: [
+      "aipodspro2gen1.png",
       "aipodspro2gen.jpg"
     ],
     description: "Disfrutá de una experiencia auditiva inmersiva con estos auriculares In-ear de segunda generación. Con un diseño compacto y ergonómico, ofrecen un sonido más claro y envolvente, ideales para música, llamadas y contenido multimedia. Su tecnología avanzada optimiza el audio en tiempo real y se adapta a tu entorno, brindándote un nivel de detalle y comodidad excepcional.",
