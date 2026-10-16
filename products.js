@@ -8,18 +8,16 @@
 const products = [
   {
     id: 1,
-    name: "Combo Cargador iPhone Apple 20W Original Certificado",
+    name: "Combo Cargador iPhone Apple 20W FOXCONN",
     category: "celulares",
     tag: "Más Vendido",
-    price: 35000,
-    price3: 31000,
-    price5: 28000,
-    price20: 24000,
+    price: 38000,
+    price3: 34000,
+    price5: 30500,
+    price20: 26000,
     image: "pack-apple-original-certificado-20w.jpg",
     images: [
-      "pack-apple-original-certificado-20w.jpg",
-      "pack-apple-caja.jpg",
-      "pack-apple-cable-detalle.jpg"
+      "pack-apple-original-certificado-20w.jpg"
     ],
     description: "Combo completo de cargador de pared 20W Power Delivery + Cable USB-C a Lightning reforzado. Diseñado bajo estándares certificados para cuidar la salud de la batería de tu iPhone, proporcionando una recarga rápida y segura del 0% al 50% en solo 30 minutos.",
     features: [
@@ -32,16 +30,16 @@ const products = [
     specs: {
       "Potencia de salida": "20W Power Delivery (USB-C)",
       "Conector incluido": "USB-C a Lightning (1 metro)",
-      "Compatibilidad": "iPhone 8 hasta iPhone 14 Pro Max / iPad / AirPods",
+      "Compatibilidad": "iPhone 6 hasta iPhone 14 Pro Max / iPad / AirPods",
       "Garantía": "90 días oficial escrita NISSA",
       "Disponibilidad": "Stock inmediato para entrega o retiro"
     }
   },
   {
     id: 2,
-    name: "Cargador Rápido USB-C 25W Samsung Super Fast",
-    category: "celulares",
-    tag: "Super Fast Charge",
+    name: "Airpods Pro 2Gen",
+    category: "audio",
+    tag: "Auriculares",
     price: 35000,
     price3: 32000,
     price5: 29500,
@@ -51,20 +49,19 @@ const products = [
       "cargador-rapido-usb-c-25w-samsung-super-fast.jpg",
       "cargador-samsung-detalle.jpg"
     ],
-    description: "Cargador de pared de 25W con protocolo Super Fast Charging (Power Delivery 3.0 PPS). Brinda recarga acelerada para smartphones Samsung Galaxy Series A, S, Z y Note, así como para dispositivos Android y consolas portátiles.",
+    description: "Disfrutá de una experiencia auditiva inmersiva con estos auriculares In-ear de segunda generación. Con un diseño compacto y ergonómico, ofrecen un sonido más claro y envolvente, ideales para música, llamadas y contenido multimedia. Su tecnología avanzada optimiza el audio en tiempo real y se adapta a tu entorno, brindándote un nivel de detalle y comodidad excepcional.",
     features: [
-      "Tecnología Samsung Super Fast Charging 25W con control dinámico de voltaje PPS",
-      "Carga del 0% al 60% en aproximadamente 35 minutos",
-      "Cuerpo ignífugo con disipación térmica optimizada para uso continuo seguro",
-      "Compatible con teléfonos Samsung, Xiaomi, Motorola, consolas Nintendo Switch y tablets",
-      "Garantía de laboratorio NISSA por 90 días con soporte técnico especializado"
+      "Sonido superior y control de ruido",
+      "Controles táctiles y detección inteligente",
+      "Autonomía y carga versátil",
+      "Resistencia y conectividad",
+      "Garantía de laboratorio NISSA por hasta 90 días con soporte técnico especializado"
     ],
     specs: {
-      "Potencia": "25W Super Fast Charging (PD 3.0 PPS)",
-      "Puerto de salida": "USB Tipo-C hembra",
-      "Compatibilidad": "Samsung Galaxy S20 a S24, Galaxy A54/A55/A34/A35, Z Fold/Flip y universales",
-      "Garantía": "90 días oficial escrita NISSA",
-      "Voltaje de entrada": "100-240V auto-regulable para viajes"
+      "Color": "Blanco",
+      "Puerto de salida": "USB Tipo-C hembra / Lightning",
+      "Compatibilidad": "iPhone 6 hasta iPhone 14 Pro Max / iPad / AirPods / Bluetooth",
+      "Garantía": "Hasta 90 días oficial escrita NISSA"
     }
   },
   {
