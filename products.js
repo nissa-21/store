@@ -14,7 +14,7 @@ const products = [
     price: 38000,
     price3: 34000,
     price5: 30500,
-    price20: 26000,
+    price20: 24600,
     image: "pack-apple-original-certificado-20w.jpg",
     images: [
       "pack-apple-original-certificado-20w.jpg"
@@ -40,10 +40,10 @@ const products = [
     name: "Airpods Pro 2Gen",
     category: "audio",
     tag: "Auriculares",
-    price: 35000,
-    price3: 32000,
-    price5: 29500,
-    price20: 25000,
+    price: 45000,
+    price3: 37900,
+    price5: 33700,
+    price20: 27000,
     image: "aipodspro2gen1.png",
     images: [
       "aipodspro2gen1.png",
