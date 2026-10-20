@@ -8,7 +8,7 @@
   <meta property="og:title" content="NISSA - Tienda Online y Servicio Técnico">
   <meta property="og:description" content="Tienda online de accesorios y tecnología NISSA con cotizador de reparaciones y calificaciones de Google.">
   <meta property="og:type" content="website">
-  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="/style.css">
 </head>
 <body>
 
@@ -1027,12 +1027,12 @@
   </div>
 </section>
 
-<!-- MODAL DE DETALLE Y PRESENTACIÓN DE PRODUCTO -->
-<div class="product-modal-backdrop" id="product-modal-backdrop" aria-hidden="true">
-  <div class="product-modal-container" id="product-modal-container" role="dialog" aria-modal="true" aria-labelledby="modal-product-title">
-    <!-- El contenido se inyecta dinámicamente desde script.js -->
+<!-- PÁGINA DEDICADA DE PRODUCTO INDIVIDUAL (TIENDA REAL) -->
+<section id="producto-section" class="product-page-section" style="display: none;" aria-label="Detalle de Producto - NISSA">
+  <div class="product-page-container" id="product-page-container">
+    <!-- El contenido de la página del producto se inyecta dinámicamente -->
   </div>
-</div>
+</section>
 
 <!-- CARRITO LATERAL -->
 <aside class="cart" id="cart">
@@ -1083,10 +1083,10 @@
 </footer>
 
 <!-- SCRIPTS DE FUNCIONALIDAD -->
-<script src="cotizador-data.js"></script>
-<script src="cotizador.js"></script>
-<script src="products.js"></script>
-<script src="script.js"></script>
-<script src="reviews.js"></script>
+<script src="/cotizador-data.js"></script>
+<script src="/cotizador.js"></script>
+<script src="/products.js"></script>
+<script src="/script.js"></script>
+<script src="/reviews.js"></script>
 </body>
 </html>

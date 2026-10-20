@@ -198,12 +198,12 @@ function renderProducts() {
     productCard.className = "product-card";
     productCard.id = `product-card-${product.id}`;
 
-    // Clic en la tarjeta abre la presentación detallada del producto
+    // Clic en la tarjeta abre la página dedicada del producto
     productCard.onclick = (e) => {
       if (e.target.closest('.product-action-container') || e.target.closest('.product-qty-stepper') || e.target.closest('.product-button')) {
         return;
       }
-      openProductModal(product.id);
+      goToProductPage(product.id);
     };
 
     const imgSource = getProductImage(product);
@@ -243,7 +243,7 @@ function renderProducts() {
         </div>
 
         <div class="product-view-hint">
-          <span>🔍 Ver fotos y características</span> ➔
+          <span>Ver producto y comprar</span> ➔
         </div>
 
         <div class="product-action-container" id="product-action-${product.id}">
@@ -469,13 +469,16 @@ if (menuButton && nav) {
 function goToTermsPage() {
   const mainContent = document.getElementById("main-content");
   const terminosSection = document.getElementById("terminos-section");
+  const productoSection = document.getElementById("producto-section");
   if (nav) nav.classList.remove("active");
 
   if (mainContent && terminosSection) {
     mainContent.style.display = "none";
+    if (productoSection) productoSection.style.display = "none";
     terminosSection.style.display = "block";
     document.title = "Términos y Condiciones - NISSA";
     window.scrollTo({ top: 0, behavior: "smooth" });
+    currentModalProduct = null;
 
     try {
       if (window.location.pathname !== "/terminos-y-condiciones") {
@@ -489,15 +492,19 @@ function goToTermsPage() {
   }
 }
 
+// Navegar a la tienda / catálogo / página principal
 function goToMainPage(targetHash) {
   const mainContent = document.getElementById("main-content");
   const terminosSection = document.getElementById("terminos-section");
+  const productoSection = document.getElementById("producto-section");
   if (nav) nav.classList.remove("active");
 
-  if (mainContent && terminosSection) {
+  if (mainContent) {
+    if (productoSection) productoSection.style.display = "none";
+    if (terminosSection) terminosSection.style.display = "none";
     mainContent.style.display = "block";
-    terminosSection.style.display = "none";
     document.title = "NISSA - Tienda Online y Servicio Técnico";
+    currentModalProduct = null;
 
     try {
       const cleanUrl = targetHash ? `/${targetHash}` : "/#inicio";
@@ -521,30 +528,99 @@ function goToMainPage(targetHash) {
   }
 }
 
+// Navegar a la página dedicada de un producto (página por separado que ocupa todo)
+function goToProductPage(productId, updateUrl = true) {
+  const pId = Number(productId);
+  const p = (typeof products !== "undefined" ? products : []).find(item => Number(item.id) === pId);
+  if (!p) return;
+
+  currentModalProduct = p;
+  currentModalImageIndex = 0;
+
+  const inCart = shoppingCart.find(item => Number(item.id) === pId);
+  currentModalQty = (inCart ? inCart.quantity : 1);
+
+  const mainContent = document.getElementById("main-content");
+  const terminosSection = document.getElementById("terminos-section");
+  const productoSection = document.getElementById("producto-section");
+
+  if (nav) nav.classList.remove("active");
+
+  if (mainContent) mainContent.style.display = "none";
+  if (terminosSection) terminosSection.style.display = "none";
+  if (productoSection) productoSection.style.display = "block";
+
+  renderProductModalContent();
+  window.scrollTo({ top: 0, behavior: "instant" });
+
+  if (updateUrl) {
+    try {
+      window.history.pushState({ productId: p.id }, `${p.name} - NISSA`, `/producto/${p.id}`);
+      document.title = `${p.name} - Tienda NISSA`;
+    } catch (e) {
+      window.location.hash = `#producto-${p.id}`;
+    }
+  } else {
+    document.title = `${p.name} - Tienda NISSA`;
+  }
+}
+
+// Sincronización y manejo de rutas (URL directa, navegación, recarga)
 function checkRoute() {
   const pathname = window.location.pathname || "";
   const hash = window.location.hash || "";
   const mainContent = document.getElementById("main-content");
   const terminosSection = document.getElementById("terminos-section");
+  const productoSection = document.getElementById("producto-section");
   if (nav) nav.classList.remove("active");
 
+  // 1. Verificar si la ruta es Términos y Condiciones
   const isTerms = pathname.includes("terminos") || hash.includes("terminos");
+  if (isTerms) {
+    if (mainContent) mainContent.style.display = "none";
+    if (productoSection) productoSection.style.display = "none";
+    if (terminosSection) terminosSection.style.display = "block";
+    document.title = "Términos y Condiciones - NISSA";
+    window.scrollTo(0, 0);
+    currentModalProduct = null;
+    return;
+  }
 
-  if (mainContent && terminosSection) {
-    if (isTerms) {
-      mainContent.style.display = "none";
-      terminosSection.style.display = "block";
-      document.title = "Términos y Condiciones - NISSA";
-      window.scrollTo(0, 0);
-      return;
-    } else {
-      mainContent.style.display = "block";
-      terminosSection.style.display = "none";
-      document.title = "NISSA - Tienda Online y Servicio Técnico";
+  // 2. Verificar si la URL apunta directamente a un producto (/producto/1, ?producto=1, etc.)
+  let prodId = null;
+  const pathMatch = pathname.match(/\/producto\/([a-zA-Z0-9_-]+)/i);
+  if (pathMatch && pathMatch[1]) {
+    prodId = pathMatch[1];
+  }
+
+  if (!prodId) {
+    const searchParams = new URLSearchParams(window.location.search);
+    prodId = searchParams.get("producto") || searchParams.get("p") || searchParams.get("id");
+  }
+
+  if (!prodId && hash) {
+    const hashMatch = hash.match(/#producto-?(\d+)/i) || hash.match(/#p-?(\d+)/i);
+    if (hashMatch) {
+      prodId = hashMatch[1];
     }
   }
 
-  if (hash && hash !== "#" && hash !== "#inicio") {
+  if (prodId) {
+    const p = (typeof products !== "undefined" ? products : []).find(item => Number(item.id) === Number(prodId));
+    if (p) {
+      goToProductPage(p.id, false);
+      return;
+    }
+  }
+
+  // 3. De lo contrario, mostrar página principal
+  if (productoSection) productoSection.style.display = "none";
+  if (terminosSection) terminosSection.style.display = "none";
+  if (mainContent) mainContent.style.display = "block";
+  document.title = "NISSA - Tienda Online y Servicio Técnico";
+  currentModalProduct = null;
+
+  if (hash && hash !== "#" && hash !== "#inicio" && !hash.includes("producto")) {
     const targetEl = document.querySelector(hash);
     if (targetEl) {
       setTimeout(() => {
@@ -680,7 +756,7 @@ function handleModalThumbImgError(img, productId, originalFilename) {
 }
 
 function renderProductModalContent() {
-  const container = document.getElementById("product-modal-container");
+  const container = document.getElementById("product-page-container") || document.getElementById("product-modal-container");
   if (!container || !currentModalProduct) return;
   const p = currentModalProduct;
 
@@ -739,18 +815,21 @@ function renderProductModalContent() {
   );
 
   container.innerHTML = `
-    <!-- BARRA SUPERIOR -->
-    <div class="pm-top-bar">
-      <div class="pm-drag-handle" aria-hidden="true"></div>
-      <button type="button" class="pm-back-btn" onclick="closeProductModal()">
+    <!-- BARRA SUPERIOR DE NAVEGACIÓN Y MIGAS DE PAN (TIENDA REAL) -->
+    <div class="product-page-nav-bar">
+      <button type="button" class="product-page-back-link" onclick="goToMainPage('#productos')">
         ← Volver a la tienda
       </button>
-      <button type="button" class="pm-close-btn" onclick="closeProductModal()" aria-label="Cerrar ventana">
-        ✕
-      </button>
+      <div class="product-breadcrumbs">
+        <a onclick="goToMainPage('#inicio')">Inicio</a>
+        <span class="crumb-sep">/</span>
+        <a onclick="goToMainPage('#productos')">Tienda</a>
+        <span class="crumb-sep">/</span>
+        <span class="crumb-current">${escapeAttr(p.name)}</span>
+      </div>
     </div>
 
-    <!-- CUERPO PRINCIPAL -->
+    <!-- CUERPO PRINCIPAL DEL PRODUCTO (DOS COLUMNAS) -->
     <div class="pm-body-grid">
       
       <!-- COLUMNA IZQUIERDA: CARRUSEL DESPLAZABLE DE FOTOS -->
@@ -792,10 +871,15 @@ function renderProductModalContent() {
       <div class="pm-info-col">
         <div class="pm-meta-row">
           <span class="pm-category-pill">${escapeAttr(p.category)}</span>
-          <span class="pm-stock-pill"><b></b> En stock inmediato</span>
+          <span class="pm-stock-pill"><b></b> En stock inmediato para entrega o retiro</span>
         </div>
 
-        <h2 class="pm-product-title" id="modal-product-title">${escapeAttr(p.name)}</h2>
+        <h1 class="pm-product-title">${escapeAttr(p.name)}</h1>
+
+        <div class="product-rating-line">
+          <span class="product-rating-stars">★★★★★</span>
+          <span>4.9 · Calificaciones verificadas NISSA</span>
+        </div>
 
         <p class="pm-description">${escapeAttr(p.description || "")}</p>
 
@@ -1128,60 +1212,23 @@ function addModalProductToCart() {
     }, 1200);
   }
 }
-
-function openProductModal(productId, qty) {
-  const pId = Number(productId);
-  const p = (typeof products !== "undefined" ? products : []).find(item => Number(item.id) === pId);
-  if (!p) return;
-
-  currentModalProduct = p;
-  currentModalImageIndex = 0;
-
-  const inCart = shoppingCart.find(item => Number(item.id) === pId);
-  currentModalQty = qty || (inCart ? inCart.quantity : 1);
-
-  renderProductModalContent();
-
-  const backdrop = document.getElementById("product-modal-backdrop");
-  if (backdrop) {
-    backdrop.classList.add("active");
-    backdrop.setAttribute("aria-hidden", "false");
-    document.body.style.overflow = "hidden";
-  }
-}
-
-function closeProductModal() {
-  const backdrop = document.getElementById("product-modal-backdrop");
-  if (backdrop) {
-    backdrop.classList.remove("active");
-    backdrop.setAttribute("aria-hidden", "true");
-  }
-  if (!cart || !cart.classList.contains("active")) {
-    document.body.style.overflow = "";
-  }
-  currentModalProduct = null;
-}
-
-const modalBackdrop = document.getElementById("product-modal-backdrop");
-if (modalBackdrop) {
-  modalBackdrop.addEventListener("click", (e) => {
-    if (e.target === modalBackdrop) {
-      closeProductModal();
-    }
-  });
-}
-
+// Atajos de teclado: Escape vuelve a la tienda si se está en la página de un producto
 document.addEventListener("keydown", (e) => {
   if (e.key === "Escape") {
-    if (currentModalProduct) {
-      closeProductModal();
+    const productoSection = document.getElementById("producto-section");
+    if (productoSection && productoSection.style.display !== "none") {
+      goToMainPage("#productos");
     }
   }
 });
 
-// Asignar al objeto window para invocaciones inline
-window.openProductModal = openProductModal;
-window.closeProductModal = closeProductModal;
+// Asignar funciones globales para compatibilidad y uso inline
+window.goToProductPage = goToProductPage;
+window.openProductModal = goToProductPage;
+window.closeProductModal = () => goToMainPage("#productos");
+window.goToMainPage = goToMainPage;
+window.goToTermsPage = goToTermsPage;
+window.checkRoute = checkRoute;
 window.setModalImageIndex = setModalImageIndex;
 window.prevModalImage = prevModalImage;
 window.nextModalImage = nextModalImage;
@@ -1189,12 +1236,14 @@ window.changeModalQty = changeModalQty;
 window.setModalQty = setModalQty;
 window.addModalProductToCart = addModalProductToCart;
 
-// Initialize on DOM load
+// Inicialización de la aplicación y comprobación de URL inicial
 document.addEventListener("DOMContentLoaded", () => {
   syncCartWithLatestProducts();
   renderProducts();
   renderCart();
+  checkRoute();
 });
 syncCartWithLatestProducts();
 renderProducts();
 renderCart();
+checkRoute();

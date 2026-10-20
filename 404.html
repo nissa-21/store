@@ -9,9 +9,19 @@
   <link rel="canonical" href="https://nissa.com.ar/terminos-y-condiciones">
   <script>
     (function() {
-      var p = window.location.pathname.toLowerCase();
-      if (!p.includes("termino") && !p.includes("condicion")) {
-        window.location.replace("/#inicio");
+      var pathname = window.location.pathname.toLowerCase();
+      var search = window.location.search || "";
+      var hash = window.location.hash || "";
+
+      // Si la URL es de un producto (ej: /producto/1)
+      var matchProd = window.location.pathname.match(/\/producto\/([a-zA-Z0-9_-]+)/i);
+      if (matchProd && matchProd[1]) {
+        window.location.replace("/?producto=" + encodeURIComponent(matchProd[1]));
+        return;
+      }
+
+      if (!pathname.includes("termino") && !pathname.includes("condicion")) {
+        window.location.replace("/" + search + hash);
       }
     })();
   </script>
