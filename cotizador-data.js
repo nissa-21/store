@@ -1,5 +1,5 @@
 // Tarifas y modelos exactos del presupuestador NISSA
-let PRECIOS_WIDGET = {
+var PRECIOS_WIDGET = {
   "whatsapp": "5491136620653",
   "businessName": "NISSA",
   "showTerms": true,
@@ -4733,7 +4733,7 @@ if (typeof window !== "undefined") {
   if (localCotizadorDraft) {
     try {
       const parsed = JSON.parse(localCotizadorDraft);
-      if (parsed && typeof parsed === "object") {
+      if (parsed && typeof parsed === "object" && Array.isArray(parsed.celulares) && parsed.celulares.length > 0 && parsed.celulares.some(b => b.models && b.models.length > 0)) {
         PRECIOS_WIDGET = parsed;
       }
     } catch (e) {

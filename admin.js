@@ -16,7 +16,7 @@ let currentCotizador = null;
 let originalCotizadorBackup = null;
 let activeAdminSection = "products";
 let activeCotizadorCategory = "celulares";
-let activeCelularBrand = "Apple";
+let activeCelularBrand = "todos"; // Por defecto mostrar todos los modelos
 let cotizadorSearchTerm = "";
 let autoSaveCotizadorTimeout = null;
 
@@ -1088,17 +1088,30 @@ function loadInitialCotizador() {
   if (draft) {
     try {
       const parsed = JSON.parse(draft);
-      if (parsed && typeof parsed === "object" && parsed.celulares) {
+      let totalModelsInDraft = 0;
+      if (Array.isArray(parsed?.celulares)) {
+        parsed.celulares.forEach(b => {
+          if (Array.isArray(b.models)) totalModelsInDraft += b.models.length;
+        });
+      }
+      // Solo usar el borrador si es completo (al menos 50 modelos).
+      // Si el borrador era parcial o incompleto, lo descartamos para recuperar todos los modelos originales.
+      if (parsed && typeof parsed === "object" && totalModelsInDraft >= 50) {
         currentCotizador = parsed;
         return;
+      } else {
+        localStorage.removeItem("nissa_cotizador_draft");
       }
     } catch (e) {
       console.error("Error al cargar borrador de cotizador:", e);
     }
   }
 
-  if (originalCotizadorBackup) {
+  if (originalCotizadorBackup && originalCotizadorBackup.celulares && originalCotizadorBackup.celulares.length > 0) {
     currentCotizador = JSON.parse(JSON.stringify(originalCotizadorBackup));
+  } else if (typeof window.PRECIOS_WIDGET !== "undefined" && window.PRECIOS_WIDGET.celulares) {
+    currentCotizador = JSON.parse(JSON.stringify(window.PRECIOS_WIDGET));
+    originalCotizadorBackup = JSON.parse(JSON.stringify(window.PRECIOS_WIDGET));
   } else {
     currentCotizador = {
       whatsapp: "5491136620653",
@@ -1206,17 +1219,17 @@ function renderCotizadorDynamicActions() {
 
   if (activeCotizadorCategory === "celulares") {
     container.innerHTML = `
+      <button type="button" class="btn btn-success btn-sm" onclick="openAddCelularModelModal()">
+        ➕ Agregar Equipo / Modelo
+      </button>
       <button type="button" class="btn btn-secondary btn-sm" onclick="openNewBrandModal()">
         ➕ Nueva Marca
       </button>
-      <button type="button" class="btn btn-danger-ghost btn-sm" onclick="deleteCelularBrand()" title="Eliminar marca actual">
-        🗑️ Eliminar Marca
-      </button>
-      <button type="button" class="btn btn-success btn-sm" onclick="openAddCelularModelModal()">
-        ➕ Agregar Modelo
-      </button>
       <button type="button" class="btn btn-warning btn-sm" onclick="openMassAdjustModal()">
         ⚡ Ajuste Masivo (%)
+      </button>
+      <button type="button" class="btn btn-danger-ghost btn-sm" onclick="deleteCelularBrand()" title="Eliminar marca actual">
+        🗑️ Quitar Marca
       </button>
     `;
   } else if (activeCotizadorCategory === "consolas") {
@@ -1269,7 +1282,7 @@ function renderCotizador() {
 }
 
 // --------------------------------------------------------
-// 9.1 CELULARES
+// 9.1 CELULARES Y MODELOS
 // --------------------------------------------------------
 function renderBrandPills() {
   const container = document.getElementById("cotizador-brand-pills-wrap");
@@ -1281,21 +1294,37 @@ function renderBrandPills() {
     return;
   }
 
-  // Si la marca activa no existe, elegir la primera
-  if (!brands.some(b => b.brand.toLowerCase() === activeCelularBrand.toLowerCase())) {
-    activeCelularBrand = brands[0].brand;
-  }
+  let totalModels = 0;
+  brands.forEach(b => {
+    if (Array.isArray(b.models)) totalModels += b.models.length;
+  });
 
-  container.innerHTML = brands.map(b => {
-    const isActive = b.brand.toLowerCase() === activeCelularBrand.toLowerCase();
+  const isAll = activeCelularBrand === "todos";
+  let html = `
+    <button type="button" class="brand-pill ${isAll ? "active" : ""}" onclick="selectCelularBrand('todos')">
+      <span>🌟 Todos los Equipos</span>
+      <span class="brand-pill-count">${totalModels}</span>
+    </button>
+  `;
+
+  html += brands.map(b => {
+    const isActive = !isAll && b.brand.toLowerCase() === activeCelularBrand.toLowerCase();
     const count = (b.models || []).length;
+    let icon = "📱";
+    if (b.brand.toLowerCase().includes("apple") || b.brand.toLowerCase().includes("iphone")) icon = "🍏";
+    else if (b.brand.toLowerCase().includes("samsung")) icon = "📱";
+    else if (b.brand.toLowerCase().includes("motorola")) icon = "⚡";
+    else if (b.brand.toLowerCase().includes("xiaomi")) icon = "🟠";
+
     return `
       <button type="button" class="brand-pill ${isActive ? "active" : ""}" onclick="selectCelularBrand('${escapeHtml(b.brand)}')">
-        <span>${escapeHtml(b.brand)}</span>
+        <span>${icon} ${escapeHtml(b.brand)}</span>
         <span class="brand-pill-count">${count}</span>
       </button>
     `;
   }).join("");
+
+  container.innerHTML = html;
 }
 
 function selectCelularBrand(brandName) {
@@ -1308,46 +1337,54 @@ function renderCelularesSection() {
   const container = document.getElementById("cotizador-content-area");
   if (!container || !currentCotizador || !currentCotizador.celulares) return;
 
-  const brandObj = currentCotizador.celulares.find(b => b.brand.toLowerCase() === activeCelularBrand.toLowerCase());
-  const brandIndex = currentCotizador.celulares.findIndex(b => b.brand.toLowerCase() === activeCelularBrand.toLowerCase());
+  // Recopilar todos los modelos según el filtro de marca activo
+  let items = [];
+  currentCotizador.celulares.forEach((b, bIdx) => {
+    if (activeCelularBrand !== "todos" && b.brand.toLowerCase() !== activeCelularBrand.toLowerCase()) {
+      return;
+    }
+    (b.models || []).forEach((m, mIdx) => {
+      items.push({
+        brand: b.brand,
+        brandIndex: bIdx,
+        model: m,
+        modelIndex: mIdx
+      });
+    });
+  });
 
-  if (!brandObj) {
-    container.innerHTML = `
-      <div class="empty-state">
-        <h3>Seleccioná o creá una marca</h3>
-        <p>Hacé clic en "➕ Nueva Marca" para comenzar a agregar modelos.</p>
-      </div>
-    `;
-    return;
-  }
-
-  let models = brandObj.models || [];
   if (cotizadorSearchTerm) {
     const q = cotizadorSearchTerm.toLowerCase();
-    models = models.filter(m => {
-      const matchName = m.name && m.name.toLowerCase().includes(q);
-      const matchRepair = m.repairs && m.repairs.some(r => r.name && r.name.toLowerCase().includes(q));
-      return matchName || matchRepair;
+    items = items.filter(it => {
+      const matchBrand = it.brand.toLowerCase().includes(q);
+      const matchName = it.model.name && it.model.name.toLowerCase().includes(q);
+      const matchRepair = it.model.repairs && it.model.repairs.some(r => 
+        (r.name && r.name.toLowerCase().includes(q)) || 
+        (r.note && r.note.toLowerCase().includes(q)) ||
+        (String(r.price).toLowerCase().includes(q))
+      );
+      return matchBrand || matchName || matchRepair;
     });
   }
 
-  if (models.length === 0) {
+  if (items.length === 0) {
     container.innerHTML = `
       <div class="empty-state" style="background: #ffffff; border: 1px solid var(--border); border-radius: var(--radius-md); padding: 40px 20px;">
         <div class="empty-icon">📱</div>
-        <h3>No se encontraron modelos en ${escapeHtml(brandObj.brand)}</h3>
-        <p>${cotizadorSearchTerm ? "No hay resultados para esa búsqueda." : "Esta marca todavía no tiene modelos cargados."}</p>
+        <h3>No se encontraron equipos</h3>
+        <p>${cotizadorSearchTerm ? `No hay resultados para "${escapeHtml(cotizadorSearchTerm)}".` : "No hay modelos en esta marca o categoría."}</p>
         <button type="button" class="btn btn-primary" onclick="openAddCelularModelModal()">
-          ➕ Agregar Primer Modelo a ${escapeHtml(brandObj.brand)}
+          ➕ Agregar Nuevo Equipo / Modelo
         </button>
       </div>
     `;
     return;
   }
 
-  container.innerHTML = models.map((model) => {
-    // Buscar índice real en brandObj.models
-    const modelIndex = brandObj.models.indexOf(model);
+  container.innerHTML = items.map(item => {
+    const bIdx = item.brandIndex;
+    const mIdx = item.modelIndex;
+    const model = item.model;
     const repairs = model.repairs || [];
 
     const rowsHtml = repairs.map((r, rIdx) => {
@@ -1356,23 +1393,23 @@ function renderCelularesSection() {
           <td style="width: 32%;">
             <input type="text" class="repair-inline-input" value="${escapeHtml(r.name)}" 
               placeholder="Nombre del servicio"
-              onchange="updateCelularRepairName(${brandIndex}, ${modelIndex}, ${rIdx}, this.value)"
+              onchange="updateCelularRepairName(${bIdx}, ${mIdx}, ${rIdx}, this.value)"
               oninput="debouncedAutoSaveCotizador()">
           </td>
           <td style="width: 20%;">
             <input type="text" class="repair-inline-input repair-price-input" value="${escapeHtml(r.price)}" 
               placeholder="Precio ej: 80000 o 70 USD"
-              onchange="updateCelularRepairPrice(${brandIndex}, ${modelIndex}, ${rIdx}, this.value)"
+              onchange="updateCelularRepairPrice(${bIdx}, ${mIdx}, ${rIdx}, this.value)"
               oninput="debouncedAutoSaveCotizador()">
           </td>
           <td style="width: 40%;">
             <input type="text" class="repair-inline-input" value="${escapeHtml(r.note || '')}" 
               placeholder="Aclaración, garantía o detalle..."
-              onchange="updateCelularRepairNote(${brandIndex}, ${modelIndex}, ${rIdx}, this.value)"
+              onchange="updateCelularRepairNote(${bIdx}, ${mIdx}, ${rIdx}, this.value)"
               oninput="debouncedAutoSaveCotizador()">
           </td>
           <td style="width: 8%; text-align: center;">
-            <button type="button" class="repair-del-btn" onclick="deleteCelularRepair(${brandIndex}, ${modelIndex}, ${rIdx})" title="Eliminar tarifa">
+            <button type="button" class="repair-del-btn" onclick="deleteCelularRepair(${bIdx}, ${mIdx}, ${rIdx})" title="Eliminar tarifa">
               ✕
             </button>
           </td>
@@ -1381,21 +1418,25 @@ function renderCelularesSection() {
     }).join("");
 
     return `
-      <div class="model-card">
+      <div class="model-card" id="card-model-${bIdx}-${mIdx}">
         <div class="model-card-header">
           <div class="model-title-wrap">
+            <span class="model-brand-pill ${item.brand.toLowerCase()}">${escapeHtml(item.brand)}</span>
             <span class="model-name-text">${escapeHtml(model.name)}</span>
             <span class="model-count-pill">${repairs.length} reparaciones</span>
           </div>
           <div class="model-actions">
-            <button type="button" class="btn btn-sm btn-outline" onclick="renameCelularModel(${brandIndex}, ${modelIndex})">
+            <button type="button" class="btn btn-sm btn-outline" onclick="renameCelularModel(${bIdx}, ${mIdx})">
               ✏️ Renombrar
             </button>
-            <button type="button" class="btn btn-sm btn-success" onclick="openAddRepairModal('celulares', '${escapeHtml(brandObj.brand)}', ${modelIndex})">
+            <button type="button" class="btn btn-sm btn-secondary" onclick="duplicateCelularModel(${bIdx}, ${mIdx})" title="Duplicar este equipo con todas sus tarifas">
+              📑 Duplicar
+            </button>
+            <button type="button" class="btn btn-sm btn-success" onclick="openAddRepairModal('celulares', '${escapeHtml(item.brand)}', ${mIdx})">
               ➕ Agregar Reparación
             </button>
-            <button type="button" class="btn btn-sm btn-danger-ghost" onclick="deleteCelularModel(${brandIndex}, ${modelIndex})">
-              🗑️ Eliminar
+            <button type="button" class="btn btn-sm btn-danger-ghost" onclick="deleteCelularModel(${bIdx}, ${mIdx})">
+              🗑️ Quitar Equipo
             </button>
           </div>
         </div>
@@ -1418,13 +1459,37 @@ function renderCelularesSection() {
 
         <div class="model-card-footer">
           <span class="quick-save-indicator">✓ Los cambios se guardan automáticamente</span>
-          <button type="button" class="btn btn-sm btn-outline" onclick="openAddRepairModal('celulares', '${escapeHtml(brandObj.brand)}', ${modelIndex})">
+          <button type="button" class="btn btn-sm btn-outline" onclick="openAddRepairModal('celulares', '${escapeHtml(item.brand)}', ${mIdx})">
             ➕ Agregar otra reparación a este modelo
           </button>
         </div>
       </div>
     `;
   }).join("");
+}
+
+function duplicateCelularModel(bIdx, mIdx) {
+  const model = currentCotizador.celulares[bIdx]?.models[mIdx];
+  if (!model) return;
+
+  const newName = prompt(`Nombre para el nuevo equipo duplicado a partir de "${model.name}":`, `${model.name} (Copia)`);
+  if (!newName || !newName.trim()) return;
+
+  const clonedRepairs = JSON.parse(JSON.stringify(model.repairs || []));
+  clonedRepairs.forEach(r => {
+    r.id = `rep_${Date.now()}_${Math.random().toString(36).substring(2, 6)}`;
+  });
+
+  const duplicatedModel = {
+    name: newName.trim(),
+    repairs: clonedRepairs
+  };
+
+  currentCotizador.celulares[bIdx].models.splice(mIdx + 1, 0, duplicatedModel);
+  saveCotizadorDraft();
+  renderBrandPills();
+  renderCelularesSection();
+  showAlert(`✓ Equipo "${duplicatedModel.name}" duplicado con éxito.`);
 }
 
 // Actualizaciones de celdas inline para Celulares
@@ -2035,17 +2100,35 @@ function openAddCelularModelModal() {
   const modal = document.getElementById("modal-add-celular-model");
   const brandSelect = document.getElementById("new-model-brand");
   const nameInput = document.getElementById("new-model-name");
+  const customBrandGroup = document.getElementById("custom-brand-group");
+  const customBrandInput = document.getElementById("new-custom-brand-name");
 
   if (brandSelect && currentCotizador.celulares) {
-    brandSelect.innerHTML = currentCotizador.celulares.map(b => `
+    let opts = currentCotizador.celulares.map(b => `
       <option value="${escapeHtml(b.brand)}" ${b.brand.toLowerCase() === activeCelularBrand.toLowerCase() ? "selected" : ""}>
         ${escapeHtml(b.brand)}
       </option>
     `).join("");
+
+    opts += `<option value="__new_brand__">➕ Crear otra marca nueva...</option>`;
+    brandSelect.innerHTML = opts;
   }
 
+  if (customBrandGroup) customBrandGroup.style.display = "none";
+  if (customBrandInput) customBrandInput.value = "";
   if (nameInput) nameInput.value = "";
   if (modal) modal.style.display = "flex";
+}
+
+function toggleCustomBrandInput(val) {
+  const customGroup = document.getElementById("custom-brand-group");
+  const customInput = document.getElementById("new-custom-brand-name");
+  if (customGroup) {
+    customGroup.style.display = val === "__new_brand__" ? "block" : "none";
+    if (val === "__new_brand__" && customInput) {
+      setTimeout(() => customInput.focus(), 50);
+    }
+  }
 }
 
 function closeAddCelularModelModal() {
@@ -2057,15 +2140,28 @@ function handleCreateCelularModel(e) {
   if (e) e.preventDefault();
   const brandSelect = document.getElementById("new-model-brand");
   const nameInput = document.getElementById("new-model-name");
+  const customBrandInput = document.getElementById("new-custom-brand-name");
   const prefillCheck = document.getElementById("prefill-standard-repairs");
 
   if (!brandSelect || !nameInput) return;
-  const brandName = brandSelect.value;
+  let brandName = brandSelect.value;
+  if (brandName === "__new_brand__") {
+    brandName = customBrandInput ? customBrandInput.value.trim() : "";
+    if (!brandName) {
+      alert("Por favor ingresá el nombre de la nueva marca.");
+      return;
+    }
+  }
+
   const modelName = nameInput.value.trim();
   if (!modelName) return;
 
-  const brandObj = currentCotizador.celulares.find(b => b.brand.toLowerCase() === brandName.toLowerCase());
-  if (!brandObj) return;
+  // Si la marca no existe, crearla
+  let brandObj = currentCotizador.celulares.find(b => b.brand.toLowerCase() === brandName.toLowerCase());
+  if (!brandObj) {
+    brandObj = { brand: brandName, models: [] };
+    currentCotizador.celulares.push(brandObj);
+  }
 
   if (brandObj.models.some(m => m.name.toLowerCase() === modelName.toLowerCase())) {
     alert(`El modelo "${modelName}" ya existe en ${brandName}.`);
@@ -2092,12 +2188,11 @@ function handleCreateCelularModel(e) {
   }
 
   brandObj.models.push(newModel);
-  activeCelularBrand = brandName;
   saveCotizadorDraft();
   closeAddCelularModelModal();
   renderBrandPills();
   renderCelularesSection();
-  showAlert(`✓ Modelo "${modelName}" agregado con éxito.`);
+  showAlert(`✓ Equipo "${modelName}" (${brandName}) agregado con éxito.`);
 }
 
 // Modal Agregar Reparación
@@ -2590,5 +2685,7 @@ window.copyCotizadorGeneratedCode = copyCotizadorGeneratedCode;
 window.publishCotizadorDirectlyToGithub = publishCotizadorDirectlyToGithub;
 window.resetToOriginalCotizador = resetToOriginalCotizador;
 window.debouncedAutoSaveCotizador = debouncedAutoSaveCotizador;
+window.duplicateCelularModel = duplicateCelularModel;
+window.toggleCustomBrandInput = toggleCustomBrandInput;
 
 

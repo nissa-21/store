@@ -1333,6 +1333,33 @@ textarea:focus {
   color: var(--text-main);
 }
 
+.model-brand-pill {
+  font-size: 11px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  padding: 3px 8px;
+  border-radius: 6px;
+  background: #0f172a;
+  color: #ffffff;
+}
+.model-brand-pill.apple {
+  background: #1e293b;
+  color: #f8fafc;
+}
+.model-brand-pill.samsung {
+  background: #0369a1;
+  color: #ffffff;
+}
+.model-brand-pill.motorola {
+  background: #6d28d9;
+  color: #ffffff;
+}
+.model-brand-pill.xiaomi {
+  background: #ea580c;
+  color: #ffffff;
+}
+
 .model-count-pill {
   font-size: 11.5px;
   font-weight: 700;

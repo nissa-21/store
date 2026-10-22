@@ -617,7 +617,7 @@
     <div class="modal-container modal-md">
       <div class="modal-header">
         <div>
-          <h2>➕ Nuevo Modelo de Celular</h2>
+          <h2>➕ Agregar Equipo / Modelo</h2>
           <span class="modal-subtitle">Agregá un modelo al presupuestador</span>
         </div>
         <button type="button" class="modal-close-btn" onclick="closeAddCelularModelModal()">✕</button>
@@ -626,14 +626,19 @@
       <form onsubmit="handleCreateCelularModel(event)">
         <div class="modal-body">
           <div class="form-group">
-            <label for="new-model-brand">Marca: <span class="req">*</span></label>
-            <select id="new-model-brand" required>
+            <label for="new-model-brand">Marca del Equipo: <span class="req">*</span></label>
+            <select id="new-model-brand" onchange="toggleCustomBrandInput(this.value)" required>
               <!-- Llenado dinámicamente con marcas existentes -->
             </select>
           </div>
 
+          <div class="form-group" id="custom-brand-group" style="display: none;">
+            <label for="new-custom-brand-name">Nombre de la Nueva Marca: <span class="req">*</span></label>
+            <input type="text" id="new-custom-brand-name" placeholder="Ej: Xiaomi, Huawei, Realme, Honor...">
+          </div>
+
           <div class="form-group">
-            <label for="new-model-name">Nombre del Modelo: <span class="req">*</span></label>
+            <label for="new-model-name">Nombre del Modelo / Equipo: <span class="req">*</span></label>
             <input type="text" id="new-model-name" placeholder="Ej: iPhone 16 Pro Max, Samsung Galaxy S24, Moto G84..." required>
           </div>
 
@@ -650,7 +655,7 @@
 
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" onclick="closeAddCelularModelModal()">Cancelar</button>
-          <button type="submit" class="btn btn-primary">Crear Modelo</button>
+          <button type="submit" class="btn btn-primary">Crear Equipo</button>
         </div>
       </form>
     </div>
