@@ -1,5 +1,5 @@
 // Tarifas y modelos exactos del presupuestador NISSA
-const PRECIOS_WIDGET = {
+let PRECIOS_WIDGET = {
   "whatsapp": "5491136620653",
   "businessName": "NISSA",
   "showTerms": true,
@@ -967,7 +967,7 @@ const PRECIOS_WIDGET = {
           "repairs": [
             {
               "id": "cel_ap_15pm_1",
-              "name": "ðŸ“± Pantalla / MÃ³dulo",
+              "name": "í ½í³± Pantalla / MÃ³dulo",
               "price": "295 USD",
               "note": "MÃ³dulo calidad Original sin mensaje de \"Pieza desconocida\""
             },
@@ -4727,3 +4727,18 @@ const PRECIOS_WIDGET = {
     }
   ]
 };
+
+if (typeof window !== "undefined") {
+  const localCotizadorDraft = localStorage.getItem("nissa_cotizador_draft");
+  if (localCotizadorDraft) {
+    try {
+      const parsed = JSON.parse(localCotizadorDraft);
+      if (parsed && typeof parsed === "object") {
+        PRECIOS_WIDGET = parsed;
+      }
+    } catch (e) {
+      console.error("Error al cargar borrador de cotizador:", e);
+    }
+  }
+  window.PRECIOS_WIDGET = PRECIOS_WIDGET;
+}

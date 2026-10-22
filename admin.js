@@ -11,6 +11,15 @@ let activeSearchTerm = "";
 let activeCategoryFilter = "todos";
 let activeSortFilter = "default";
 
+// Estado del Presupuestador de Reparaciones
+let currentCotizador = null;
+let originalCotizadorBackup = null;
+let activeAdminSection = "products";
+let activeCotizadorCategory = "celulares";
+let activeCelularBrand = "Apple";
+let cotizadorSearchTerm = "";
+let autoSaveCotizadorTimeout = null;
+
 // ========================================================
 // Runtime authentication state (in-memory only).
 // Resets to false on every page visit, reload, or link navigation.
@@ -140,9 +149,12 @@ function showAdminApp() {
   if (app) app.style.display = "flex";
 
   loadInitialProducts();
+  loadInitialCotizador();
   renderCategoryFilter();
   renderProductsList();
+  renderCotizadorDynamicActions();
   checkDraftStatus();
+  updateCountsBadge();
 }
 
 function loadInitialProducts() {
@@ -169,17 +181,38 @@ function loadInitialProducts() {
 }
 
 function checkDraftStatus() {
-  const draft = localStorage.getItem("nissa_catalog_draft");
+  const catDraft = localStorage.getItem("nissa_catalog_draft");
+  const cotDraft = localStorage.getItem("nissa_cotizador_draft");
   const badge = document.getElementById("draft-indicator");
   if (badge) {
-    badge.style.display = draft ? "inline-block" : "none";
+    if (catDraft && cotDraft) {
+      badge.style.display = "inline-block";
+      badge.textContent = "Borradores activos (Catálogo y Cotizador)";
+    } else if (catDraft) {
+      badge.style.display = "inline-block";
+      badge.textContent = "Borrador de productos activo";
+    } else if (cotDraft) {
+      badge.style.display = "inline-block";
+      badge.textContent = "Borrador de cotizador activo";
+    } else {
+      badge.style.display = "none";
+    }
+  }
+}
+
+function updateCountsBadge() {
+  const badge = document.getElementById("product-count-badge");
+  if (badge) {
+    const prodCount = currentProducts ? currentProducts.length : 0;
+    const repCount = getCotizadorTotalRepairsCount();
+    badge.textContent = `${prodCount} Productos · ${repCount} Tarifas Cotizador`;
   }
 }
 
 function saveDraft() {
   localStorage.setItem("nissa_catalog_draft", JSON.stringify(currentProducts));
   checkDraftStatus();
-  updateProductCount();
+  updateCountsBadge();
 }
 
 function resetToOriginalCatalog() {
@@ -1043,6 +1076,1432 @@ function escapeHtml(str) {
 }
 
 // ========================================================
+// 9. GESTOR COMPLETO DEL PRESUPUESTADOR DE REPARACIONES
+// ========================================================
+
+function loadInitialCotizador() {
+  if (typeof window.PRECIOS_WIDGET !== "undefined" && typeof window.PRECIOS_WIDGET === "object") {
+    originalCotizadorBackup = JSON.parse(JSON.stringify(window.PRECIOS_WIDGET));
+  }
+
+  const draft = localStorage.getItem("nissa_cotizador_draft");
+  if (draft) {
+    try {
+      const parsed = JSON.parse(draft);
+      if (parsed && typeof parsed === "object" && parsed.celulares) {
+        currentCotizador = parsed;
+        return;
+      }
+    } catch (e) {
+      console.error("Error al cargar borrador de cotizador:", e);
+    }
+  }
+
+  if (originalCotizadorBackup) {
+    currentCotizador = JSON.parse(JSON.stringify(originalCotizadorBackup));
+  } else {
+    currentCotizador = {
+      whatsapp: "5491136620653",
+      businessName: "NISSA",
+      showTerms: true,
+      termsText: "Los valores informados son de referencia y están sujetos a revisión técnica final en el local.",
+      celulares: [],
+      consolas: [],
+      joysticks: [],
+      computadoras: []
+    };
+  }
+}
+
+function saveCotizadorDraft() {
+  if (!currentCotizador) return;
+  localStorage.setItem("nissa_cotizador_draft", JSON.stringify(currentCotizador));
+  if (typeof window !== "undefined") {
+    window.PRECIOS_WIDGET = currentCotizador;
+  }
+  checkDraftStatus();
+  updateCountsBadge();
+}
+
+function debouncedAutoSaveCotizador() {
+  if (autoSaveCotizadorTimeout) clearTimeout(autoSaveCotizadorTimeout);
+  autoSaveCotizadorTimeout = setTimeout(() => {
+    saveCotizadorDraft();
+  }, 400);
+}
+
+function getCotizadorTotalRepairsCount() {
+  if (!currentCotizador) return 0;
+  let count = 0;
+  if (Array.isArray(currentCotizador.celulares)) {
+    currentCotizador.celulares.forEach(b => {
+      if (Array.isArray(b.models)) {
+        b.models.forEach(m => {
+          if (Array.isArray(m.repairs)) count += m.repairs.length;
+        });
+      }
+    });
+  }
+  if (Array.isArray(currentCotizador.consolas)) {
+    currentCotizador.consolas.forEach(c => {
+      if (Array.isArray(c.repairs)) count += c.repairs.length;
+    });
+  }
+  if (Array.isArray(currentCotizador.joysticks)) {
+    currentCotizador.joysticks.forEach(j => {
+      if (Array.isArray(j.repairs)) count += j.repairs.length;
+    });
+  }
+  if (Array.isArray(currentCotizador.computadoras)) {
+    count += currentCotizador.computadoras.length;
+  }
+  return count;
+}
+
+function switchAdminSection(section) {
+  activeAdminSection = section;
+  const btnProducts = document.getElementById("btn-nav-products");
+  const btnCotizador = document.getElementById("btn-nav-cotizador");
+  const secProducts = document.getElementById("section-products");
+  const secCotizador = document.getElementById("section-cotizador");
+
+  if (section === "products") {
+    if (btnProducts) btnProducts.classList.add("active");
+    if (btnCotizador) btnCotizador.classList.remove("active");
+    if (secProducts) secProducts.style.display = "block";
+    if (secCotizador) secCotizador.style.display = "none";
+    renderProductsList();
+  } else {
+    if (btnProducts) btnProducts.classList.remove("active");
+    if (btnCotizador) btnCotizador.classList.add("active");
+    if (secProducts) secProducts.style.display = "none";
+    if (secCotizador) secCotizador.style.display = "block";
+    renderCotizador();
+  }
+}
+
+function switchCotizadorSubtab(subtab) {
+  activeCotizadorCategory = subtab;
+  const subtabs = ["celulares", "consolas", "joysticks", "computadoras", "general"];
+  subtabs.forEach(s => {
+    const btn = document.getElementById(`subtab-${s}`);
+    if (btn) {
+      if (s === subtab) btn.classList.add("active");
+      else btn.classList.remove("active");
+    }
+  });
+
+  const brandPillsWrap = document.getElementById("cotizador-brand-pills-wrap");
+  if (brandPillsWrap) {
+    brandPillsWrap.style.display = subtab === "celulares" ? "flex" : "none";
+  }
+
+  renderCotizadorDynamicActions();
+  renderCotizador();
+}
+
+function renderCotizadorDynamicActions() {
+  const container = document.getElementById("cotizador-action-buttons");
+  if (!container) return;
+
+  if (activeCotizadorCategory === "celulares") {
+    container.innerHTML = `
+      <button type="button" class="btn btn-secondary btn-sm" onclick="openNewBrandModal()">
+        ➕ Nueva Marca
+      </button>
+      <button type="button" class="btn btn-danger-ghost btn-sm" onclick="deleteCelularBrand()" title="Eliminar marca actual">
+        🗑️ Eliminar Marca
+      </button>
+      <button type="button" class="btn btn-success btn-sm" onclick="openAddCelularModelModal()">
+        ➕ Agregar Modelo
+      </button>
+      <button type="button" class="btn btn-warning btn-sm" onclick="openMassAdjustModal()">
+        ⚡ Ajuste Masivo (%)
+      </button>
+    `;
+  } else if (activeCotizadorCategory === "consolas") {
+    container.innerHTML = `
+      <button type="button" class="btn btn-success btn-sm" onclick="openNewDeviceModal('consolas')">
+        ➕ Nueva Consola
+      </button>
+      <button type="button" class="btn btn-warning btn-sm" onclick="openMassAdjustModal()">
+        ⚡ Ajuste Masivo (%)
+      </button>
+    `;
+  } else if (activeCotizadorCategory === "joysticks") {
+    container.innerHTML = `
+      <button type="button" class="btn btn-success btn-sm" onclick="openNewDeviceModal('joysticks')">
+        ➕ Nuevo Joystick
+      </button>
+      <button type="button" class="btn btn-warning btn-sm" onclick="openMassAdjustModal()">
+        ⚡ Ajuste Masivo (%)
+      </button>
+    `;
+  } else if (activeCotizadorCategory === "computadoras") {
+    container.innerHTML = `
+      <button type="button" class="btn btn-success btn-sm" onclick="openAddRepairModal('computadoras')">
+        ➕ Nuevo Servicio PC
+      </button>
+    `;
+  } else if (activeCotizadorCategory === "general") {
+    container.innerHTML = `
+      <button type="button" class="btn btn-primary btn-sm" onclick="saveGeneralSettings()">
+        💾 Guardar Ajustes
+      </button>
+    `;
+  }
+}
+
+function renderCotizador() {
+  renderCotizadorDynamicActions();
+  if (activeCotizadorCategory === "celulares") {
+    renderBrandPills();
+    renderCelularesSection();
+  } else if (activeCotizadorCategory === "consolas") {
+    renderConsolasSection();
+  } else if (activeCotizadorCategory === "joysticks") {
+    renderJoysticksSection();
+  } else if (activeCotizadorCategory === "computadoras") {
+    renderComputadorasSection();
+  } else if (activeCotizadorCategory === "general") {
+    renderGeneralSettingsSection();
+  }
+}
+
+// --------------------------------------------------------
+// 9.1 CELULARES
+// --------------------------------------------------------
+function renderBrandPills() {
+  const container = document.getElementById("cotizador-brand-pills-wrap");
+  if (!container || !currentCotizador || !currentCotizador.celulares) return;
+
+  const brands = currentCotizador.celulares;
+  if (brands.length === 0) {
+    container.innerHTML = "<span style='font-size:13px; color:#64748b;'>No hay marcas cargadas. Presioná '➕ Nueva Marca' para comenzar.</span>";
+    return;
+  }
+
+  // Si la marca activa no existe, elegir la primera
+  if (!brands.some(b => b.brand.toLowerCase() === activeCelularBrand.toLowerCase())) {
+    activeCelularBrand = brands[0].brand;
+  }
+
+  container.innerHTML = brands.map(b => {
+    const isActive = b.brand.toLowerCase() === activeCelularBrand.toLowerCase();
+    const count = (b.models || []).length;
+    return `
+      <button type="button" class="brand-pill ${isActive ? "active" : ""}" onclick="selectCelularBrand('${escapeHtml(b.brand)}')">
+        <span>${escapeHtml(b.brand)}</span>
+        <span class="brand-pill-count">${count}</span>
+      </button>
+    `;
+  }).join("");
+}
+
+function selectCelularBrand(brandName) {
+  activeCelularBrand = brandName;
+  renderBrandPills();
+  renderCelularesSection();
+}
+
+function renderCelularesSection() {
+  const container = document.getElementById("cotizador-content-area");
+  if (!container || !currentCotizador || !currentCotizador.celulares) return;
+
+  const brandObj = currentCotizador.celulares.find(b => b.brand.toLowerCase() === activeCelularBrand.toLowerCase());
+  const brandIndex = currentCotizador.celulares.findIndex(b => b.brand.toLowerCase() === activeCelularBrand.toLowerCase());
+
+  if (!brandObj) {
+    container.innerHTML = `
+      <div class="empty-state">
+        <h3>Seleccioná o creá una marca</h3>
+        <p>Hacé clic en "➕ Nueva Marca" para comenzar a agregar modelos.</p>
+      </div>
+    `;
+    return;
+  }
+
+  let models = brandObj.models || [];
+  if (cotizadorSearchTerm) {
+    const q = cotizadorSearchTerm.toLowerCase();
+    models = models.filter(m => {
+      const matchName = m.name && m.name.toLowerCase().includes(q);
+      const matchRepair = m.repairs && m.repairs.some(r => r.name && r.name.toLowerCase().includes(q));
+      return matchName || matchRepair;
+    });
+  }
+
+  if (models.length === 0) {
+    container.innerHTML = `
+      <div class="empty-state" style="background: #ffffff; border: 1px solid var(--border); border-radius: var(--radius-md); padding: 40px 20px;">
+        <div class="empty-icon">📱</div>
+        <h3>No se encontraron modelos en ${escapeHtml(brandObj.brand)}</h3>
+        <p>${cotizadorSearchTerm ? "No hay resultados para esa búsqueda." : "Esta marca todavía no tiene modelos cargados."}</p>
+        <button type="button" class="btn btn-primary" onclick="openAddCelularModelModal()">
+          ➕ Agregar Primer Modelo a ${escapeHtml(brandObj.brand)}
+        </button>
+      </div>
+    `;
+    return;
+  }
+
+  container.innerHTML = models.map((model) => {
+    // Buscar índice real en brandObj.models
+    const modelIndex = brandObj.models.indexOf(model);
+    const repairs = model.repairs || [];
+
+    const rowsHtml = repairs.map((r, rIdx) => {
+      return `
+        <tr>
+          <td style="width: 32%;">
+            <input type="text" class="repair-inline-input" value="${escapeHtml(r.name)}" 
+              placeholder="Nombre del servicio"
+              onchange="updateCelularRepairName(${brandIndex}, ${modelIndex}, ${rIdx}, this.value)"
+              oninput="debouncedAutoSaveCotizador()">
+          </td>
+          <td style="width: 20%;">
+            <input type="text" class="repair-inline-input repair-price-input" value="${escapeHtml(r.price)}" 
+              placeholder="Precio ej: 80000 o 70 USD"
+              onchange="updateCelularRepairPrice(${brandIndex}, ${modelIndex}, ${rIdx}, this.value)"
+              oninput="debouncedAutoSaveCotizador()">
+          </td>
+          <td style="width: 40%;">
+            <input type="text" class="repair-inline-input" value="${escapeHtml(r.note || '')}" 
+              placeholder="Aclaración, garantía o detalle..."
+              onchange="updateCelularRepairNote(${brandIndex}, ${modelIndex}, ${rIdx}, this.value)"
+              oninput="debouncedAutoSaveCotizador()">
+          </td>
+          <td style="width: 8%; text-align: center;">
+            <button type="button" class="repair-del-btn" onclick="deleteCelularRepair(${brandIndex}, ${modelIndex}, ${rIdx})" title="Eliminar tarifa">
+              ✕
+            </button>
+          </td>
+        </tr>
+      `;
+    }).join("");
+
+    return `
+      <div class="model-card">
+        <div class="model-card-header">
+          <div class="model-title-wrap">
+            <span class="model-name-text">${escapeHtml(model.name)}</span>
+            <span class="model-count-pill">${repairs.length} reparaciones</span>
+          </div>
+          <div class="model-actions">
+            <button type="button" class="btn btn-sm btn-outline" onclick="renameCelularModel(${brandIndex}, ${modelIndex})">
+              ✏️ Renombrar
+            </button>
+            <button type="button" class="btn btn-sm btn-success" onclick="openAddRepairModal('celulares', '${escapeHtml(brandObj.brand)}', ${modelIndex})">
+              ➕ Agregar Reparación
+            </button>
+            <button type="button" class="btn btn-sm btn-danger-ghost" onclick="deleteCelularModel(${brandIndex}, ${modelIndex})">
+              🗑️ Eliminar
+            </button>
+          </div>
+        </div>
+
+        <div class="table-responsive-wrap">
+          <table class="model-repairs-table">
+            <thead>
+              <tr>
+                <th>Reparación / Servicio</th>
+                <th>Tarifa / Precio</th>
+                <th>Aclaración / Garantía</th>
+                <th style="text-align: center;">Borrar</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${rowsHtml}
+            </tbody>
+          </table>
+        </div>
+
+        <div class="model-card-footer">
+          <span class="quick-save-indicator">✓ Los cambios se guardan automáticamente</span>
+          <button type="button" class="btn btn-sm btn-outline" onclick="openAddRepairModal('celulares', '${escapeHtml(brandObj.brand)}', ${modelIndex})">
+            ➕ Agregar otra reparación a este modelo
+          </button>
+        </div>
+      </div>
+    `;
+  }).join("");
+}
+
+// Actualizaciones de celdas inline para Celulares
+function updateCelularRepairPrice(bIdx, mIdx, rIdx, val) {
+  if (!currentCotizador.celulares[bIdx] || !currentCotizador.celulares[bIdx].models[mIdx]) return;
+  const rep = currentCotizador.celulares[bIdx].models[mIdx].repairs[rIdx];
+  if (!rep) return;
+
+  const trimmed = String(val).trim();
+  // Si es un número puro, guardarlo como número
+  const num = Number(trimmed.replace(/\$/g, "").replace(/\./g, "").trim());
+  if (!isNaN(num) && trimmed !== "" && !trimmed.toLowerCase().includes("usd") && !trimmed.toLowerCase().includes("consultar") && !trimmed.toLowerCase().includes("no")) {
+    rep.price = num;
+  } else {
+    rep.price = trimmed;
+  }
+  saveCotizadorDraft();
+}
+
+function updateCelularRepairNote(bIdx, mIdx, rIdx, val) {
+  if (!currentCotizador.celulares[bIdx] || !currentCotizador.celulares[bIdx].models[mIdx]) return;
+  const rep = currentCotizador.celulares[bIdx].models[mIdx].repairs[rIdx];
+  if (rep) {
+    rep.note = String(val).trim();
+    saveCotizadorDraft();
+  }
+}
+
+function updateCelularRepairName(bIdx, mIdx, rIdx, val) {
+  if (!currentCotizador.celulares[bIdx] || !currentCotizador.celulares[bIdx].models[mIdx]) return;
+  const rep = currentCotizador.celulares[bIdx].models[mIdx].repairs[rIdx];
+  if (rep) {
+    rep.name = String(val).trim();
+    saveCotizadorDraft();
+  }
+}
+
+function deleteCelularRepair(bIdx, mIdx, rIdx) {
+  const model = currentCotizador.celulares[bIdx]?.models[mIdx];
+  if (!model || !model.repairs[rIdx]) return;
+  const repName = model.repairs[rIdx].name;
+
+  if (confirm(`¿Eliminar la tarifa "${repName}" de ${model.name}?`)) {
+    model.repairs.splice(rIdx, 1);
+    saveCotizadorDraft();
+    renderCelularesSection();
+  }
+}
+
+function renameCelularModel(bIdx, mIdx) {
+  const model = currentCotizador.celulares[bIdx]?.models[mIdx];
+  if (!model) return;
+
+  const newName = prompt(`Renombrar modelo "${model.name}":`, model.name);
+  if (newName && newName.trim() && newName.trim() !== model.name) {
+    model.name = newName.trim();
+    saveCotizadorDraft();
+    renderCelularesSection();
+    showAlert(`✓ Modelo renombrado a "${model.name}".`);
+  }
+}
+
+function deleteCelularModel(bIdx, mIdx) {
+  const model = currentCotizador.celulares[bIdx]?.models[mIdx];
+  if (!model) return;
+
+  if (confirm(`¿Estás seguro de que deseás eliminar el modelo "${model.name}" con todas sus reparaciones?`)) {
+    currentCotizador.celulares[bIdx].models.splice(mIdx, 1);
+    saveCotizadorDraft();
+    renderBrandPills();
+    renderCelularesSection();
+    showAlert(`✓ Modelo "${model.name}" eliminado del presupuestador.`);
+  }
+}
+
+// --------------------------------------------------------
+// 9.2 CONSOLAS
+// --------------------------------------------------------
+function renderConsolasSection() {
+  const container = document.getElementById("cotizador-content-area");
+  if (!container || !currentCotizador || !currentCotizador.consolas) return;
+
+  let consolas = currentCotizador.consolas;
+  if (cotizadorSearchTerm) {
+    const q = cotizadorSearchTerm.toLowerCase();
+    consolas = consolas.filter(c => {
+      const matchName = c.name && c.name.toLowerCase().includes(q);
+      const matchRep = c.repairs && c.repairs.some(r => r.name && r.name.toLowerCase().includes(q));
+      return matchName || matchRep;
+    });
+  }
+
+  if (consolas.length === 0) {
+    container.innerHTML = `
+      <div class="empty-state" style="background:#fff; border:1px solid var(--border); padding:40px 20px; border-radius:var(--radius-md);">
+        <div class="empty-icon">🎮</div>
+        <h3>No se encontraron consolas</h3>
+        <p>Presioná "➕ Nueva Consola" para agregar una consola al presupuestador.</p>
+        <button type="button" class="btn btn-primary" onclick="openNewDeviceModal('consolas')">
+          ➕ Agregar Nueva Consola
+        </button>
+      </div>
+    `;
+    return;
+  }
+
+  container.innerHTML = consolas.map((c) => {
+    const devIdx = currentCotizador.consolas.indexOf(c);
+    const repairs = c.repairs || [];
+
+    const rowsHtml = repairs.map((r, rIdx) => {
+      return `
+        <tr>
+          <td style="width: 32%;">
+            <input type="text" class="repair-inline-input" value="${escapeHtml(r.name)}" 
+              placeholder="Servicio / Reparación"
+              onchange="updateDeviceRepairName('consolas', ${devIdx}, ${rIdx}, this.value)"
+              oninput="debouncedAutoSaveCotizador()">
+          </td>
+          <td style="width: 20%;">
+            <input type="text" class="repair-inline-input repair-price-input" value="${escapeHtml(r.price)}" 
+              placeholder="Precio ej: 45000"
+              onchange="updateDeviceRepairPrice('consolas', ${devIdx}, ${rIdx}, this.value)"
+              oninput="debouncedAutoSaveCotizador()">
+          </td>
+          <td style="width: 40%;">
+            <input type="text" class="repair-inline-input" value="${escapeHtml(r.note || '')}" 
+              placeholder="Aclaración, garantía o descripción..."
+              onchange="updateDeviceRepairNote('consolas', ${devIdx}, ${rIdx}, this.value)"
+              oninput="debouncedAutoSaveCotizador()">
+          </td>
+          <td style="width: 8%; text-align: center;">
+            <button type="button" class="repair-del-btn" onclick="deleteDeviceRepair('consolas', ${devIdx}, ${rIdx})" title="Eliminar servicio">
+              ✕
+            </button>
+          </td>
+        </tr>
+      `;
+    }).join("");
+
+    return `
+      <div class="model-card">
+        <div class="model-card-header">
+          <div class="model-title-wrap">
+            <span class="model-name-text">🎮 ${escapeHtml(c.name)}</span>
+            <span class="model-count-pill">${repairs.length} servicios</span>
+          </div>
+          <div class="model-actions">
+            <button type="button" class="btn btn-sm btn-outline" onclick="renameDevice('consolas', ${devIdx})">
+              ✏️ Renombrar
+            </button>
+            <button type="button" class="btn btn-sm btn-success" onclick="openAddRepairModal('consolas', null, null, '${escapeHtml(c.id)}')">
+              ➕ Agregar Servicio
+            </button>
+            <button type="button" class="btn btn-sm btn-danger-ghost" onclick="deleteDevice('consolas', ${devIdx})">
+              🗑️ Eliminar Consola
+            </button>
+          </div>
+        </div>
+
+        <div class="table-responsive-wrap">
+          <table class="model-repairs-table">
+            <thead>
+              <tr>
+                <th>Servicio / Reparación</th>
+                <th>Tarifa / Precio</th>
+                <th>Detalle / Nota</th>
+                <th style="text-align: center;">Borrar</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${rowsHtml}
+            </tbody>
+          </table>
+        </div>
+
+        <div class="model-card-footer">
+          <span class="quick-save-indicator">✓ Los cambios se guardan automáticamente</span>
+          <button type="button" class="btn btn-sm btn-outline" onclick="openAddRepairModal('consolas', null, null, '${escapeHtml(c.id)}')">
+            ➕ Agregar otro servicio a esta consola
+          </button>
+        </div>
+      </div>
+    `;
+  }).join("");
+}
+
+// --------------------------------------------------------
+// 9.3 JOYSTICKS
+// --------------------------------------------------------
+function renderJoysticksSection() {
+  const container = document.getElementById("cotizador-content-area");
+  if (!container || !currentCotizador || !currentCotizador.joysticks) return;
+
+  let joysticks = currentCotizador.joysticks;
+  if (cotizadorSearchTerm) {
+    const q = cotizadorSearchTerm.toLowerCase();
+    joysticks = joysticks.filter(j => {
+      const matchName = j.name && j.name.toLowerCase().includes(q);
+      const matchRep = j.repairs && j.repairs.some(r => r.name && r.name.toLowerCase().includes(q));
+      return matchName || matchRep;
+    });
+  }
+
+  if (joysticks.length === 0) {
+    container.innerHTML = `
+      <div class="empty-state" style="background:#fff; border:1px solid var(--border); padding:40px 20px; border-radius:var(--radius-md);">
+        <div class="empty-icon">🕹️</div>
+        <h3>No se encontraron mandos / joysticks</h3>
+        <p>Presioná "➕ Nuevo Joystick" para agregar uno al presupuestador.</p>
+        <button type="button" class="btn btn-primary" onclick="openNewDeviceModal('joysticks')">
+          ➕ Agregar Nuevo Joystick
+        </button>
+      </div>
+    `;
+    return;
+  }
+
+  container.innerHTML = joysticks.map((j) => {
+    const devIdx = currentCotizador.joysticks.indexOf(j);
+    const repairs = j.repairs || [];
+
+    const rowsHtml = repairs.map((r, rIdx) => {
+      return `
+        <tr>
+          <td style="width: 32%;">
+            <input type="text" class="repair-inline-input" value="${escapeHtml(r.name)}" 
+              placeholder="Servicio de Mando"
+              onchange="updateDeviceRepairName('joysticks', ${devIdx}, ${rIdx}, this.value)"
+              oninput="debouncedAutoSaveCotizador()">
+          </td>
+          <td style="width: 20%;">
+            <input type="text" class="repair-inline-input repair-price-input" value="${escapeHtml(r.price)}" 
+              placeholder="Precio ej: 25000"
+              onchange="updateDeviceRepairPrice('joysticks', ${devIdx}, ${rIdx}, this.value)"
+              oninput="debouncedAutoSaveCotizador()">
+          </td>
+          <td style="width: 40%;">
+            <input type="text" class="repair-inline-input" value="${escapeHtml(r.note || '')}" 
+              placeholder="Garantía, repuesto o nota..."
+              onchange="updateDeviceRepairNote('joysticks', ${devIdx}, ${rIdx}, this.value)"
+              oninput="debouncedAutoSaveCotizador()">
+          </td>
+          <td style="width: 8%; text-align: center;">
+            <button type="button" class="repair-del-btn" onclick="deleteDeviceRepair('joysticks', ${devIdx}, ${rIdx})" title="Eliminar servicio">
+              ✕
+            </button>
+          </td>
+        </tr>
+      `;
+    }).join("");
+
+    return `
+      <div class="model-card">
+        <div class="model-card-header">
+          <div class="model-title-wrap">
+            <span class="model-name-text">🕹️ Mando ${escapeHtml(j.name)}</span>
+            <span class="model-count-pill">${repairs.length} servicios</span>
+          </div>
+          <div class="model-actions">
+            <button type="button" class="btn btn-sm btn-outline" onclick="renameDevice('joysticks', ${devIdx})">
+              ✏️ Renombrar
+            </button>
+            <button type="button" class="btn btn-sm btn-success" onclick="openAddRepairModal('joysticks', null, null, '${escapeHtml(j.id)}')">
+              ➕ Agregar Servicio
+            </button>
+            <button type="button" class="btn btn-sm btn-danger-ghost" onclick="deleteDevice('joysticks', ${devIdx})">
+              🗑️ Eliminar Mando
+            </button>
+          </div>
+        </div>
+
+        <div class="table-responsive-wrap">
+          <table class="model-repairs-table">
+            <thead>
+              <tr>
+                <th>Servicio de Joystick</th>
+                <th>Tarifa / Precio</th>
+                <th>Detalle / Nota</th>
+                <th style="text-align: center;">Borrar</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${rowsHtml}
+            </tbody>
+          </table>
+        </div>
+
+        <div class="model-card-footer">
+          <span class="quick-save-indicator">✓ Los cambios se guardan automáticamente</span>
+          <button type="button" class="btn btn-sm btn-outline" onclick="openAddRepairModal('joysticks', null, null, '${escapeHtml(j.id)}')">
+            ➕ Agregar otro servicio a este mando
+          </button>
+        </div>
+      </div>
+    `;
+  }).join("");
+}
+
+// --------------------------------------------------------
+// 9.4 COMPUTADORAS & NOTEBOOKS
+// --------------------------------------------------------
+function renderComputadorasSection() {
+  const container = document.getElementById("cotizador-content-area");
+  if (!container || !currentCotizador || !currentCotizador.computadoras) return;
+
+  let servicios = currentCotizador.computadoras;
+  if (cotizadorSearchTerm) {
+    const q = cotizadorSearchTerm.toLowerCase();
+    servicios = servicios.filter(s => {
+      const matchName = s.name && s.name.toLowerCase().includes(q);
+      const matchNote = s.note && s.note.toLowerCase().includes(q);
+      return matchName || matchNote;
+    });
+  }
+
+  const rowsHtml = servicios.map((s, idx) => {
+    return `
+      <tr>
+        <td style="width: 34%;">
+          <input type="text" class="repair-inline-input" value="${escapeHtml(s.name)}" 
+            placeholder="Nombre del servicio"
+            onchange="updatePcRepairName(${idx}, this.value)"
+            oninput="debouncedAutoSaveCotizador()">
+        </td>
+        <td style="width: 20%;">
+          <input type="text" class="repair-inline-input repair-price-input" value="${escapeHtml(s.price)}" 
+            placeholder="Consultar o precio"
+            onchange="updatePcRepairPrice(${idx}, this.value)"
+            oninput="debouncedAutoSaveCotizador()">
+        </td>
+        <td style="width: 38%;">
+          <input type="text" class="repair-inline-input" value="${escapeHtml(s.note || '')}" 
+            placeholder="Descripción del servicio..."
+            onchange="updatePcRepairNote(${idx}, this.value)"
+            oninput="debouncedAutoSaveCotizador()">
+        </td>
+        <td style="width: 8%; text-align: center;">
+          <button type="button" class="repair-del-btn" onclick="deletePcRepair(${idx})" title="Eliminar servicio">
+            ✕
+          </button>
+        </td>
+      </tr>
+    `;
+  }).join("");
+
+  container.innerHTML = `
+    <div class="model-card">
+      <div class="model-card-header">
+        <div class="model-title-wrap">
+          <span class="model-name-text">💻 Servicios para Computadoras y Notebooks</span>
+          <span class="model-count-pill">${servicios.length} servicios configurados</span>
+        </div>
+        <div class="model-actions">
+          <button type="button" class="btn btn-sm btn-success" onclick="openAddRepairModal('computadoras')">
+            ➕ Nuevo Servicio PC
+          </button>
+        </div>
+      </div>
+
+      <div class="table-responsive-wrap">
+        <table class="model-repairs-table">
+          <thead>
+            <tr>
+              <th>Servicio Informático</th>
+              <th>Tarifa / Precio</th>
+              <th>Descripción del Trabajo</th>
+              <th style="text-align: center;">Borrar</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${rowsHtml}
+          </tbody>
+        </table>
+      </div>
+
+      <div class="model-card-footer">
+        <span class="quick-save-indicator">✓ Los cambios se guardan automáticamente</span>
+        <button type="button" class="btn btn-sm btn-outline" onclick="openAddRepairModal('computadoras')">
+          ➕ Agregar otro servicio informático
+        </button>
+      </div>
+    </div>
+  `;
+}
+
+function updatePcRepairPrice(idx, val) {
+  if (!currentCotizador.computadoras || !currentCotizador.computadoras[idx]) return;
+  const trimmed = String(val).trim();
+  const num = Number(trimmed.replace(/\$/g, "").replace(/\./g, "").trim());
+  if (!isNaN(num) && trimmed !== "" && !trimmed.toLowerCase().includes("usd") && !trimmed.toLowerCase().includes("consultar")) {
+    currentCotizador.computadoras[idx].price = num;
+  } else {
+    currentCotizador.computadoras[idx].price = trimmed;
+  }
+  saveCotizadorDraft();
+}
+
+function updatePcRepairNote(idx, val) {
+  if (!currentCotizador.computadoras || !currentCotizador.computadoras[idx]) return;
+  currentCotizador.computadoras[idx].note = String(val).trim();
+  saveCotizadorDraft();
+}
+
+function updatePcRepairName(idx, val) {
+  if (!currentCotizador.computadoras || !currentCotizador.computadoras[idx]) return;
+  currentCotizador.computadoras[idx].name = String(val).trim();
+  saveCotizadorDraft();
+}
+
+function deletePcRepair(idx) {
+  if (!currentCotizador.computadoras || !currentCotizador.computadoras[idx]) return;
+  const s = currentCotizador.computadoras[idx];
+  if (confirm(`¿Eliminar el servicio "${s.name}"?`)) {
+    currentCotizador.computadoras.splice(idx, 1);
+    saveCotizadorDraft();
+    renderComputadorasSection();
+  }
+}
+
+// Actualizaciones inline para Dispositivos (Consolas y Joysticks)
+function updateDeviceRepairPrice(type, devIdx, rIdx, val) {
+  const dev = currentCotizador[type]?.[devIdx];
+  if (!dev || !dev.repairs[rIdx]) return;
+  const trimmed = String(val).trim();
+  const num = Number(trimmed.replace(/\$/g, "").replace(/\./g, "").trim());
+  if (!isNaN(num) && trimmed !== "" && !trimmed.toLowerCase().includes("usd") && !trimmed.toLowerCase().includes("consultar")) {
+    dev.repairs[rIdx].price = num;
+  } else {
+    dev.repairs[rIdx].price = trimmed;
+  }
+  saveCotizadorDraft();
+}
+
+function updateDeviceRepairNote(type, devIdx, rIdx, val) {
+  const dev = currentCotizador[type]?.[devIdx];
+  if (dev && dev.repairs[rIdx]) {
+    dev.repairs[rIdx].note = String(val).trim();
+    saveCotizadorDraft();
+  }
+}
+
+function updateDeviceRepairName(type, devIdx, rIdx, val) {
+  const dev = currentCotizador[type]?.[devIdx];
+  if (dev && dev.repairs[rIdx]) {
+    dev.repairs[rIdx].name = String(val).trim();
+    saveCotizadorDraft();
+  }
+}
+
+function deleteDeviceRepair(type, devIdx, rIdx) {
+  const dev = currentCotizador[type]?.[devIdx];
+  if (!dev || !dev.repairs[rIdx]) return;
+  const rName = dev.repairs[rIdx].name;
+  if (confirm(`¿Eliminar la tarifa "${rName}" de ${dev.name}?`)) {
+    dev.repairs.splice(rIdx, 1);
+    saveCotizadorDraft();
+    if (type === "consolas") renderConsolasSection();
+    else renderJoysticksSection();
+  }
+}
+
+function renameDevice(type, devIdx) {
+  const dev = currentCotizador[type]?.[devIdx];
+  if (!dev) return;
+  const newName = prompt(`Renombrar dispositivo "${dev.name}":`, dev.name);
+  if (newName && newName.trim() && newName.trim() !== dev.name) {
+    dev.name = newName.trim();
+    saveCotizadorDraft();
+    if (type === "consolas") renderConsolasSection();
+    else renderJoysticksSection();
+    showAlert(`✓ Dispositivo renombrado a "${dev.name}".`);
+  }
+}
+
+function deleteDevice(type, devIdx) {
+  const dev = currentCotizador[type]?.[devIdx];
+  if (!dev) return;
+  if (confirm(`¿Estás seguro de que deseás eliminar "${dev.name}" con todas sus reparaciones del presupuestador?`)) {
+    currentCotizador[type].splice(devIdx, 1);
+    saveCotizadorDraft();
+    if (type === "consolas") renderConsolasSection();
+    else renderJoysticksSection();
+    showAlert(`✓ Dispositivo eliminado.`);
+  }
+}
+
+// --------------------------------------------------------
+// 9.5 CONFIGURACIÓN GENERAL Y TÉRMINOS
+// --------------------------------------------------------
+function renderGeneralSettingsSection() {
+  const container = document.getElementById("cotizador-content-area");
+  if (!container || !currentCotizador) return;
+
+  container.innerHTML = `
+    <div class="cotizador-settings-card">
+      <h2 style="font-size:20px; font-weight:800; margin-bottom:18px;">⚙️ Ajustes Generales del Presupuestador</h2>
+      
+      <div class="settings-group">
+        <label for="set-cot-whatsapp">Número de WhatsApp receptor:</label>
+        <input type="text" id="set-cot-whatsapp" class="repair-inline-input" value="${escapeHtml(currentCotizador.whatsapp || '5491136620653')}">
+        <p class="settings-help">Número con código de país y área sin espacios ni signos + (Ej: 5491136620653 para Argentina).</p>
+      </div>
+
+      <div class="settings-group">
+        <label for="set-cot-business">Nombre Comercial:</label>
+        <input type="text" id="set-cot-business" class="repair-inline-input" value="${escapeHtml(currentCotizador.businessName || 'NISSA')}">
+        <p class="settings-help">Nombre que aparecerá en los encabezados y presupuestos generados.</p>
+      </div>
+
+      <div class="settings-group">
+        <label class="checkbox-label">
+          <input type="checkbox" id="set-cot-showterms" ${currentCotizador.showTerms ? "checked" : ""}>
+          <span>Mostrar términos y condiciones legales en el pie del cotizador</span>
+        </label>
+      </div>
+
+      <div class="settings-group">
+        <label for="set-cot-terms">Texto de Términos Legales y Póliza de Garantía:</label>
+        <textarea id="set-cot-terms" class="repair-inline-input" style="min-height:100px; resize:vertical;">${escapeHtml(currentCotizador.termsText || "")}</textarea>
+        <p class="settings-help">Aclaración visible para los clientes que solicitan presupuestos.</p>
+      </div>
+
+      <div style="margin-top:24px; display:flex; gap:12px;">
+        <button type="button" class="btn btn-primary" onclick="saveGeneralSettings()">
+          💾 Guardar Configuración General
+        </button>
+      </div>
+    </div>
+  `;
+}
+
+function saveGeneralSettings() {
+  const wa = document.getElementById("set-cot-whatsapp");
+  const bn = document.getElementById("set-cot-business");
+  const st = document.getElementById("set-cot-showterms");
+  const tt = document.getElementById("set-cot-terms");
+
+  if (wa) currentCotizador.whatsapp = wa.value.trim();
+  if (bn) currentCotizador.businessName = bn.value.trim();
+  if (st) currentCotizador.showTerms = Boolean(st.checked);
+  if (tt) currentCotizador.termsText = tt.value.trim();
+
+  saveCotizadorDraft();
+  showAlert("✓ Configuración general del presupuestador guardada.");
+}
+
+// --------------------------------------------------------
+// 9.6 MODALES DE CREACIÓN Y EDICIÓN DEL PRESUPUESTADOR
+// --------------------------------------------------------
+
+// Modal Nueva Marca
+function openNewBrandModal() {
+  const modal = document.getElementById("modal-new-brand");
+  const input = document.getElementById("new-brand-name");
+  if (input) input.value = "";
+  if (modal) modal.style.display = "flex";
+}
+
+function closeNewBrandModal() {
+  const modal = document.getElementById("modal-new-brand");
+  if (modal) modal.style.display = "none";
+}
+
+function handleCreateBrand(e) {
+  if (e) e.preventDefault();
+  const input = document.getElementById("new-brand-name");
+  if (!input) return;
+  const name = input.value.trim();
+  if (!name) return;
+
+  if (currentCotizador.celulares.some(b => b.brand.toLowerCase() === name.toLowerCase())) {
+    alert("Ya existe una marca con ese nombre.");
+    return;
+  }
+
+  currentCotizador.celulares.push({
+    brand: name,
+    models: []
+  });
+
+  activeCelularBrand = name;
+  saveCotizadorDraft();
+  closeNewBrandModal();
+  renderBrandPills();
+  renderCelularesSection();
+  showAlert(`✓ Marca "${name}" agregada.`);
+}
+
+function deleteCelularBrand() {
+  if (!currentCotizador.celulares || currentCotizador.celulares.length <= 1) {
+    alert("Debe quedar al menos una marca en el cotizador.");
+    return;
+  }
+
+  if (confirm(`¿Estás seguro de que deseás eliminar por completo la marca "${activeCelularBrand}" y TODOS sus modelos? Esta acción es irreversible.`)) {
+    currentCotizador.celulares = currentCotizador.celulares.filter(b => b.brand.toLowerCase() !== activeCelularBrand.toLowerCase());
+    activeCelularBrand = currentCotizador.celulares[0].brand;
+    saveCotizadorDraft();
+    renderBrandPills();
+    renderCelularesSection();
+    showAlert(`✓ Marca eliminada.`);
+  }
+}
+
+// Modal Agregar Modelo Celular
+function openAddCelularModelModal() {
+  const modal = document.getElementById("modal-add-celular-model");
+  const brandSelect = document.getElementById("new-model-brand");
+  const nameInput = document.getElementById("new-model-name");
+
+  if (brandSelect && currentCotizador.celulares) {
+    brandSelect.innerHTML = currentCotizador.celulares.map(b => `
+      <option value="${escapeHtml(b.brand)}" ${b.brand.toLowerCase() === activeCelularBrand.toLowerCase() ? "selected" : ""}>
+        ${escapeHtml(b.brand)}
+      </option>
+    `).join("");
+  }
+
+  if (nameInput) nameInput.value = "";
+  if (modal) modal.style.display = "flex";
+}
+
+function closeAddCelularModelModal() {
+  const modal = document.getElementById("modal-add-celular-model");
+  if (modal) modal.style.display = "none";
+}
+
+function handleCreateCelularModel(e) {
+  if (e) e.preventDefault();
+  const brandSelect = document.getElementById("new-model-brand");
+  const nameInput = document.getElementById("new-model-name");
+  const prefillCheck = document.getElementById("prefill-standard-repairs");
+
+  if (!brandSelect || !nameInput) return;
+  const brandName = brandSelect.value;
+  const modelName = nameInput.value.trim();
+  if (!modelName) return;
+
+  const brandObj = currentCotizador.celulares.find(b => b.brand.toLowerCase() === brandName.toLowerCase());
+  if (!brandObj) return;
+
+  if (brandObj.models.some(m => m.name.toLowerCase() === modelName.toLowerCase())) {
+    alert(`El modelo "${modelName}" ya existe en ${brandName}.`);
+    return;
+  }
+
+  const newModel = {
+    name: modelName,
+    repairs: []
+  };
+
+  if (prefillCheck && prefillCheck.checked) {
+    const slug = modelName.toLowerCase().replace(/[^a-z0-9]/g, "").slice(0, 8);
+    newModel.repairs = [
+      { id: `cel_${slug}_1`, name: "📱 Pantalla / Módulo", price: "Consultar", note: "Seleccioná la calidad deseada debajo" },
+      { id: `cel_${slug}_2`, name: "🔋 Batería", price: "Consultar", note: "Condición al 100% con garantía oficial" },
+      { id: `cel_${slug}_3`, name: "🔌 Pin de carga", price: "Consultar", note: "Reemplazo de conector y flex de carga" },
+      { id: `cel_${slug}_4`, name: "📸 Cámara Selfie (Frontal)", price: "Consultar", note: "Módulo de cámara frontal" },
+      { id: `cel_${slug}_5`, name: "📷 Cámara Principal (Trasera)", price: "Consultar", note: "Módulo de cámara trasera original" },
+      { id: `cel_${slug}_6`, name: "📱 Tapa Trasera / Cristal", price: "Consultar", note: "Cambio de tapa o cristal trasero" },
+      { id: `cel_${slug}_7`, name: "🔓 Desbloqueo (Cuenta Google / iCloud / PIN)", price: "NO REALIZAMOS", note: "NO REALIZAMOS ESTE SERVICIO" },
+      { id: `cel_${slug}_8`, name: "📶 Liberación de Compañía / Banda", price: "NO REALIZAMOS", note: "NO REALIZAMOS ESTE SERVICIO" }
+    ];
+  }
+
+  brandObj.models.push(newModel);
+  activeCelularBrand = brandName;
+  saveCotizadorDraft();
+  closeAddCelularModelModal();
+  renderBrandPills();
+  renderCelularesSection();
+  showAlert(`✓ Modelo "${modelName}" agregado con éxito.`);
+}
+
+// Modal Agregar Reparación
+function openAddRepairModal(targetType, brandName = null, modelIdx = null, deviceId = null) {
+  const modal = document.getElementById("modal-add-repair");
+  const typeInput = document.getElementById("repair-target-type");
+  const brandInput = document.getElementById("repair-target-brand");
+  const modelIdxInput = document.getElementById("repair-target-model-idx");
+  const deviceIdInput = document.getElementById("repair-target-device-id");
+  const title = document.getElementById("modal-repair-title");
+  const subtitle = document.getElementById("modal-repair-subtitle");
+
+  if (!modal) return;
+  typeInput.value = targetType;
+  brandInput.value = brandName || "";
+  modelIdxInput.value = modelIdx !== null ? modelIdx : "";
+  deviceIdInput.value = deviceId || "";
+
+  document.getElementById("new-repair-name").value = "";
+  document.getElementById("new-repair-price").value = "";
+  document.getElementById("new-repair-note").value = "";
+
+  if (targetType === "celulares") {
+    const brandObj = currentCotizador.celulares.find(b => b.brand.toLowerCase() === brandName.toLowerCase());
+    const modelObj = brandObj?.models[modelIdx];
+    title.textContent = `➕ Nueva Reparación para ${modelObj ? modelObj.name : "Celular"}`;
+    subtitle.textContent = `${brandName} · Agregá una tarifa específica a este modelo`;
+  } else if (targetType === "consolas") {
+    const dev = currentCotizador.consolas.find(c => c.id === deviceId);
+    title.textContent = `➕ Nuevo Servicio para ${dev ? dev.name : "Consola"}`;
+    subtitle.textContent = "Agregá un servicio o reparación a esta consola";
+  } else if (targetType === "joysticks") {
+    const dev = currentCotizador.joysticks.find(j => j.id === deviceId);
+    title.textContent = `➕ Nuevo Servicio para ${dev ? dev.name : "Mando"}`;
+    subtitle.textContent = "Agregá un servicio a este joystick";
+  } else if (targetType === "computadoras") {
+    title.textContent = "➕ Nuevo Servicio de Computadoras";
+    subtitle.textContent = "Agregá un servicio informático al cotizador";
+  }
+
+  modal.style.display = "flex";
+}
+
+function closeAddRepairModal() {
+  const modal = document.getElementById("modal-add-repair");
+  if (modal) modal.style.display = "none";
+}
+
+function handleSaveNewRepair(e) {
+  if (e) e.preventDefault();
+  const type = document.getElementById("repair-target-type").value;
+  const brandName = document.getElementById("repair-target-brand").value;
+  const modelIdx = Number(document.getElementById("repair-target-model-idx").value);
+  const deviceId = document.getElementById("repair-target-device-id").value;
+
+  const name = document.getElementById("new-repair-name").value.trim();
+  const rawPrice = document.getElementById("new-repair-price").value.trim();
+  const note = document.getElementById("new-repair-note").value.trim();
+
+  if (!name || !rawPrice) return;
+
+  // Determinar precio numérico o string
+  let finalPrice = rawPrice;
+  const num = Number(rawPrice.replace(/\$/g, "").replace(/\./g, "").trim());
+  if (!isNaN(num) && !rawPrice.toLowerCase().includes("usd") && !rawPrice.toLowerCase().includes("consultar")) {
+    finalPrice = num;
+  }
+
+  const newId = `rep_${Date.now()}`;
+  const repairObj = {
+    id: newId,
+    name: name,
+    price: finalPrice,
+    note: note
+  };
+
+  if (type === "celulares") {
+    const brandObj = currentCotizador.celulares.find(b => b.brand.toLowerCase() === brandName.toLowerCase());
+    if (brandObj && brandObj.models[modelIdx]) {
+      brandObj.models[modelIdx].repairs.push(repairObj);
+    }
+    renderCelularesSection();
+  } else if (type === "consolas") {
+    const dev = currentCotizador.consolas.find(c => c.id === deviceId);
+    if (dev) dev.repairs.push(repairObj);
+    renderConsolasSection();
+  } else if (type === "joysticks") {
+    const dev = currentCotizador.joysticks.find(j => j.id === deviceId);
+    if (dev) dev.repairs.push(repairObj);
+    renderJoysticksSection();
+  } else if (type === "computadoras") {
+    currentCotizador.computadoras.push(repairObj);
+    renderComputadorasSection();
+  }
+
+  saveCotizadorDraft();
+  closeAddRepairModal();
+  showAlert(`✓ Servicio "${name}" agregado.`);
+}
+
+// Modal Nuevo Dispositivo (Consola o Joystick)
+function openNewDeviceModal(type) {
+  const modal = document.getElementById("modal-new-device");
+  const typeInput = document.getElementById("new-device-type");
+  const nameInput = document.getElementById("new-device-name");
+  const title = document.getElementById("modal-new-device-title");
+
+  if (!modal) return;
+  typeInput.value = type;
+  if (nameInput) nameInput.value = "";
+
+  if (type === "consolas") {
+    title.textContent = "➕ Nueva Consola de Juegos";
+    nameInput.placeholder = "Ej: Xbox Series X, Nintendo Switch OLED...";
+  } else {
+    title.textContent = "➕ Nuevo Joystick / Mando";
+    nameInput.placeholder = "Ej: Xbox Wireless Controller, DualSense Edge...";
+  }
+
+  modal.style.display = "flex";
+}
+
+function closeNewDeviceModal() {
+  const modal = document.getElementById("modal-new-device");
+  if (modal) modal.style.display = "none";
+}
+
+function handleCreateDevice(e) {
+  if (e) e.preventDefault();
+  const type = document.getElementById("new-device-type").value;
+  const nameInput = document.getElementById("new-device-name");
+  if (!nameInput) return;
+  const name = nameInput.value.trim();
+  if (!name) return;
+
+  const id = `${type}_${Date.now()}`;
+  const newDev = {
+    id: id,
+    name: name,
+    repairs: [
+      { id: `${id}_1`, name: "Mantenimiento General y Cambio de Pasta Térmica", price: "Consultar", note: "Limpieza profunda y pasta de alta conductividad" }
+    ]
+  };
+
+  currentCotizador[type].push(newDev);
+  saveCotizadorDraft();
+  closeNewDeviceModal();
+  if (type === "consolas") renderConsolasSection();
+  else renderJoysticksSection();
+  showAlert(`✓ Dispositivo "${name}" agregado.`);
+}
+
+// Modal Ajuste Masivo (%)
+function openMassAdjustModal() {
+  const modal = document.getElementById("modal-mass-adjust");
+  const scopeSelect = document.getElementById("mass-scope");
+  if (scopeSelect) {
+    scopeSelect.innerHTML = `
+      <option value="current_brand">Marca actual (${escapeHtml(activeCelularBrand)})</option>
+      <option value="all_celulares">Todos los celulares (todas las marcas)</option>
+      <option value="consolas">Todas las consolas</option>
+      <option value="joysticks">Todos los joysticks</option>
+    `;
+  }
+  if (modal) modal.style.display = "flex";
+}
+
+function closeMassAdjustModal() {
+  const modal = document.getElementById("modal-mass-adjust");
+  if (modal) modal.style.display = "none";
+}
+
+function handleApplyMassAdjust(e) {
+  if (e) e.preventDefault();
+  const scope = document.getElementById("mass-scope").value;
+  const filter = document.getElementById("mass-repair-filter").value;
+  const op = document.getElementById("mass-operation").value;
+  const val = Number(document.getElementById("mass-value").value);
+
+  if (isNaN(val) || val <= 0) {
+    alert("Por favor ingresá un valor mayor a cero.");
+    return;
+  }
+
+  let count = 0;
+  const applyToRepair = (r) => {
+    if (typeof r.price !== "number" || isNaN(r.price)) return; // Proteger strings
+    if (filter !== "all") {
+      const n = (r.name || "").toLowerCase();
+      if (!n.includes(filter)) return;
+    }
+
+    if (op === "percent_increase") {
+      r.price = Math.round(r.price * (1 + val / 100));
+    } else if (op === "percent_decrease") {
+      r.price = Math.round(r.price * (1 - val / 100));
+    } else if (op === "fixed_increase") {
+      r.price = Math.round(r.price + val);
+    } else if (op === "fixed_decrease") {
+      r.price = Math.max(0, Math.round(r.price - val));
+    }
+    count++;
+  };
+
+  if (scope === "current_brand") {
+    const brand = currentCotizador.celulares.find(b => b.brand.toLowerCase() === activeCelularBrand.toLowerCase());
+    if (brand && brand.models) {
+      brand.models.forEach(m => (m.repairs || []).forEach(applyToRepair));
+    }
+  } else if (scope === "all_celulares") {
+    currentCotizador.celulares.forEach(b => {
+      (b.models || []).forEach(m => (m.repairs || []).forEach(applyToRepair));
+    });
+  } else if (scope === "consolas") {
+    currentCotizador.consolas.forEach(c => (c.repairs || []).forEach(applyToRepair));
+  } else if (scope === "joysticks") {
+    currentCotizador.joysticks.forEach(j => (j.repairs || []).forEach(applyToRepair));
+  }
+
+  saveCotizadorDraft();
+  closeMassAdjustModal();
+  renderCotizador();
+  showAlert(`🎉 Ajuste masivo aplicado: se actualizaron ${count} precios numéricos.`);
+}
+
+// Búsqueda del Cotizador
+function handleCotizadorSearch(val) {
+  cotizadorSearchTerm = (val || "").trim();
+  const clearBtn = document.getElementById("clear-cotizador-search-btn");
+  if (clearBtn) clearBtn.style.display = cotizadorSearchTerm ? "block" : "none";
+  renderCotizador();
+}
+
+function clearCotizadorSearch() {
+  const input = document.getElementById("cotizador-search-input");
+  if (input) input.value = "";
+  handleCotizadorSearch("");
+}
+
+// --------------------------------------------------------
+// 9.7 GENERACIÓN DE ARCHIVO, DESCARGA Y GITHUB
+// --------------------------------------------------------
+function generateCotizadorJsCode() {
+  const jsonStr = JSON.stringify(currentCotizador, null, 2);
+  const dateStr = new Date().toLocaleString("es-AR");
+
+  return `// ========================================================
+// Tarifas y modelos exactos del presupuestador NISSA
+// Generado automáticamente desde el Panel de Administración NISSA
+// Fecha de actualización: ${dateStr}
+// 100% Compatible con GitHub Pages (Costo $0)
+// ========================================================
+
+let PRECIOS_WIDGET = ${jsonStr};
+
+// Soporte para borrador local en navegador:
+if (typeof window !== "undefined") {
+  const localCotizadorDraft = localStorage.getItem("nissa_cotizador_draft");
+  if (localCotizadorDraft) {
+    try {
+      const parsed = JSON.parse(localCotizadorDraft);
+      if (parsed && typeof parsed === "object") {
+        PRECIOS_WIDGET = parsed;
+      }
+    } catch (e) {
+      console.error("Error al cargar borrador de cotizador:", e);
+    }
+  }
+  window.PRECIOS_WIDGET = PRECIOS_WIDGET;
+}
+`;
+}
+
+function downloadCotizadorJs() {
+  const code = generateCotizadorJsCode();
+  const blob = new Blob([code], { type: "application/javascript;charset=utf-8" });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = "cotizador-data.js";
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+
+  showAlert("✓ Archivo cotizador-data.js descargado. Ya podés reemplazarlo en tu repositorio de GitHub para que GitHub Pages se actualice gratis a costo $0.");
+}
+
+function openCotizadorCodeModal() {
+  const modal = document.getElementById("modal-cotizador-code");
+  const textarea = document.getElementById("cotizador-code-output");
+  if (!modal || !textarea) return;
+
+  textarea.value = generateCotizadorJsCode();
+  modal.style.display = "flex";
+}
+
+function closeCotizadorCodeModal() {
+  const modal = document.getElementById("modal-cotizador-code");
+  if (modal) modal.style.display = "none";
+}
+
+function copyCotizadorGeneratedCode() {
+  const code = generateCotizadorJsCode();
+  if (navigator.clipboard && window.isSecureContext) {
+    navigator.clipboard.writeText(code).then(() => {
+      showAlert("✓ Código de cotizador-data.js copiado al portapapeles.");
+      closeCotizadorCodeModal();
+    });
+  } else {
+    const textarea = document.getElementById("cotizador-code-output");
+    if (textarea) {
+      textarea.select();
+      document.execCommand("copy");
+      showAlert("✓ Código copiado al portapapeles.");
+      closeCotizadorCodeModal();
+    }
+  }
+}
+
+async function publishCotizadorDirectlyToGithub() {
+  const cfg = getGithubConfig();
+  if (!cfg.owner || !cfg.repo || !cfg.token) {
+    alert("Para publicar con 1 clic en GitHub, primero completá tus datos del repositorio y el Token de acceso gratuito.");
+    openGithubModal();
+    return;
+  }
+
+  const publishBtn = document.getElementById("btn-publish-cotizador-github");
+  const originalText = publishBtn ? publishBtn.innerHTML : "";
+  if (publishBtn) {
+    publishBtn.disabled = true;
+    publishBtn.innerHTML = "⏳ Publicando cotizador en GitHub...";
+  }
+
+  try {
+    const path = "cotizador-data.js";
+    const getUrl = `https://api.github.com/repos/${cfg.owner}/${cfg.repo}/contents/${path}?ref=${cfg.branch}`;
+    const getRes = await fetch(getUrl, {
+      headers: {
+        "Authorization": `token ${cfg.token}`,
+        "Accept": "application/vnd.github.v3+json"
+      }
+    });
+
+    let sha = null;
+    if (getRes.ok) {
+      const data = await getRes.json();
+      sha = data.sha;
+    }
+
+    const newCode = generateCotizadorJsCode();
+    const payload = {
+      message: `Actualización de tarifas del presupuestador (${new Date().toLocaleDateString("es-AR")})`,
+      content: utf8ToBase64(newCode),
+      branch: cfg.branch
+    };
+    if (sha) payload.sha = sha;
+
+    const putUrl = `https://api.github.com/repos/${cfg.owner}/${cfg.repo}/contents/${path}`;
+    const putRes = await fetch(putUrl, {
+      method: "PUT",
+      headers: {
+        "Authorization": `token ${cfg.token}`,
+        "Accept": "application/vnd.github.v3+json",
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(payload)
+    });
+
+    if (putRes.ok) {
+      showAlert("🎉 ¡Presupuestador publicado con éxito en GitHub! GitHub Pages actualizará las tarifas en ~30 segundos.");
+    } else {
+      const err = await putRes.json().catch(() => ({}));
+      alert(`No se pudo publicar en GitHub: ${err.message || putRes.statusText}\n\nPodés descargar el archivo cotizador-data.js manualmente con el botón "Descargar cotizador-data.js".`);
+    }
+  } catch (err) {
+    alert("Error de conexión al publicar en GitHub: " + err.message + "\n\nPodés descargar el archivo cotizador-data.js con el botón 'Descargar cotizador-data.js'.");
+  } finally {
+    if (publishBtn) {
+      publishBtn.disabled = false;
+      publishBtn.innerHTML = originalText;
+    }
+  }
+}
+
+function resetToOriginalCotizador() {
+  if (!confirm("¿Estás seguro de que deseás descartar todas las modificaciones no publicadas y volver a las tarifas originales del presupuestador?")) {
+    return;
+  }
+  localStorage.removeItem("nissa_cotizador_draft");
+  if (originalCotizadorBackup) {
+    currentCotizador = JSON.parse(JSON.stringify(originalCotizadorBackup));
+  }
+  if (typeof window !== "undefined") {
+    window.PRECIOS_WIDGET = currentCotizador;
+  }
+  checkDraftStatus();
+  updateCountsBadge();
+  renderCotizador();
+  showAlert("✓ Se restauraron las tarifas originales del presupuestador.");
+}
+
+// ========================================================
 // ASIGNACIÓN GLOBAL A WINDOW PARA INVOCACIONES INLINE
 // ========================================================
 window.handleLogin = handleLogin;
@@ -1051,6 +2510,9 @@ window.togglePassVisibility = togglePassVisibility;
 window.openPassChangeModal = openPassChangeModal;
 window.closePassModal = closePassModal;
 window.saveNewPass = saveNewPass;
+
+// Tienda y Productos
+window.switchAdminSection = switchAdminSection;
 window.openProductModal = openProductModal;
 window.closeProductModal = closeProductModal;
 window.switchProductTab = switchProductTab;
@@ -1081,4 +2543,52 @@ window.clearSearch = clearSearch;
 window.handleCategoryFilter = handleCategoryFilter;
 window.handleSort = handleSort;
 window.closeAdminAlert = closeAdminAlert;
+
+// Presupuestador de Reparaciones
+window.switchCotizadorSubtab = switchCotizadorSubtab;
+window.renderCotizador = renderCotizador;
+window.selectCelularBrand = selectCelularBrand;
+window.openNewBrandModal = openNewBrandModal;
+window.closeNewBrandModal = closeNewBrandModal;
+window.handleCreateBrand = handleCreateBrand;
+window.deleteCelularBrand = deleteCelularBrand;
+window.openAddCelularModelModal = openAddCelularModelModal;
+window.closeAddCelularModelModal = closeAddCelularModelModal;
+window.handleCreateCelularModel = handleCreateCelularModel;
+window.renameCelularModel = renameCelularModel;
+window.deleteCelularModel = deleteCelularModel;
+window.updateCelularRepairPrice = updateCelularRepairPrice;
+window.updateCelularRepairNote = updateCelularRepairNote;
+window.updateCelularRepairName = updateCelularRepairName;
+window.deleteCelularRepair = deleteCelularRepair;
+window.openAddRepairModal = openAddRepairModal;
+window.closeAddRepairModal = closeAddRepairModal;
+window.handleSaveNewRepair = handleSaveNewRepair;
+window.openNewDeviceModal = openNewDeviceModal;
+window.closeNewDeviceModal = closeNewDeviceModal;
+window.handleCreateDevice = handleCreateDevice;
+window.renameDevice = renameDevice;
+window.deleteDevice = deleteDevice;
+window.updateDeviceRepairPrice = updateDeviceRepairPrice;
+window.updateDeviceRepairNote = updateDeviceRepairNote;
+window.updateDeviceRepairName = updateDeviceRepairName;
+window.deleteDeviceRepair = deleteDeviceRepair;
+window.updatePcRepairPrice = updatePcRepairPrice;
+window.updatePcRepairNote = updatePcRepairNote;
+window.updatePcRepairName = updatePcRepairName;
+window.deletePcRepair = deletePcRepair;
+window.saveGeneralSettings = saveGeneralSettings;
+window.openMassAdjustModal = openMassAdjustModal;
+window.closeMassAdjustModal = closeMassAdjustModal;
+window.handleApplyMassAdjust = handleApplyMassAdjust;
+window.handleCotizadorSearch = handleCotizadorSearch;
+window.clearCotizadorSearch = clearCotizadorSearch;
+window.downloadCotizadorJs = downloadCotizadorJs;
+window.openCotizadorCodeModal = openCotizadorCodeModal;
+window.closeCotizadorCodeModal = closeCotizadorCodeModal;
+window.copyCotizadorGeneratedCode = copyCotizadorGeneratedCode;
+window.publishCotizadorDirectlyToGithub = publishCotizadorDirectlyToGithub;
+window.resetToOriginalCotizador = resetToOriginalCotizador;
+window.debouncedAutoSaveCotizador = debouncedAutoSaveCotizador;
+
 

@@ -60,8 +60,16 @@
         <div class="admin-header-left">
           <div class="admin-brand">
             <span class="admin-logo">NISSA</span>
-            <span class="admin-badge">GESTOR DE TIENDA</span>
+            <span class="admin-badge">ADMIN</span>
           </div>
+          <nav class="admin-top-nav">
+            <button type="button" id="btn-nav-products" class="tab-btn active" onclick="switchAdminSection('products')">
+              🛍️ Tienda y Catálogo
+            </button>
+            <button type="button" id="btn-nav-cotizador" class="tab-btn" onclick="switchAdminSection('cotizador')">
+              🛠️ Presupuestador
+            </button>
+          </nav>
           <div class="admin-meta-info">
             <span id="product-count-badge" class="count-badge">Cargando...</span>
             <span id="draft-indicator" class="draft-badge" style="display: none;">Borrador local activo</span>
@@ -95,69 +103,142 @@
     <main class="admin-main">
       <div class="admin-main-container">
         
-        <!-- HERO / ACCIONES PRINCIPALES -->
-        <section class="admin-action-hero">
-          <div class="action-hero-text">
-            <h1>Gestión de Productos y Precios</h1>
-            <p>Modificá cualquier información de la tienda. Al terminar, podés descargar <code>products.js</code> o publicarlo directamente a tu GitHub con un clic a costo $0.</p>
-          </div>
+        <!-- ========================================================
+             SECCIÓN 1: PRODUCTOS Y TIENDA
+             ======================================================== -->
+        <div id="section-products">
+          <!-- HERO / ACCIONES PRINCIPALES -->
+          <section class="admin-action-hero">
+            <div class="action-hero-text">
+              <h1>Gestión de Productos y Precios</h1>
+              <p>Modificá cualquier información de la tienda. Al terminar, podés descargar <code>products.js</code> o publicarlo directamente a tu GitHub con un clic a costo $0.</p>
+            </div>
 
-          <div class="action-hero-buttons">
-            <button type="button" class="btn btn-success" onclick="openProductModal()">
-              ➕ Nuevo Producto
+            <div class="action-hero-buttons">
+              <button type="button" class="btn btn-success" onclick="openProductModal()">
+                ➕ Nuevo Producto
+              </button>
+              <button type="button" class="btn btn-primary" onclick="downloadProductsJs()">
+                📥 Descargar products.js
+              </button>
+              <button type="button" class="btn btn-github" onclick="publishDirectlyToGithub()" id="btn-publish-github">
+                🚀 Publicar en GitHub
+              </button>
+              <button type="button" class="btn btn-secondary" onclick="openCodePreviewModal()">
+                📋 Ver / Copiar Código
+              </button>
+              <button type="button" class="btn btn-outline" onclick="resetToOriginalCatalog()" title="Vuelve a los productos originales descartando borradores locales">
+                🔄 Restaurar Original
+              </button>
+            </div>
+          </section>
+
+          <!-- FILTROS Y BÚSQUEDA -->
+          <section class="admin-toolbar">
+            <div class="search-wrap">
+              <span class="search-icon">🔍</span>
+              <input type="text" id="admin-search-input" placeholder="Buscar por nombre, categoría o ID..." oninput="handleSearch(this.value)">
+              <button type="button" id="clear-search-btn" class="clear-search-btn" onclick="clearSearch()" style="display: none;">✕</button>
+            </div>
+
+            <div class="toolbar-filters">
+              <select id="category-filter" onchange="handleCategoryFilter(this.value)">
+                <option value="todos">Todas las categorías</option>
+              </select>
+
+              <select id="sort-filter" onchange="handleSort(this.value)">
+                <option value="default">Orden predeterminado</option>
+                <option value="price-asc">Precio: Menor a mayor</option>
+                <option value="price-desc">Precio: Mayor a menor</option>
+                <option value="name-asc">Nombre: A - Z</option>
+              </select>
+            </div>
+          </section>
+
+          <!-- LISTA / GRILLA DE PRODUCTOS -->
+          <section class="products-grid-section">
+            <div id="admin-products-list" class="admin-products-grid">
+              <!-- Inyectado dinámicamente -->
+            </div>
+
+            <div id="no-products-msg" class="empty-state" style="display: none;">
+              <div class="empty-icon">🔍</div>
+              <h3>No se encontraron productos</h3>
+              <p>Intentá con otro término de búsqueda o categoría.</p>
+              <button type="button" class="btn btn-outline" onclick="clearSearch()">Limpiar búsqueda</button>
+            </div>
+          </section>
+        </div>
+
+        <!-- ========================================================
+             SECCIÓN 2: GESTOR COMPLETO DEL PRESUPUESTADOR
+             ======================================================== -->
+        <div id="section-cotizador" style="display: none;">
+          <!-- HERO DEL PRESUPUESTADOR -->
+          <section class="admin-action-hero">
+            <div class="action-hero-text">
+              <h1>Presupuestador de Reparaciones NISSA</h1>
+              <p>Modificá absolutamente todo el cotizador: modelos de celulares, precios de reparaciones (pantallas, baterías, pines, cámaras), consolas, mandos, computadoras, WhatsApp y textos legales.</p>
+            </div>
+
+            <div class="action-hero-buttons">
+              <button type="button" class="btn btn-primary" onclick="downloadCotizadorJs()">
+                📥 Descargar cotizador-data.js
+              </button>
+              <button type="button" class="btn btn-github" onclick="publishCotizadorDirectlyToGithub()" id="btn-publish-cotizador-github">
+                🚀 Publicar en GitHub
+              </button>
+              <button type="button" class="btn btn-secondary" onclick="openCotizadorCodeModal()">
+                📋 Ver / Copiar Código
+              </button>
+              <button type="button" class="btn btn-outline" onclick="resetToOriginalCotizador()" title="Descartar borrador local y volver a tarifas originales">
+                🔄 Restaurar Original
+              </button>
+            </div>
+          </section>
+
+          <!-- SUBPESTAÑAS DE CATEGORÍA DE DISPOSITIVOS -->
+          <div class="cotizador-subtabs">
+            <button type="button" class="cotizador-subtab-btn active" id="subtab-celulares" onclick="switchCotizadorSubtab('celulares')">
+              📱 Celulares
             </button>
-            <button type="button" class="btn btn-primary" onclick="downloadProductsJs()">
-              📥 Descargar products.js
+            <button type="button" class="cotizador-subtab-btn" id="subtab-consolas" onclick="switchCotizadorSubtab('consolas')">
+              🎮 Consolas de Juegos
             </button>
-            <button type="button" class="btn btn-github" onclick="publishDirectlyToGithub()" id="btn-publish-github">
-              🚀 Publicar en GitHub
+            <button type="button" class="cotizador-subtab-btn" id="subtab-joysticks" onclick="switchCotizadorSubtab('joysticks')">
+              🕹️ Mandos / Joysticks
             </button>
-            <button type="button" class="btn btn-secondary" onclick="openCodePreviewModal()">
-              📋 Ver / Copiar Código
+            <button type="button" class="cotizador-subtab-btn" id="subtab-computadoras" onclick="switchCotizadorSubtab('computadoras')">
+              💻 Computadoras & Notebooks
             </button>
-            <button type="button" class="btn btn-outline" onclick="resetToOriginalCatalog()" title="Vuelve a los productos originales descartando borradores locales">
-              🔄 Restaurar Original
+            <button type="button" class="cotizador-subtab-btn" id="subtab-general" onclick="switchCotizadorSubtab('general')">
+              ⚙️ WhatsApp y Términos
             </button>
           </div>
-        </section>
 
-        <!-- FILTROS Y BÚSQUEDA -->
-        <section class="admin-toolbar">
-          <div class="search-wrap">
-            <span class="search-icon">🔍</span>
-            <input type="text" id="admin-search-input" placeholder="Buscar por nombre, categoría o ID..." oninput="handleSearch(this.value)">
-            <button type="button" id="clear-search-btn" class="clear-search-btn" onclick="clearSearch()" style="display: none;">✕</button>
+          <!-- BARRA DE HERRAMIENTAS Y BÚSQUEDA DEL PRESUPUESTADOR -->
+          <section class="admin-toolbar" id="cotizador-toolbar">
+            <div class="search-wrap">
+              <span class="search-icon">🔍</span>
+              <input type="text" id="cotizador-search-input" placeholder="Buscar modelo o reparación (ej: iPhone 13, A54, Drift, Pantalla)..." oninput="handleCotizadorSearch(this.value)">
+              <button type="button" id="clear-cotizador-search-btn" class="clear-search-btn" onclick="clearCotizadorSearch()" style="display: none;">✕</button>
+            </div>
+
+            <div class="toolbar-filters" id="cotizador-action-buttons">
+              <!-- Botones dinámicos inyectados por JS según subpestaña -->
+            </div>
+          </section>
+
+          <!-- BARRA DE MARCAS DE CELULARES (Visible solo en Celulares) -->
+          <div id="cotizador-brand-pills-wrap" class="brand-pills-bar" style="display: flex;">
+            <!-- Pills generadas dinámicamente -->
           </div>
 
-          <div class="toolbar-filters">
-            <select id="category-filter" onchange="handleCategoryFilter(this.value)">
-              <option value="todos">Todas las categorías</option>
-            </select>
-
-            <select id="sort-filter" onchange="handleSort(this.value)">
-              <option value="default">Orden predeterminado</option>
-              <option value="price-asc">Precio: Menor a mayor</option>
-              <option value="price-desc">Precio: Mayor a menor</option>
-              <option value="name-asc">Nombre: A - Z</option>
-            </select>
+          <!-- CONTENEDOR DINÁMICO DE CONTENIDO DEL PRESUPUESTADOR -->
+          <div id="cotizador-content-area" class="cotizador-content-area">
+            <!-- Inyectado dinámicamente por admin.js -->
           </div>
-        </section>
-
-        <!-- LISTA / GRILLA DE PRODUCTOS -->
-        <section class="products-grid-section">
-          <div id="admin-products-list" class="admin-products-grid">
-            <!-- Inyectado dinámicamente -->
-          </div>
-
-          <div id="no-products-msg" class="empty-state" style="display: none;">
-            <div class="empty-icon">🔍</div>
-            <h3>No se encontraron productos</h3>
-            <p>Intentá con otro término de búsqueda o categoría.</p>
-            <button type="button" class="btn btn-outline" onclick="clearSearch()">Limpiar búsqueda</button>
-          </div>
-        </section>
-
-      </div>
+        </div>
     </main>
 
     <!-- FOOTER DEL ADMIN -->
@@ -529,8 +610,257 @@
     </div>
   </div>
 
-  <!-- CARGA DEL ARCHIVO ORIGINAL DE PRODUCTOS -->
+  <!-- ========================================================
+       MODAL 5: AGREGAR NUEVO MODELO DE CELULAR
+       ======================================================== -->
+  <div id="modal-add-celular-model" class="modal-backdrop" style="display: none;">
+    <div class="modal-container modal-md">
+      <div class="modal-header">
+        <div>
+          <h2>➕ Nuevo Modelo de Celular</h2>
+          <span class="modal-subtitle">Agregá un modelo al presupuestador</span>
+        </div>
+        <button type="button" class="modal-close-btn" onclick="closeAddCelularModelModal()">✕</button>
+      </div>
+
+      <form onsubmit="handleCreateCelularModel(event)">
+        <div class="modal-body">
+          <div class="form-group">
+            <label for="new-model-brand">Marca: <span class="req">*</span></label>
+            <select id="new-model-brand" required>
+              <!-- Llenado dinámicamente con marcas existentes -->
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="new-model-name">Nombre del Modelo: <span class="req">*</span></label>
+            <input type="text" id="new-model-name" placeholder="Ej: iPhone 16 Pro Max, Samsung Galaxy S24, Moto G84..." required>
+          </div>
+
+          <div class="form-group" style="background: #f8fafc; border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 12px;">
+            <label class="checkbox-label">
+              <input type="checkbox" id="prefill-standard-repairs" checked>
+              <span>⚡ Pre-cargar reparaciones estándar de NISSA</span>
+            </label>
+            <p class="settings-help" style="margin-left: 26px;">
+              Crea automáticamente las reparaciones habituales: Pantalla/Módulo, Batería, Pin de carga, Cámaras (frontal y trasera), Tapa trasera y servicios no realizados (Desbloqueo / Liberación). Podrás ajustar sus precios inmediatamente.
+            </p>
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" onclick="closeAddCelularModelModal()">Cancelar</button>
+          <button type="submit" class="btn btn-primary">Crear Modelo</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ========================================================
+       MODAL 6: AGREGAR REPARACIÓN / SERVICIO
+       ======================================================== -->
+  <div id="modal-add-repair" class="modal-backdrop" style="display: none;">
+    <div class="modal-container modal-md">
+      <div class="modal-header">
+        <div>
+          <h2 id="modal-repair-title">➕ Nueva Reparación</h2>
+          <span id="modal-repair-subtitle" class="modal-subtitle">Asignar tarifa a dispositivo</span>
+        </div>
+        <button type="button" class="modal-close-btn" onclick="closeAddRepairModal()">✕</button>
+      </div>
+
+      <form onsubmit="handleSaveNewRepair(event)">
+        <input type="hidden" id="repair-target-type">
+        <input type="hidden" id="repair-target-brand">
+        <input type="hidden" id="repair-target-model-idx">
+        <input type="hidden" id="repair-target-device-id">
+
+        <div class="modal-body">
+          <div class="form-group">
+            <label for="new-repair-name">Nombre de la Reparación / Servicio: <span class="req">*</span></label>
+            <input type="text" id="new-repair-name" placeholder="Ej: 📱 Pantalla / Módulo OLED, 🔋 Batería, 🔌 Pin de carga..." required>
+          </div>
+
+          <div class="form-group">
+            <label for="new-repair-price">Precio: <span class="req">*</span></label>
+            <input type="text" id="new-repair-price" placeholder="Ej: 85000 (o '75 USD' o 'Consultar')" required>
+            <span class="form-hint">Podés ingresar un número en pesos (ej: 45000), en dólares (ej: 70 USD), o "Consultar".</span>
+          </div>
+
+          <div class="form-group">
+            <label for="new-repair-note">Aclaración / Nota de Garantía:</label>
+            <input type="text" id="new-repair-note" placeholder="Ej: Condición 100%, Garantía escrita de 30 días...">
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" onclick="closeAddRepairModal()">Cancelar</button>
+          <button type="submit" class="btn btn-primary">Agregar Reparación</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ========================================================
+       MODAL 7: AJUSTE MASIVO DE PRECIOS (%)
+       ======================================================== -->
+  <div id="modal-mass-adjust" class="modal-backdrop" style="display: none;">
+    <div class="modal-container modal-md">
+      <div class="modal-header">
+        <div>
+          <h2>⚡ Ajuste Masivo de Precios</h2>
+          <span class="modal-subtitle">Modificá tarifas por porcentaje o monto fijo en lote</span>
+        </div>
+        <button type="button" class="modal-close-btn" onclick="closeMassAdjustModal()">✕</button>
+      </div>
+
+      <form onsubmit="handleApplyMassAdjust(event)">
+        <div class="modal-body">
+          <div class="form-group">
+            <label for="mass-scope">Aplicar a:</label>
+            <select id="mass-scope" required>
+              <option value="current_brand">Marca actual seleccionada</option>
+              <option value="all_celulares">Todos los celulares (todas las marcas)</option>
+              <option value="consolas">Todas las consolas</option>
+              <option value="joysticks">Todos los joysticks</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="mass-repair-filter">Filtrar por tipo de servicio:</label>
+            <select id="mass-repair-filter" required>
+              <option value="all">Todas las reparaciones</option>
+              <option value="pantalla">Solo Pantallas / Módulos</option>
+              <option value="bateria">Solo Baterías</option>
+              <option value="pin">Solo Pin de carga</option>
+              <option value="camara">Solo Cámaras</option>
+              <option value="tapa">Solo Tapas traseras</option>
+            </select>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group flex-1">
+              <label for="mass-operation">Operación:</label>
+              <select id="mass-operation" required>
+                <option value="percent_increase">Aumentar porcentaje (+%)</option>
+                <option value="percent_decrease">Disminuir porcentaje (-%)</option>
+                <option value="fixed_increase">Sumar monto fijo (+$)</option>
+                <option value="fixed_decrease">Restar monto fijo (-$)</option>
+              </select>
+            </div>
+
+            <div class="form-group flex-1">
+              <label for="mass-value">Valor: <span class="req">*</span></label>
+              <input type="number" id="mass-value" placeholder="Ej: 10 (para 10%) o 5000" min="0" step="any" required>
+            </div>
+          </div>
+
+          <div class="settings-help" style="background: #fef3c7; border: 1px solid #fde68a; padding: 10px; border-radius: 6px; color: #92400e;">
+            ⚠️ Solo se modificarán los precios numéricos en pesos (ARS). Las tarifas marcadas como "Consultar", "NO REALIZAMOS" o en USD se mantendrán protegidas.
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" onclick="closeMassAdjustModal()">Cancelar</button>
+          <button type="submit" class="btn btn-warning">Aplicar Ajuste Masivo</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ========================================================
+       MODAL 8: NUEVA MARCA DE CELULARES
+       ======================================================== -->
+  <div id="modal-new-brand" class="modal-backdrop" style="display: none;">
+    <div class="modal-container modal-sm">
+      <div class="modal-header">
+        <div>
+          <h2>➕ Nueva Marca</h2>
+          <span class="modal-subtitle">Agregar marca al cotizador</span>
+        </div>
+        <button type="button" class="modal-close-btn" onclick="closeNewBrandModal()">✕</button>
+      </div>
+
+      <form onsubmit="handleCreateBrand(event)">
+        <div class="modal-body">
+          <div class="form-group">
+            <label for="new-brand-name">Nombre de la Marca: <span class="req">*</span></label>
+            <input type="text" id="new-brand-name" placeholder="Ej: Xiaomi, Huawei, Honor, Motorola..." required>
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" onclick="closeNewBrandModal()">Cancelar</button>
+          <button type="submit" class="btn btn-primary">Crear Marca</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ========================================================
+       MODAL 9: NUEVA CONSOLA O JOYSTICK
+       ======================================================== -->
+  <div id="modal-new-device" class="modal-backdrop" style="display: none;">
+    <div class="modal-container modal-md">
+      <div class="modal-header">
+        <div>
+          <h2 id="modal-new-device-title">➕ Nuevo Dispositivo</h2>
+          <span class="modal-subtitle">Agregar al presupuestador</span>
+        </div>
+        <button type="button" class="modal-close-btn" onclick="closeNewDeviceModal()">✕</button>
+      </div>
+
+      <form onsubmit="handleCreateDevice(event)">
+        <input type="hidden" id="new-device-type">
+        <div class="modal-body">
+          <div class="form-group">
+            <label for="new-device-name">Nombre del Dispositivo: <span class="req">*</span></label>
+            <input type="text" id="new-device-name" placeholder="Ej: Xbox Series X, Nintendo Switch OLED..." required>
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" onclick="closeNewDeviceModal()">Cancelar</button>
+          <button type="submit" class="btn btn-primary">Crear Dispositivo</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ========================================================
+       MODAL 10: VER / COPIAR CÓDIGO DE COTIZADOR-DATA.JS
+       ======================================================== -->
+  <div id="modal-cotizador-code" class="modal-backdrop" style="display: none;">
+    <div class="modal-container modal-large">
+      <div class="modal-header">
+        <div>
+          <h2>Código de <code>cotizador-data.js</code></h2>
+          <span class="modal-subtitle">Tarifas y modelos completos listos para GitHub</span>
+        </div>
+        <button type="button" class="modal-close-btn" onclick="closeCotizadorCodeModal()">✕</button>
+      </div>
+
+      <div class="modal-body">
+        <textarea id="cotizador-code-output" class="code-textarea" readonly></textarea>
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" onclick="closeCotizadorCodeModal()">
+          Cerrar
+        </button>
+        <button type="button" class="btn btn-outline" onclick="copyCotizadorGeneratedCode()">
+          📋 Copiar al Portapapeles
+        </button>
+        <button type="button" class="btn btn-primary" onclick="downloadCotizadorJs()">
+          📥 Descargar cotizador-data.js
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- CARGA DE ARCHIVOS ORIGINALES DE PRODUCTOS Y COTIZADOR -->
   <script src="/products.js"></script>
+  <script src="/cotizador-data.js"></script>
   <!-- LÓGICA COMPLETA DEL ADMINISTRADOR -->
   <script type="module" src="/admin.js"></script>
 </body>

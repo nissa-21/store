@@ -1151,4 +1151,318 @@ textarea:focus {
   .toolbar-filters select {
     flex: 1;
   }
+  .admin-top-nav {
+    width: 100%;
+    justify-content: stretch;
+  }
+  .admin-top-nav .tab-btn {
+    flex: 1;
+    text-align: center;
+  }
 }
+
+/* ========================================================
+   ESTILOS PARA EL GESTOR DEL PRESUPUESTADOR (COTIZADOR)
+   ======================================================== */
+.admin-top-nav {
+  display: inline-flex;
+  align-items: center;
+  background: #f1f5f9;
+  padding: 4px;
+  border-radius: 12px;
+  border: 1px solid var(--border);
+  gap: 4px;
+}
+
+.tab-btn {
+  background: transparent;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 8px;
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 700;
+  color: #64748b;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.tab-btn:hover {
+  color: var(--text-main);
+}
+
+.tab-btn.active {
+  background: #ffffff;
+  color: var(--primary);
+  font-weight: 800;
+  box-shadow: 0 2px 6px rgba(15, 23, 42, 0.08);
+}
+
+/* SUBPESTAÑAS DE DISPOSITIVOS */
+.cotizador-subtabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 20px;
+  padding-bottom: 12px;
+  border-bottom: 2px solid var(--border);
+}
+
+.cotizador-subtab-btn {
+  background: #ffffff;
+  border: 1px solid var(--border);
+  padding: 10px 18px;
+  border-radius: 10px;
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 700;
+  color: #475569;
+  cursor: pointer;
+  transition: all 0.18s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.cotizador-subtab-btn:hover {
+  border-color: #cbd5e1;
+  background: #f8fafc;
+  color: var(--text-main);
+}
+
+.cotizador-subtab-btn.active {
+  background: #0f172a;
+  color: #ffffff;
+  border-color: #0f172a;
+  box-shadow: 0 4px 12px rgba(15, 23, 42, 0.15);
+}
+
+/* BARRA DE MARCAS (Pills) */
+.brand-pills-bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 20px;
+  background: #ffffff;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: 12px 16px;
+}
+
+.brand-pill {
+  background: #f8fafc;
+  border: 1.5px solid var(--border);
+  color: #334155;
+  padding: 6px 14px;
+  border-radius: 100px;
+  font-family: inherit;
+  font-size: 12.5px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.18s;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.brand-pill:hover {
+  background: #f1f5f9;
+  border-color: #cbd5e1;
+}
+
+.brand-pill.active {
+  background: var(--primary);
+  border-color: var(--primary);
+  color: #ffffff;
+  box-shadow: 0 2px 8px rgba(2, 132, 199, 0.3);
+}
+
+.brand-pill-count {
+  font-size: 11px;
+  opacity: 0.85;
+  background: rgba(0, 0, 0, 0.08);
+  padding: 1px 6px;
+  border-radius: 100px;
+}
+
+.brand-pill.active .brand-pill-count {
+  background: rgba(255, 255, 255, 0.25);
+}
+
+/* TARJETAS DE MODELOS Y CONSOLAS */
+.model-card {
+  background: #ffffff;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  margin-bottom: 18px;
+  box-shadow: var(--shadow-sm);
+  overflow: hidden;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.model-card:hover {
+  border-color: #cbd5e1;
+  box-shadow: var(--shadow-md);
+}
+
+.model-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 18px;
+  background: #f8fafc;
+  border-bottom: 1px solid var(--border);
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.model-title-wrap {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.model-name-text {
+  font-size: 16px;
+  font-weight: 800;
+  color: var(--text-main);
+}
+
+.model-count-pill {
+  font-size: 11.5px;
+  font-weight: 700;
+  background: #e2e8f0;
+  color: #475569;
+  padding: 2px 8px;
+  border-radius: 100px;
+}
+
+.model-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+/* TABLA DE REPARACIONES */
+.table-responsive-wrap {
+  width: 100%;
+  overflow-x: auto;
+}
+
+.model-repairs-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.model-repairs-table th {
+  background: #ffffff;
+  text-align: left;
+  padding: 10px 16px;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: #64748b;
+  font-weight: 800;
+  border-bottom: 1px solid var(--border);
+}
+
+.model-repairs-table td {
+  padding: 10px 16px;
+  border-bottom: 1px solid #f1f5f9;
+  font-size: 13px;
+  vertical-align: middle;
+}
+
+.model-repairs-table tr:hover td {
+  background: #fafbfc;
+}
+
+.repair-inline-input {
+  width: 100%;
+  padding: 8px 10px;
+  border: 1px solid #cbd5e1;
+  border-radius: 6px;
+  font-family: inherit;
+  font-size: 13px;
+  color: var(--text-main);
+  background: #ffffff;
+  transition: all 0.15s ease;
+}
+
+.repair-inline-input:focus {
+  border-color: var(--primary);
+  outline: none;
+  box-shadow: 0 0 0 2px var(--primary-light);
+  background: #ffffff;
+}
+
+.repair-price-input {
+  max-width: 150px;
+  font-weight: 800;
+  color: #0369a1;
+}
+
+.model-card-footer {
+  padding: 12px 18px;
+  background: #fafbfc;
+  border-top: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.quick-save-indicator {
+  font-size: 11.5px;
+  color: var(--success);
+  font-weight: 700;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+/* AJUSTES GENERALES CARD */
+.cotizador-settings-card {
+  background: #ffffff;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 28px;
+  max-width: 780px;
+  box-shadow: var(--shadow-sm);
+}
+
+.settings-group {
+  margin-bottom: 22px;
+}
+
+.settings-group label {
+  font-size: 13px;
+  font-weight: 800;
+  color: var(--text-main);
+  margin-bottom: 6px;
+  display: block;
+}
+
+.settings-help {
+  font-size: 12px;
+  color: var(--text-muted);
+  margin-top: 4px;
+}
+
+.checkbox-label {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 13.5px;
+  font-weight: 700;
+  color: var(--text-main);
+  cursor: pointer;
+}
+
