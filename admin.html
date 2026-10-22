@@ -1,0 +1,533 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Panel de Administración - NISSA Catálogo y Precios</title>
+  <meta name="robots" content="noindex, nofollow">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/admin.css">
+</head>
+<body>
+
+  <!-- PANTALLA DE ACCESO / LOGIN SEGURO -->
+  <div id="login-screen" class="login-container">
+    <div class="login-card">
+      <div class="login-brand">
+        <span class="login-logo">NISSA</span>
+        <span class="login-badge">ADMIN</span>
+      </div>
+      <h2>Panel de Control de Tienda</h2>
+      <p class="login-sub">Gestión visual de productos, fotos, precios escalonados y stock para GitHub Pages.</p>
+
+      <form id="login-form" class="login-form" onsubmit="handleLogin(event)">
+        <div class="form-group">
+          <label for="admin-pass">Contraseña de administrador:</label>
+          <div class="input-with-action">
+            <input type="password" id="admin-pass" placeholder="Ingresá la contraseña..." autocomplete="current-password" required>
+            <button type="button" class="btn-toggle-pass" onclick="togglePassVisibility('admin-pass')">👁️</button>
+          </div>
+          <span class="form-hint">Por defecto: <strong>nissa2026</strong> (podés cambiarla adentro)</span>
+        </div>
+
+        <div id="login-error" class="error-msg" style="display: none;">
+          ⚠️ Contraseña incorrecta. Por favor volvé a intentarlo.
+        </div>
+
+        <button type="submit" class="btn btn-primary btn-block">
+          Ingresar al Panel ➔
+        </button>
+      </form>
+
+      <div class="login-footer">
+        <a href="/" class="login-back-link">← Volver a la tienda pública</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- APLICACIÓN PRINCIPAL DE ADMINISTRACIÓN -->
+  <div id="admin-app" class="admin-app" style="display: none;">
+    
+    <!-- NAVBAR SUPERIOR -->
+    <header class="admin-header">
+      <div class="admin-header-container">
+        <div class="admin-header-left">
+          <div class="admin-brand">
+            <span class="admin-logo">NISSA</span>
+            <span class="admin-badge">GESTOR DE TIENDA</span>
+          </div>
+          <div class="admin-meta-info">
+            <span id="product-count-badge" class="count-badge">Cargando...</span>
+            <span id="draft-indicator" class="draft-badge" style="display: none;">Borrador local activo</span>
+          </div>
+        </div>
+
+        <div class="admin-header-right">
+          <a href="/" target="_blank" class="btn btn-outline" title="Ver cómo se ve la tienda">
+            👁️ Ver Tienda Pública
+          </a>
+          <button type="button" class="btn btn-secondary" onclick="openGithubModal()" title="Configurar conexión directa con tu GitHub">
+            ⚙️ Conexión GitHub
+          </button>
+          <button type="button" class="btn btn-ghost" onclick="openPassChangeModal()" title="Cambiar clave de acceso">
+            🔑 Clave
+          </button>
+          <button type="button" class="btn btn-danger-ghost" onclick="handleLogout()" title="Cerrar sesión">
+            Salir
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <!-- ALERTA / BANNER INFORMATIVO FLOTANTE -->
+    <div id="admin-alert" class="admin-alert" style="display: none;">
+      <span id="admin-alert-text">Mensaje</span>
+      <button type="button" onclick="closeAdminAlert()" class="alert-close-btn">✕</button>
+    </div>
+
+    <!-- CONTENEDOR PRINCIPAL -->
+    <main class="admin-main">
+      <div class="admin-main-container">
+        
+        <!-- HERO / ACCIONES PRINCIPALES -->
+        <section class="admin-action-hero">
+          <div class="action-hero-text">
+            <h1>Gestión de Productos y Precios</h1>
+            <p>Modificá cualquier información de la tienda. Al terminar, podés descargar <code>products.js</code> o publicarlo directamente a tu GitHub con un clic a costo $0.</p>
+          </div>
+
+          <div class="action-hero-buttons">
+            <button type="button" class="btn btn-success" onclick="openProductModal()">
+              ➕ Nuevo Producto
+            </button>
+            <button type="button" class="btn btn-primary" onclick="downloadProductsJs()">
+              📥 Descargar products.js
+            </button>
+            <button type="button" class="btn btn-github" onclick="publishDirectlyToGithub()" id="btn-publish-github">
+              🚀 Publicar en GitHub
+            </button>
+            <button type="button" class="btn btn-secondary" onclick="openCodePreviewModal()">
+              📋 Ver / Copiar Código
+            </button>
+            <button type="button" class="btn btn-outline" onclick="resetToOriginalCatalog()" title="Vuelve a los productos originales descartando borradores locales">
+              🔄 Restaurar Original
+            </button>
+          </div>
+        </section>
+
+        <!-- FILTROS Y BÚSQUEDA -->
+        <section class="admin-toolbar">
+          <div class="search-wrap">
+            <span class="search-icon">🔍</span>
+            <input type="text" id="admin-search-input" placeholder="Buscar por nombre, categoría o ID..." oninput="handleSearch(this.value)">
+            <button type="button" id="clear-search-btn" class="clear-search-btn" onclick="clearSearch()" style="display: none;">✕</button>
+          </div>
+
+          <div class="toolbar-filters">
+            <select id="category-filter" onchange="handleCategoryFilter(this.value)">
+              <option value="todos">Todas las categorías</option>
+            </select>
+
+            <select id="sort-filter" onchange="handleSort(this.value)">
+              <option value="default">Orden predeterminado</option>
+              <option value="price-asc">Precio: Menor a mayor</option>
+              <option value="price-desc">Precio: Mayor a menor</option>
+              <option value="name-asc">Nombre: A - Z</option>
+            </select>
+          </div>
+        </section>
+
+        <!-- LISTA / GRILLA DE PRODUCTOS -->
+        <section class="products-grid-section">
+          <div id="admin-products-list" class="admin-products-grid">
+            <!-- Inyectado dinámicamente -->
+          </div>
+
+          <div id="no-products-msg" class="empty-state" style="display: none;">
+            <div class="empty-icon">🔍</div>
+            <h3>No se encontraron productos</h3>
+            <p>Intentá con otro término de búsqueda o categoría.</p>
+            <button type="button" class="btn btn-outline" onclick="clearSearch()">Limpiar búsqueda</button>
+          </div>
+        </section>
+
+      </div>
+    </main>
+
+    <!-- FOOTER DEL ADMIN -->
+    <footer class="admin-footer">
+      <div class="admin-footer-container">
+        <span>NISSA Admin Suite · 100% Compatible con GitHub Pages ($0 costo)</span>
+        <span>Archivo destino: <code>products.js</code></span>
+      </div>
+    </footer>
+
+  </div>
+
+  <!-- ========================================================
+       MODAL 1: FORMULARIO DE PRODUCTO (AGREGAR / EDITAR)
+       ======================================================== -->
+  <div id="product-modal" class="modal-backdrop" style="display: none;">
+    <div class="modal-container modal-large">
+      
+      <div class="modal-header">
+        <div>
+          <h2 id="modal-product-title">Editar Producto</h2>
+          <span class="modal-subtitle">Modificá los precios, fotos, descripciones y características</span>
+        </div>
+        <button type="button" class="modal-close-btn" onclick="closeProductModal()">✕</button>
+      </div>
+
+      <!-- TABS DE NAVEGACIÓN DENTRO DEL EDITOR -->
+      <div class="modal-tabs">
+        <button type="button" class="modal-tab active" data-tab="tab-general" onclick="switchProductTab('tab-general')">
+          🏷️ Datos & Precios
+        </button>
+        <button type="button" class="modal-tab" data-tab="tab-images" onclick="switchProductTab('tab-images')">
+          📷 Fotos & Galería
+        </button>
+        <button type="button" class="modal-tab" data-tab="tab-details" onclick="switchProductTab('tab-details')">
+          ✨ Descripción & Specs
+        </button>
+      </div>
+
+      <form id="product-form" onsubmit="saveProduct(event)">
+        <input type="hidden" id="prod-id">
+
+        <div class="modal-body">
+          
+          <!-- TAB 1: DATOS GENERALES Y PRECIOS -->
+          <div id="tab-general" class="tab-content active">
+            <div class="form-row">
+              <div class="form-group flex-2">
+                <label for="prod-name">Nombre del Producto: <span class="req">*</span></label>
+                <input type="text" id="prod-name" placeholder="Ej: Combo Cargador iPhone Apple 20W Certificado" required>
+              </div>
+
+              <div class="form-group flex-1">
+                <label for="prod-category">Categoría: <span class="req">*</span></label>
+                <input type="text" id="prod-category" list="categories-datalist" placeholder="celulares, audio, cables..." required>
+                <datalist id="categories-datalist">
+                  <option value="celulares">
+                  <option value="audio">
+                  <option value="cables">
+                  <option value="cargadores">
+                  <option value="consolas">
+                  <option value="mandos">
+                  <option value="notebooks">
+                  <option value="accesorios">
+                </datalist>
+              </div>
+
+              <div class="form-group flex-1">
+                <label for="prod-tag">Etiqueta destacada:</label>
+                <input type="text" id="prod-tag" placeholder="Ej: Más Vendido, Oferta, Nuevo">
+              </div>
+            </div>
+
+            <!-- BLOQUE DE PRECIOS ESCALONADOS -->
+            <div class="pricing-editor-card">
+              <div class="pricing-editor-title">
+                <span>💰 Escala de Precios por Cantidad</span>
+                <span class="pricing-editor-hint">Se calculan automáticamente en el cotizador y tienda</span>
+              </div>
+
+              <div class="pricing-inputs-grid">
+                <div class="price-input-box">
+                  <label for="prod-price">Precio 1 unidad (Lista): <span class="req">*</span></label>
+                  <div class="currency-input-wrap">
+                    <span class="currency-symbol">$</span>
+                    <input type="number" id="prod-price" min="0" step="100" placeholder="35000" required oninput="calculateDiscounts()">
+                  </div>
+                  <span class="price-box-tag">Precio estándar</span>
+                </div>
+
+                <div class="price-input-box">
+                  <label for="prod-price3">Desde 3 unidades:</label>
+                  <div class="currency-input-wrap">
+                    <span class="currency-symbol">$</span>
+                    <input type="number" id="prod-price3" min="0" step="100" placeholder="31000" oninput="calculateDiscounts()">
+                  </div>
+                  <span class="price-box-discount" id="disc-tag-3">-0% ahorro</span>
+                </div>
+
+                <div class="price-input-box">
+                  <label for="prod-price5">Desde 5 unidades:</label>
+                  <div class="currency-input-wrap">
+                    <span class="currency-symbol">$</span>
+                    <input type="number" id="prod-price5" min="0" step="100" placeholder="28000" oninput="calculateDiscounts()">
+                  </div>
+                  <span class="price-box-discount" id="disc-tag-5">-0% ahorro</span>
+                </div>
+
+                <div class="price-input-box wholesale">
+                  <label for="prod-price20">+20 u. (Mayorista):</label>
+                  <div class="currency-input-wrap">
+                    <span class="currency-symbol">$</span>
+                    <input type="number" id="prod-price20" min="0" step="100" placeholder="24000" oninput="calculateDiscounts()">
+                  </div>
+                  <span class="price-box-discount" id="disc-tag-20">-0% mayor</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- ESPECIFICACIÓN RÁPIDA DE GARANTÍA Y STOCK -->
+            <div class="form-row" style="margin-top: 16px;">
+              <div class="form-group flex-1">
+                <label for="prod-spec-garantia">Garantía oficial:</label>
+                <input type="text" id="prod-spec-garantia" placeholder="Ej: 90 días oficial escrita NISSA">
+              </div>
+              <div class="form-group flex-1">
+                <label for="prod-spec-stock">Disponibilidad / Stock:</label>
+                <input type="text" id="prod-spec-stock" placeholder="Ej: Stock inmediato para entrega o retiro">
+              </div>
+            </div>
+          </div>
+
+          <!-- TAB 2: FOTOS E IMÁGENES -->
+          <div id="tab-images" class="tab-content">
+            <div class="images-editor-box">
+              <div class="form-group">
+                <label for="prod-main-image">Foto Principal (Portada): <span class="req">*</span></label>
+                <div class="image-input-row">
+                  <input type="text" id="prod-main-image" placeholder="Nombre en fotos/ (ej: mi-foto.jpg) o URL https://..." required oninput="previewMainImage(this.value)">
+                  <button type="button" class="btn btn-secondary" onclick="chooseImageSuggestion()">💡 Ver sugeridas</button>
+                </div>
+                <span class="form-hint">Tip: Si guardás las fotos en la carpeta <code>fotos/</code> de tu repositorio, solo escribí el nombre del archivo (ej: <code>cargador-20w.jpg</code>). También podés pegar una URL de imagen web.</span>
+              </div>
+
+              <!-- PREVISUALIZACIÓN DE FOTO PRINCIPAL -->
+              <div class="image-preview-card">
+                <div class="image-preview-wrap">
+                  <img id="main-image-preview" src="" alt="Previsualización" onerror="handlePreviewError(this)">
+                  <span id="main-image-placeholder" class="img-placeholder">📦 Ingresá una imagen</span>
+                </div>
+                <div class="image-preview-info">
+                  <strong>Vista previa de la portada</strong>
+                  <p id="main-image-path-info">Ruta resuelta: ./fotos/...</p>
+                </div>
+              </div>
+
+              <!-- GALERÍA DE FOTOS ADICIONALES (CARRUSEL) -->
+              <div class="gallery-editor-section">
+                <div class="gallery-editor-header">
+                  <div>
+                    <label>Fotos adicionales para el carrusel de la página dedicada:</label>
+                    <span class="form-hint">Cada una de estas fotos se podrá ver en pantalla completa deslizándola con el dedo o flechas.</span>
+                  </div>
+                  <button type="button" class="btn btn-outline btn-sm" onclick="addGalleryImageInput()">
+                    ➕ Agregar Foto al Carrusel
+                  </button>
+                </div>
+
+                <div id="gallery-inputs-list" class="gallery-inputs-list">
+                  <!-- Inputs dinámicos -->
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- TAB 3: DESCRIPCIÓN Y ESPECIFICACIONES -->
+          <div id="tab-details" class="tab-content">
+            <div class="form-group">
+              <label for="prod-desc">Descripción detallada del producto:</label>
+              <textarea id="prod-desc" rows="4" placeholder="Explicá las ventajas, materiales, compatibilidad y detalles importantes para el comprador..."></textarea>
+            </div>
+
+            <!-- CARACTERÍSTICAS DESTACADAS -->
+            <div class="features-editor-section">
+              <div class="features-editor-header">
+                <div>
+                  <label>✨ Características destacadas (Viñetas):</label>
+                  <span class="form-hint">Aparecen con tilde verde en la página de compra y producto.</span>
+                </div>
+                <button type="button" class="btn btn-outline btn-sm" onclick="addFeatureInput()">
+                  ➕ Agregar Característica
+                </button>
+              </div>
+
+              <div id="features-inputs-list" class="features-inputs-list">
+                <!-- Viñetas dinámicas -->
+              </div>
+            </div>
+
+            <!-- ESPECIFICACIONES TÉCNICAS (SPECS) -->
+            <div class="specs-editor-section" style="margin-top: 20px;">
+              <div class="specs-editor-header">
+                <div>
+                  <label>📋 Especificaciones Técnicas (Ficha):</label>
+                  <span class="form-hint">Pares de dato y valor (ej: "Conectividad" -> "Bluetooth 5.0")</span>
+                </div>
+                <button type="button" class="btn btn-outline btn-sm" onclick="addSpecInput()">
+                  ➕ Agregar Especificación
+                </button>
+              </div>
+
+              <div id="specs-inputs-list" class="specs-inputs-list">
+                <!-- Pares dinámicos -->
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" onclick="closeProductModal()">
+            Cancelar
+          </button>
+          <button type="submit" class="btn btn-success">
+            💾 Guardar Cambios en Catálogo
+          </button>
+        </div>
+      </form>
+
+    </div>
+  </div>
+
+  <!-- ========================================================
+       MODAL 2: CONFIGURACIÓN DE GITHUB (API GRATUITA)
+       ======================================================== -->
+  <div id="github-modal" class="modal-backdrop" style="display: none;">
+    <div class="modal-container">
+      <div class="modal-header">
+        <div>
+          <h2>Conexión Directa con GitHub (1 Clic)</h2>
+          <span class="modal-subtitle">Permite publicar cambios sin salir del navegador y sin tocar código</span>
+        </div>
+        <button type="button" class="modal-close-btn" onclick="closeGithubModal()">✕</button>
+      </div>
+
+      <div class="modal-body">
+        <div class="github-guide-box">
+          <div class="guide-step">
+            <span class="step-num">1</span>
+            <span>Andá a tu cuenta de GitHub > <strong>Settings</strong> > <strong>Developer Settings</strong> > <strong>Personal Access Tokens</strong> > <strong>Tokens (classic)</strong>.</span>
+          </div>
+          <div class="guide-step">
+            <span class="step-num">2</span>
+            <span>Creá un token con permiso <strong>repo</strong> (o <strong>Contents: Read & write</strong>). Es 100% gratuito.</span>
+          </div>
+          <div class="guide-step">
+            <span class="step-num">3</span>
+            <span>Pegá el token y datos abajo. Se guardan <strong>únicamente en tu navegador</strong> y nunca son públicos.</span>
+          </div>
+        </div>
+
+        <form id="github-config-form" onsubmit="saveGithubConfig(event)">
+          <div class="form-group">
+            <label for="gh-owner">Usuario u Organización de GitHub: <span class="req">*</span></label>
+            <input type="text" id="gh-owner" placeholder="Ej: tu-usuario" required>
+          </div>
+
+          <div class="form-group">
+            <label for="gh-repo">Nombre del Repositorio: <span class="req">*</span></label>
+            <input type="text" id="gh-repo" placeholder="Ej: nissa-tienda o tu-repo" required>
+          </div>
+
+          <div class="form-group">
+            <label for="gh-branch">Rama (Branch):</label>
+            <input type="text" id="gh-branch" placeholder="main o master o gh-pages" value="main" required>
+          </div>
+
+          <div class="form-group">
+            <label for="gh-path">Ruta del archivo:</label>
+            <input type="text" id="gh-path" value="products.js" required>
+          </div>
+
+          <div class="form-group">
+            <label for="gh-token">Personal Access Token (PAT): <span class="req">*</span></label>
+            <div class="input-with-action">
+              <input type="password" id="gh-token" placeholder="ghp_xxxxxxxxxxxx..." autocomplete="off">
+              <button type="button" class="btn-toggle-pass" onclick="togglePassVisibility('gh-token')">👁️</button>
+            </div>
+            <span class="form-hint">Tu token queda protegido en el almacenamiento local de este navegador.</span>
+          </div>
+
+          <div id="gh-test-status" class="status-msg" style="display: none;"></div>
+
+          <div class="modal-footer" style="padding: 16px 0 0; margin-top: 16px;">
+            <button type="button" class="btn btn-outline" onclick="testGithubConnection()">
+              🔌 Probar Conexión
+            </button>
+            <button type="submit" class="btn btn-primary">
+              💾 Guardar Configuración
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================================
+       MODAL 3: VER / COPIAR CÓDIGO GENERADO DE PRODUCTS.JS
+       ======================================================== -->
+  <div id="code-modal" class="modal-backdrop" style="display: none;">
+    <div class="modal-container modal-large">
+      <div class="modal-header">
+        <div>
+          <h2>Código de <code>products.js</code></h2>
+          <span class="modal-subtitle">Contenido listo para copiar o reemplazar en GitHub</span>
+        </div>
+        <button type="button" class="modal-close-btn" onclick="closeCodeModal()">✕</button>
+      </div>
+
+      <div class="modal-body">
+        <textarea id="code-output" class="code-textarea" readonly></textarea>
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" onclick="closeCodeModal()">
+          Cerrar
+        </button>
+        <button type="button" class="btn btn-outline" onclick="copyGeneratedCode()">
+          📋 Copiar al Portapapeles
+        </button>
+        <button type="button" class="btn btn-primary" onclick="downloadProductsJs()">
+          📥 Descargar Archivo
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================================
+       MODAL 4: CAMBIAR CONTRASEÑA DE ADMINISTRADOR
+       ======================================================== -->
+  <div id="pass-modal" class="modal-backdrop" style="display: none;">
+    <div class="modal-container modal-sm">
+      <div class="modal-header">
+        <div>
+          <h2>Cambiar Contraseña</h2>
+          <span class="modal-subtitle">Actualizá la clave para ingresar a este panel</span>
+        </div>
+        <button type="button" class="modal-close-btn" onclick="closePassModal()">✕</button>
+      </div>
+
+      <form onsubmit="saveNewPass(event)">
+        <div class="modal-body">
+          <div class="form-group">
+            <label for="new-pass">Nueva contraseña:</label>
+            <input type="password" id="new-pass" placeholder="Ingresá la nueva clave..." required minlength="4">
+          </div>
+          <div class="form-group">
+            <label for="confirm-pass">Repetir nueva contraseña:</label>
+            <input type="password" id="confirm-pass" placeholder="Confirmá la nueva clave..." required minlength="4">
+          </div>
+          <div id="pass-error" class="error-msg" style="display: none;"></div>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" onclick="closePassModal()">Cancelar</button>
+          <button type="submit" class="btn btn-primary">Actualizar Clave</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- CARGA DEL ARCHIVO ORIGINAL DE PRODUCTOS -->
+  <script src="/products.js"></script>
+  <!-- LÓGICA COMPLETA DEL ADMINISTRADOR -->
+  <script src="/admin.js"></script>
+</body>
+</html>

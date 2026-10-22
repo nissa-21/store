@@ -5,11 +5,12 @@ import {defineConfig} from 'vite';
 
 export default defineConfig(() => {
   return {
-    base: './',
+    base: '/',
     build: {
       rollupOptions: {
         input: {
           main: path.resolve(__dirname, 'index.html'),
+          admin: path.resolve(__dirname, 'admin.html'),
           terminos: path.resolve(__dirname, 'terminos.html'),
           terminosCondiciones: path.resolve(__dirname, 'terminos-y-condiciones/index.html'),
           terminosCondicionesHtml: path.resolve(__dirname, 'terminos-y-condiciones.html'),
@@ -21,11 +22,15 @@ export default defineConfig(() => {
       react(),
       tailwindcss(),
       {
-        name: 'rewrite-terminos-url',
+        name: 'rewrite-routes',
         configureServer(server) {
           server.middlewares.use((req, _res, next) => {
             if (req.url === '/terminos-y-condiciones') {
               req.url = '/terminos-y-condiciones.html';
+            } else if (req.url === '/admin' || req.url === '/admin/') {
+              req.url = '/admin.html';
+            } else if (req.url && req.url.startsWith('/producto/')) {
+              req.url = '/index.html';
             }
             next();
           });

@@ -5,7 +5,7 @@
 // El sistema resolverá automáticamente la ruta "./fotos/mi-producto.jpg" para que funcione
 // perfectamente tanto en GitHub Pages como en desarrollo local.
 
-const products = [
+let products = [
   {
     id: 1,
     name: "Combo Cargador iPhone Apple 20W Original Certificado",
@@ -248,3 +248,22 @@ const products = [
     }
   }
 ];
+
+// Si existe un borrador guardado localmente desde el Panel Administrador, aplicarlo para previsualización inmediata:
+try {
+  if (typeof localStorage !== "undefined") {
+    const draft = localStorage.getItem("nissa_catalog_draft");
+    if (draft) {
+      const parsedDraft = JSON.parse(draft);
+      if (Array.isArray(parsedDraft) && parsedDraft.length > 0) {
+        products = parsedDraft;
+      }
+    }
+  }
+} catch (e) {}
+
+// Exponer en window para compatibilidad global
+if (typeof window !== "undefined") {
+  window.products = products;
+}
+

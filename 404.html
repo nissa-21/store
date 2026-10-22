@@ -20,6 +20,12 @@
         return;
       }
 
+      // Si la URL es de administración (ej: /admin)
+      if (pathname.includes("admin")) {
+        window.location.replace("/admin.html" + search + hash);
+        return;
+      }
+
       if (!pathname.includes("termino") && !pathname.includes("condicion")) {
         window.location.replace("/" + search + hash);
       }
