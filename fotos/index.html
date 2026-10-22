@@ -1,0 +1,1092 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NISSA - Tienda Online y Servicio Técnico</title>
+  <meta name="description" content="Tienda online de accesorios y tecnología NISSA con cotizador de reparaciones y calificaciones de Google.">
+  <meta property="og:title" content="NISSA - Tienda Online y Servicio Técnico">
+  <meta property="og:description" content="Tienda online de accesorios y tecnología NISSA con cotizador de reparaciones y calificaciones de Google.">
+  <meta property="og:type" content="website">
+  <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+
+<!-- ENCABEZADO / NAVBAR -->
+<header class="header">
+  <div class="header-container">
+    <a href="#inicio" class="logo" id="header-logo">NISSA</a>
+    <nav class="nav" id="nav">
+      <a href="#inicio" id="nav-inicio">Inicio</a>
+      <a href="#cotizador" id="nav-cotizador">Presupuestar</a>
+      <a href="#productos" id="nav-productos">Tienda</a>
+      <a href="#informacion" id="nav-informacion">Información</a>
+      <a href="#resenas" id="nav-resenas">Opiniones Google</a>
+      <a href="/terminos-y-condiciones" id="nav-terminos" class="nav-terms-link" onclick="goToTermsPage(); return false;">Términos y condiciones</a>
+    </nav>
+    <div class="header-actions">
+      <button class="cart-button" id="open-cart" aria-label="Abrir carrito">🛒 <span id="cart-count">0</span></button>
+      <button class="menu-button" id="menu-button" aria-label="Abrir menú" title="Menú y Términos y condiciones">☰</button>
+    </div>
+  </div>
+</header>
+
+<main id="main-content">
+  <!-- BANNER SUPERIOR DE BIENVENIDA (INICIO) -->
+  <section class="welcome-banner-section" id="inicio">
+    <div class="welcome-banner-card" id="welcome-banner">
+      <img src="./banner-nissa.jpg" alt="Servicio técnico NISSA - Reparación y desarme de iPhone 16 Pro Max en banco de trabajo profesional" class="welcome-banner-img" loading="eager" referrerPolicy="no-referrer" onerror="if (!this.dataset.retry) { this.dataset.retry = '1'; this.src = 'banner-nissa.jpg'; }">
+      <div class="welcome-banner-overlay">
+        <div class="welcome-banner-container">
+          <div class="welcome-badge">✦ BIENVENIDO A NISSA</div>
+          <h1 class="welcome-banner-title">REPARAMOS TU EQUIPO</h1>
+          <p class="welcome-banner-subtitle">Servicio técnico profesional de celulares, consolas, mandos y notebooks con hasta 90 días de garantía de laboratorio.</p>
+          <div class="welcome-banner-actions">
+            <a href="#cotizador" class="btn btn-banner-primary">Cotizar reparación ahora ➔</a>
+            <a href="#productos" class="btn btn-banner-secondary">Explorar tienda online</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========================================================
+       PRESUPUESTADOR / COTIZADOR INTEGRADO
+       ======================================================== -->
+  <section class="cotizador-section" id="cotizador" aria-label="Presupuestador de reparaciones">
+    <div class="cotizador-anchor">
+      <div id="empretienda-cotizador-widget" class="re-cotizador-container">
+        <div class="re-card">
+          
+          <!-- ENCABEZADO -->
+          <div class="re-header">
+            <div class="re-badge">⚡ SERVICIO TÉCNICO DE CONFIANZA</div>
+            <h3 class="re-title">COTIZÁ TU REPARACIÓN</h3>
+            <p class="re-subtitle">Conocé el precio estimado de tu reparación en segundos y pedí tu turno.</p>
+          </div>
+
+          <!-- PASO 1: SELECCIONAR CATEGORÍA -->
+          <div class="re-section" id="wrapper-category-selection">
+            <div class="re-section-label">1. ¿Qué equipo querés reparar?</div>
+            <div class="re-grid-categories">
+              <button type="button" class="re-btn-cat" id="cat-btn-celular" onclick="selectWidgetCategory('Celular')">
+                <span class="re-btn-icon">📱</span>
+                <span class="re-btn-text">Celular</span>
+              </button>
+              <button type="button" class="re-btn-cat" id="cat-btn-consola" onclick="selectWidgetCategory('Consola')">
+                <span class="re-btn-icon">📺</span>
+                <span class="re-btn-text">Consola</span>
+              </button>
+              <button type="button" class="re-btn-cat" id="cat-btn-mando" onclick="selectWidgetCategory('Mando')">
+                <span class="re-btn-icon">🕹️</span>
+                <span class="re-btn-text">Mando</span>
+              </button>
+              <button type="button" class="re-btn-cat" id="cat-btn-computadora" onclick="selectWidgetCategory('Computadora')">
+                <span class="re-btn-icon">💻</span>
+                <span class="re-btn-text">PC / Notebook</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- HISTORIAL DE SELECCIÓN -->
+          <div id="selection-history-bar" style="display: none; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px; background-color: #f8fafc; border: 1px solid #e2e8f0; border-radius: 10px; padding: 6px 12px; color: #334155;">
+            <div id="re-selection-pills-container" style="display: flex; flex-wrap: wrap; align-items: center; gap: 6px;"></div>
+            <button type="button" onclick="resetWidget()" style="background-color: transparent; border: none; color: #94a3b8; font-size: 10px; font-weight: 700; cursor: pointer; text-transform: uppercase; padding: 2px 6px; margin-left: auto;">Reiniciar ↺</button>
+          </div>
+
+          <!-- SECCIÓN CELULARES -->
+          <div id="section-celular" class="re-device-section" style="display: none;">
+            <div class="re-sub-section" id="wrapper-brand-selection">
+              <div class="re-section-label">Marca de tu celular</div>
+              <div id="re-brand-selected-badge" style="display: none; justify-content: space-between; align-items: center; padding: 10px 16px; background-color: #eff6ff; border: 2px solid #bfdbfe; border-radius: 12px;">
+                <div style="display: flex; align-items: center; gap: 8px;">
+                  <span style="font-size: 9px; font-weight: 900; background-color: #2563eb; color: #ffffff; padding: 3px 8px; border-radius: 6px; text-transform: uppercase; letter-spacing: 0.05em;">Marca</span>
+                  <span id="re-selected-brand-name" style="font-size: 13px; font-weight: 800; color: #1e3a8a;"></span>
+                </div>
+                <button type="button" onclick="changeBrand()" style="font-size: 11px; font-weight: 800; color: #2563eb; background: none; border: none; cursor: pointer; text-transform: uppercase;">Cambiar</button>
+              </div>
+              <div class="re-grid-buttons" id="widget-brands-grid"></div>
+            </div>
+
+            <div class="re-sub-section" id="wrapper-dropdown-modelo" style="display: none;">
+              <div class="re-section-label">Modelo de celular</div>
+              <div class="re-relative">
+                <input type="text" id="widget-model-search" placeholder="Buscá tu modelo (ej: iPhone 13, A54, Moto G54)..." onfocus="showModelDropdown(true)" oninput="filterModels()">
+                <span class="re-search-icon">🔍</span>
+                <button type="button" class="re-dropdown-toggle" onclick="toggleModelDropdown()">▼</button>
+                <div id="widget-model-dropdown" class="re-dropdown" style="display: none;"></div>
+              </div>
+            </div>
+
+            <div id="wrapper-custom-celular" style="display: none; width: 100%;">
+              <!-- TARJETA COMPACTA DE EQUIPO PERSONALIZADO CUANDO AVANZÓ -->
+              <div id="re-custom-phone-selected-badge" class="re-selected-summary-badge" style="display: none; margin-bottom: 12px;">
+                <div class="re-selected-summary-left">
+                  <div class="re-selected-check-icon">✓</div>
+                  <div class="re-selected-info-text">
+                    <span class="re-selected-tag">Equipo a cotizar</span>
+                    <h4 class="re-selected-name" id="re-custom-selected-title"></h4>
+                    <span class="re-selected-sub">Marca y modelo ingresados</span>
+                  </div>
+                </div>
+                <button type="button" class="re-change-btn" onclick="editCustomPhone()">Cambiar</button>
+              </div>
+
+              <!-- CAMPOS DE TEXTO PARA MARCA Y MODELO -->
+              <div id="re-custom-inputs-box">
+                <div class="re-custom-inputs">
+                  <div>
+                    <div class="re-section-label">Marca de tu celular</div>
+                    <input type="text" id="custom-brand" placeholder="Ej: Xiaomi, LG, Realme, etc." oninput="customInputChanged()" onkeydown="if(event.key==='Enter') advanceCustomPhone()">
+                  </div>
+                  <div>
+                    <div class="re-section-label">Modelo específico</div>
+                    <input type="text" id="custom-model" placeholder="Ej: Redmi Note 13, G8, Poco, etc." oninput="customInputChanged()" onkeydown="if(event.key==='Enter') advanceCustomPhone()">
+                  </div>
+                </div>
+                <button type="button" class="re-btn-submit" id="btn-custom-advance" onclick="advanceCustomPhone()" style="display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%; height: 48px; margin-top: 10px; border-radius: 14px; font-weight: 800; font-size: 13px; text-transform: uppercase;">
+                  <span>Avanzar a seleccionar reparación</span>
+                  <span style="font-size: 15px;">➔</span>
+                </button>
+              </div>
+            </div>
+
+            <div id="wrapper-phone-repairs-section" class="re-sub-section" style="display: none;">
+              <div class="re-section-label" id="phone-repairs-label">¿Qué reparación necesita tu equipo?</div>
+              <!-- TARJETA COMPACTA DE REPARACIÓN SELECCIONADA -->
+              <div id="re-phone-repair-selected-badge" class="re-selected-summary-badge" style="display: none;">
+                <div class="re-selected-summary-left">
+                  <div class="re-selected-check-icon">✓</div>
+                  <div class="re-selected-info-text">
+                    <span class="re-selected-tag">Reparación seleccionada</span>
+                    <h4 class="re-selected-name" id="re-selected-phone-repair-name"></h4>
+                    <span class="re-selected-sub" id="re-selected-phone-repair-note"></span>
+                  </div>
+                </div>
+                <button type="button" class="re-change-btn" onclick="changePhoneRepair()">Cambiar</button>
+              </div>
+              <div class="re-grid-repairs" id="widget-phone-repairs-grid"></div>
+            </div>
+          </div>
+
+          <!-- SECCIÓN CONSOLAS -->
+          <div id="section-consola" class="re-device-section" style="display: none;">
+            <div class="re-sub-section" id="wrapper-console-selection">
+              <div class="re-section-label">Elegí tu consola PlayStation</div>
+              <div class="re-grid-consoles" id="widget-consoles-grid"></div>
+            </div>
+            <div class="re-sub-section" id="wrapper-console-services" style="display: none;">
+              <div class="re-section-label" id="console-services-label">Servicios disponibles para tu consola</div>
+              <!-- TARJETA COMPACTA DE SERVICIO DE CONSOLA SELECCIONADO -->
+              <div id="re-console-service-selected-badge" class="re-selected-summary-badge" style="display: none;">
+                <div class="re-selected-summary-left">
+                  <div class="re-selected-check-icon">✓</div>
+                  <div class="re-selected-info-text">
+                    <span class="re-selected-tag">Servicio seleccionado</span>
+                    <h4 class="re-selected-name" id="re-selected-console-service-name"></h4>
+                    <span class="re-selected-sub" id="re-selected-console-service-note"></span>
+                  </div>
+                </div>
+                <button type="button" class="re-change-btn" onclick="changeConsoleService()">Cambiar</button>
+              </div>
+              <div class="re-grid-services" id="console-services-list"></div>
+            </div>
+          </div>
+
+          <!-- SECCIÓN MANDOS -->
+          <div id="section-mando" class="re-device-section" style="display: none;">
+            <div class="re-sub-section" id="wrapper-mando-selection">
+              <div class="re-section-label">Elegí tu modelo de mando</div>
+              <div class="re-grid-buttons" id="widget-controllers-grid"></div>
+            </div>
+            <div class="re-sub-section" id="wrapper-controller-services" style="display: none;">
+              <div class="re-section-label" id="mando-services-label">Servicios de reparación y calibración</div>
+              <!-- TARJETA COMPACTA DE SERVICIO DE MANDO SELECCIONADO -->
+              <div id="re-mando-service-selected-badge" class="re-selected-summary-badge" style="display: none;">
+                <div class="re-selected-summary-left">
+                  <div class="re-selected-check-icon">✓</div>
+                  <div class="re-selected-info-text">
+                    <span class="re-selected-tag">Servicio seleccionado</span>
+                    <h4 class="re-selected-name" id="re-selected-mando-service-name"></h4>
+                    <span class="re-selected-sub" id="re-selected-mando-service-note"></span>
+                  </div>
+                </div>
+                <button type="button" class="re-change-btn" onclick="changeMandoService()">Cambiar</button>
+              </div>
+              <div class="re-grid-services" id="controller-services-list"></div>
+            </div>
+          </div>
+
+          <!-- SECCIÓN COMPUTADORAS -->
+          <div id="section-computadora" class="re-device-section" style="display: none;">
+            <div class="re-sub-section" id="wrapper-comp-services">
+              <div class="re-section-label" id="comp-services-label">Servicios para PC y Notebooks (Mantenimiento y Upgrades)</div>
+              <!-- TARJETA COMPACTA DE SERVICIO DE PC SELECCIONADO -->
+              <div id="re-comp-service-selected-badge" class="re-selected-summary-badge" style="display: none;">
+                <div class="re-selected-summary-left">
+                  <div class="re-selected-check-icon">✓</div>
+                  <div class="re-selected-info-text">
+                    <span class="re-selected-tag">Servicio seleccionado</span>
+                    <h4 class="re-selected-name" id="re-selected-comp-service-name"></h4>
+                    <span class="re-selected-sub" id="re-selected-comp-service-note"></span>
+                  </div>
+                </div>
+                <button type="button" class="re-change-btn" onclick="changeCompService()">Cambiar</button>
+              </div>
+              <div class="re-grid-services" id="pc-services-grid"></div>
+            </div>
+          </div>
+
+          <!-- ÚLTIMO PASO: SELECCIÓN DE TIEMPO DE GARANTÍA -->
+          <div id="wrapper-garantia-selection" class="re-sub-section" style="display: none; margin-top: 14px;">
+            <div class="re-section-label" style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px;">
+              <span>🛡️ Tiempo de Garantía para tu reparación:</span>
+              <span style="font-size: 10px; font-weight: 800; background: #e0f2fe; color: #0284c7; padding: 2px 8px; border-radius: 6px; text-transform: uppercase;">Último paso</span>
+            </div>
+            <div class="re-garantias-grid" id="widget-garantias-grid"></div>
+          </div>
+
+          <!-- CAJA DE RESUMEN DE PRESUPUESTO -->
+          <div id="budget-summary-box" class="re-summary-container" style="display: none;">
+            <div class="re-summary-card">
+              <div class="re-summary-details">
+                <div class="re-summary-badge-ok">✓ PRESUPUESTO ESTIMADO</div>
+                <h4 id="summary-title" class="re-summary-title"></h4>
+                <p id="summary-desc" class="re-summary-desc"></p>
+                <div style="display: flex; flex-wrap: wrap; gap: 6px; align-items: center; margin-top: 4px;">
+                  <div id="summary-badge" class="re-summary-tag"></div>
+                  <div id="summary-warranty-badge" class="re-summary-tag" style="background-color: #fef3c7; border-color: #fde68a; color: #92400e;"></div>
+                </div>
+              </div>
+              <div class="re-summary-price-box">
+                <span class="re-summary-price-lbl">Total Estimado</span>
+                <span id="summary-price" class="re-summary-price"></span>
+                <span class="re-summary-price-sub" id="summary-warranty-sub">✓ Revisión física sin costo</span>
+              </div>
+            </div>
+
+            <div class="re-disclaimer-box">
+              <span class="re-disclaimer-icon">ℹ</span>
+              <p>Este presupuesto es de referencia y está sujeto a confirmación tras la revisión física en nuestro local. No cobramos costo de revisión ni desarme.</p>
+            </div>
+
+            <!-- CHECKBOX DE ACEPTACIÓN DE TÉRMINOS Y CONDICIONES (COMPACTO) -->
+            <div class="re-terms-container">
+              <label id="re-terms-box" class="re-terms-consent-box is-accepted" for="re-terms-checkbox">
+                <input type="checkbox" id="re-terms-checkbox" class="re-terms-checkbox" checked onchange="handleTermsConsentChange()">
+                <span class="re-terms-custom-check" aria-hidden="true"></span>
+                <span class="re-terms-text">
+                  Leí, entiendo y acepto los <a href="/terminos-y-condiciones" class="re-terms-link" onclick="goToTermsPage(); return false;">términos y condiciones</a>
+                </span>
+              </label>
+              <div id="re-terms-warning" class="re-terms-warning" style="display: none;">
+                ⚠️ Debes aceptar los términos y condiciones antes de enviar el presupuesto.
+              </div>
+            </div>
+
+            <div class="re-actions">
+              <button type="button" id="btn-submit-widget" class="re-btn-submit" onclick="sendWidgetWhatsApp()">
+                <svg class="re-wa-svg" viewBox="0 0 24 24">
+                  <path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946C.06 5.348 5.397.01 11.966.01c3.179.001 6.169 1.24 8.409 3.485 2.24 2.246 3.473 5.239 3.471 8.417-.004 6.616-5.34 11.954-11.91 11.954a11.91 11.91 0 0 1-5.69-1.444L0 24zm5.824-3.482l.415.247a9.92 9.92 0 0 0 5.174 1.456c5.825 0 10.563-4.73 10.567-10.548.002-2.822-1.096-5.474-3.09-7.472-1.995-2-4.65-3.1-7.468-3.102-5.83 0-10.57 4.73-10.574 10.551a10.5 10.5 0 0 0 1.426 5.142l.271.431-1.01 3.687 3.791-.995z"/>
+                </svg>
+                <span id="re-btn-text">Enviar Presupuesto por WhatsApp</span>
+              </button>
+              <button type="button" class="re-btn-clear" onclick="resetWidget()">
+                Limpiar
+              </button>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========================================================
+       TIENDA ONLINE
+       ======================================================== -->
+  <section class="products-section" id="productos">
+    <div class="section-header">
+      <div>
+        <h2>Tienda Online</h2>
+        <p>Precios por unidad y descuentos automáticos por cantidad (Desde 3, Desde 5 y +20 u.).</p>
+      </div>
+      <div class="search-container">
+        <input type="text" id="search-input" placeholder="Buscar productos en la tienda...">
+      </div>
+    </div>
+
+    <div class="products-divider">
+      <span class="section-tag">CATÁLOGO</span>
+      <h3>Explorá por categoría</h3>
+    </div>
+
+    <div class="categories" id="categories">
+      <button class="category active" data-category="todos" id="cat-tab-todos">Todos</button>
+      <button class="category" data-category="celulares" id="cat-tab-celulares">Celulares</button>
+      <button class="category" data-category="audio" id="cat-tab-audio">Audio</button>
+      <button class="category" data-category="accesorios" id="cat-tab-accesorios">Accesorios</button>
+      <button class="category" data-category="gaming" id="cat-tab-gaming">Gaming</button>
+    </div>
+
+    <div class="products-grid" id="products-grid"></div>
+  </section>
+
+  <!-- ========================================================
+       INFORMACIÓN Y GARANTÍA
+       ======================================================== -->
+  <section class="info-section" id="informacion">
+    <div class="info-container">
+      <div class="section-tag">INFORMACIÓN</div>
+      <h2>Todo lo que necesitás saber</h2>
+      <div class="info-grid">
+        <article class="info-card" id="info-garantia">
+          <span class="info-icon">🛡️</span>
+          <div>
+            <h3>Garantía Oficial de Reparaciones y Productos</h3>
+            <p>Reparaciones con 30 días de garantía estándar (opción de 3 días o extensible a 90 días). Productos con 15 días corridos de garantía oficial escrita.</p>
+          </div>
+        </article>
+        <article class="info-card" id="info-compras">
+          <span class="info-icon">🛒</span>
+          <div>
+            <h3>Precios por Volumen</h3>
+            <p>Los precios publicados corresponden a las cantidades seleccionadas. Al aumentar las unidades en el carrito, se aplica automáticamente la tarifa mayorista correspondiente.</p>
+          </div>
+        </article>
+        <article class="info-card" id="info-consultas">
+          <span class="info-icon">💬</span>
+          <div>
+            <h3>¿Tenés una consulta?</h3>
+            <p>Escribinos directamente por WhatsApp para consultar stock inmediato, compatibilidad con tu modelo o coordinar la entrega en el día.</p>
+          </div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========================================================
+       WIDGET DE RESEÑAS DE GOOGLE (CÓDIGO ORIGINAL PROVISTO)
+       ======================================================== -->
+  <section class="reviews-section" id="resenas">
+    <div id="empretienda-google-reviews-root" style="font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #ffffff; color: #0f172a; padding: 40px 24px; border-radius: 24px; box-sizing: border-box; width: 100%; max-width: 1200px; margin: 30px auto; border: 1px solid #e2e8f0; box-shadow: 0 4px 20px rgba(0,0,0,0.05); overflow: hidden;">
+      
+      <!-- Encabezado del Widget -->
+      <div style="display: flex; flex-direction: column; justify-content: space-between; gap: 20px; margin-bottom: 30px; border-bottom: 1px solid #e2e8f0; padding-bottom: 24px; text-align: left;">
+        <div style="flex: 1;">
+          <div style="display: flex; align-items: center; gap: 8px; color: #0ea5e9; font-weight: 700; font-size: 13px; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 8px;">
+            <svg style="width: 16px; height: 16px; fill: none;" viewBox="0 0 24 24">
+              <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
+              <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
+              <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z" fill="#FBBC05"/>
+              <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z" fill="#EA4335"/>
+            </svg>
+            Calificaciones de NISSA.COM.AR
+          </div>
+          <h3 style="font-size: 24px; font-weight: 800; margin: 0; color: #0f172a; letter-spacing: -0.02em;">Nuestros clientes nos recomiendan</h3>
+          <p style="font-size: 14px; color: #475569; margin: 6px 0 0 0;">Opiniones 100% verídicas que garantizan nuestro compromiso y servicio.</p>
+        </div>
+
+        <!-- Tarjeta de Rating -->
+        <div style="display: flex; align-items: center; gap: 16px; background: #f8fafc; border: 1px solid #e2e8f0; padding: 12px 18px; border-radius: 16px; align-self: flex-start; box-sizing: border-box;">
+          <div style="display: flex; flex-direction: column; align-items: center; border-right: 1px solid #e2e8f0; padding-right: 16px;">
+            <span style="font-size: 26px; font-weight: 900; color: #0f172a; line-height: 1;">5.0</span>
+            <span style="font-size: 9px; font-weight: 700; color: #475569; text-transform: uppercase; margin-top: 4px; letter-spacing: 0.05em;">Excelente</span>
+          </div>
+          <div>
+            <div style="display: flex; gap: 2px; color: #f59e0b; margin-bottom: 4px;">
+              <svg style="width: 14px; height: 14px; fill: #f59e0b;" viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg><svg style="width: 14px; height: 14px; fill: #f59e0b;" viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg><svg style="width: 14px; height: 14px; fill: #f59e0b;" viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg><svg style="width: 14px; height: 14px; fill: #f59e0b;" viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg><svg style="width: 14px; height: 14px; fill: #f59e0b;" viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+            </div>
+            <div style="font-size: 12px; color: #475569; font-weight: 500;">
+              Basado en <strong style="color: #0f172a; font-weight: 700;">reseñas de Google</strong>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Contenedor del Carrusel -->
+      <div style="position: relative; width: 100%; box-sizing: border-box;">
+        <div style="overflow: hidden; width: 100%;">
+          <div id="google-reviews-carousel-track" style="display: flex; transition: transform 0.4s cubic-bezier(0.25, 1, 0.5, 1); width: 100%; gap: 16px; box-sizing: border-box; padding: 4px 0;">
+            
+            <!-- Reseña 1 -->
+            <div class="google-review-slide" style="flex: 0 0 100%; min-width: 0; box-sizing: border-box; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 20px; padding: 20px; display: flex; flex-direction: column; justify-content: space-between;">
+              <div>
+                <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 12px;">
+                  <div style="width: 36px; height: 36px; border-radius: 50%; background: #e0f2fe; color: #0369a1; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 13px; flex-shrink: 0;">CM</div>
+                  <div style="text-align: left;">
+                    <h4 style="font-size: 13px; font-weight: 700; margin: 0; color: #0f172a;">Carlos Mendoza</h4>
+                    <div style="display: flex; align-items: center; gap: 4px; margin-top: 2px;">
+                      <span style="font-size: 8px; background: #fffbeb; color: #b45309; border: 1px solid #fde68a; padding: 1px 4px; border-radius: 4px; font-weight: 600;">Local Guide</span>
+                      <span style="font-size: 8px; color: #475569;">• Hace 1 semana</span>
+                    </div>
+                  </div>
+                </div>
+                <div style="display: flex; gap: 2px; color: #f59e0b; margin-bottom: 10px;">
+                  <svg style="width: 12px; height: 12px; fill: #f59e0b;" viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg><svg style="width: 12px; height: 12px; fill: #f59e0b;" viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg><svg style="width: 12px; height: 12px; fill: #f59e0b;" viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg><svg style="width: 12px; height: 12px; fill: #f59e0b;" viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg><svg style="width: 12px; height: 12px; fill: #f59e0b;" viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+                </div>
+                <p style="font-size: 13px; color: #334155; line-height: 1.5; margin: 0; font-style: italic; text-align: left;">
+                  "Increíble servicio. Me cambiaron el módulo de mi Samsung en menos de una hora y el celular quedó como nuevo. Lo mejor de todo es que el presupuesto en la web fue exactamente lo que me cobraron. ¡Súper profesionales!"
+                </p>
+              </div>
+              <div style="display: flex; align-items: center; justify-content: space-between; font-size: 10px; color: #475569; margin-top: 16px; border-top: 1px solid #e2e8f0; padding-top: 12px;">
+                <span style="display: flex; align-items: center; gap: 4px;">Google Maps</span>
+                <span style="color: #10b981; font-weight: 600;">✓ Verificada</span>
+              </div>
+            </div>
+
+            <!-- Reseña 2 -->
+            <div class="google-review-slide" style="flex: 0 0 100%; min-width: 0; box-sizing: border-box; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 20px; padding: 20px; display: flex; flex-direction: column; justify-content: space-between;">
+              <div>
+                <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 12px;">
+                  <div style="width: 36px; height: 36px; border-radius: 50%; background: #d1fae5; color: #065f46; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 13px; flex-shrink: 0;">VG</div>
+                  <div style="text-align: left;">
+                    <h4 style="font-size: 13px; font-weight: 700; margin: 0; color: #0f172a;">Valeria Gómez</h4>
+                    <div style="display: flex; align-items: center; gap: 4px; margin-top: 2px;">
+                      <span style="font-size: 8px; background: #e2e8f0; color: #475569; padding: 1px 4px; border-radius: 4px; font-weight: 600;">Cliente</span>
+                      <span style="font-size: 8px; color: #475569;">• Hace 3 días</span>
+                    </div>
+                  </div>
+                </div>
+                <div style="display: flex; gap: 2px; color: #f59e0b; margin-bottom: 10px;">
+                  <svg style="width: 12px; height: 12px; fill: #f59e0b;" viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg><svg style="width: 12px; height: 12px; fill: #f59e0b;" viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg><svg style="width: 12px; height: 12px; fill: #f59e0b;" viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg><svg style="width: 12px; height: 12px; fill: #f59e0b;" viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg><svg style="width: 12px; height: 12px; fill: #f59e0b;" viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+                </div>
+                <p style="font-size: 13px; color: #334155; line-height: 1.5; margin: 0; font-style: italic; text-align: left;">
+                  "Llevé mi iPhone porque no cargaba y en otros lados me cobraban una fortuna. Aquí lo revisaron frente a mí, era suciedad en el pin de carga y me cobraron súper barato. Honestidad al 100%."
+                </p>
+              </div>
+              <div style="display: flex; align-items: center; justify-content: space-between; font-size: 10px; color: #475569; margin-top: 16px; border-top: 1px solid #e2e8f0; padding-top: 12px;">
+                <span style="display: flex; align-items: center; gap: 4px;">Google Maps</span>
+                <span style="color: #10b981; font-weight: 600;">✓ Verificada</span>
+              </div>
+            </div>
+
+            <!-- Reseña 3 -->
+            <div class="google-review-slide" style="flex: 0 0 100%; min-width: 0; box-sizing: border-box; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 20px; padding: 20px; display: flex; flex-direction: column; justify-content: space-between;">
+              <div>
+                <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 12px;">
+                  <div style="width: 36px; height: 36px; border-radius: 50%; background: #ede9fe; color: #6d28d9; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 13px; flex-shrink: 0;">SP</div>
+                  <div style="text-align: left;">
+                    <h4 style="font-size: 13px; font-weight: 700; margin: 0; color: #0f172a;">Santiago Peralta</h4>
+                    <div style="display: flex; align-items: center; gap: 4px; margin-top: 2px;">
+                      <span style="font-size: 8px; background: #fffbeb; color: #b45309; border: 1px solid #fde68a; padding: 1px 4px; border-radius: 4px; font-weight: 600;">Local Guide</span>
+                      <span style="font-size: 8px; color: #475569;">• Hace 2 semanas</span>
+                    </div>
+                  </div>
+                </div>
+                <div style="display: flex; gap: 2px; color: #f59e0b; margin-bottom: 10px;">
+                  <svg style="width: 12px; height: 12px; fill: #f59e0b;" viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg><svg style="width: 12px; height: 12px; fill: #f59e0b;" viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg><svg style="width: 12px; height: 12px; fill: #f59e0b;" viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg><svg style="width: 12px; height: 12px; fill: #f59e0b;" viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg><svg style="width: 12px; height: 12px; fill: #f59e0b;" viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+                </div>
+                <p style="font-size: 13px; color: #334155; line-height: 1.5; margin: 0; font-style: italic; text-align: left;">
+                  "Excelente atención de los técnicos. Repararon el mantenimiento y cambio de metal líquido de mi PS5. Quedó silenciosa y perfecta. Sin dudas mi taller de confianza."
+                </p>
+              </div>
+              <div style="display: flex; align-items: center; justify-content: space-between; font-size: 10px; color: #475569; margin-top: 16px; border-top: 1px solid #e2e8f0; padding-top: 12px;">
+                <span style="display: flex; align-items: center; gap: 4px;">Google Maps</span>
+                <span style="color: #10b981; font-weight: 600;">✓ Verificada</span>
+              </div>
+            </div>
+
+            <!-- Reseña 4 -->
+            <div class="google-review-slide" style="flex: 0 0 100%; min-width: 0; box-sizing: border-box; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 20px; padding: 20px; display: flex; flex-direction: column; justify-content: space-between;">
+              <div>
+                <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 12px;">
+                  <div style="width: 36px; height: 36px; border-radius: 50%; background: #ffe4e6; color: #9f1239; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 13px; flex-shrink: 0;">MS</div>
+                  <div style="text-align: left;">
+                    <h4 style="font-size: 13px; font-weight: 700; margin: 0; color: #0f172a;">Mariana Silva</h4>
+                    <div style="display: flex; align-items: center; gap: 4px; margin-top: 2px;">
+                      <span style="font-size: 8px; background: #e2e8f0; color: #475569; padding: 1px 4px; border-radius: 4px; font-weight: 600;">Cliente</span>
+                      <span style="font-size: 8px; color: #475569;">• Hace 1 mes</span>
+                    </div>
+                  </div>
+                </div>
+                <div style="display: flex; gap: 2px; color: #f59e0b; margin-bottom: 10px;">
+                  <svg style="width: 12px; height: 12px; fill: #f59e0b;" viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg><svg style="width: 12px; height: 12px; fill: #f59e0b;" viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg><svg style="width: 12px; height: 12px; fill: #f59e0b;" viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg><svg style="width: 12px; height: 12px; fill: #f59e0b;" viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg><svg style="width: 12px; height: 12px; fill: #f59e0b;" viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+                </div>
+                <p style="font-size: 13px; color: #334155; line-height: 1.5; margin: 0; font-style: italic; text-align: left;">
+                  "Recomiendo totalmente al equipo de NISSA STORE. Compré el pack de cargador 20W y me repararon la pantalla de un Moto G54 en el día. Servicio de primer nivel."
+                </p>
+              </div>
+              <div style="display: flex; align-items: center; justify-content: space-between; font-size: 10px; color: #475569; margin-top: 16px; border-top: 1px solid #e2e8f0; padding-top: 12px;">
+                <span style="display: flex; align-items: center; gap: 4px;">Google Maps</span>
+                <span style="color: #10b981; font-weight: 600;">✓ Verificada</span>
+              </div>
+            </div>
+
+            <!-- Reseña 5 -->
+            <div class="google-review-slide" style="flex: 0 0 100%; min-width: 0; box-sizing: border-box; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 20px; padding: 20px; display: flex; flex-direction: column; justify-content: space-between;">
+              <div>
+                <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 12px;">
+                  <div style="width: 36px; height: 36px; border-radius: 50%; background: #e0e7ff; color: #3730a3; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 13px; flex-shrink: 0;">ER</div>
+                  <div style="text-align: left;">
+                    <h4 style="font-size: 13px; font-weight: 700; margin: 0; color: #0f172a;">Esteban Rinaldi</h4>
+                    <div style="display: flex; align-items: center; gap: 4px; margin-top: 2px;">
+                      <span style="font-size: 8px; background: #e2e8f0; color: #475569; padding: 1px 4px; border-radius: 4px; font-weight: 600;">Cliente</span>
+                      <span style="font-size: 8px; color: #475569;">• Hace 5 días</span>
+                    </div>
+                  </div>
+                </div>
+                <div style="display: flex; gap: 2px; color: #f59e0b; margin-bottom: 10px;">
+                  <svg style="width: 12px; height: 12px; fill: #f59e0b;" viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg><svg style="width: 12px; height: 12px; fill: #f59e0b;" viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg><svg style="width: 12px; height: 12px; fill: #f59e0b;" viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg><svg style="width: 12px; height: 12px; fill: #f59e0b;" viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg><svg style="width: 12px; height: 12px; fill: #f59e0b;" viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+                </div>
+                <p style="font-size: 13px; color: #334155; line-height: 1.5; margin: 0; font-style: italic; text-align: left;">
+                  "La mejor experiencia en reparación de tecnología. Me instalaron analógicos magnéticos Hall Effect en el joystick de PS5 y nunca más drift. Impecable."
+                </p>
+              </div>
+              <div style="display: flex; align-items: center; justify-content: space-between; font-size: 10px; color: #475569; margin-top: 16px; border-top: 1px solid #e2e8f0; padding-top: 12px;">
+                <span style="display: flex; align-items: center; gap: 4px;">Google Maps</span>
+                <span style="color: #10b981; font-weight: 600;">✓ Verificada</span>
+              </div>
+            </div>
+
+            <!-- Reseña 6 -->
+            <div class="google-review-slide" style="flex: 0 0 100%; min-width: 0; box-sizing: border-box; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 20px; padding: 20px; display: flex; flex-direction: column; justify-content: space-between;">
+              <div>
+                <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 12px;">
+                  <div style="width: 36px; height: 36px; border-radius: 50%; background: #fef3c7; color: #92400e; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 13px; flex-shrink: 0;">CO</div>
+                  <div style="text-align: left;">
+                    <h4 style="font-size: 13px; font-weight: 700; margin: 0; color: #0f172a;">Camila Ortiz</h4>
+                    <div style="display: flex; align-items: center; gap: 4px; margin-top: 2px;">
+                      <span style="font-size: 8px; background: #e2e8f0; color: #475569; padding: 1px 4px; border-radius: 4px; font-weight: 600;">Cliente</span>
+                      <span style="font-size: 8px; color: #475569;">• Hace 4 días</span>
+                    </div>
+                  </div>
+                </div>
+                <div style="display: flex; gap: 2px; color: #f59e0b; margin-bottom: 10px;">
+                  <svg style="width: 12px; height: 12px; fill: #f59e0b;" viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg><svg style="width: 12px; height: 12px; fill: #f59e0b;" viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg><svg style="width: 12px; height: 12px; fill: #f59e0b;" viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg><svg style="width: 12px; height: 12px; fill: #f59e0b;" viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg><svg style="width: 12px; height: 12px; fill: #f59e0b;" viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+                </div>
+                <p style="font-size: 13px; color: #334155; line-height: 1.5; margin: 0; font-style: italic; text-align: left;">
+                  "Súper rápidos y eficientes. Repararon el pin de carga y el parlante de mi teléfono el mismo día. Me encantó la prolijidad del taller y la calidez del trato."
+                </p>
+              </div>
+              <div style="display: flex; align-items: center; justify-content: space-between; font-size: 10px; color: #475569; margin-top: 16px; border-top: 1px solid #e2e8f0; padding-top: 12px;">
+                <span style="display: flex; align-items: center; gap: 4px;">Google Maps</span>
+                <span style="color: #10b981; font-weight: 600;">✓ Verificada</span>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- Botones de Control -->
+        <button id="google-review-prev" style="position: absolute; top: 50%; left: -12px; transform: translateY(-50%); width: 36px; height: 36px; border-radius: 50%; background: #ffffff; border: 1px solid #e2e8f0; display: flex; align-items: center; justify-content: center; cursor: pointer; color: #0f172a; font-weight: bold; z-index: 10; box-shadow: 0 4px 12px rgba(0,0,0,0.1); transition: all 0.2s;" aria-label="Anterior reseña">&#8249;</button>
+        <button id="google-review-next" style="position: absolute; top: 50%; right: -12px; transform: translateY(-50%); width: 36px; height: 36px; border-radius: 50%; background: #ffffff; border: 1px solid #e2e8f0; display: flex; align-items: center; justify-content: center; cursor: pointer; color: #0f172a; font-weight: bold; z-index: 10; box-shadow: 0 4px 12px rgba(0,0,0,0.1); transition: all 0.2s;" aria-label="Siguiente reseña">&#8250;</button>
+      </div>
+
+      <!-- Dots -->
+      <div style="display: flex; justify-content: center; gap: 8px; margin-top: 20px;">
+        <button class="google-review-dot" style="width: 8px; height: 8px; border-radius: 50%; border: none; padding: 0; background: #0ea5e9; opacity: 1; cursor: pointer;" aria-label="Slide 1"></button>
+        <button class="google-review-dot" style="width: 8px; height: 8px; border-radius: 50%; border: none; padding: 0; background: #e2e8f0; opacity: 0.5; cursor: pointer;" aria-label="Slide 2"></button>
+        <button class="google-review-dot" style="width: 8px; height: 8px; border-radius: 50%; border: none; padding: 0; background: #e2e8f0; opacity: 0.5; cursor: pointer;" aria-label="Slide 3"></button>
+        <button class="google-review-dot" style="width: 8px; height: 8px; border-radius: 50%; border: none; padding: 0; background: #e2e8f0; opacity: 0.5; cursor: pointer;" aria-label="Slide 4"></button>
+        <button class="google-review-dot" style="width: 8px; height: 8px; border-radius: 50%; border: none; padding: 0; background: #e2e8f0; opacity: 0.5; cursor: pointer;" aria-label="Slide 5"></button>
+        <button class="google-review-dot" style="width: 8px; height: 8px; border-radius: 50%; border: none; padding: 0; background: #e2e8f0; opacity: 0.5; cursor: pointer;" aria-label="Slide 6"></button>
+      </div>
+    </div>
+  </section>
+</main>
+
+<!-- ========================================================
+     APARTADO FUERA DE LA PÁGINA PRINCIPAL: TÉRMINOS Y CONDICIONES
+     ======================================================== -->
+<section id="terminos-section" class="terms-page-section" style="display: none;" aria-label="Términos y Condiciones y Garantía Oficial NISSA">
+  <div class="terms-page-container">
+    
+    <!-- BARRA SUPERIOR DE RETORNO -->
+    <div class="terms-nav-bar">
+      <a href="#inicio" class="terms-back-btn" onclick="goToMainPage('#inicio'); return false;">
+        ← Volver a la página principal
+      </a>
+      <span class="terms-badge-pill">🛡️ GARANTÍA OFICIAL Y CONDICIONES LEGALES</span>
+    </div>
+
+    <!-- ENCABEZADO PRINCIPAL -->
+    <div class="terms-header-card">
+      <div class="terms-tag">DOCUMENTO OFICIAL NISSA</div>
+      <h1 class="terms-title">Términos, Condiciones y Póliza de Garantía Oficial</h1>
+      <p class="terms-subtitle">
+        Condiciones de garantía de productos adquiridos en www.nissa.com.ar y póliza oficial de servicio técnico de reparaciones en taller NISSA.
+      </p>
+      <div class="terms-meta-strip">
+        <span>📅 Versión Vigente: 2026</span>
+        <span>📍 Taller & Tienda NISSA</span>
+        <span>💬 WhatsApp: 11 3662-0653</span>
+        <span>🛡️ Póliza Oficial</span>
+      </div>
+    </div>
+
+    <!-- ÍNDICE DE NAVEGACIÓN RÁPIDA -->
+    <div class="terms-quick-index">
+      <span class="terms-index-title">Índice rápido:</span>
+      <div class="terms-index-links">
+        <a href="#terminos-productos-cobertura">1. Cobertura de Productos (15 Días)</a>
+        <a href="#terminos-productos-nocubre">2. Lo que NO Cubre la Garantía</a>
+        <a href="#terminos-productos-condiciones">3. Condiciones de Validez (Productos)</a>
+        <a href="#terminos-reparaciones-entrega">4. Reparaciones: Revisión y Recepción</a>
+        <a href="#terminos-reparaciones-ticket">5. Ticket N.E Obligatorio</a>
+        <a href="#terminos-reparaciones-limites">6. Plazo de Reparación (30 Días / 3 a 90 Días)</a>
+        <a href="#terminos-reparaciones-cinta">7. Cinta de Seguridad y Templado</a>
+        <a href="#terminos-reparaciones-presupuesto">8. Presupuestos y Fallas Ocultas</a>
+        <a href="#terminos-reparaciones-aclaraciones">9. Pantallas INCELL, Humedad y Tapas</a>
+        <a href="#terminos-reparaciones-apple">10. Políticas Equipos Apple</a>
+        <a href="#terminos-reparaciones-responsabilidad">11. Responsabilidad de Taller</a>
+        <a href="#terminos-reparaciones-aceptacion">12. Aceptación de Términos</a>
+      </div>
+    </div>
+
+    <!-- CUERPO DE ARTÍCULOS LEGALES -->
+    <div class="terms-content-cards">
+
+      <!-- ========================================================
+           SECCIÓN 1: GARANTÍA DE PRODUCTOS ADQUIRIDOS EN WWW.NISSA.COM.AR
+           ======================================================== -->
+      <div class="terms-section-divider">
+        <span class="terms-part-tag">SECCIÓN 01 · TIENDA ONLINE</span>
+        <h2>Condiciones de Garantía de Productos Adquiridos en www.nissa.com.ar</h2>
+        <p>Términos y condiciones aplicables a todos los artículos y accesorios comprados a través de nuestro sitio web oficial www.nissa.com.ar (garantía oficial de 15 días corridos a partir de la compra).</p>
+      </div>
+
+      <!-- 1. COBERTURA GENERAL PRODUCTOS -->
+      <article class="terms-card" id="terminos-productos-cobertura">
+        <div class="terms-card-header">
+          <div class="terms-card-num">01</div>
+          <div>
+            <h2>Condiciones de Garantía de Productos Adquiridos en www.nissa.com.ar</h2>
+            <small>Plazo de cobertura: 15 días corridos a partir de la fecha de compra</small>
+          </div>
+        </div>
+        <div class="terms-card-body">
+          <p>
+            Los productos adquiridos en <strong>www.nissa.com.ar</strong> están cubiertos por una <strong>garantía limitada de 15 días corridos a partir de la fecha de compra</strong>.
+          </p>
+          <div class="terms-highlight-box green">
+            <b>✓ Cobertura exclusiva de fabricación y funcionamiento:</b>
+            <p style="margin: 0; line-height: 1.6;">
+              Esta garantía cubre exclusivamente defectos de fabricación o fallas de funcionamiento bajo condiciones normales de uso, siempre y cuando el producto cumpla con las condiciones establecidas a continuación. El incumplimiento de cualquiera de estas condiciones invalidará automáticamente la garantía.
+            </p>
+          </div>
+        </div>
+      </article>
+
+      <!-- 2. LA GARANTÍA NO CUBRE -->
+      <article class="terms-card" id="terminos-productos-nocubre">
+        <div class="terms-card-header">
+          <div class="terms-card-num red">02</div>
+          <div>
+            <h2>LA GARANTÍA NO CUBRE:</h2>
+            <small>Exclusiones y causales de anulación para productos de tienda</small>
+          </div>
+        </div>
+        <div class="terms-card-body">
+          <div class="terms-highlight-box red">
+            <b>✕ Supuestos no cubiertos bajo ninguna circunstancia:</b>
+            <ul>
+              <li><strong>Daños estéticos:</strong> como ralladuras, abolladuras, marcas visibles, desgaste de la pintura o alteraciones similares, que no afecten el funcionamiento o desempeño del producto, aunque dichos daños se hayan producido por condiciones ajenas a su uso normal.</li>
+              <li><strong>Daños por mal uso o uso indebido:</strong> tales como caídas, golpes, exposición a temperaturas extremas (superiores a 45ºC o inferiores a 5ºC), contacto con líquidos, humedad o agua (aunque el producto sea resistente al agua). Cualquier daño visible debido a estos factores resultará en la anulación total de la garantía.</li>
+              <li><strong>Sticker de seguridad manipulado:</strong> Productos cuyo STICKER de garantía haya sido removido, alterado, manipulado o dañado en cualquier forma. La manipulación o destrucción de esta etiqueta invalidará por completo cualquier reclamación de garantía, sin posibilidad de apelación.</li>
+              <li><strong>Faltantes de componentes o empaque:</strong> Alteraciones o modificaciones en el empaque original o la pérdida de componentes adicionales, como cables, manuales, accesorios o cualquier otro elemento que originalmente venía con el producto.</li>
+              <li><strong>Intervención técnica ajena:</strong> Intentos de reparación o modificaciones no autorizadas, incluyendo la apertura, manipulación o intervención del producto fuera de nuestros centros de servicio oficiales. Cualquier signo de manipulación no autorizada invalida de inmediato la garantía.</li>
+            </ul>
+          </div>
+        </div>
+      </article>
+
+      <!-- 3. CONDICIONES PARA LA VALIDEZ DE LA GARANTÍA -->
+      <article class="terms-card" id="terminos-productos-condiciones">
+        <div class="terms-card-header">
+          <div class="terms-card-num">03</div>
+          <div>
+            <h2>CONDICIONES PARA LA VALIDEZ DE LA GARANTÍA:</h2>
+            <small>Requisitos técnicos y administrativos para la gestión de garantía</small>
+          </div>
+        </div>
+        <div class="terms-card-body">
+          
+          <div class="terms-subitem">
+            <h4>📦 Presentación del Producto y Documentación:</h4>
+            <p>La garantía será válida únicamente si el cliente presenta el producto con su empaque original, junto con todos los accesorios completos (cables, manuales, etc.), y sin signos de manipulación externa o desgaste evidente en el producto o en su embalaje. Cualquier alteración de este tipo resultará en el rechazo automático de la garantía.</p>
+          </div>
+
+          <div class="terms-subitem">
+            <h4>⏱️ Plazo de Notificación de Defecto:</h4>
+            <p>El cliente debe notificar cualquier defecto cubierto por la garantía en un plazo no mayor a 3 días corridos desde la fecha de detección del defecto. Las reclamaciones realizadas después de este período serán rechazadas automáticamente.</p>
+          </div>
+
+          <div class="terms-subitem">
+            <h4>🔄 Reemplazo y Renovación de la Garantía:</h4>
+            <p>En caso de que el producto sea reemplazado debido a un defecto cubierto por la garantía, el reemplazo no renovará el plazo original de la garantía. La fecha de vencimiento de la garantía del producto reemplazado será la misma que la del producto original.</p>
+          </div>
+
+          <div class="terms-subitem">
+            <h4>⏳ Exclusiones por Uso Normal:</h4>
+            <p>No se cubren daños derivados del desgaste natural del producto, tales como daños por el uso regular o el paso del tiempo, incluyendo cables, baterías recargables, pantallas, piezas móviles o componentes de contacto que se desgasten con el uso normal.</p>
+          </div>
+
+          <div class="terms-subitem">
+            <h4>☀️ Condiciones Ambientales:</h4>
+            <p>Los productos que hayan estado en contacto con líquidos (aunque el producto sea resistente al agua), o aquellos expuestos a condiciones extremas como temperaturas superiores a 45ºC o inferiores a 5ºC, humedad excesiva, o exposición prolongada al sol (sin importar el tipo de producto) no serán cubiertos por la garantía.</p>
+          </div>
+
+          <div class="terms-subitem">
+            <h4>🔌 Accesorios o Modificaciones Externas:</h4>
+            <p>La garantía no cubre daños causados por el uso de accesorios externos no originales o incompatibles con el producto original. Además, modificaciones no autorizadas o la adición de componentes externos invalidarán la garantía.</p>
+          </div>
+
+          <div class="terms-subitem">
+            <h4>🔍 Proceso de Reclamación:</h4>
+            <p>Para que la reclamación sea procesada, el cliente debe cumplir con todos los requisitos establecidos y el producto será inspeccionado por nuestro equipo técnico antes de aprobar cualquier cambio o reparación. El proceso de revisión podría tardar hasta 3 días hábiles desde la recepción del producto.</p>
+          </div>
+
+          <div class="terms-subitem">
+            <h4>🚚 Costos Adicionales de Envío:</h4>
+            <p>En caso de que sea necesario enviar el producto para su inspección, todos los costos de envío, transporte y manipulación correrán por cuenta del cliente. En ningún caso serán cubiertos por www.nissa.com.ar.</p>
+          </div>
+
+          <div class="terms-subitem">
+            <h4>⚖️ Exclusión de Responsabilidad:</h4>
+            <p>No nos hacemos responsables por daños directos, indirectos, consecuentes o incidentales derivados del uso del producto, incluyendo pero no limitándose a pérdida de datos, daños a otros bienes, daños por mal funcionamiento, pérdida de beneficios, o cualquier otro tipo de perjuicio.</p>
+          </div>
+
+        </div>
+      </article>
+
+      <!-- ========================================================
+           SECCIÓN 2: GARANTÍA DE REPARACIONES – NISSA
+           ======================================================== -->
+      <div class="terms-section-divider">
+        <span class="terms-part-tag">SECCIÓN 02 · LABORATORIO Y TALLER</span>
+        <h2>GARANTÍA DE REPARACIONES – NISSA</h2>
+        <p>Póliza del servicio técnico presencial, identificación de equipos, condiciones de laboratorio y entrega en mano.</p>
+      </div>
+
+      <!-- 4. REVISIÓN PREVIA A LA ENTREGA Y ACCESORIOS -->
+      <article class="terms-card" id="terminos-reparaciones-entrega">
+        <div class="terms-card-header">
+          <div class="terms-card-num">04</div>
+          <div>
+            <h2>Revisión Previa a la Entrega y Recepción de Celulares</h2>
+            <small>Procedimiento de entrega en mano y resguardo de accesorios</small>
+          </div>
+        </div>
+        <div class="terms-card-body">
+          <div class="terms-subitem">
+            <h4>🤝 Revisión previa a la entrega:</h4>
+            <p>El equipo reparado se entrega únicamente en mano, con previa revisión por parte del cliente, quien debe verificar y confirmar el buen estado y correcto funcionamiento antes de retirarlo del taller. Una vez retirado, cualquier reclamo posterior se atenderá únicamente bajo los términos de garantía aquí detallados.</p>
+          </div>
+          <div class="terms-highlight-box amber">
+            <b>📱 Elementos no almacenados al recibir un celular:</b>
+            <p style="margin: 0; line-height: 1.55;">
+              Al momento de recibir un celular, no nos hacemos cargo de fundas, bandeja de la SIM ni chip. Estos elementos no son registrados ni almacenados, y deben ser retirados por el cliente antes de dejar el equipo.
+            </p>
+          </div>
+        </div>
+      </article>
+
+      <!-- 5. IDENTIFICACIÓN Y REQUISITOS PARA LA GARANTÍA (TICKET N.E) -->
+      <article class="terms-card" id="terminos-reparaciones-ticket">
+        <div class="terms-card-header">
+          <div class="terms-card-num red">05</div>
+          <div>
+            <h2>IDENTIFICACIÓN Y REQUISITOS PARA LA GARANTÍA</h2>
+            <small>Ticket con código "N.E" (Número de Equipo) indispensable</small>
+          </div>
+        </div>
+        <div class="terms-card-body">
+          <p>
+            Al ingresar un equipo al taller, se entrega un ticket identificatorio con el código <strong>"N.E" (Número de Equipo)</strong>.
+          </p>
+          <p>
+            Este número es único e intransferible, y será indispensable para hacer cualquier consulta, seguimiento o reclamo.
+          </p>
+          <div class="terms-highlight-box red">
+            <b>⚠️ REQUISITO EXCLUYENTE SIN EXCEPCIONES:</b>
+            <p style="margin: 0; font-size: 14px; font-weight: 800; line-height: 1.55;">
+              SIN ESTE TICKET, NO SE ATIENDE NINGÚN TIPO DE GARANTÍA, RECLAMO NI CONSULTA. NO SE HACEN EXCEPCIONES.
+            </p>
+          </div>
+          <p>
+            El cliente es totalmente responsable de conservar este comprobante. No se reimprimen tickets ni se entregan copias.
+          </p>
+        </div>
+      </article>
+
+      <!-- 6. CONDICIONES Y LÍMITES DE LA GARANTÍA (30 DÍAS - REDUCIBLE A 3 O EXTENSIBLE A 90 DÍAS) -->
+      <article class="terms-card" id="terminos-reparaciones-limites">
+        <div class="terms-card-header">
+          <div class="terms-card-num">06</div>
+          <div>
+            <h2>CONDICIONES Y LÍMITES DE LA GARANTÍA</h2>
+            <small>Garantía de reparación de 30 días (opción de 3 días o extendida a 90 días) y causas de anulación</small>
+          </div>
+        </div>
+        <div class="terms-card-body">
+          <p>
+            La garantía de reparación es de <strong>30 días corridos desde la fecha de entrega</strong>, la cual <strong>se puede reducir a 3 días</strong> (opción Básica) o <strong>extender hasta 90 días</strong> (opción Extendida) a decisión del cliente abonando el adicional correspondiente.
+          </p>
+          <p>
+            La garantía cubre exclusivamente la reparación realizada. No se cubren fallas ajenas, secundarias ni posteriores a la intervención.
+          </p>
+          <div class="terms-highlight-box red">
+            <b>✕ La garantía queda anulada automáticamente en los siguientes casos:</b>
+            <ul>
+              <li>Caídas, golpes, rajaduras o cualquier daño físico posterior a la entrega.</li>
+              <li>Exposición a líquidos, humedad o vapores.</li>
+              <li>Mal uso, descuido o intervención del usuario o de terceros.</li>
+              <li>Manipulación o intento de reparación posterior a la entrega.</li>
+              <li>Problemas distintos al motivo de ingreso inicial.</li>
+            </ul>
+          </div>
+        </div>
+      </article>
+
+      <!-- 7. CINTA DE SEGURIDAD Y VIDRIO TEMPLADO -->
+      <article class="terms-card" id="terminos-reparaciones-cinta">
+        <div class="terms-card-header">
+          <div class="terms-card-num red">07</div>
+          <div>
+            <h2>CINTA DE SEGURIDAD Y VIDRIO TEMPLADO</h2>
+            <small>Sticker de garantía, precintos de seguridad y condiciones de validez</small>
+          </div>
+        </div>
+        <div class="terms-card-body">
+          <p>
+            En los cambios de pantalla, se entrega sin costo adicional un vidrio templado de cortesía, el cual será instalado en el taller y fijado con una <strong>cinta de seguridad (sticker de garantía)</strong> que une el vidrio templado al marco del equipo.
+          </p>
+          <p>
+            Esta cinta lleva la <strong>fecha exacta de inicio de la garantía</strong>.
+          </p>
+          <div class="terms-highlight-box red">
+            <b>⚠️ Rotura o remoción de faja de seguridad:</b>
+            <p style="margin: 0 0 8px; line-height: 1.55;">
+              Si el vidrio templado está rajado, fue removido, reemplazado o se detecta que la cinta de seguridad está parcial o totalmente desprendida, rota, borrosa o manipulada de cualquier forma, <strong>la garantía queda automáticamente anulada</strong>.
+            </p>
+            <p style="margin: 0; font-weight: 700; line-height: 1.55;">
+              Cualquier intento de remover el vidrio templado o de reinstalar uno nuevo invalida la garantía sin derecho a reclamo.
+            </p>
+          </div>
+          <div class="terms-highlight-box amber">
+            <b>IMPORTANTE:</b>
+            <p style="margin: 0; line-height: 1.55;">
+              En caso de que no se haya colocado vidrio templado por falta de disponibilidad para el modelo en cuestión, la cinta de seguridad se colocará directamente sobre el marco o la pantalla. En estos casos, la integridad de dicha cinta sigue siendo condición excluyente para la validez de la garantía. Su rotura, alteración o intento de remoción anulan la garantía de forma automática e irrevocable.
+            </p>
+          </div>
+        </div>
+      </article>
+
+      <!-- 8. SOBRE EL PRESUPUESTO Y DETECCIÓN DE FALLAS ADICIONALES -->
+      <article class="terms-card" id="terminos-reparaciones-presupuesto">
+        <div class="terms-card-header">
+          <div class="terms-card-num">08</div>
+          <div>
+            <h2>SOBRE EL PRESUPUESTO Y DETECCIÓN DE FALLAS ADICIONALES</h2>
+            <small>Transparencia en el laboratorio y trabajos sin garantía</small>
+          </div>
+        </div>
+        <div class="terms-card-body">
+          <p>
+            En ocasiones, al comenzar una reparación o realizar pruebas internas, pueden detectarse fallas adicionales o daños que no fueron visibles inicialmente.
+          </p>
+          <p>
+            En esos casos, se informará al cliente y se ajustará el presupuesto de forma proporcional. El cliente podrá decidir si:
+          </p>
+          <ul>
+            <li>Desea continuar con la reparación completa, incluyendo el nuevo inconveniente, o</li>
+            <li>Solicita que solo se repare lo presupuestado originalmente, dejando fuera el nuevo problema detectado.</li>
+          </ul>
+          <p>
+            <strong>No se continuará ningún trabajo adicional sin la aprobación del cliente.</strong>
+          </p>
+          <div class="terms-highlight-box red">
+            <b>IMPORTANTE - CLÁUSULA “(SIN GARANTÍA)”:</b>
+            <p style="margin: 0 0 8px; line-height: 1.55;">
+              Si en el presupuesto o comprobante de reparación se aclara expresamente la frase <strong>“(sin garantía)”</strong>, significa que el trabajo no cuenta con ningún tipo de garantía, bajo ningún concepto.
+            </p>
+            <p style="margin: 0; line-height: 1.55;">
+              El equipo se entrega en funcionamiento o no, según el resultado del procedimiento realizado, pero sin garantía de ningún tipo, ni parcial ni total.
+            </p>
+          </div>
+        </div>
+      </article>
+
+      <!-- 9. ACLARACIONES IMPORTANTES -->
+      <article class="terms-card" id="terminos-reparaciones-aclaraciones">
+        <div class="terms-card-header">
+          <div class="terms-card-num amber">09</div>
+          <div>
+            <h2>ACLARACIONES IMPORTANTES</h2>
+            <small>Pantallas INCELL, equipos mojados/humedad y cambio de tapas</small>
+          </div>
+        </div>
+        <div class="terms-card-body">
+          <div class="terms-subitem">
+            <h4>📱 Pantallas de calidad INCELL:</h4>
+            <p><strong>No tienen garantía.</strong> Estas pantallas son alternativas económicas, con menor resistencia y desempeño que las originales.</p>
+          </div>
+          <div class="terms-subitem">
+            <h4>💧 Equipos mojados o con rastros de humedad:</h4>
+            <p><strong>No tienen garantía bajo ningún concepto.</strong> Aunque sean reparados, el daño por corrosión puede generar fallas futuras no detectables al momento de la entrega.</p>
+          </div>
+          <div class="terms-subitem">
+            <h4>🔄 Cambio de tapa:</h4>
+            <p>Al cambiar la tapa no se manupula internamente el equipo, por lo cual <strong>no nos responsabilizamos por problemas anteriores y/o posteriores al reemplazo de la tapa.</strong></p>
+          </div>
+        </div>
+      </article>
+
+      <!-- 10. SOBRE PRODUCTOS APPLE -->
+      <article class="terms-card" id="terminos-reparaciones-apple">
+        <div class="terms-card-header">
+          <div class="terms-card-num red">10</div>
+          <div>
+            <h2>SOBRE PRODUCTOS APPLE</h2>
+            <small>Políticas de taller para dispositivos de la marca Apple</small>
+          </div>
+        </div>
+        <div class="terms-card-body">
+          <p>
+            Por razones técnicas y de política del taller, <strong>no se realizan las siguientes tareas en equipos Apple:</strong>
+          </p>
+          <div class="terms-highlight-box red">
+            <ul>
+              <li>Problemas de software.</li>
+              <li>Dispositivos que quedan en el logo de Apple.</li>
+              <li>Desbloqueo de cuentas o iCloud.</li>
+              <li>Reparación de placa base (motherboard).</li>
+            </ul>
+          </div>
+          <p>
+            En caso excepcional de realizarse, se deja constancia expresa de que <strong>NO tiene garantía de ningún tipo.</strong>
+          </p>
+        </div>
+      </article>
+
+      <!-- 11. LIMITACIÓN DE RESPONSABILIDAD Y COBERTURA DE TALLER -->
+      <article class="terms-card" id="terminos-reparaciones-responsabilidad">
+        <div class="terms-card-header">
+          <div class="terms-card-num">11</div>
+          <div>
+            <h2>LIMITACIÓN DE RESPONSABILIDAD Y COMPROMISO DE TALLER</h2>
+            <small>Límites de cobertura e inconvenientes eventuales durante la reparación</small>
+          </div>
+        </div>
+        <div class="terms-card-body">
+          <div class="terms-subitem">
+            <h4>🛡️ LIMITACIÓN DE RESPONSABILIDAD</h4>
+            <p>El taller solo se responsabiliza por el problema declarado e identificado al momento del ingreso. No nos hacemos responsables por fallas no declaradas, ni por daños ocultos o progresivos que puedan presentarse tras la intervención.</p>
+          </div>
+          <div class="terms-subitem">
+            <h4>🔧 RESPONSABILIDAD EN CASO DE INCONVENIENTES DURANTE LA REPARACIÓN</h4>
+            <p>En caso de presentarse algún inconveniente o daño accidental ocasionado durante el proceso de reparación, <strong>NISSA asumirá hasta el 50% del valor total del presupuesto correspondiente a la pieza o reparación afectada.</strong></p>
+            <p style="margin-top: 8px;">Este compromiso aplica únicamente cuando el daño haya sido causado dentro del taller durante la intervención técnica.</p>
+            <p style="margin-top: 8px;">No se realizarán reintegros en efectivo ni compensaciones fuera de este alcance; la cobertura se aplicará exclusivamente sobre el nuevo trabajo o repuesto necesario para la solución del inconveniente.</p>
+          </div>
+        </div>
+      </article>
+
+      <!-- 12. ACEPTACIÓN DE TÉRMINOS -->
+      <article class="terms-card" id="terminos-reparaciones-aceptacion">
+        <div class="terms-card-header">
+          <div class="terms-card-num green">12</div>
+          <div>
+            <h2>ACEPTACIÓN DE TÉRMINOS</h2>
+            <small>Consentimiento de servicio técnico y validez de condiciones</small>
+          </div>
+        </div>
+        <div class="terms-card-body">
+          <p>
+            Al dejar su equipo en reparación, el cliente declara haber leído, comprendido y aceptado en su totalidad los términos aquí expuestos, los cuales también se mencionan parcialmente y entregan mediante link al momento de emitir cada presupuesto.
+          </p>
+          <p>
+            NISSA se reserva el derecho de modificar o actualizar este texto en cualquier momento, sin necesidad de previo aviso. En caso de existir cambios, se aplicará siempre la versión más reciente vigente al momento de la reparación o consulta.
+          </p>
+
+          <div class="terms-signature-card">
+            <div>
+              <div style="font-weight: 900; font-size: 16px; color: #0f172a; letter-spacing: -0.01em;">NISSA STORE</div>
+              <div style="font-size: 12.5px; color: #64748b; font-weight: 600;">Servicio Técnico Especializado en Celulares, Consolas y Computadoras</div>
+            </div>
+            <div style="font-size: 14px; font-weight: 800; color: #0284c7; background: #e0f2fe; padding: 7px 16px; border-radius: 9999px; border: 1px solid #bae6fd;">
+              Att: NISSA STORE
+            </div>
+          </div>
+        </div>
+      </article>
+
+    </div>
+
+    <!-- BOTONES DE ACCIÓN INFERIORES -->
+    <div class="terms-footer-actions">
+      <a href="#inicio" class="btn btn-primary" onclick="goToMainPage('#inicio'); return false;">
+        ← Volver a la página principal
+      </a>
+      <a href="https://wa.me/541136620653?text=%C2%A1Hola%20NISSA!%20Tengo%20una%20consulta%20sobre%20los%20T%C3%A9rminos%20y%20Condiciones%20y%20Garant%C3%ADa." target="_blank" rel="noopener" class="btn btn-secondary" style="border-color:#25d366; color:#15803d;">
+        💬 Consultar dudas por WhatsApp
+      </a>
+    </div>
+
+  </div>
+</section>
+
+<!-- PÁGINA DEDICADA DE PRODUCTO INDIVIDUAL (TIENDA REAL) -->
+<section id="producto-section" class="product-page-section" style="display: none;" aria-label="Detalle de Producto - NISSA">
+  <div class="product-page-container" id="product-page-container">
+    <!-- El contenido de la página del producto se inyecta dinámicamente -->
+  </div>
+</section>
+
+<!-- CARRITO LATERAL -->
+<aside class="cart" id="cart">
+  <div class="cart-header">
+    <h2>Tu Carrito</h2>
+    <button id="close-cart" aria-label="Cerrar carrito">✕</button>
+  </div>
+  <div class="cart-items" id="cart-items"></div>
+  <div class="cart-empty" id="cart-empty">
+    <div>🛒</div>
+    <h3>Tu carrito está vacío</h3>
+    <p>Agregá productos de la tienda para comenzar.</p>
+  </div>
+  <div class="cart-footer">
+    <div class="cart-total">
+      <span>Total Estimado</span>
+      <strong id="cart-total">$0</strong>
+    </div>
+    <button class="checkout-button" id="checkout-button">Finalizar pedido por WhatsApp</button>
+    <button class="clear-cart" id="clear-cart">Vaciar carrito</button>
+  </div>
+</aside>
+
+<div class="overlay" id="overlay"></div>
+
+<!-- BOTÓN FLOTANTE DE WHATSAPP -->
+<a href="https://wa.me/541136620653" class="whatsapp-button" id="whatsapp-button" aria-label="Contactar por WhatsApp" target="_blank" rel="noopener">
+  <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20.52 3.48A11.86 11.86 0 0 0 12.06 0C5.5 0 .16 5.34.16 11.9c0 2.1.55 4.15 1.6 5.96L.06 24l6.28-1.65a11.88 11.88 0 0 0 5.72 1.46h.01c6.55 0 11.89-5.34 11.89-11.9 0-3.18-1.24-6.17-3.44-8.43ZM12.07 21.8h-.01a9.86 9.86 0 0 1-5.03-1.37l-.36-.21-3.73.98 1-3.64-.23-.37a9.83 9.83 0 1 1 8.36 4.61Zm5.4-7.38c-.3-.15-1.76-.87-2.03-.97-.27-.1-.47-.15-.67.15-.2.3-.77.97-.95 1.17-.17.2-.35.22-.65.07-.3-.15-1.25-.46-2.38-1.46-.88-.78-1.47-1.75-1.64-2.05-.17-.3-.02-.46.13-.61.14-.14.3-.35.45-.52.15-.17.2-.3.3-.5.1-.2.05-.37-.02-.52-.07-.15-.67-1.62-.92-2.22-.24-.58-.49-.5-.67-.51h-.57c-.2 0-.52.07-.8.37-.27.3-1.04 1.02-1.04 2.49s1.07 2.89 1.22 3.09c.15.2 2.1 3.2 5.08 4.49.71.31 1.26.49 1.69.63.71.23 1.36.2 1.87.12.57-.09 1.76-.72 2.01-1.42.25-.7.25-1.3.17-1.42-.07-.12-.27-.2-.57-.35Z"/></svg>
+</a>
+
+<!-- PIE DE PÁGINA -->
+<footer>
+  <div class="footer-container">
+    <div>
+      <h2>NISSA</h2>
+      <p>Tu tecnología en buenas manos. Servicio técnico y accesorios oficiales.</p>
+    </div>
+    <div class="footer-links">
+      <a href="#inicio" onclick="goToMainPage('#inicio'); return false;">Inicio</a>
+      <a href="#cotizador" onclick="goToMainPage('#cotizador'); return false;">Presupuestar</a>
+      <a href="#productos" onclick="goToMainPage('#productos'); return false;">Tienda</a>
+      <a href="#informacion" onclick="goToMainPage('#informacion'); return false;">Información</a>
+      <a href="#resenas" onclick="goToMainPage('#resenas'); return false;">Opiniones Google</a>
+      <a href="/terminos-y-condiciones" onclick="goToTermsPage(); return false;">Términos y condiciones</a>
+    </div>
+  </div>
+  <div class="footer-bottom">© <span id="year"></span> NISSA. Todos los derechos reservados. · <a href="/terminos-y-condiciones" onclick="goToTermsPage(); return false;" style="color: #94a3b8; text-decoration: underline;">Términos, condiciones y póliza de garantía</a></div>
+</footer>
+
+<!-- SCRIPTS DE FUNCIONALIDAD -->
+<script src="/cotizador-data.js"></script>
+<script src="/cotizador.js"></script>
+<script src="/products.js"></script>
+<script src="/script.js"></script>
+<script src="/reviews.js"></script>
+</body>
+</html>

@@ -1,0 +1,1017 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Panel de Administración - NISSA Catálogo y Precios</title>
+  <meta name="robots" content="noindex, nofollow">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/admin.css">
+</head>
+<body>
+
+  <!-- PANTALLA DE ACCESO / LOGIN SEGURO -->
+  <div id="login-screen" class="login-container">
+    <div class="login-card">
+      <div class="login-brand">
+        <span class="login-logo">NISSA</span>
+        <span class="login-badge">ADMIN</span>
+      </div>
+      <h2>Panel de Control de Tienda</h2>
+      <p class="login-sub">Gestión visual de productos, fotos, precios escalonados y stock para GitHub Pages.</p>
+
+      <div style="background: #f1f5f9; border: 1px solid #cbd5e1; border-radius: 8px; padding: 10px 14px; font-size: 12.5px; color: #475569; margin-bottom: 20px; text-align: left; display: flex; align-items: center; gap: 8px;">
+        <span style="font-size: 16px;">🔒</span>
+        <span><strong>Paso de seguridad obligatorio:</strong> Ingresá la contraseña para acceder al panel.</span>
+      </div>
+
+      <form id="login-form" class="login-form" onsubmit="handleLogin(event)">
+        <div class="form-group">
+          <label for="admin-pass">Contraseña de administrador:</label>
+          <div class="input-with-action">
+            <input type="password" id="admin-pass" placeholder="Ingresá la contraseña..." autocomplete="off" required autofocus>
+            <button type="button" class="btn-toggle-pass" onclick="togglePassVisibility('admin-pass')">👁️</button>
+          </div>
+        </div>
+
+        <div id="login-error" class="error-msg" style="display: none;">
+          ⚠️ Contraseña incorrecta. Por favor volvé a intentarlo.
+        </div>
+
+        <button type="submit" class="btn btn-primary btn-block">
+          Ingresar al Panel ➔
+        </button>
+      </form>
+
+      <div class="login-footer">
+        <a href="/" class="login-back-link">← Volver a la tienda pública</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- APLICACIÓN PRINCIPAL DE ADMINISTRACIÓN -->
+  <div id="admin-app" class="admin-app" style="display: none;">
+    
+    <!-- NAVBAR SUPERIOR -->
+    <header class="admin-header">
+      <div class="admin-header-container">
+        <div class="admin-header-left">
+          <div class="admin-brand">
+            <span class="admin-logo">NISSA</span>
+            <span class="admin-badge">ADMIN</span>
+          </div>
+          <nav class="admin-top-nav">
+            <button type="button" id="btn-nav-products" class="tab-btn active" onclick="switchAdminSection('products')">
+              🛍️ Tienda y Catálogo
+            </button>
+            <button type="button" id="btn-nav-cotizador" class="tab-btn" onclick="switchAdminSection('cotizador')">
+              🛠️ Presupuestador
+            </button>
+          </nav>
+          <div class="admin-meta-info">
+            <span id="product-count-badge" class="count-badge">Cargando...</span>
+            <span id="draft-indicator" class="draft-badge" style="display: none;">Borrador local activo</span>
+          </div>
+        </div>
+
+        <div class="admin-header-right">
+          <a href="/" target="_blank" class="btn btn-outline" title="Ver cómo se ve la tienda">
+            👁️ Ver Tienda Pública
+          </a>
+          <button type="button" class="btn btn-secondary" onclick="openGithubModal()" title="Configurar conexión directa con tu GitHub">
+            ⚙️ Conexión GitHub
+          </button>
+          <button type="button" class="btn btn-ghost" onclick="openPassChangeModal()" title="Cambiar clave de acceso">
+            🔑 Clave
+          </button>
+          <button type="button" class="btn btn-danger-ghost" onclick="handleLogout()" title="Cerrar sesión">
+            Salir
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <!-- ALERTA / BANNER INFORMATIVO FLOTANTE -->
+    <div id="admin-alert" class="admin-alert" style="display: none;">
+      <span id="admin-alert-text">Mensaje</span>
+      <button type="button" onclick="closeAdminAlert()" class="alert-close-btn">✕</button>
+    </div>
+
+    <!-- CONTENEDOR PRINCIPAL -->
+    <main class="admin-main">
+      <div class="admin-main-container">
+        
+        <!-- ========================================================
+             SECCIÓN 1: PRODUCTOS Y TIENDA
+             ======================================================== -->
+        <div id="section-products">
+          <!-- HERO / ACCIONES PRINCIPALES -->
+          <section class="admin-action-hero">
+            <div class="action-hero-text">
+              <h1>Gestión de Productos y Precios</h1>
+              <p>Modificá cualquier información de la tienda. Al terminar, podés descargar <code>products.js</code> o publicarlo directamente a tu GitHub con un clic a costo $0.</p>
+            </div>
+
+            <div class="action-hero-buttons">
+              <button type="button" class="btn btn-save-action" onclick="applyAndSaveCatalogChanges()" id="btn-apply-catalog">
+                💾 Cargar Cambios a la Tienda
+              </button>
+              <button type="button" class="btn btn-success" onclick="openProductModal()">
+                ➕ Nuevo Producto
+              </button>
+              <button type="button" class="btn btn-primary" onclick="downloadProductsJs()">
+                📥 Descargar products.js
+              </button>
+              <button type="button" class="btn btn-github" onclick="publishDirectlyToGithub()" id="btn-publish-github">
+                🚀 Publicar en GitHub
+              </button>
+              <button type="button" class="btn btn-secondary" onclick="openCodePreviewModal()">
+                📋 Ver Código
+              </button>
+              <button type="button" class="btn btn-outline" onclick="resetToOriginalCatalog()" title="Vuelve a los productos originales descartando borradores locales">
+                🔄 Restaurar
+              </button>
+            </div>
+          </section>
+
+          <!-- FILTROS Y BÚSQUEDA -->
+          <section class="admin-toolbar">
+            <div class="search-wrap">
+              <span class="search-icon">🔍</span>
+              <input type="text" id="admin-search-input" placeholder="Buscar por nombre, categoría o ID..." oninput="handleSearch(this.value)">
+              <button type="button" id="clear-search-btn" class="clear-search-btn" onclick="clearSearch()" style="display: none;">✕</button>
+            </div>
+
+            <div class="toolbar-filters">
+              <select id="category-filter" onchange="handleCategoryFilter(this.value)">
+                <option value="todos">Todas las categorías</option>
+              </select>
+
+              <select id="sort-filter" onchange="handleSort(this.value)">
+                <option value="default">Orden predeterminado</option>
+                <option value="price-asc">Precio: Menor a mayor</option>
+                <option value="price-desc">Precio: Mayor a menor</option>
+                <option value="name-asc">Nombre: A - Z</option>
+              </select>
+            </div>
+          </section>
+
+          <!-- LISTA / GRILLA DE PRODUCTOS -->
+          <section class="products-grid-section">
+            <div id="admin-products-list" class="admin-products-grid">
+              <!-- Inyectado dinámicamente -->
+            </div>
+
+            <div id="no-products-msg" class="empty-state" style="display: none;">
+              <div class="empty-icon">🔍</div>
+              <h3>No se encontraron productos</h3>
+              <p>Intentá con otro término de búsqueda o categoría.</p>
+              <button type="button" class="btn btn-outline" onclick="clearSearch()">Limpiar búsqueda</button>
+            </div>
+          </section>
+        </div>
+
+        <!-- ========================================================
+             SECCIÓN 2: GESTOR COMPLETO DEL PRESUPUESTADOR
+             ======================================================== -->
+        <div id="section-cotizador" style="display: none;">
+          <!-- HERO DEL PRESUPUESTADOR -->
+          <section class="admin-action-hero">
+            <div class="action-hero-text">
+              <h1>Presupuestador de Reparaciones NISSA</h1>
+              <p>Modificá absolutamente todo el cotizador: modelos de celulares, precios de reparaciones (pantallas, baterías, pines, cámaras), consolas, mandos, computadoras, WhatsApp y textos legales.</p>
+            </div>
+
+            <div class="action-hero-buttons">
+              <button type="button" class="btn btn-save-action" onclick="applyAndSaveCotizadorChanges()" id="btn-apply-cotizador">
+                💾 Cargar Cambios al Presupuestador
+              </button>
+              <button type="button" class="btn btn-primary" onclick="downloadCotizadorJs()">
+                📥 Descargar cotizador-data.js
+              </button>
+              <button type="button" class="btn btn-github" onclick="publishCotizadorDirectlyToGithub()" id="btn-publish-cotizador-github">
+                🚀 Publicar en GitHub
+              </button>
+              <button type="button" class="btn btn-secondary" onclick="openCotizadorCodeModal()">
+                📋 Ver Código
+              </button>
+              <button type="button" class="btn btn-outline" onclick="resetToOriginalCotizador()" title="Descartar borrador local y volver a tarifas originales">
+                🔄 Restaurar
+              </button>
+            </div>
+          </section>
+
+          <!-- SUBPESTAÑAS DE CATEGORÍA DE DISPOSITIVOS -->
+          <div class="cotizador-subtabs">
+            <button type="button" class="cotizador-subtab-btn active" id="subtab-celulares" onclick="switchCotizadorSubtab('celulares')">
+              📱 Celulares
+            </button>
+            <button type="button" class="cotizador-subtab-btn" id="subtab-consolas" onclick="switchCotizadorSubtab('consolas')">
+              🎮 Consolas de Juegos
+            </button>
+            <button type="button" class="cotizador-subtab-btn" id="subtab-joysticks" onclick="switchCotizadorSubtab('joysticks')">
+              🕹️ Mandos / Joysticks
+            </button>
+            <button type="button" class="cotizador-subtab-btn" id="subtab-computadoras" onclick="switchCotizadorSubtab('computadoras')">
+              💻 Computadoras & Notebooks
+            </button>
+            <button type="button" class="cotizador-subtab-btn" id="subtab-general" onclick="switchCotizadorSubtab('general')">
+              ⚙️ WhatsApp y Términos
+            </button>
+          </div>
+
+          <!-- BARRA DE HERRAMIENTAS Y BÚSQUEDA DEL PRESUPUESTADOR -->
+          <section class="admin-toolbar" id="cotizador-toolbar">
+            <div class="search-wrap">
+              <span class="search-icon">🔍</span>
+              <input type="text" id="cotizador-search-input" placeholder="Buscar modelo o reparación (ej: iPhone 13, A54, Drift, Pantalla)..." oninput="handleCotizadorSearch(this.value)">
+              <button type="button" id="clear-cotizador-search-btn" class="clear-search-btn" onclick="clearCotizadorSearch()" style="display: none;">✕</button>
+            </div>
+
+            <div class="toolbar-filters" id="cotizador-action-buttons">
+              <!-- Botones dinámicos inyectados por JS según subpestaña -->
+            </div>
+          </section>
+
+          <!-- BARRA DE MARCAS DE CELULARES (Visible solo en Celulares) -->
+          <div id="cotizador-brand-pills-wrap" class="brand-pills-bar" style="display: flex;">
+            <!-- Pills generadas dinámicamente -->
+          </div>
+
+          <!-- CONTENEDOR DINÁMICO DE CONTENIDO DEL PRESUPUESTADOR -->
+          <div id="cotizador-content-area" class="cotizador-content-area">
+            <!-- Inyectado dinámicamente por admin.js -->
+          </div>
+        </div>
+    </main>
+
+    <!-- FOOTER DEL ADMIN -->
+    <footer class="admin-footer">
+      <div class="admin-footer-container">
+        <span>NISSA Admin Suite · 100% Compatible con GitHub Pages ($0 costo)</span>
+        <span>Archivo destino: <code>products.js</code></span>
+      </div>
+    </footer>
+
+  </div>
+
+  <!-- ========================================================
+       MODAL 1: FORMULARIO DE PRODUCTO (AGREGAR / EDITAR)
+       ======================================================== -->
+  <div id="product-modal" class="modal-backdrop" style="display: none;">
+    <div class="modal-container modal-large">
+      
+      <div class="modal-header">
+        <div>
+          <h2 id="modal-product-title">Editar Producto</h2>
+          <span class="modal-subtitle">Modificá los precios, fotos, descripciones y características</span>
+        </div>
+        <button type="button" class="modal-close-btn" onclick="closeProductModal()">✕</button>
+      </div>
+
+      <!-- TABS DE NAVEGACIÓN DENTRO DEL EDITOR -->
+      <div class="modal-tabs">
+        <button type="button" class="modal-tab active" data-tab="tab-general" onclick="switchProductTab('tab-general')">
+          🏷️ Datos & Precios
+        </button>
+        <button type="button" class="modal-tab" data-tab="tab-images" onclick="switchProductTab('tab-images')">
+          📷 Fotos & Galería
+        </button>
+        <button type="button" class="modal-tab" data-tab="tab-details" onclick="switchProductTab('tab-details')">
+          ✨ Descripción & Specs
+        </button>
+      </div>
+
+      <form id="product-form" onsubmit="saveProduct(event)">
+        <input type="hidden" id="prod-id">
+
+        <div class="modal-body">
+          
+          <!-- TAB 1: DATOS GENERALES Y PRECIOS -->
+          <div id="tab-general" class="tab-content active">
+            <div class="form-row">
+              <div class="form-group flex-2">
+                <label for="prod-name">Nombre del Producto: <span class="req">*</span></label>
+                <input type="text" id="prod-name" placeholder="Ej: Combo Cargador iPhone Apple 20W Certificado" required>
+              </div>
+
+              <div class="form-group flex-1">
+                <label for="prod-category">Categoría: <span class="req">*</span></label>
+                <input type="text" id="prod-category" list="categories-datalist" placeholder="celulares, audio, cables..." required>
+                <datalist id="categories-datalist">
+                  <option value="celulares">
+                  <option value="audio">
+                  <option value="cables">
+                  <option value="cargadores">
+                  <option value="consolas">
+                  <option value="mandos">
+                  <option value="notebooks">
+                  <option value="accesorios">
+                </datalist>
+              </div>
+
+              <div class="form-group flex-1">
+                <label for="prod-tag">Etiqueta destacada:</label>
+                <input type="text" id="prod-tag" placeholder="Ej: Más Vendido, Oferta, Nuevo">
+              </div>
+            </div>
+
+            <!-- BLOQUE DE PRECIOS ESCALONADOS -->
+            <div class="pricing-editor-card">
+              <div class="pricing-editor-title">
+                <span>💰 Escala de Precios por Cantidad</span>
+                <span class="pricing-editor-hint">Se calculan automáticamente en el cotizador y tienda</span>
+              </div>
+
+              <div class="pricing-inputs-grid">
+                <div class="price-input-box">
+                  <label for="prod-price">Precio 1 unidad (Lista): <span class="req">*</span></label>
+                  <div class="currency-input-wrap">
+                    <span class="currency-symbol">$</span>
+                    <input type="number" id="prod-price" min="0" step="100" placeholder="35000" required oninput="calculateDiscounts()">
+                  </div>
+                  <span class="price-box-tag">Precio estándar</span>
+                </div>
+
+                <div class="price-input-box">
+                  <label for="prod-price3">Desde 3 unidades:</label>
+                  <div class="currency-input-wrap">
+                    <span class="currency-symbol">$</span>
+                    <input type="number" id="prod-price3" min="0" step="100" placeholder="31000" oninput="calculateDiscounts()">
+                  </div>
+                  <span class="price-box-discount" id="disc-tag-3">-0% ahorro</span>
+                </div>
+
+                <div class="price-input-box">
+                  <label for="prod-price5">Desde 5 unidades:</label>
+                  <div class="currency-input-wrap">
+                    <span class="currency-symbol">$</span>
+                    <input type="number" id="prod-price5" min="0" step="100" placeholder="28000" oninput="calculateDiscounts()">
+                  </div>
+                  <span class="price-box-discount" id="disc-tag-5">-0% ahorro</span>
+                </div>
+
+                <div class="price-input-box wholesale">
+                  <label for="prod-price20">+20 u. (Mayorista):</label>
+                  <div class="currency-input-wrap">
+                    <span class="currency-symbol">$</span>
+                    <input type="number" id="prod-price20" min="0" step="100" placeholder="24000" oninput="calculateDiscounts()">
+                  </div>
+                  <span class="price-box-discount" id="disc-tag-20">-0% mayor</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- ESPECIFICACIÓN RÁPIDA DE GARANTÍA Y STOCK -->
+            <div class="form-row" style="margin-top: 16px;">
+              <div class="form-group flex-1">
+                <label for="prod-spec-garantia">Garantía oficial:</label>
+                <input type="text" id="prod-spec-garantia" placeholder="Ej: 90 días oficial escrita NISSA">
+              </div>
+              <div class="form-group flex-1">
+                <label for="prod-spec-stock">Disponibilidad / Stock:</label>
+                <input type="text" id="prod-spec-stock" placeholder="Ej: Stock inmediato para entrega o retiro">
+              </div>
+            </div>
+          </div>
+
+          <!-- TAB 2: FOTOS E IMÁGENES -->
+          <div id="tab-images" class="tab-content">
+            <div class="images-editor-box">
+              
+              <!-- PANEL DE FOTO PRINCIPAL (PORTADA) -->
+              <div class="main-image-manager">
+                <div class="main-image-manager-header">
+                  <div>
+                    <label class="form-label-bold">Foto Principal del Producto (Portada): <span class="req">*</span></label>
+                    <span class="form-hint">Es la imagen principal visible en la tienda, grilla y vista general del producto.</span>
+                  </div>
+                  <div class="image-actions-top">
+                    <button type="button" class="btn btn-primary btn-sm" onclick="triggerMainImageUpload()">
+                      📁 Subir desde mi equipo
+                    </button>
+                    <button type="button" class="btn btn-secondary btn-sm" onclick="openImageGalleryModal('main')">
+                      🖼️ Biblioteca de Fotos
+                    </button>
+                  </div>
+                </div>
+
+                <!-- DROPZONE INTERACTIVA PARA PORTADA -->
+                <div id="main-image-dropzone" class="image-dropzone" onclick="triggerMainImageUpload()">
+                  <input type="file" id="main-image-file-input" accept="image/*" style="display:none;" onchange="handleMainFileInput(this)">
+                  <div class="dropzone-inner">
+                    <div class="dropzone-icon">📸</div>
+                    <div class="dropzone-texts">
+                      <strong>Hacé clic para elegir una imagen o arrastrala aquí</strong>
+                      <span>Admite fotos de tu computadora o cámara del celular (JPG, PNG, WebP) · También podés pegar con Ctrl+V</span>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- PREVISUALIZACIÓN Y CONFIGURACIÓN DE LA IMAGEN PRINCIPAL -->
+                <div id="main-image-preview-card" class="image-preview-card" style="display: none;">
+                  <div class="image-preview-wrap">
+                    <img id="main-image-preview" src="" alt="Previsualización" onerror="handlePreviewError(this)">
+                    <span id="main-image-placeholder" class="img-placeholder" style="display: none;">📦 Sin imagen</span>
+                  </div>
+                  
+                  <div class="image-preview-details">
+                    <div class="preview-badge-row">
+                      <span id="main-image-badge" class="img-type-badge">Base64 Embebida</span>
+                      <span id="main-image-stats" class="img-stats-text">Optimizado</span>
+                    </div>
+                    
+                    <div class="preview-title" id="main-image-display-name">producto.jpg</div>
+                    
+                    <!-- SELECTOR DE FORMATO DE GUARDADO -->
+                    <div class="storage-mode-box">
+                      <span class="storage-label">Modo de guardado en el catálogo:</span>
+                      <div class="storage-mode-buttons">
+                        <button type="button" class="btn-storage-mode active" id="btn-mode-base64" onclick="setMainImageStorageMode('base64')" title="Se guarda dentro de products.js. ¡Funciona de inmediato sin subir archivos adicionales a GitHub!">
+                          🌟 Embebida (Base64 directo)
+                        </button>
+                        <button type="button" class="btn-storage-mode" id="btn-mode-fotos" onclick="setMainImageStorageMode('fotos')" title="Referencia a fotos/nombre.jpg para mantener el repositorio ordenado.">
+                          📁 Archivo en fotos/
+                        </button>
+                      </div>
+                    </div>
+
+                    <!-- OPCIONES PARA ARCHIVO LOCAL EN FOTOS/ -->
+                    <div id="file-storage-options" class="file-storage-options" style="display: none;">
+                      <div class="file-name-input-wrap">
+                        <label for="prod-filename-input">Nombre en carpeta <code>fotos/</code>:</label>
+                        <input type="text" id="prod-filename-input" placeholder="ej: mi-producto.jpg" oninput="updateFilenameFromInput(this.value)">
+                      </div>
+                      <div class="file-action-buttons">
+                        <button type="button" class="btn btn-outline btn-sm" onclick="downloadMainImageFile()">
+                          📥 Descargar .jpg optimizado
+                        </button>
+                        <button type="button" class="btn btn-github btn-sm" onclick="uploadMainImageToGithub()" id="btn-upload-github-main">
+                          🚀 Subir a fotos/ en GitHub
+                        </button>
+                      </div>
+                    </div>
+
+                    <div class="preview-card-footer">
+                      <button type="button" class="btn btn-outline btn-xs" onclick="triggerMainImageUpload()">
+                        🔄 Cambiar imagen
+                      </button>
+                      <button type="button" class="btn btn-danger-ghost btn-xs" onclick="removeMainImage()">
+                        🗑️ Quitar imagen
+                      </button>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- CAMPO MANUAL AVANZADO (Mantiene compatibilidad con URLs o nombres) -->
+                <div class="advanced-image-field">
+                  <button type="button" class="toggle-advanced-btn" onclick="toggleAdvancedImageField()">
+                    ⚙️ Ingresar nombre o URL web manual ▾
+                  </button>
+                  <div id="advanced-image-row" style="display:none; margin-top:8px;">
+                    <div class="image-input-row">
+                      <input type="text" id="prod-main-image" placeholder="Nombre en fotos/ (ej: mi-foto.jpg) o URL https://..." oninput="handleManualImageInput(this.value)">
+                      <button type="button" class="btn btn-secondary" onclick="openImageGalleryModal('main')">🖼️ Biblioteca</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- GALERÍA DE FOTOS ADICIONALES (CARRUSEL) -->
+              <div class="gallery-editor-section" style="margin-top: 28px;">
+                <div class="gallery-editor-header">
+                  <div>
+                    <label class="form-label-bold">📷 Fotos Adicionales para el Carrusel:</label>
+                    <span class="form-hint">Imágenes secundarias para la galería interactiva en pantalla completa de la página del producto.</span>
+                  </div>
+                  <div class="gallery-header-buttons">
+                    <button type="button" class="btn btn-primary btn-sm" onclick="triggerGalleryMultiUpload()">
+                      📁 Subir fotos desde equipo
+                    </button>
+                    <input type="file" id="gallery-multi-file-input" multiple accept="image/*" style="display:none;" onchange="handleGalleryMultiFileInput(this)">
+                    <button type="button" class="btn btn-secondary btn-sm" onclick="openImageGalleryModal('gallery')">
+                      🖼️ Agregar de Biblioteca
+                    </button>
+                    <button type="button" class="btn btn-outline btn-sm" onclick="addGalleryImageInput()">
+                      ➕ Por URL o texto
+                    </button>
+                  </div>
+                </div>
+
+                <!-- LISTA / GRILLA DINÁMICA DE FOTOS DEL CARRUSEL -->
+                <div id="gallery-inputs-list" class="gallery-cards-grid">
+                  <!-- Inputs dinámicos inyectados por JS -->
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- TAB 3: DESCRIPCIÓN Y ESPECIFICACIONES -->
+          <div id="tab-details" class="tab-content">
+            <div class="form-group">
+              <label for="prod-desc">Descripción detallada del producto:</label>
+              <textarea id="prod-desc" rows="4" placeholder="Explicá las ventajas, materiales, compatibilidad y detalles importantes para el comprador..."></textarea>
+            </div>
+
+            <!-- CARACTERÍSTICAS DESTACADAS -->
+            <div class="features-editor-section">
+              <div class="features-editor-header">
+                <div>
+                  <label>✨ Características destacadas (Viñetas):</label>
+                  <span class="form-hint">Aparecen con tilde verde en la página de compra y producto.</span>
+                </div>
+                <button type="button" class="btn btn-outline btn-sm" onclick="addFeatureInput()">
+                  ➕ Agregar Característica
+                </button>
+              </div>
+
+              <div id="features-inputs-list" class="features-inputs-list">
+                <!-- Viñetas dinámicas -->
+              </div>
+            </div>
+
+            <!-- ESPECIFICACIONES TÉCNICAS (SPECS) -->
+            <div class="specs-editor-section" style="margin-top: 20px;">
+              <div class="specs-editor-header">
+                <div>
+                  <label>📋 Especificaciones Técnicas (Ficha):</label>
+                  <span class="form-hint">Pares de dato y valor (ej: "Conectividad" -> "Bluetooth 5.0")</span>
+                </div>
+                <button type="button" class="btn btn-outline btn-sm" onclick="addSpecInput()">
+                  ➕ Agregar Especificación
+                </button>
+              </div>
+
+              <div id="specs-inputs-list" class="specs-inputs-list">
+                <!-- Pares dinámicos -->
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" onclick="closeProductModal()">
+            Cancelar
+          </button>
+          <button type="submit" class="btn btn-success">
+            💾 Guardar Cambios en Catálogo
+          </button>
+        </div>
+      </form>
+
+    </div>
+  </div>
+
+  <!-- ========================================================
+       MODAL 2: CONFIGURACIÓN DE GITHUB (API GRATUITA)
+       ======================================================== -->
+  <div id="github-modal" class="modal-backdrop" style="display: none;">
+    <div class="modal-container">
+      <div class="modal-header">
+        <div>
+          <h2>Conexión Directa con GitHub (1 Clic)</h2>
+          <span class="modal-subtitle">Permite publicar cambios sin salir del navegador y sin tocar código</span>
+        </div>
+        <button type="button" class="modal-close-btn" onclick="closeGithubModal()">✕</button>
+      </div>
+
+      <div class="modal-body">
+        <div class="github-guide-box">
+          <div class="guide-step">
+            <span class="step-num">1</span>
+            <span>Andá a tu cuenta de GitHub > <strong>Settings</strong> > <strong>Developer Settings</strong> > <strong>Personal Access Tokens</strong> > <strong>Tokens (classic)</strong>.</span>
+          </div>
+          <div class="guide-step">
+            <span class="step-num">2</span>
+            <span>Creá un token con permiso <strong>repo</strong> (o <strong>Contents: Read & write</strong>). Es 100% gratuito.</span>
+          </div>
+          <div class="guide-step">
+            <span class="step-num">3</span>
+            <span>Pegá el token y datos abajo. Se guardan <strong>únicamente en tu navegador</strong> y nunca son públicos.</span>
+          </div>
+        </div>
+
+        <form id="github-config-form" onsubmit="saveGithubConfig(event)">
+          <div class="form-group">
+            <label for="gh-owner">Usuario u Organización de GitHub: <span class="req">*</span></label>
+            <input type="text" id="gh-owner" placeholder="Ej: tu-usuario" required>
+          </div>
+
+          <div class="form-group">
+            <label for="gh-repo">Nombre del Repositorio: <span class="req">*</span></label>
+            <input type="text" id="gh-repo" placeholder="Ej: nissa-tienda o tu-repo" required>
+          </div>
+
+          <div class="form-group">
+            <label for="gh-branch">Rama (Branch):</label>
+            <input type="text" id="gh-branch" placeholder="main o master o gh-pages" value="main" required>
+          </div>
+
+          <div class="form-group">
+            <label for="gh-path">Ruta del archivo:</label>
+            <input type="text" id="gh-path" value="products.js" required>
+          </div>
+
+          <div class="form-group">
+            <label for="gh-token">Personal Access Token (PAT): <span class="req">*</span></label>
+            <div class="input-with-action">
+              <input type="password" id="gh-token" placeholder="ghp_xxxxxxxxxxxx..." autocomplete="off">
+              <button type="button" class="btn-toggle-pass" onclick="togglePassVisibility('gh-token')">👁️</button>
+            </div>
+            <span class="form-hint">Tu token queda protegido en el almacenamiento local de este navegador.</span>
+          </div>
+
+          <div id="gh-test-status" class="status-msg" style="display: none;"></div>
+
+          <div class="modal-footer" style="padding: 16px 0 0; margin-top: 16px;">
+            <button type="button" class="btn btn-outline" onclick="testGithubConnection()">
+              🔌 Probar Conexión
+            </button>
+            <button type="submit" class="btn btn-primary">
+              💾 Guardar Configuración
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================================
+       MODAL 3: VER / COPIAR CÓDIGO GENERADO DE PRODUCTS.JS
+       ======================================================== -->
+  <div id="code-modal" class="modal-backdrop" style="display: none;">
+    <div class="modal-container modal-large">
+      <div class="modal-header">
+        <div>
+          <h2>Código de <code>products.js</code></h2>
+          <span class="modal-subtitle">Contenido listo para copiar o reemplazar en GitHub</span>
+        </div>
+        <button type="button" class="modal-close-btn" onclick="closeCodeModal()">✕</button>
+      </div>
+
+      <div class="modal-body">
+        <textarea id="code-output" class="code-textarea" readonly></textarea>
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" onclick="closeCodeModal()">
+          Cerrar
+        </button>
+        <button type="button" class="btn btn-outline" onclick="copyGeneratedCode()">
+          📋 Copiar al Portapapeles
+        </button>
+        <button type="button" class="btn btn-primary" onclick="downloadProductsJs()">
+          📥 Descargar Archivo
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================================
+       MODAL 4: CAMBIAR CONTRASEÑA DE ADMINISTRADOR
+       ======================================================== -->
+  <div id="pass-modal" class="modal-backdrop" style="display: none;">
+    <div class="modal-container modal-sm">
+      <div class="modal-header">
+        <div>
+          <h2>Cambiar Contraseña</h2>
+          <span class="modal-subtitle">Actualizá la clave para ingresar a este panel</span>
+        </div>
+        <button type="button" class="modal-close-btn" onclick="closePassModal()">✕</button>
+      </div>
+
+      <form onsubmit="saveNewPass(event)">
+        <div class="modal-body">
+          <div class="form-group">
+            <label for="new-pass">Nueva contraseña:</label>
+            <input type="password" id="new-pass" placeholder="Ingresá la nueva clave..." required minlength="4">
+          </div>
+          <div class="form-group">
+            <label for="confirm-pass">Repetir nueva contraseña:</label>
+            <input type="password" id="confirm-pass" placeholder="Confirmá la nueva clave..." required minlength="4">
+          </div>
+          <div id="pass-error" class="error-msg" style="display: none;"></div>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" onclick="closePassModal()">Cancelar</button>
+          <button type="submit" class="btn btn-primary">Actualizar Clave</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ========================================================
+       MODAL 5: AGREGAR NUEVO MODELO DE CELULAR
+       ======================================================== -->
+  <div id="modal-add-celular-model" class="modal-backdrop" style="display: none;">
+    <div class="modal-container modal-md">
+      <div class="modal-header">
+        <div>
+          <h2>➕ Agregar Equipo / Modelo</h2>
+          <span class="modal-subtitle">Agregá un modelo al presupuestador</span>
+        </div>
+        <button type="button" class="modal-close-btn" onclick="closeAddCelularModelModal()">✕</button>
+      </div>
+
+      <form onsubmit="handleCreateCelularModel(event)">
+        <div class="modal-body">
+          <div class="form-group">
+            <label for="new-model-brand">Marca del Equipo: <span class="req">*</span></label>
+            <select id="new-model-brand" onchange="toggleCustomBrandInput(this.value)" required>
+              <!-- Llenado dinámicamente con marcas existentes -->
+            </select>
+          </div>
+
+          <div class="form-group" id="custom-brand-group" style="display: none;">
+            <label for="new-custom-brand-name">Nombre de la Nueva Marca: <span class="req">*</span></label>
+            <input type="text" id="new-custom-brand-name" placeholder="Ej: Xiaomi, Huawei, Realme, Honor...">
+          </div>
+
+          <div class="form-group">
+            <label for="new-model-name">Nombre del Modelo / Equipo: <span class="req">*</span></label>
+            <input type="text" id="new-model-name" placeholder="Ej: iPhone 16 Pro Max, Samsung Galaxy S24, Moto G84..." required>
+          </div>
+
+          <div class="form-group" style="background: #f8fafc; border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 12px;">
+            <label class="checkbox-label">
+              <input type="checkbox" id="prefill-standard-repairs" checked>
+              <span>⚡ Pre-cargar reparaciones estándar de NISSA</span>
+            </label>
+            <p class="settings-help" style="margin-left: 26px;">
+              Crea automáticamente las reparaciones habituales: Pantalla/Módulo, Batería, Pin de carga, Cámaras (frontal y trasera), Tapa trasera y servicios no realizados (Desbloqueo / Liberación). Podrás ajustar sus precios inmediatamente.
+            </p>
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" onclick="closeAddCelularModelModal()">Cancelar</button>
+          <button type="submit" class="btn btn-primary">Crear Equipo</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ========================================================
+       MODAL 6: AGREGAR REPARACIÓN / SERVICIO
+       ======================================================== -->
+  <div id="modal-add-repair" class="modal-backdrop" style="display: none;">
+    <div class="modal-container modal-md">
+      <div class="modal-header">
+        <div>
+          <h2 id="modal-repair-title">➕ Nueva Reparación</h2>
+          <span id="modal-repair-subtitle" class="modal-subtitle">Asignar tarifa a dispositivo</span>
+        </div>
+        <button type="button" class="modal-close-btn" onclick="closeAddRepairModal()">✕</button>
+      </div>
+
+      <form onsubmit="handleSaveNewRepair(event)">
+        <input type="hidden" id="repair-target-type">
+        <input type="hidden" id="repair-target-brand">
+        <input type="hidden" id="repair-target-model-idx">
+        <input type="hidden" id="repair-target-device-id">
+
+        <div class="modal-body">
+          <div class="form-group">
+            <label for="new-repair-name">Nombre de la Reparación / Servicio: <span class="req">*</span></label>
+            <input type="text" id="new-repair-name" placeholder="Ej: 📱 Pantalla / Módulo OLED, 🔋 Batería, 🔌 Pin de carga..." required>
+          </div>
+
+          <div class="form-group">
+            <label for="new-repair-price">Precio: <span class="req">*</span></label>
+            <input type="text" id="new-repair-price" placeholder="Ej: 85000 (o '75 USD' o 'Consultar')" required>
+            <span class="form-hint">Podés ingresar un número en pesos (ej: 45000), en dólares (ej: 70 USD), o "Consultar".</span>
+          </div>
+
+          <div class="form-group">
+            <label for="new-repair-note">Aclaración / Nota de Garantía:</label>
+            <input type="text" id="new-repair-note" placeholder="Ej: Condición 100%, Garantía escrita de 30 días...">
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" onclick="closeAddRepairModal()">Cancelar</button>
+          <button type="submit" class="btn btn-primary">Agregar Reparación</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ========================================================
+       MODAL 7: AJUSTE MASIVO DE PRECIOS (%)
+       ======================================================== -->
+  <div id="modal-mass-adjust" class="modal-backdrop" style="display: none;">
+    <div class="modal-container modal-md">
+      <div class="modal-header">
+        <div>
+          <h2>⚡ Ajuste Masivo de Precios</h2>
+          <span class="modal-subtitle">Modificá tarifas por porcentaje o monto fijo en lote</span>
+        </div>
+        <button type="button" class="modal-close-btn" onclick="closeMassAdjustModal()">✕</button>
+      </div>
+
+      <form onsubmit="handleApplyMassAdjust(event)">
+        <div class="modal-body">
+          <div class="form-group">
+            <label for="mass-scope">Aplicar a:</label>
+            <select id="mass-scope" required>
+              <option value="current_brand">Marca actual seleccionada</option>
+              <option value="all_celulares">Todos los celulares (todas las marcas)</option>
+              <option value="consolas">Todas las consolas</option>
+              <option value="joysticks">Todos los joysticks</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="mass-repair-filter">Filtrar por tipo de servicio:</label>
+            <select id="mass-repair-filter" required>
+              <option value="all">Todas las reparaciones</option>
+              <option value="pantalla">Solo Pantallas / Módulos</option>
+              <option value="bateria">Solo Baterías</option>
+              <option value="pin">Solo Pin de carga</option>
+              <option value="camara">Solo Cámaras</option>
+              <option value="tapa">Solo Tapas traseras</option>
+            </select>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group flex-1">
+              <label for="mass-operation">Operación:</label>
+              <select id="mass-operation" required>
+                <option value="percent_increase">Aumentar porcentaje (+%)</option>
+                <option value="percent_decrease">Disminuir porcentaje (-%)</option>
+                <option value="fixed_increase">Sumar monto fijo (+$)</option>
+                <option value="fixed_decrease">Restar monto fijo (-$)</option>
+              </select>
+            </div>
+
+            <div class="form-group flex-1">
+              <label for="mass-value">Valor: <span class="req">*</span></label>
+              <input type="number" id="mass-value" placeholder="Ej: 10 (para 10%) o 5000" min="0" step="any" required>
+            </div>
+          </div>
+
+          <div class="settings-help" style="background: #fef3c7; border: 1px solid #fde68a; padding: 10px; border-radius: 6px; color: #92400e;">
+            ⚠️ Solo se modificarán los precios numéricos en pesos (ARS). Las tarifas marcadas como "Consultar", "NO REALIZAMOS" o en USD se mantendrán protegidas.
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" onclick="closeMassAdjustModal()">Cancelar</button>
+          <button type="submit" class="btn btn-warning">Aplicar Ajuste Masivo</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ========================================================
+       MODAL 8: NUEVA MARCA DE CELULARES
+       ======================================================== -->
+  <div id="modal-new-brand" class="modal-backdrop" style="display: none;">
+    <div class="modal-container modal-sm">
+      <div class="modal-header">
+        <div>
+          <h2>➕ Nueva Marca</h2>
+          <span class="modal-subtitle">Agregar marca al cotizador</span>
+        </div>
+        <button type="button" class="modal-close-btn" onclick="closeNewBrandModal()">✕</button>
+      </div>
+
+      <form onsubmit="handleCreateBrand(event)">
+        <div class="modal-body">
+          <div class="form-group">
+            <label for="new-brand-name">Nombre de la Marca: <span class="req">*</span></label>
+            <input type="text" id="new-brand-name" placeholder="Ej: Xiaomi, Huawei, Honor, Motorola..." required>
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" onclick="closeNewBrandModal()">Cancelar</button>
+          <button type="submit" class="btn btn-primary">Crear Marca</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ========================================================
+       MODAL 9: NUEVA CONSOLA O JOYSTICK
+       ======================================================== -->
+  <div id="modal-new-device" class="modal-backdrop" style="display: none;">
+    <div class="modal-container modal-md">
+      <div class="modal-header">
+        <div>
+          <h2 id="modal-new-device-title">➕ Nuevo Dispositivo</h2>
+          <span class="modal-subtitle">Agregar al presupuestador</span>
+        </div>
+        <button type="button" class="modal-close-btn" onclick="closeNewDeviceModal()">✕</button>
+      </div>
+
+      <form onsubmit="handleCreateDevice(event)">
+        <input type="hidden" id="new-device-type">
+        <div class="modal-body">
+          <div class="form-group">
+            <label for="new-device-name">Nombre del Dispositivo: <span class="req">*</span></label>
+            <input type="text" id="new-device-name" placeholder="Ej: Xbox Series X, Nintendo Switch OLED..." required>
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" onclick="closeNewDeviceModal()">Cancelar</button>
+          <button type="submit" class="btn btn-primary">Crear Dispositivo</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ========================================================
+       MODAL 10: VER / COPIAR CÓDIGO DE COTIZADOR-DATA.JS
+       ======================================================== -->
+  <div id="modal-cotizador-code" class="modal-backdrop" style="display: none;">
+    <div class="modal-container modal-large">
+      <div class="modal-header">
+        <div>
+          <h2>Código de <code>cotizador-data.js</code></h2>
+          <span class="modal-subtitle">Tarifas y modelos completos listos para GitHub</span>
+        </div>
+        <button type="button" class="modal-close-btn" onclick="closeCotizadorCodeModal()">✕</button>
+      </div>
+
+      <div class="modal-body">
+        <textarea id="cotizador-code-output" class="code-textarea" readonly></textarea>
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" onclick="closeCotizadorCodeModal()">
+          Cerrar
+        </button>
+        <button type="button" class="btn btn-outline" onclick="copyCotizadorGeneratedCode()">
+          📋 Copiar al Portapapeles
+        </button>
+        <button type="button" class="btn btn-primary" onclick="downloadCotizadorJs()">
+          📥 Descargar cotizador-data.js
+        </button>
+      </div>
+    </div>
+  <!-- ========================================================
+       MODAL 11: BIBLIOTECA VISUAL DE FOTOS (fotos/ Y CATÁLOGO)
+       ======================================================== -->
+  <div id="modal-image-gallery" class="modal-backdrop" style="display: none;">
+    <div class="modal-container modal-large">
+      <div class="modal-header">
+        <div>
+          <h2>🖼️ Biblioteca de Fotos NISSA</h2>
+          <span class="modal-subtitle">Imágenes de la carpeta <code>fotos/</code> y catálogo de productos</span>
+        </div>
+        <button type="button" class="modal-close-btn" onclick="closeImageGalleryModal()">✕</button>
+      </div>
+
+      <div class="gallery-modal-toolbar">
+        <div class="search-wrap" style="flex: 2;">
+          <span class="search-icon">🔍</span>
+          <input type="text" id="gallery-search-input" placeholder="Buscar por nombre (ej: apple, samsung, mando, cable, vidrio)..." oninput="filterImageGallery(this.value)">
+          <button type="button" id="clear-gallery-search" class="clear-search-btn" onclick="clearGallerySearch()" style="display: none;">✕</button>
+        </div>
+
+        <div class="gallery-quick-categories">
+          <button type="button" class="gallery-cat-pill active" data-cat="todos" onclick="setGalleryFilter('todos')">Todas</button>
+          <button type="button" class="gallery-cat-pill" data-cat="apple" onclick="setGalleryFilter('apple')">Apple</button>
+          <button type="button" class="gallery-cat-pill" data-cat="samsung" onclick="setGalleryFilter('samsung')">Samsung</button>
+          <button type="button" class="gallery-cat-pill" data-cat="mando" onclick="setGalleryFilter('mando')">Mandos / PS</button>
+          <button type="button" class="gallery-cat-pill" data-cat="cable" onclick="setGalleryFilter('cable')">Cables & Cargadores</button>
+          <button type="button" class="gallery-cat-pill" data-cat="funda" onclick="setGalleryFilter('funda')">Fundas & Vidrios</button>
+        </div>
+
+        <div class="gallery-modal-upload">
+          <button type="button" class="btn btn-primary btn-sm" onclick="triggerGalleryModalUpload()">
+            📁 Subir imagen nueva
+          </button>
+          <input type="file" id="gallery-modal-file-input" accept="image/*" style="display:none;" onchange="handleGalleryModalUpload(this)">
+        </div>
+      </div>
+
+      <div class="modal-body" style="max-height: 480px; overflow-y: auto;">
+        <div id="gallery-modal-grid" class="image-gallery-modal-grid">
+          <!-- Inyectado dinámicamente -->
+        </div>
+        <div id="gallery-modal-empty" class="empty-state" style="display: none; padding: 30px;">
+          <p>No se encontraron imágenes que coincidan con la búsqueda.</p>
+        </div>
+      </div>
+
+      <div class="modal-footer" style="display: flex; justify-content: space-between; align-items: center;">
+        <span class="gallery-modal-hint" id="gallery-target-hint">🎯 Seleccionando para Portada</span>
+        <button type="button" class="btn btn-secondary" onclick="closeImageGalleryModal()">Cerrar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- CARGA DE ARCHIVOS ORIGINALES DE PRODUCTOS Y COTIZADOR -->
+  <script src="/products.js"></script>
+  <script src="/cotizador-data.js"></script>
+  <!-- LÓGICA COMPLETA DEL ADMINISTRADOR -->
+  <script type="module" src="/admin.js"></script>
+</body>
+</html>
