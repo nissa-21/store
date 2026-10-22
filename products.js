@@ -28,7 +28,7 @@ let products = [
       "Hasta 90 días de garantía oficial escrita en laboratorio NISSA con cambio directo"
     ],
     "specs": {
-      "Garantía": "90 días oficial escrita NISSA",
+      "Garantía": "15 días oficial escrita NISSA",
       "Disponibilidad": "Stock inmediato para entrega o retiro",
       "Potencia de salida": "20W Power Delivery (USB-C)",
       "Conector incluido": "USB-C a Lightning (1 metro)",
@@ -44,21 +44,19 @@ let products = [
     "price3": 40500,
     "price5": 31600,
     "price20": 26900,
-    "image": "cargador-rapido-usb-c-25w-samsung-super-fast.jpg",
+    "image": "aipodspro2gen1.jpg",
     "images": [
-      "cargador-rapido-usb-c-25w-samsung-super-fast.jpg",
-      "cargador-samsung-detalle.jpg"
+      "aipodspro2gen.jpg"
     ],
-    "description": "Cargador de pared de 25W con protocolo Super Fast Charging (Power Delivery 3.0 PPS). Brinda recarga acelerada para smartphones Samsung Galaxy Series A, S, Z y Note, así como para dispositivos Android y consolas portátiles.",
-    "features": [
-      "Tecnología Samsung Super Fast Charging 25W con control dinámico de voltaje PPS",
-      "Carga del 0% al 60% en aproximadamente 35 minutos",
-      "Cuerpo ignífugo con disipación térmica optimizada para uso continuo seguro",
-      "Compatible con teléfonos Samsung, Xiaomi, Motorola, consolas Nintendo Switch y tablets",
-      "Garantía de laboratorio NISSA por 90 días con soporte técnico especializado"
+    "description": "Disfrutá de una experiencia auditiva inmersiva con estos auriculares In-ear de segunda generación. Con un diseño compacto y ergonómico, ofrecen un sonido más claro y envolvente, ideales para música, llamadas y contenido multimedia. Su tecnología avanzada optimiza el audio en tiempo real y se adapta a tu entorno, brindándote un nivel de detalle y comodidad excepcional.": [
+      "Cancelación de ruido mejorada",
+      "Control táctil de volumen",
+      "Mayor duración de batería",
+      "Conserva y maximiza la vida útil y condición de la batería original de tu equipo"
+    ],
     ],
     "specs": {
-      "Garantía": "90 días oficial escrita NISSA",
+      "Garantía": "15 días oficial escrita NISSA",
       "Potencia": "25W Super Fast Charging (PD 3.0 PPS)",
       "Puerto de salida": "USB Tipo-C hembra",
       "Compatibilidad": "Samsung Galaxy S20 a S24, Galaxy A54/A55/A34/A35, Z Fold/Flip y universales",
