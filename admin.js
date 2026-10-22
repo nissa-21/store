@@ -155,6 +155,7 @@ function showAdminApp() {
   renderCotizadorDynamicActions();
   checkDraftStatus();
   updateCountsBadge();
+  setupDropzoneAndPasteEvents();
 }
 
 function loadInitialProducts() {
@@ -451,7 +452,7 @@ function openProductModal(productId = null) {
     document.getElementById("prod-price20").value = p.price20 || "";
 
     document.getElementById("prod-main-image").value = p.image || "";
-    previewMainImage(p.image || "");
+    initMainImageState(p.image || "");
 
     document.getElementById("prod-desc").value = p.description || "";
 
@@ -487,7 +488,7 @@ function openProductModal(productId = null) {
     document.getElementById("prod-spec-stock").value = "Stock inmediato para entrega o retiro";
     addGalleryImageInput();
     addFeatureInput();
-    previewMainImage("");
+    initMainImageState("");
   }
 
   calculateDiscounts();
@@ -533,24 +534,773 @@ function calculateDiscounts() {
   }
 }
 
-function previewMainImage(val) {
+// ========================================================
+// GESTIÓN AVANZADA DE IMÁGENES: CARGA, COMPRESIÓN, GALERÍA Y SELECCIÓN
+// ========================================================
+const KNOWN_FOTOS = [
+  "pack-apple-original-certificado-20w.jpg",
+  "pack-apple-caja.jpg",
+  "pack-apple-cable-detalle.jpg",
+  "pack-apple.jpg",
+  "pack-apple-original-certificado-20w.png",
+  "cargador-rapido-usb-c-25w-samsung-super-fast.jpg",
+  "cargador-samsung-detalle.jpg",
+  "cargador-samsung.jpg",
+  "cable-usb-c-a-lightning-1m-trenzado-reforzado.jpg",
+  "cable-iphone-conectores.jpg",
+  "cable-iphone.jpg",
+  "vidrio-templado-9d-full-cover-antigolpe.jpg",
+  "vidrio-templado-aplicado.jpg",
+  "vidrio-templado.jpg",
+  "funda-case-magnetica-silicona-suave-magsafe.jpg",
+  "funda-magsafe-interior.jpg",
+  "funda-magsafe.jpg",
+  "auriculares-bluetooth-in-ear-true-wireless-hifi.jpg",
+  "auriculares-bluetooth-detalle.jpg",
+  "auriculares-bluetooth.jpg",
+  "mando-dualsense-ps5-inalambrico-original.jpg",
+  "mando-ps5-gatillos.jpg",
+  "mando-ps5.jpg",
+  "mando-dualshock-4-ps4-inalambrico.jpg",
+  "mando-ps4-trasera.jpg",
+  "mando-ps4.jpg"
+];
+
+let currentMainImageState = {
+  dataUrl: "",
+  filename: "",
+  mode: "base64", // "base64" | "fotos" | "url"
+  width: 0,
+  height: 0,
+  sizeKb: 0
+};
+
+let galleryModalTarget = "main"; // 'main' o 'gallery'
+let activeGalleryCategory = "todos";
+let activeGallerySearch = "";
+let customUploadedPhotos = []; // Fotos subidas en esta sesión para la biblioteca
+
+// Optimización client-side con Canvas (reduce fotos pesadas de celulares a WebP/JPEG ligero)
+function processImageFile(file, maxWidth = 1200, quality = 0.82) {
+  return new Promise((resolve, reject) => {
+    if (!file || !file.type.startsWith("image/")) {
+      return reject(new Error("El archivo seleccionado no es una imagen válida"));
+    }
+
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      const img = new Image();
+      img.onload = () => {
+        let width = img.width;
+        let height = img.height;
+
+        if (width > maxWidth) {
+          height = Math.round((height * maxWidth) / width);
+          width = maxWidth;
+        }
+
+        const canvas = document.createElement("canvas");
+        canvas.width = width;
+        canvas.height = height;
+        const ctx = canvas.getContext("2d");
+        ctx.drawImage(img, 0, 0, width, height);
+
+        const dataUrl = canvas.toDataURL("image/jpeg", quality);
+        const head = "data:image/jpeg;base64,";
+        const base64Len = dataUrl.length - head.length;
+        const sizeKb = Math.round((base64Len * 3 / 4) / 1024);
+
+        let cleanName = (file.name || "producto.jpg")
+          .toLowerCase()
+          .replace(/[^a-z0-9.]+/g, "-")
+          .replace(/-+/g, "-")
+          .replace(/^-+|-+$/g, "");
+        if (!/\.(jpe?g|png|webp)$/i.test(cleanName)) {
+          cleanName += ".jpg";
+        }
+
+        resolve({
+          dataUrl,
+          width,
+          height,
+          sizeKb,
+          filename: cleanName,
+          originalName: file.name
+        });
+      };
+      img.onerror = () => reject(new Error("No se pudo leer la imagen"));
+      img.src = e.target.result;
+    };
+    reader.onerror = () => reject(new Error("Error al abrir archivo"));
+    reader.readAsDataURL(file);
+  });
+}
+
+function initMainImageState(val = "") {
+  const dropzone = document.getElementById("main-image-dropzone");
+  const previewCard = document.getElementById("main-image-preview-card");
+  const input = document.getElementById("prod-main-image");
+
+  if (!val) {
+    currentMainImageState = { dataUrl: "", filename: "", mode: "base64", width: 0, height: 0, sizeKb: 0 };
+    if (input) input.value = "";
+    if (previewCard) previewCard.style.display = "none";
+    if (dropzone) dropzone.style.display = "block";
+    return;
+  }
+
+  const isData = val.startsWith("data:");
+  const isUrl = val.startsWith("http://") || val.startsWith("https://");
+
+  currentMainImageState = {
+    dataUrl: isData ? val : "",
+    filename: (!isData && !isUrl) ? val.replace(/^\.\/fotos\//, "").replace(/^\/fotos\//, "") : "producto.jpg",
+    mode: isData ? "base64" : (isUrl ? "url" : "fotos"),
+    width: 0,
+    height: 0,
+    sizeKb: 0
+  };
+
+  if (input) input.value = val;
+  updateMainImagePreviewUI(val);
+}
+
+function updateMainImagePreviewUI(overrideSrc = null) {
+  const dropzone = document.getElementById("main-image-dropzone");
+  const previewCard = document.getElementById("main-image-preview-card");
   const imgEl = document.getElementById("main-image-preview");
   const placeholder = document.getElementById("main-image-placeholder");
-  const info = document.getElementById("main-image-path-info");
-  if (!imgEl || !placeholder) return;
+  const badge = document.getElementById("main-image-badge");
+  const stats = document.getElementById("main-image-stats");
+  const title = document.getElementById("main-image-display-name");
+  const btnBase64 = document.getElementById("btn-mode-base64");
+  const btnFotos = document.getElementById("btn-mode-fotos");
+  const fileOptions = document.getElementById("file-storage-options");
+  const fnInput = document.getElementById("prod-filename-input");
 
-  const resolved = resolveAdminPhoto(val.trim());
-  if (resolved) {
+  if (!previewCard) return;
+
+  const inputVal = (document.getElementById("prod-main-image") || {}).value || "";
+  const displaySrc = overrideSrc || currentMainImageState.dataUrl || resolveAdminPhoto(inputVal);
+
+  if (!displaySrc) {
+    previewCard.style.display = "none";
+    if (dropzone) dropzone.style.display = "block";
+    return;
+  }
+
+  previewCard.style.display = "flex";
+  if (imgEl) {
+    imgEl.src = displaySrc;
+    imgEl.style.display = "block";
+  }
+  if (placeholder) placeholder.style.display = "none";
+
+  // Badges y datos
+  if (currentMainImageState.mode === "base64") {
+    if (badge) {
+      badge.className = "img-type-badge";
+      badge.textContent = "🌟 Embebida (Base64)";
+    }
+    if (btnBase64) btnBase64.classList.add("active");
+    if (btnFotos) btnFotos.classList.remove("active");
+    if (fileOptions) fileOptions.style.display = "none";
+    if (title) title.textContent = currentMainImageState.filename || "Imagen embebida";
+  } else if (currentMainImageState.mode === "fotos") {
+    if (badge) {
+      badge.className = "img-type-badge fotos-badge";
+      badge.textContent = `📁 Archivo en fotos/`;
+    }
+    if (btnBase64) btnBase64.classList.remove("active");
+    if (btnFotos) btnFotos.classList.add("active");
+    if (fileOptions) fileOptions.style.display = "flex";
+    if (fnInput) fnInput.value = currentMainImageState.filename;
+    if (title) title.textContent = `fotos/${currentMainImageState.filename}`;
+  } else {
+    if (badge) {
+      badge.className = "img-type-badge url-badge";
+      badge.textContent = "🌐 Enlace Web";
+    }
+    if (btnBase64) btnBase64.classList.remove("active");
+    if (btnFotos) btnFotos.classList.remove("active");
+    if (fileOptions) fileOptions.style.display = "none";
+    if (title) title.textContent = inputVal;
+  }
+
+  if (stats) {
+    if (currentMainImageState.width && currentMainImageState.height) {
+      stats.textContent = `${currentMainImageState.width} × ${currentMainImageState.height} px · ~${currentMainImageState.sizeKb} KB`;
+    } else {
+      stats.textContent = "Listo para publicar";
+    }
+  }
+}
+
+function setMainImageStorageMode(mode) {
+  currentMainImageState.mode = mode;
+  const mainInput = document.getElementById("prod-main-image");
+  if (!mainInput) return;
+
+  if (mode === "base64") {
+    if (currentMainImageState.dataUrl) {
+      mainInput.value = currentMainImageState.dataUrl;
+    }
+  } else if (mode === "fotos") {
+    const filename = currentMainImageState.filename || "producto.jpg";
+    mainInput.value = filename;
+  }
+  updateMainImagePreviewUI();
+}
+
+function updateFilenameFromInput(val) {
+  const clean = val.trim();
+  if (clean) {
+    currentMainImageState.filename = clean;
+    if (currentMainImageState.mode === "fotos") {
+      const mainInput = document.getElementById("prod-main-image");
+      if (mainInput) mainInput.value = clean;
+    }
+  }
+}
+
+function triggerMainImageUpload() {
+  const fileInput = document.getElementById("main-image-file-input");
+  if (fileInput) {
+    fileInput.value = "";
+    fileInput.click();
+  }
+}
+
+async function handleMainFileInput(input) {
+  if (!input || !input.files || input.files.length === 0) return;
+  const file = input.files[0];
+  try {
+    const processed = await processImageFile(file);
+    applyProcessedMainImage(processed);
+    showAlert(`✓ Imagen "${processed.filename}" cargada y optimizada (${processed.width}×${processed.height}px, ${processed.sizeKb} KB).`);
+  } catch (err) {
+    alert("Error al cargar la imagen: " + err.message);
+  }
+}
+
+function applyProcessedMainImage(processed) {
+  currentMainImageState = {
+    dataUrl: processed.dataUrl,
+    filename: processed.filename,
+    mode: "base64",
+    width: processed.width,
+    height: processed.height,
+    sizeKb: processed.sizeKb
+  };
+
+  // Guardar en fotos de sesión para biblioteca
+  if (!customUploadedPhotos.some(p => p.filename === processed.filename)) {
+    customUploadedPhotos.unshift({
+      filename: processed.filename,
+      dataUrl: processed.dataUrl,
+      source: "Subida reciente"
+    });
+  }
+
+  const mainInput = document.getElementById("prod-main-image");
+  if (mainInput) mainInput.value = processed.dataUrl;
+
+  const fnInput = document.getElementById("prod-filename-input");
+  if (fnInput) fnInput.value = processed.filename;
+
+  updateMainImagePreviewUI();
+}
+
+function removeMainImage() {
+  initMainImageState("");
+  showAlert("Foto de portada removida.");
+}
+
+function toggleAdvancedImageField() {
+  const row = document.getElementById("advanced-image-row");
+  if (row) {
+    row.style.display = row.style.display === "none" ? "block" : "none";
+  }
+}
+
+function handleManualImageInput(val) {
+  const trimmed = (val || "").trim();
+  if (trimmed) {
+    initMainImageState(trimmed);
+  } else {
+    initMainImageState("");
+  }
+}
+
+function downloadMainImageFile() {
+  const src = currentMainImageState.dataUrl || resolveAdminPhoto(currentMainImageState.filename);
+  if (!src) {
+    alert("No hay imagen disponible para descargar.");
+    return;
+  }
+  const filename = currentMainImageState.filename || "producto.jpg";
+
+  const a = document.createElement("a");
+  a.href = src;
+  a.download = filename;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+
+  showAlert(`✓ Imagen descargada como "${filename}". Ya podés moverla a tu carpeta 'fotos/' en GitHub.`);
+}
+
+async function uploadMainImageToGithub() {
+  const cfg = getGithubConfig();
+  if (!cfg.owner || !cfg.repo || !cfg.token) {
+    if (confirm("Para subir imágenes directo a GitHub necesitás configurar tu Usuario, Repositorio y Token en el panel. ¿Deseás configurarlo ahora?")) {
+      openGithubModal();
+    }
+    return;
+  }
+
+  const filename = currentMainImageState.filename || "producto.jpg";
+  const dataUrl = currentMainImageState.dataUrl;
+
+  if (!dataUrl || !dataUrl.startsWith("data:")) {
+    alert("Esta opción requiere una imagen cargada desde tu equipo. Hacé clic en 'Subir desde mi equipo'.");
+    return;
+  }
+
+  const btn = document.getElementById("btn-upload-github-main");
+  if (btn) {
+    btn.disabled = true;
+    btn.textContent = "⏳ Subiendo a GitHub...";
+  }
+
+  try {
+    const base64Data = dataUrl.split(",")[1];
+    const filePath = `fotos/${filename}`;
+    const url = `https://api.github.com/repos/${cfg.owner}/${cfg.repo}/contents/${filePath}?ref=${cfg.branch}`;
+
+    // Obtener SHA si ya existe
+    let sha = null;
+    const checkRes = await fetch(url, {
+      headers: {
+        "Authorization": `token ${cfg.token}`,
+        "Accept": "application/vnd.github.v3+json"
+      }
+    });
+    if (checkRes.ok) {
+      const existing = await checkRes.json();
+      sha = existing.sha;
+    }
+
+    const putRes = await fetch(`https://api.github.com/repos/${cfg.owner}/${cfg.repo}/contents/${filePath}`, {
+      method: "PUT",
+      headers: {
+        "Authorization": `token ${cfg.token}`,
+        "Content-Type": "application/json",
+        "Accept": "application/vnd.github.v3+json"
+      },
+      body: JSON.stringify({
+        message: `Subir imagen de producto ${filePath} desde Admin NISSA`,
+        content: base64Data,
+        branch: cfg.branch,
+        sha: sha || undefined
+      })
+    });
+
+    if (putRes.ok) {
+      showAlert(`✓ ¡Éxito! La imagen fotos/${filename} se subió directamente a tu GitHub en la rama ${cfg.branch}.`);
+    } else {
+      const err = await putRes.json().catch(() => ({}));
+      alert("Error al subir a GitHub: " + (err.message || putRes.statusText));
+    }
+  } catch (err) {
+    alert("Error de conexión con GitHub: " + err.message);
+  } finally {
+    if (btn) {
+      btn.disabled = false;
+      btn.textContent = "🚀 Subir a fotos/ en GitHub";
+    }
+  }
+}
+
+// --------------------------------------------------------
+// GESTIÓN DE FOTOS ADICIONALES (CARRUSEL)
+// --------------------------------------------------------
+function triggerGalleryMultiUpload() {
+  const input = document.getElementById("gallery-multi-file-input");
+  if (input) {
+    input.value = "";
+    input.click();
+  }
+}
+
+async function handleGalleryMultiFileInput(input) {
+  if (!input || !input.files || input.files.length === 0) return;
+  const files = Array.from(input.files);
+  let count = 0;
+
+  for (const file of files) {
+    try {
+      const processed = await processImageFile(file);
+      addGalleryImageInput(processed.dataUrl, processed.filename);
+      count++;
+    } catch (e) {
+      console.error("Error al procesar foto de carrusel:", e);
+    }
+  }
+
+  showAlert(`✓ ${count} foto(s) agregada(s) a la galería del carrusel.`);
+}
+
+function addGalleryImageInput(val = "", suggestedName = "") {
+  const container = document.getElementById("gallery-inputs-list");
+  if (!container) return;
+
+  const isData = val.startsWith("data:");
+  const isUrl = val.startsWith("http://") || val.startsWith("https://");
+  const typeLabel = isData ? "Embebida (Base64)" : (isUrl ? "URL Web" : "fotos/");
+  const badgeClass = isData ? "" : (isUrl ? "url-badge" : "fotos-badge");
+  const resolved = resolveAdminPhoto(val);
+
+  const row = document.createElement("div");
+  row.className = "gallery-card-row";
+  row.innerHTML = `
+    <div class="gallery-card-thumb-wrap">
+      ${resolved ? `
+        <img src="${escapeHtml(resolved)}" alt="Preview" onerror="this.onerror=null; this.src=''; this.style.display='none'; this.nextElementSibling.style.display='block';">
+        <span style="display:none; font-size:20px;">📦</span>
+      ` : `<span style="font-size:20px;">📷</span>`}
+    </div>
+    <div class="gallery-card-input-wrap">
+      <div class="gallery-card-badge-row">
+        <span class="img-type-badge ${badgeClass}">${typeLabel}</span>
+        ${suggestedName ? `<span style="font-size:11px; color:var(--text-muted);">${escapeHtml(suggestedName)}</span>` : ""}
+      </div>
+      <input type="text" class="gallery-input" placeholder="Nombre en fotos/ (ej: caja-detalle.jpg) o URL..." value="${escapeHtml(val)}" oninput="handleGalleryItemInputChange(this)">
+    </div>
+    <div class="gallery-card-actions">
+      <button type="button" class="btn-icon-action" onclick="moveGalleryItem(this, -1)" title="Subir orden">⬆️</button>
+      <button type="button" class="btn-icon-action" onclick="moveGalleryItem(this, 1)" title="Bajar orden">⬇️</button>
+      <button type="button" class="btn-icon-action danger" onclick="removeGalleryItem(this)" title="Eliminar foto">✕</button>
+    </div>
+  `;
+  container.appendChild(row);
+}
+
+function handleGalleryItemInputChange(input) {
+  const row = input.closest(".gallery-card-row");
+  if (!row) return;
+  const val = input.value.trim();
+  const imgEl = row.querySelector(".gallery-card-thumb-wrap img");
+  const badge = row.querySelector(".img-type-badge");
+
+  const resolved = resolveAdminPhoto(val);
+  if (imgEl && resolved) {
     imgEl.src = resolved;
     imgEl.style.display = "block";
-    placeholder.style.display = "none";
-    if (info) info.textContent = `Ruta: ${resolved}`;
-  } else {
-    imgEl.src = "";
-    imgEl.style.display = "none";
-    placeholder.style.display = "block";
-    if (info) info.textContent = "Ninguna imagen seleccionada";
   }
+
+  if (badge) {
+    if (val.startsWith("data:")) {
+      badge.className = "img-type-badge";
+      badge.textContent = "Embebida (Base64)";
+    } else if (val.startsWith("http")) {
+      badge.className = "img-type-badge url-badge";
+      badge.textContent = "URL Web";
+    } else {
+      badge.className = "img-type-badge fotos-badge";
+      badge.textContent = "fotos/";
+    }
+  }
+}
+
+function moveGalleryItem(btn, direction) {
+  const row = btn.closest(".gallery-card-row");
+  if (!row) return;
+  if (direction === -1 && row.previousElementSibling) {
+    row.parentElement.insertBefore(row, row.previousElementSibling);
+  } else if (direction === 1 && row.nextElementSibling) {
+    row.parentElement.insertBefore(row.nextElementSibling, row);
+  }
+}
+
+function removeGalleryItem(btn) {
+  const row = btn.closest(".gallery-card-row");
+  if (row) row.remove();
+}
+
+// --------------------------------------------------------
+// MODAL DE BIBLIOTECA DE FOTOS (fotos/ Y CATÁLOGO)
+// --------------------------------------------------------
+function openImageGalleryModal(target = "main") {
+  galleryModalTarget = target;
+  const modal = document.getElementById("modal-image-gallery");
+  const hint = document.getElementById("gallery-target-hint");
+  if (hint) {
+    hint.textContent = target === "main" ? "🎯 Seleccionando imagen para Portada del producto" : "🎯 Seleccionando para agregar a la galería del carrusel";
+  }
+  activeGalleryCategory = "todos";
+  activeGallerySearch = "";
+
+  const searchInput = document.getElementById("gallery-search-input");
+  if (searchInput) searchInput.value = "";
+
+  document.querySelectorAll(".gallery-cat-pill").forEach(pill => {
+    pill.classList.toggle("active", pill.dataset.cat === "todos");
+  });
+
+  renderImageGalleryGrid();
+  if (modal) modal.style.display = "flex";
+}
+
+function closeImageGalleryModal() {
+  const modal = document.getElementById("modal-image-gallery");
+  if (modal) modal.style.display = "none";
+}
+
+function setGalleryFilter(cat) {
+  activeGalleryCategory = cat;
+  document.querySelectorAll(".gallery-cat-pill").forEach(pill => {
+    pill.classList.toggle("active", pill.dataset.cat === cat);
+  });
+  renderImageGalleryGrid();
+}
+
+function filterImageGallery(query) {
+  activeGallerySearch = (query || "").toLowerCase().trim();
+  const clearBtn = document.getElementById("clear-gallery-search");
+  if (clearBtn) clearBtn.style.display = activeGallerySearch ? "block" : "none";
+  renderImageGalleryGrid();
+}
+
+function clearGallerySearch() {
+  const input = document.getElementById("gallery-search-input");
+  if (input) input.value = "";
+  filterImageGallery("");
+}
+
+function getAllAvailableImages() {
+  const map = new Map();
+
+  // 1. Fotos subidas durante la sesión
+  customUploadedPhotos.forEach(p => {
+    map.set(p.filename, {
+      filename: p.filename,
+      src: p.dataUrl,
+      source: "Subida reciente",
+      isDataUrl: true,
+      dataUrl: p.dataUrl
+    });
+  });
+
+  // 2. Fotos conocidas de la carpeta fotos/
+  KNOWN_FOTOS.forEach(name => {
+    if (!map.has(name)) {
+      map.set(name, {
+        filename: name,
+        src: `./fotos/${name}`,
+        source: "fotos/",
+        isDataUrl: false,
+        dataUrl: ""
+      });
+    }
+  });
+
+  // 3. Fotos usadas en el catálogo actual
+  currentProducts.forEach(p => {
+    if (p.image && !map.has(p.image)) {
+      map.set(p.image, {
+        filename: p.image.startsWith("data:") ? `Foto producto #${p.id}` : p.image,
+        src: resolveAdminPhoto(p.image),
+        source: `Producto: ${p.name.substring(0, 24)}...`,
+        isDataUrl: p.image.startsWith("data:"),
+        dataUrl: p.image.startsWith("data:") ? p.image : ""
+      });
+    }
+    if (Array.isArray(p.images)) {
+      p.images.forEach(img => {
+        if (img && !map.has(img)) {
+          map.set(img, {
+            filename: img.startsWith("data:") ? `Foto carrusel #${p.id}` : img,
+            src: resolveAdminPhoto(img),
+            source: `Carrusel: ${p.name.substring(0, 24)}...`,
+            isDataUrl: img.startsWith("data:"),
+            dataUrl: img.startsWith("data:") ? img : ""
+          });
+        }
+      });
+    }
+  });
+
+  return Array.from(map.values());
+}
+
+function renderImageGalleryGrid() {
+  const grid = document.getElementById("gallery-modal-grid");
+  const empty = document.getElementById("gallery-modal-empty");
+  if (!grid) return;
+
+  let items = getAllAvailableImages();
+
+  // Filtrado por categoría
+  if (activeGalleryCategory !== "todos") {
+    items = items.filter(item => {
+      const lower = item.filename.toLowerCase();
+      if (activeGalleryCategory === "apple") return lower.includes("apple") || lower.includes("iphone");
+      if (activeGalleryCategory === "samsung") return lower.includes("samsung");
+      if (activeGalleryCategory === "mando") return lower.includes("mando") || lower.includes("ps4") || lower.includes("ps5");
+      if (activeGalleryCategory === "cable") return lower.includes("cable") || lower.includes("cargador");
+      if (activeGalleryCategory === "funda") return lower.includes("funda") || lower.includes("vidrio") || lower.includes("magsafe");
+      return true;
+    });
+  }
+
+  // Filtrado por búsqueda
+  if (activeGallerySearch) {
+    items = items.filter(item => item.filename.toLowerCase().includes(activeGallerySearch));
+  }
+
+  if (items.length === 0) {
+    grid.innerHTML = "";
+    if (empty) empty.style.display = "block";
+    return;
+  }
+
+  if (empty) empty.style.display = "none";
+  grid.innerHTML = "";
+
+  items.forEach(item => {
+    const card = document.createElement("div");
+    card.className = "gallery-modal-item";
+    card.innerHTML = `
+      <div class="gallery-modal-thumb">
+        <img src="${escapeHtml(item.src)}" alt="${escapeHtml(item.filename)}" onerror="this.onerror=null; this.src=''; this.style.display='none'; this.nextElementSibling.style.display='block';">
+        <span style="display:none; font-size:32px;">📦</span>
+      </div>
+      <div class="gallery-modal-info">
+        <span class="gallery-modal-filename" title="${escapeHtml(item.filename)}">${escapeHtml(item.filename)}</span>
+        <span class="gallery-modal-source">${escapeHtml(item.source)}</span>
+      </div>
+      <button type="button" class="btn-select-gallery-item" onclick="selectImageFromGallery('${escapeHtml(item.filename)}', ${item.isDataUrl}, '${escapeHtml(item.dataUrl)}')">
+        ${galleryModalTarget === "main" ? "✓ Elegir como Portada" : "➕ Agregar al carrusel"}
+      </button>
+    `;
+    grid.appendChild(card);
+  });
+}
+
+function selectImageFromGallery(filename, isDataUrl = false, dataUrl = "") {
+  if (galleryModalTarget === "main") {
+    if (isDataUrl && dataUrl) {
+      applyProcessedMainImage({
+        dataUrl: dataUrl,
+        filename: filename.endsWith(".jpg") ? filename : "producto.jpg",
+        width: 0,
+        height: 0,
+        sizeKb: Math.round((dataUrl.length * 3 / 4) / 1024)
+      });
+    } else {
+      initMainImageState(filename);
+    }
+    showAlert(`✓ Foto de portada seleccionada: ${filename}`);
+  } else {
+    addGalleryImageInput(isDataUrl && dataUrl ? dataUrl : filename, filename);
+    showAlert(`✓ Foto agregada al carrusel: ${filename}`);
+  }
+  closeImageGalleryModal();
+}
+
+function triggerGalleryModalUpload() {
+  const input = document.getElementById("gallery-modal-file-input");
+  if (input) {
+    input.value = "";
+    input.click();
+  }
+}
+
+async function handleGalleryModalUpload(input) {
+  if (!input || !input.files || input.files.length === 0) return;
+  const file = input.files[0];
+  try {
+    const processed = await processImageFile(file);
+    customUploadedPhotos.unshift({
+      filename: processed.filename,
+      dataUrl: processed.dataUrl,
+      source: "Subida a biblioteca"
+    });
+    renderImageGalleryGrid();
+    showAlert(`✓ Imagen "${processed.filename}" agregada a la biblioteca de fotos.`);
+  } catch (err) {
+    alert("Error al subir foto: " + err.message);
+  }
+}
+
+// --------------------------------------------------------
+// EVENTOS DE DRAG & DROP Y CLIPBOARD PASTE (CTRL+V)
+// --------------------------------------------------------
+function setupDropzoneAndPasteEvents() {
+  const dropzone = document.getElementById("main-image-dropzone");
+  if (dropzone) {
+    ["dragenter", "dragover"].forEach(eventName => {
+      dropzone.addEventListener(eventName, (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        dropzone.classList.add("dragover");
+      }, false);
+    });
+
+    ["dragleave", "drop"].forEach(eventName => {
+      dropzone.addEventListener(eventName, (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        dropzone.classList.remove("dragover");
+      }, false);
+    });
+
+    dropzone.addEventListener("drop", async (e) => {
+      const dt = e.dataTransfer;
+      if (dt && dt.files && dt.files.length > 0) {
+        try {
+          const processed = await processImageFile(dt.files[0]);
+          applyProcessedMainImage(processed);
+          showAlert(`✓ Imagen "${processed.filename}" arrastrada y optimizada (${processed.width}×${processed.height}px, ${processed.sizeKb} KB).`);
+        } catch (err) {
+          alert("Error al procesar archivo: " + err.message);
+        }
+      }
+    });
+  }
+
+  // Pegar con Ctrl+V en cualquier momento cuando el modal esté abierto
+  window.addEventListener("paste", async (e) => {
+    const modal = document.getElementById("product-modal");
+    if (!modal || modal.style.display !== "flex") return;
+    const tabImages = document.getElementById("tab-images");
+    if (!tabImages || !tabImages.classList.contains("active")) return;
+
+    const items = (e.clipboardData || (e.originalEvent && e.originalEvent.clipboardData))?.items;
+    if (!items) return;
+
+    for (let i = 0; i < items.length; i++) {
+      if (items[i].type && items[i].type.indexOf("image") !== -1) {
+        const file = items[i].getAsFile();
+        if (file) {
+          e.preventDefault();
+          try {
+            const processed = await processImageFile(file);
+            applyProcessedMainImage(processed);
+            showAlert(`✓ Imagen pegada desde el portapapeles y optimizada (${processed.width}×${processed.height}px, ${processed.sizeKb} KB).`);
+          } catch (err) {
+            alert("Error al procesar imagen pegada: " + err.message);
+          }
+          break;
+        }
+      }
+    }
+  });
+}
+
+function previewMainImage(val) {
+  initMainImageState(val);
 }
 
 function handlePreviewError(img) {
@@ -563,40 +1313,7 @@ function handlePreviewError(img) {
 }
 
 function chooseImageSuggestion() {
-  const currentImages = new Set();
-  currentProducts.forEach(p => {
-    if (p.image) currentImages.add(p.image);
-    if (Array.isArray(p.images)) p.images.forEach(img => currentImages.add(img));
-  });
-
-  const list = Array.from(currentImages);
-  if (list.length === 0) {
-    alert("No hay imágenes previas registradas.");
-    return;
-  }
-
-  const selection = prompt("Imágenes existentes en el catálogo:\n\n" + list.join("\n") + "\n\nCopiá o escribí el nombre que querés usar:", list[0]);
-  if (selection) {
-    const input = document.getElementById("prod-main-image");
-    if (input) {
-      input.value = selection.trim();
-      previewMainImage(selection.trim());
-    }
-  }
-}
-
-// GESTIÓN DINÁMICA DE FOTOS DE GALERÍA
-function addGalleryImageInput(val = "") {
-  const container = document.getElementById("gallery-inputs-list");
-  if (!container) return;
-
-  const item = document.createElement("div");
-  item.className = "gallery-input-item";
-  item.innerHTML = `
-    <input type="text" class="gallery-input" placeholder="Nombre en fotos/ (ej: caja-detalle.jpg) o URL..." value="${escapeHtml(val)}">
-    <button type="button" class="btn-remove-item" onclick="this.parentElement.remove()" title="Eliminar foto">✕</button>
-  `;
-  container.appendChild(item);
+  openImageGalleryModal("main");
 }
 
 // GESTIÓN DINÁMICA DE CARACTERÍSTICAS
@@ -2621,6 +3338,29 @@ window.previewMainImage = previewMainImage;
 window.chooseImageSuggestion = chooseImageSuggestion;
 window.handlePreviewError = handlePreviewError;
 window.addGalleryImageInput = addGalleryImageInput;
+window.initMainImageState = initMainImageState;
+window.setMainImageStorageMode = setMainImageStorageMode;
+window.updateFilenameFromInput = updateFilenameFromInput;
+window.triggerMainImageUpload = triggerMainImageUpload;
+window.handleMainFileInput = handleMainFileInput;
+window.removeMainImage = removeMainImage;
+window.toggleAdvancedImageField = toggleAdvancedImageField;
+window.handleManualImageInput = handleManualImageInput;
+window.downloadMainImageFile = downloadMainImageFile;
+window.uploadMainImageToGithub = uploadMainImageToGithub;
+window.triggerGalleryMultiUpload = triggerGalleryMultiUpload;
+window.handleGalleryMultiFileInput = handleGalleryMultiFileInput;
+window.moveGalleryItem = moveGalleryItem;
+window.removeGalleryItem = removeGalleryItem;
+window.handleGalleryItemInputChange = handleGalleryItemInputChange;
+window.openImageGalleryModal = openImageGalleryModal;
+window.closeImageGalleryModal = closeImageGalleryModal;
+window.setGalleryFilter = setGalleryFilter;
+window.filterImageGallery = filterImageGallery;
+window.clearGallerySearch = clearGallerySearch;
+window.selectImageFromGallery = selectImageFromGallery;
+window.triggerGalleryModalUpload = triggerGalleryModalUpload;
+window.handleGalleryModalUpload = handleGalleryModalUpload;
 window.addFeatureInput = addFeatureInput;
 window.addSpecInput = addSpecInput;
 window.downloadProductsJs = downloadProductsJs;
