@@ -673,7 +673,7 @@ function saveProduct(e) {
   closeProductModal();
   renderCategoryFilter();
   renderProductsList();
-  showAlert(`✓ Producto "${name}" guardado con éxito. (Recordá hacer clic en "Descargar products.js" o "Publicar en GitHub" para aplicar en vivo).`);
+  showAlert(`<span>✓ Producto "${escapeHtml(name)}" guardado.</span> <button type="button" class="btn btn-sm btn-primary" style="margin-left:10px; background:#0284c7; color:#fff;" onclick="downloadProductsJs()">📥 Descargar products.js</button> <button type="button" class="btn btn-sm btn-github" style="margin-left:6px;" onclick="publishDirectlyToGithub()">🚀 Publicar en GitHub</button>`, true);
 }
 
 function editProduct(id) {
@@ -692,7 +692,7 @@ function duplicateProduct(id) {
   currentProducts.push(cloned);
   saveDraft();
   renderProductsList();
-  showAlert(`✓ Producto duplicado como #${cloned.id}. Ahora podés editarlo.`);
+  showAlert(`<span>✓ Producto duplicado como #${cloned.id}.</span> <button type="button" class="btn btn-sm btn-primary" style="margin-left:10px;" onclick="downloadProductsJs()">📥 Descargar archivo</button>`, true);
 }
 
 function moveProductOrder(id, direction) {
@@ -708,6 +708,7 @@ function moveProductOrder(id, direction) {
 
   saveDraft();
   renderProductsList();
+  showAlert(`<span>✓ Orden actualizado.</span> <button type="button" class="btn btn-sm btn-primary" style="margin-left:10px;" onclick="downloadProductsJs()">📥 Descargar archivo</button>`, true);
 }
 
 function deleteProduct(id) {
@@ -719,7 +720,7 @@ function deleteProduct(id) {
     saveDraft();
     renderCategoryFilter();
     renderProductsList();
-    showAlert(`✓ Producto #${id} eliminado del catálogo.`);
+    showAlert(`<span>✓ Producto #${id} eliminado.</span> <button type="button" class="btn btn-sm btn-primary" style="margin-left:10px;" onclick="downloadProductsJs()">📥 Descargar archivo</button>`, true);
   }
 }
 
@@ -989,18 +990,22 @@ async function publishDirectlyToGithub() {
 // 8. ALERTAS Y UTILIDADES
 // ========================================================
 let alertTimer = null;
-function showAlert(msg) {
+function showAlert(msg, isHtml = false) {
   const el = document.getElementById("admin-alert");
   const txt = document.getElementById("admin-alert-text");
   if (!el || !txt) return;
 
-  txt.textContent = msg;
+  if (isHtml) {
+    txt.innerHTML = msg;
+  } else {
+    txt.textContent = msg;
+  }
   el.style.display = "flex";
 
   if (alertTimer) clearTimeout(alertTimer);
   alertTimer = setTimeout(() => {
     el.style.display = "none";
-  }, 6000);
+  }, 10000);
 }
 
 function closeAdminAlert() {
@@ -1017,3 +1022,44 @@ function escapeHtml(str) {
     .replace(/"/g, "&quot;")
     .replace(/'/g, "&#039;");
 }
+
+// ========================================================
+// ASIGNACIÓN GLOBAL A WINDOW PARA INVOCACIONES INLINE
+// ========================================================
+window.handleLogin = handleLogin;
+window.handleLogout = handleLogout;
+window.togglePassVisibility = togglePassVisibility;
+window.openPassChangeModal = openPassChangeModal;
+window.closePassModal = closePassModal;
+window.saveNewPass = saveNewPass;
+window.openProductModal = openProductModal;
+window.closeProductModal = closeProductModal;
+window.switchProductTab = switchProductTab;
+window.editProduct = editProduct;
+window.duplicateProduct = duplicateProduct;
+window.moveProductOrder = moveProductOrder;
+window.deleteProduct = deleteProduct;
+window.saveProduct = saveProduct;
+window.calculateDiscounts = calculateDiscounts;
+window.previewMainImage = previewMainImage;
+window.chooseImageSuggestion = chooseImageSuggestion;
+window.handlePreviewError = handlePreviewError;
+window.addGalleryImageInput = addGalleryImageInput;
+window.addFeatureInput = addFeatureInput;
+window.addSpecInput = addSpecInput;
+window.downloadProductsJs = downloadProductsJs;
+window.openCodePreviewModal = openCodePreviewModal;
+window.closeCodeModal = closeCodeModal;
+window.copyGeneratedCode = copyGeneratedCode;
+window.openGithubModal = openGithubModal;
+window.closeGithubModal = closeGithubModal;
+window.saveGithubConfig = saveGithubConfig;
+window.testGithubConnection = testGithubConnection;
+window.publishDirectlyToGithub = publishDirectlyToGithub;
+window.resetToOriginalCatalog = resetToOriginalCatalog;
+window.handleSearch = handleSearch;
+window.clearSearch = clearSearch;
+window.handleCategoryFilter = handleCategoryFilter;
+window.handleSort = handleSort;
+window.closeAdminAlert = closeAdminAlert;
+

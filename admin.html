@@ -29,7 +29,6 @@
             <input type="password" id="admin-pass" placeholder="Ingresá la contraseña..." autocomplete="current-password" required>
             <button type="button" class="btn-toggle-pass" onclick="togglePassVisibility('admin-pass')">👁️</button>
           </div>
-          <span class="form-hint">Por defecto: <strong>nissa2026</strong> (podés cambiarla adentro)</span>
         </div>
 
         <div id="login-error" class="error-msg" style="display: none;">
@@ -528,6 +527,6 @@
   <!-- CARGA DEL ARCHIVO ORIGINAL DE PRODUCTOS -->
   <script src="/products.js"></script>
   <!-- LÓGICA COMPLETA DEL ADMINISTRADOR -->
-  <script src="/admin.js"></script>
+  <script type="module" src="/admin.js"></script>
 </body>
 </html>
