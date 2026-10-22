@@ -1,6 +1,6 @@
 // Catálogo de productos NISSA
 // Generado automáticamente desde el Panel de Administración NISSA
-// Actualizado: 22/10/2026, 01:45:43
+// Actualizado: 22/10/2026, 01:50:25
 // 100% Compatible con GitHub Pages (Costo $0)
 
 let products = [
@@ -127,7 +127,7 @@ let products = [
   },
   {
     "id": 8,
-    "name": "Mando DualShock 4 PS4 Inalámbrico",
+    "name": "Joystick PS4 Sony (Negro)",
     "category": "gaming",
     "tag": "PlayStation 4",
     "price": 42000,
