@@ -13,11 +13,9 @@ let products = [
     "price3": 32000,
     "price5": 25000,
     "price20": 18000,
-    "image": "pack-apple-original-certificado-20w.jpg",
+    "image": "pack-apple-original-certificado-20w.png",
     "images": [
-      "pack-apple-original-certificado-20w.jpg",
-      "pack-apple-caja.jpg",
-      "pack-apple-cable-detalle.jpg"
+      "pack-apple-original-certificado-20w.png"
     ],
     "description": "Combo completo de cargador de pared 20W Power Delivery + Cable USB-C a Lightning reforzado. Diseñado bajo estándares certificados para cuidar la salud de la batería de tu iPhone, proporcionando una recarga rápida y segura del 0% al 50% en solo 30 minutos.",
     "features": [
