@@ -12,14 +12,17 @@ let activeCategoryFilter = "todos";
 let activeSortFilter = "default";
 
 // ========================================================
-// 1. AUTENTICACIÓN Y SEGURIDAD
-// ========================================================
+// Runtime authentication state (in-memory only).
+// Resets to false on every page visit, reload, or link navigation.
+// This strictly enforces the password prompt whenever the admin URL is opened.
+let isSessionAuthenticated = false;
+
 function getStoredPassword() {
   return localStorage.getItem("nissa_admin_pass") || DEFAULT_PASS;
 }
 
 function isAuthenticated() {
-  return sessionStorage.getItem("nissa_admin_auth") === "true";
+  return isSessionAuthenticated;
 }
 
 function handleLogin(e) {
@@ -32,23 +35,30 @@ function handleLogin(e) {
   const correct = getStoredPassword();
 
   if (entered === correct) {
-    sessionStorage.setItem("nissa_admin_auth", "true");
+    isSessionAuthenticated = true;
+    // Clear any previous persistent session flag so a reload always re-prompts
+    sessionStorage.removeItem("nissa_admin_auth");
     if (errorMsg) errorMsg.style.display = "none";
+    input.value = ""; // Clear password from DOM
     showAdminApp();
   } else {
+    isSessionAuthenticated = false;
     if (errorMsg) {
       errorMsg.style.display = "block";
       errorMsg.textContent = "⚠️ Contraseña incorrecta. Por favor volvé a intentarlo.";
     }
+    input.value = "";
     input.focus();
-    input.select();
   }
 }
 
 function handleLogout() {
   if (confirm("¿Estás seguro de que deseás cerrar la sesión del panel?")) {
+    isSessionAuthenticated = false;
     sessionStorage.removeItem("nissa_admin_auth");
-    window.location.reload();
+    const input = document.getElementById("admin-pass");
+    if (input) input.value = "";
+    showLoginScreen();
   }
 }
 
@@ -100,10 +110,15 @@ function saveNewPass(e) {
 // 2. INICIALIZACIÓN DE LA APLICACIÓN
 // ========================================================
 document.addEventListener("DOMContentLoaded", () => {
-  if (isAuthenticated()) {
-    showAdminApp();
-  } else {
-    showLoginScreen();
+  // Asegurar siempre cierre de cualquier sesión previa y exigir contraseña obligatoria
+  sessionStorage.removeItem("nissa_admin_auth");
+  isSessionAuthenticated = false;
+  showLoginScreen();
+
+  const input = document.getElementById("admin-pass");
+  if (input) {
+    input.value = "";
+    setTimeout(() => input.focus(), 120);
   }
 });
 
@@ -115,6 +130,10 @@ function showLoginScreen() {
 }
 
 function showAdminApp() {
+  if (!isSessionAuthenticated) {
+    showLoginScreen();
+    return;
+  }
   const login = document.getElementById("login-screen");
   const app = document.getElementById("admin-app");
   if (login) login.style.display = "none";
