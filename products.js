@@ -42,9 +42,10 @@ let products = [
     "price3": 40500,
     "price5": 31600,
     "price20": 26900,
-    "image": "aipodspro2gen.jpg",
+    "image": "aipodspro2gen1.jpg",
     "images": [
-      "aipodspro2gen1.jpg"
+      "aipodspro2gen1.jpg",
+      "aipodspro2gen.jpg"
     ],
     "description": "Cargador de pared de 25W con protocolo Super Fast Charging (Power Delivery 3.0 PPS). Brinda recarga acelerada para smartphones Samsung Galaxy Series A, S, Z y Note, así como para dispositivos Android y consolas portátiles.",
     "features": [
