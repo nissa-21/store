@@ -379,16 +379,17 @@
             <!-- ========================================================
                  APARTADO DEDICADO: IMPORTAR Y MODIFICAR IMAGEN
                  ======================================================== -->
-            <div class="product-image-quick-card">
+            <div class="product-image-quick-card" id="quick-image-card">
+              <input type="file" id="quick-image-file-input" accept="image/png,image/jpeg,image/webp,image/gif,image/*" style="display:none;" onchange="handleMainFileInput(this)">
               <div class="image-quick-header">
                 <div class="image-quick-title-wrap">
                   <div class="image-quick-title">
                     <span>🖼️ Imagen del Producto (Importar / Modificar)</span>
                   </div>
-                  <span class="image-quick-subtitle">Importá una nueva foto desde tu equipo y publicala directo a GitHub con 1 clic</span>
+                  <span class="image-quick-subtitle">Cargá una foto desde tu computadora o celular. Podés arrastrarla o pegarla con Ctrl+V</span>
                 </div>
                 <div class="image-quick-actions">
-                  <button type="button" class="btn btn-primary btn-sm" onclick="triggerMainImageUpload()">
+                  <button type="button" class="btn btn-primary btn-sm" onclick="triggerMainImageUpload()" id="btn-import-quick-img">
                     📁 Importar Imagen
                   </button>
                   <button type="button" class="btn btn-secondary btn-sm" onclick="openImageGalleryModal('main')">
@@ -398,9 +399,12 @@
               </div>
 
               <div class="image-quick-body">
-                <div class="image-quick-thumb-wrap">
-                  <img id="quick-image-preview" src="" alt="Previsualización de producto" onerror="handlePreviewError(this)">
-                  <span id="quick-image-placeholder" style="display:none; font-size:32px;">📦</span>
+                <div class="image-quick-thumb-wrap" onclick="triggerMainImageUpload()" title="Hacé clic para elegir una imagen o cambiar la actual" style="cursor: pointer;">
+                  <img id="quick-image-preview" src="" alt="Previsualización de producto" onerror="handlePreviewError(this)" style="display:none;">
+                  <div id="quick-image-placeholder" style="display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; padding:8px;">
+                    <span style="font-size:32px; line-height:1;">📸</span>
+                    <span style="font-size:10px; color:var(--text-muted); margin-top:4px;">Elegir foto</span>
+                  </div>
                 </div>
 
                 <div class="image-quick-details">
@@ -409,7 +413,7 @@
                     <span id="quick-image-name" class="quick-image-filename">producto.jpg</span>
                   </div>
                   <p class="quick-image-hint" id="quick-image-hint">
-                    Hacé clic en <strong>"📁 Importar Imagen"</strong> para cargar una foto desde tu PC o celular (JPG, PNG, WebP). Podés pegarla con Ctrl+V.
+                    Hacé clic en <strong>"📁 Importar Imagen"</strong> o en la miniatura para cargar una foto desde tu PC o celular. También podés pegarla con <kbd>Ctrl+V</kbd>.
                   </p>
                   <div class="quick-image-buttons-row">
                     <button type="button" class="btn btn-outline btn-xs" onclick="triggerMainImageUpload()">

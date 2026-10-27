@@ -94,13 +94,70 @@ function getProductImage(product) {
     img = img.substring((PRODUCT_IMAGES_DIR + "/").length);
   }
 
+  // Verificar si la foto está en la caché de IndexedDB o memoria
+  if (typeof window !== "undefined" && window.NISSA_IMAGE_CACHE && window.NISSA_IMAGE_CACHE[img]) {
+    return window.NISSA_IMAGE_CACHE[img];
+  }
+
   // Retorna la ruta relativa './fotos/nombre.ext' compatible con GitHub Pages y local
   return `./${PRODUCT_IMAGES_DIR}/${img}`;
 }
 
+// Cargar imágenes guardadas desde IndexedDB para que se muestren en la tienda pública
+(async function initStoreImageCache() {
+  if (typeof window === "undefined" || !window.indexedDB) return;
+  window.NISSA_IMAGE_CACHE = window.NISSA_IMAGE_CACHE || {};
+  try {
+    const req = indexedDB.open("nissa_images_db", 1);
+    req.onsuccess = (e) => {
+      const db = e.target.result;
+      if (!db.objectStoreNames.contains("product_images")) return;
+      const tx = db.transaction("product_images", "readonly");
+      const getReq = tx.objectStore("product_images").getAll();
+      getReq.onsuccess = () => {
+        if (Array.isArray(getReq.result)) {
+          getReq.result.forEach(item => {
+            if (item && item.filename && item.dataUrl) {
+              window.NISSA_IMAGE_CACHE[item.filename] = item.dataUrl;
+            }
+          });
+          // Actualizar imágenes que pudieran haber fallado
+          document.querySelectorAll("img[src*='fotos/']").forEach(imgEl => {
+            const src = imgEl.getAttribute("src") || "";
+            const fn = src.split("/").pop() || "";
+            if (fn && window.NISSA_IMAGE_CACHE[fn]) {
+              imgEl.src = window.NISSA_IMAGE_CACHE[fn];
+              imgEl.style.display = "";
+              if (imgEl.nextElementSibling && imgEl.nextElementSibling.style.display === "block") {
+                imgEl.nextElementSibling.style.display = "none";
+              }
+            }
+          });
+        }
+      };
+    };
+  } catch (err) {
+    console.warn("IndexedDB store cache warning:", err);
+  }
+})();
+
 function handleProductImgError(img, productId) {
   if (!img) return;
   const currentSrc = img.getAttribute("src") || "";
+
+  // Extraer el nombre del archivo sin ruta
+  const filename = currentSrc.split("/").pop() || "";
+
+  // Si la imagen está en la caché de IndexedDB o memoria, usarla de inmediato
+  if (filename && typeof window !== "undefined" && window.NISSA_IMAGE_CACHE && window.NISSA_IMAGE_CACHE[filename]) {
+    img.onerror = null;
+    img.src = window.NISSA_IMAGE_CACHE[filename];
+    img.style.display = "";
+    if (img.nextElementSibling && img.nextElementSibling.style.display === "block") {
+      img.nextElementSibling.style.display = "none";
+    }
+    return;
+  }
 
   // Si la imagen es Base64 (data:) o URL externa, no intentar rutas de fotos/
   if (currentSrc.startsWith("data:") || currentSrc.startsWith("http://") || currentSrc.startsWith("https://") || currentSrc.startsWith("//")) {
@@ -112,9 +169,6 @@ function handleProductImgError(img, productId) {
   }
 
   const step = Number(img.dataset.retryStep || 0);
-
-  // Extraer el nombre del archivo sin ruta
-  const filename = currentSrc.split("/").pop() || "";
   const dotIndex = filename.lastIndexOf(".");
   const nameWithoutExt = dotIndex !== -1 ? filename.substring(0, dotIndex) : filename;
   const currentExt = dotIndex !== -1 ? filename.substring(dotIndex).toLowerCase() : ".jpg";

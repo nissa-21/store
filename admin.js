@@ -149,6 +149,7 @@ function showAdminApp() {
   if (app) app.style.display = "flex";
 
   loadInitialProducts();
+  loadAllCachedImages();
   loadInitialCotizador();
   renderCategoryFilter();
   renderProductsList();
@@ -249,6 +250,81 @@ function resetToOriginalCatalog() {
 }
 
 // ========================================================
+// ALMACENAMIENTO PERSISTENTE DE IMÁGENES (IndexedDB + Memoria)
+// Evita cuotas de 5MB en localStorage y asegura que las fotos cargadas se vean siempre
+// ========================================================
+window.NISSA_IMAGE_CACHE = window.NISSA_IMAGE_CACHE || {};
+
+const NISSA_IDB_NAME = "nissa_images_db";
+const NISSA_IDB_STORE = "product_images";
+
+function openNissaImageDB() {
+  return new Promise((resolve) => {
+    if (typeof window === "undefined" || !window.indexedDB) return resolve(null);
+    try {
+      const req = indexedDB.open(NISSA_IDB_NAME, 1);
+      req.onupgradeneeded = (e) => {
+        const db = e.target.result;
+        if (!db.objectStoreNames.contains(NISSA_IDB_STORE)) {
+          db.createObjectStore(NISSA_IDB_STORE, { keyPath: "filename" });
+        }
+      };
+      req.onsuccess = (e) => resolve(e.target.result);
+      req.onerror = () => resolve(null);
+    } catch (err) {
+      resolve(null);
+    }
+  });
+}
+
+async function persistImageInDB(filename, dataUrl) {
+  if (!filename || !dataUrl) return;
+  window.NISSA_IMAGE_CACHE[filename] = dataUrl;
+  try {
+    const db = await openNissaImageDB();
+    if (!db) return;
+    const tx = db.transaction(NISSA_IDB_STORE, "readwrite");
+    tx.objectStore(NISSA_IDB_STORE).put({
+      filename: filename,
+      dataUrl: dataUrl,
+      updatedAt: Date.now()
+    });
+  } catch (e) {
+    console.warn("No se pudo guardar imagen en IndexedDB:", e);
+  }
+}
+
+async function loadAllCachedImages() {
+  try {
+    const db = await openNissaImageDB();
+    if (!db) return;
+    const tx = db.transaction(NISSA_IDB_STORE, "readonly");
+    const req = tx.objectStore(NISSA_IDB_STORE).getAll();
+    req.onsuccess = () => {
+      if (Array.isArray(req.result)) {
+        req.result.forEach(item => {
+          if (item && item.filename && item.dataUrl) {
+            window.NISSA_IMAGE_CACHE[item.filename] = item.dataUrl;
+            if (typeof customUploadedPhotos !== "undefined" && !customUploadedPhotos.some(p => p.filename === item.filename)) {
+              customUploadedPhotos.unshift({
+                filename: item.filename,
+                dataUrl: item.dataUrl,
+                source: "Almacén local"
+              });
+            }
+          }
+        });
+        if (typeof renderProductsList === "function") {
+          renderProductsList();
+        }
+      }
+    };
+  } catch (e) {
+    console.warn("No se pudo cargar imágenes de IndexedDB:", e);
+  }
+}
+
+// ========================================================
 // 3. RENDERIZADO DEL CATÁLOGO DE PRODUCTOS
 // ========================================================
 function formatPrice(num) {
@@ -266,6 +342,18 @@ function resolveAdminPhoto(img, prod) {
   while (clean.startsWith("fotos/")) {
     clean = clean.substring("fotos/".length);
   }
+
+  // 1. Verificar si está en memoria o caché persistente de IndexedDB
+  if (window.NISSA_IMAGE_CACHE && window.NISSA_IMAGE_CACHE[clean]) {
+    return window.NISSA_IMAGE_CACHE[clean];
+  }
+  const custom = (typeof customUploadedPhotos !== "undefined" && Array.isArray(customUploadedPhotos))
+    ? customUploadedPhotos.find(p => p.filename === clean)
+    : null;
+  if (custom && custom.dataUrl) {
+    return custom.dataUrl;
+  }
+
   return "./fotos/" + clean;
 }
 
@@ -294,6 +382,41 @@ function renderCategoryFilter() {
     select.appendChild(opt);
   });
   select.value = currentVal;
+}
+
+function handleAdminCardImgError(img, origImg) {
+  if (!img) return;
+  const rawSrc = origImg || img.getAttribute("src") || "";
+  let clean = rawSrc.replace(/^(\.\/|\/)+/, "");
+  while (clean.startsWith("fotos/")) {
+    clean = clean.substring("fotos/".length);
+  }
+  const filename = clean.split("/").pop() || "";
+
+  // 1. Revisar caché persistente de IndexedDB o memoria
+  if (filename && window.NISSA_IMAGE_CACHE && window.NISSA_IMAGE_CACHE[filename]) {
+    img.onerror = null;
+    img.src = window.NISSA_IMAGE_CACHE[filename];
+    img.style.display = "block";
+    if (img.nextElementSibling) img.nextElementSibling.style.display = "none";
+    return;
+  }
+
+  // 2. Intentar cargar desde GitHub raw si el archivo fue subido pero GitHub Pages aún no actualizó
+  const cfg = typeof getGithubConfig === "function" ? getGithubConfig() : null;
+  if (cfg && cfg.owner && cfg.repo && filename && !img.dataset.triedGithubRaw) {
+    img.dataset.triedGithubRaw = "1";
+    img.src = `https://raw.githubusercontent.com/${cfg.owner}/${cfg.repo}/${cfg.branch}/fotos/${filename}`;
+    return;
+  }
+
+  // Fallback final a emoji
+  img.onerror = null;
+  img.src = "";
+  img.style.display = "none";
+  if (img.nextElementSibling) {
+    img.nextElementSibling.style.display = "block";
+  }
 }
 
 function renderProductsList() {
@@ -358,7 +481,7 @@ function renderProductsList() {
         ${p.tag ? `<span class="card-tag-badge">${escapeHtml(p.tag)}</span>` : ""}
         <span class="card-id-badge">#${p.id}</span>
         ${mainImg ? `
-          <img src="${escapeHtml(mainImg)}" alt="${escapeHtml(p.name)}" class="card-thumb-img" onerror="this.onerror=null; this.src=''; this.style.display='none'; this.nextElementSibling.style.display='block';">
+          <img src="${escapeHtml(mainImg)}" alt="${escapeHtml(p.name)}" class="card-thumb-img" onerror="handleAdminCardImgError(this, '${escapeHtml(p.image || '')}')">
           <span style="display:none; font-size:42px;">📦</span>
         ` : `<span style="font-size:42px;">📦</span>`}
       </div>
@@ -605,10 +728,14 @@ let activeGalleryCategory = "todos";
 let activeGallerySearch = "";
 let customUploadedPhotos = []; // Fotos subidas en esta sesión para la biblioteca
 
-// Optimización client-side con Canvas (reduce fotos pesadas de celulares a WebP/JPEG ligero)
-function processImageFile(file, maxWidth = 1200, quality = 0.82) {
+// Optimización client-side con Canvas (reduce fotos pesadas de celulares a JPEG ligero y nítido)
+function processImageFile(file, maxWidth = 900, quality = 0.78) {
   return new Promise((resolve, reject) => {
-    if (!file || !file.type.startsWith("image/")) {
+    if (!file) {
+      return reject(new Error("No se seleccionó ningún archivo"));
+    }
+    const isImage = (file.type && file.type.startsWith("image/")) || /\.(jpe?g|png|webp|gif|bmp|svg|avif|heic)$/i.test(file.name || "");
+    if (!isImage) {
       return reject(new Error("El archivo seleccionado no es una imagen válida"));
     }
 
@@ -637,6 +764,8 @@ function processImageFile(file, maxWidth = 1200, quality = 0.82) {
 
         let cleanName = (file.name || "producto.jpg")
           .toLowerCase()
+          .normalize("NFD")
+          .replace(/[\u0300-\u036f]/g, "")
           .replace(/[^a-z0-9.]+/g, "-")
           .replace(/-+/g, "-")
           .replace(/^-+|-+$/g, "");
@@ -653,7 +782,7 @@ function processImageFile(file, maxWidth = 1200, quality = 0.82) {
           originalName: file.name
         });
       };
-      img.onerror = () => reject(new Error("No se pudo leer la imagen"));
+      img.onerror = () => reject(new Error("No se pudo interpretar el archivo como imagen"));
       img.src = e.target.result;
     };
     reader.onerror = () => reject(new Error("Error al abrir archivo"));
@@ -703,8 +832,6 @@ function updateMainImagePreviewUI(overrideSrc = null) {
   const fileOptions = document.getElementById("file-storage-options");
   const fnInput = document.getElementById("prod-filename-input");
 
-  if (!previewCard) return;
-
   const quickImg = document.getElementById("quick-image-preview");
   const quickPlaceholder = document.getElementById("quick-image-placeholder");
   const quickBadge = document.getElementById("quick-image-badge");
@@ -716,10 +843,13 @@ function updateMainImagePreviewUI(overrideSrc = null) {
   const displaySrc = resolveAdminPhoto(rawTarget);
 
   if (!displaySrc) {
-    previewCard.style.display = "none";
+    if (previewCard) previewCard.style.display = "none";
     if (dropzone) dropzone.style.display = "block";
-    if (quickImg) quickImg.style.display = "none";
-    if (quickPlaceholder) quickPlaceholder.style.display = "block";
+    if (quickImg) {
+      quickImg.style.display = "none";
+      quickImg.src = "";
+    }
+    if (quickPlaceholder) quickPlaceholder.style.display = "flex";
     if (quickBadge) {
       quickBadge.className = "img-type-badge";
       quickBadge.textContent = "Sin imagen";
@@ -729,7 +859,7 @@ function updateMainImagePreviewUI(overrideSrc = null) {
     return;
   }
 
-  previewCard.style.display = "flex";
+  if (previewCard) previewCard.style.display = "flex";
   if (dropzone) dropzone.style.display = "none";
   if (imgEl) {
     imgEl.src = displaySrc;
@@ -829,7 +959,9 @@ function updateFilenameFromInput(val) {
 }
 
 function triggerMainImageUpload() {
-  const fileInput = document.getElementById("main-image-file-input");
+  const quickInput = document.getElementById("quick-image-file-input");
+  const mainInput = document.getElementById("main-image-file-input");
+  const fileInput = quickInput || mainInput;
   if (fileInput) {
     fileInput.value = "";
     fileInput.click();
@@ -844,7 +976,8 @@ async function handleMainFileInput(input) {
     applyProcessedMainImage(processed);
     showAlert(`✓ Imagen "${processed.filename}" cargada y optimizada (${processed.width}×${processed.height}px, ${processed.sizeKb} KB).`);
   } catch (err) {
-    alert("Error al cargar la imagen: " + err.message);
+    console.error("Error al cargar la imagen:", err);
+    alert("Error al cargar la imagen: " + (err.message || err));
   }
 }
 
@@ -857,6 +990,11 @@ function applyProcessedMainImage(processed) {
     height: processed.height,
     sizeKb: processed.sizeKb
   };
+
+  // Guardar inmediatamente en caché global de memoria e IndexedDB
+  window.NISSA_IMAGE_CACHE = window.NISSA_IMAGE_CACHE || {};
+  window.NISSA_IMAGE_CACHE[processed.filename] = processed.dataUrl;
+  persistImageInDB(processed.filename, processed.dataUrl);
 
   // Guardar en fotos de sesión para biblioteca
   if (!customUploadedPhotos.some(p => p.filename === processed.filename)) {
@@ -873,7 +1011,7 @@ function applyProcessedMainImage(processed) {
   const fnInput = document.getElementById("prod-filename-input");
   if (fnInput) fnInput.value = processed.filename;
 
-  updateMainImagePreviewUI();
+  updateMainImagePreviewUI(processed.dataUrl);
 }
 
 function removeMainImage() {
@@ -1330,25 +1468,29 @@ async function handleGalleryModalUpload(input) {
 // EVENTOS DE DRAG & DROP Y CLIPBOARD PASTE (CTRL+V)
 // --------------------------------------------------------
 function setupDropzoneAndPasteEvents() {
-  const dropzone = document.getElementById("main-image-dropzone");
-  if (dropzone) {
+  const dropzones = [
+    document.getElementById("main-image-dropzone"),
+    document.getElementById("quick-image-card")
+  ].filter(Boolean);
+
+  dropzones.forEach(dz => {
     ["dragenter", "dragover"].forEach(eventName => {
-      dropzone.addEventListener(eventName, (e) => {
+      dz.addEventListener(eventName, (e) => {
         e.preventDefault();
         e.stopPropagation();
-        dropzone.classList.add("dragover");
+        dz.classList.add("dragover");
       }, false);
     });
 
     ["dragleave", "drop"].forEach(eventName => {
-      dropzone.addEventListener(eventName, (e) => {
+      dz.addEventListener(eventName, (e) => {
         e.preventDefault();
         e.stopPropagation();
-        dropzone.classList.remove("dragover");
+        dz.classList.remove("dragover");
       }, false);
     });
 
-    dropzone.addEventListener("drop", async (e) => {
+    dz.addEventListener("drop", async (e) => {
       const dt = e.dataTransfer;
       if (dt && dt.files && dt.files.length > 0) {
         try {
@@ -1356,18 +1498,24 @@ function setupDropzoneAndPasteEvents() {
           applyProcessedMainImage(processed);
           showAlert(`✓ Imagen "${processed.filename}" arrastrada y optimizada (${processed.width}×${processed.height}px, ${processed.sizeKb} KB).`);
         } catch (err) {
-          alert("Error al procesar archivo: " + err.message);
+          console.error("Error al procesar archivo arrastrado:", err);
+          alert("Error al procesar archivo: " + (err.message || err));
         }
       }
     });
-  }
+  });
 
-  // Pegar con Ctrl+V en cualquier momento cuando el modal esté abierto
+  // Pegar con Ctrl+V en cualquier momento cuando el modal esté abierto (en cualquier pestaña)
   window.addEventListener("paste", async (e) => {
     const modal = document.getElementById("product-modal");
     if (!modal || modal.style.display !== "flex") return;
-    const tabImages = document.getElementById("tab-images");
-    if (!tabImages || !tabImages.classList.contains("active")) return;
+
+    // Ignorar si el usuario está escribiendo texto en un textarea o input de texto
+    const targetTag = (e.target && e.target.tagName) ? e.target.tagName.toLowerCase() : "";
+    if (targetTag === "textarea" || (targetTag === "input" && e.target.type === "text" && e.target.id !== "prod-main-image")) {
+      const text = e.clipboardData?.getData("text");
+      if (text) return;
+    }
 
     const items = (e.clipboardData || (e.originalEvent && e.originalEvent.clipboardData))?.items;
     if (!items) return;
@@ -1382,7 +1530,8 @@ function setupDropzoneAndPasteEvents() {
             applyProcessedMainImage(processed);
             showAlert(`✓ Imagen pegada desde el portapapeles y optimizada (${processed.width}×${processed.height}px, ${processed.sizeKb} KB).`);
           } catch (err) {
-            alert("Error al procesar imagen pegada: " + err.message);
+            console.error("Error al procesar imagen pegada:", err);
+            alert("Error al procesar imagen pegada: " + (err.message || err));
           }
           break;
         }
@@ -1396,11 +1545,46 @@ function previewMainImage(val) {
 }
 
 function handlePreviewError(img) {
+  if (!img) return;
+  const rawSrc = img.getAttribute("src") || "";
+  let clean = rawSrc.replace(/^(\.\/|\/)+/, "");
+  while (clean.startsWith("fotos/")) {
+    clean = clean.substring("fotos/".length);
+  }
+  const filename = clean.split("/").pop() || "";
+
+  // 1. Revisar caché persistente de IndexedDB o memoria
+  if (filename && window.NISSA_IMAGE_CACHE && window.NISSA_IMAGE_CACHE[filename]) {
+    img.src = window.NISSA_IMAGE_CACHE[filename];
+    img.style.display = "block";
+    const qp = document.getElementById("quick-image-placeholder");
+    if (qp) qp.style.display = "none";
+    const mp = document.getElementById("main-image-placeholder");
+    if (mp) mp.style.display = "none";
+    return;
+  }
+
+  // 2. Intentar cargar desde GitHub raw si el archivo fue subido pero GitHub Pages aún no actualizó
+  const cfg = typeof getGithubConfig === "function" ? getGithubConfig() : null;
+  if (cfg && cfg.owner && cfg.repo && filename && !img.dataset.triedGithubRaw) {
+    img.dataset.triedGithubRaw = "1";
+    img.src = `https://raw.githubusercontent.com/${cfg.owner}/${cfg.repo}/${cfg.branch}/fotos/${filename}`;
+    return;
+  }
+
   img.style.display = "none";
-  const placeholder = document.getElementById("main-image-placeholder");
-  if (placeholder) {
-    placeholder.style.display = "block";
-    placeholder.textContent = "⚠️ Imagen no encontrada";
+  if (img.id === "quick-image-preview") {
+    const qp = document.getElementById("quick-image-placeholder");
+    if (qp) {
+      qp.style.display = "flex";
+      qp.innerHTML = `<span style="font-size:32px;">📸</span><span style="font-size:10px; color:var(--text-muted); margin-top:4px;">Elegir foto</span>`;
+    }
+  } else {
+    const placeholder = document.getElementById("main-image-placeholder");
+    if (placeholder) {
+      placeholder.style.display = "block";
+      placeholder.textContent = "⚠️ Imagen no encontrada";
+    }
   }
 }
 
@@ -1453,13 +1637,34 @@ function saveProduct(e) {
   const price5 = Number(document.getElementById("prod-price5").value) || price;
   const price20 = Number(document.getElementById("prod-price20").value) || price;
 
-  const mainImage = document.getElementById("prod-main-image").value.trim();
+  let finalMainImage = document.getElementById("prod-main-image").value.trim();
+
+  // Si se importó una nueva imagen (Base64 dataURL)
+  if (currentMainImageState.dataUrl && currentMainImageState.dataUrl.startsWith("data:")) {
+    let cleanFilename = currentMainImageState.filename;
+    if (!cleanFilename || cleanFilename === "producto.jpg" || /^(image|img|foto|screenshot|captura|whatsapp|descarga)/i.test(cleanFilename)) {
+      const slug = name.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "");
+      cleanFilename = `${slug || "producto"}.jpg`;
+    }
+    if (!/\.(jpe?g|png|webp)$/i.test(cleanFilename)) {
+      cleanFilename += ".jpg";
+    }
+
+    // Persistir en memoria e IndexedDB para que aparezca siempre
+    window.NISSA_IMAGE_CACHE = window.NISSA_IMAGE_CACHE || {};
+    window.NISSA_IMAGE_CACHE[cleanFilename] = currentMainImageState.dataUrl;
+    persistImageInDB(cleanFilename, currentMainImageState.dataUrl);
+
+    currentMainImageState.filename = cleanFilename;
+    finalMainImage = cleanFilename;
+  }
+
   const description = document.getElementById("prod-desc").value.trim();
 
   // Galería de fotos
   const galleryInputs = document.querySelectorAll(".gallery-input");
   const images = [];
-  if (mainImage) images.push(mainImage);
+  if (finalMainImage) images.push(finalMainImage);
   galleryInputs.forEach(inp => {
     const v = inp.value.trim();
     if (v && !images.includes(v)) images.push(v);
@@ -1502,8 +1707,8 @@ function saveProduct(e) {
         price3,
         price5,
         price20,
-        image: mainImage,
-        images: images.length > 0 ? images : [mainImage],
+        image: finalMainImage,
+        images: images.length > 0 ? images : [finalMainImage],
         description,
         features,
         specs
@@ -1522,8 +1727,8 @@ function saveProduct(e) {
       price3,
       price5,
       price20,
-      image: mainImage,
-      images: images.length > 0 ? images : [mainImage],
+      image: finalMainImage,
+      images: images.length > 0 ? images : [finalMainImage],
       description,
       features,
       specs
@@ -1534,7 +1739,7 @@ function saveProduct(e) {
   closeProductModal();
   renderCategoryFilter();
   renderProductsList();
-  showAlert(`<span>✓ Producto "${escapeHtml(name)}" guardado.</span> <button type="button" class="btn btn-sm btn-primary" style="margin-left:10px; background:#0284c7; color:#fff;" onclick="downloadProductsJs()">📥 Descargar products.js</button> <button type="button" class="btn btn-sm btn-github" style="margin-left:6px;" onclick="publishDirectlyToGithub()">🚀 Publicar en GitHub</button>`, true);
+  showAlert(`<span>✓ Producto "${escapeHtml(name)}" guardado con su imagen.</span> <button type="button" class="btn btn-sm btn-primary" style="margin-left:10px; background:#0284c7; color:#fff;" onclick="downloadProductsJs()">📥 Descargar products.js</button> <button type="button" class="btn btn-sm btn-github" style="margin-left:6px;" onclick="publishDirectlyToGithub()">🚀 Publicar en GitHub</button>`, true);
 }
 
 // ========================================================
@@ -1569,7 +1774,8 @@ async function saveAndPublishProductToGithub(e) {
   // 1. Verificar credenciales de GitHub
   const cfg = getGithubConfig();
   if (!cfg.owner || !cfg.repo || !cfg.token) {
-    if (confirm("Para publicar este producto y su imagen directamente en GitHub, necesitás ingresar tu Usuario, Repositorio y Token (gratuito) de GitHub.\n\n¿Deseás configurarlo ahora?")) {
+    saveProduct(e);
+    if (confirm("✓ El producto y su imagen fueron guardados localmente en tu panel.\n\nPara publicarlos en GitHub y que tu tienda se actualice online, necesitás ingresar tu Usuario, Repositorio y Token de GitHub.\n\n¿Deseás configurarlo ahora?")) {
       openGithubModal();
     }
     return;
@@ -1596,11 +1802,17 @@ async function saveAndPublishProductToGithub(e) {
         imgFilename += ".jpg";
       }
 
+      // Guardar de inmediato en caché local para que nunca desaparezca de la vista
+      const uploadedDataUrl = currentMainImageState.dataUrl;
+      window.NISSA_IMAGE_CACHE = window.NISSA_IMAGE_CACHE || {};
+      window.NISSA_IMAGE_CACHE[imgFilename] = uploadedDataUrl;
+      persistImageInDB(imgFilename, uploadedDataUrl);
+
       if (publishBtn) {
         publishBtn.innerHTML = `⏳ Subiendo fotos/${imgFilename} a GitHub...`;
       }
 
-      const base64Data = currentMainImageState.dataUrl.split(",")[1];
+      const base64Data = uploadedDataUrl.split(",")[1];
       const filePath = `fotos/${imgFilename}`;
       const imgUrl = `https://api.github.com/repos/${cfg.owner}/${cfg.repo}/contents/${filePath}?ref=${cfg.branch}`;
 
@@ -1637,14 +1849,13 @@ async function saveAndPublishProductToGithub(e) {
         finalMainImage = imgFilename;
         currentMainImageState.filename = imgFilename;
         currentMainImageState.mode = "fotos";
-        currentMainImageState.dataUrl = "";
         if (!KNOWN_FOTOS.includes(imgFilename)) {
           KNOWN_FOTOS.unshift(imgFilename);
         }
       } else {
         const errImg = await putImgRes.json().catch(() => ({}));
         console.warn("No se pudo subir archivo a fotos/:", errImg);
-        finalMainImage = currentMainImageState.dataUrl;
+        finalMainImage = imgFilename;
       }
     }
 
