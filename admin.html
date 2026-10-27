@@ -20,7 +20,7 @@
         <span class="login-badge">ADMIN</span>
       </div>
       <h2>Panel de Control de Tienda</h2>
-      <p class="login-sub">Gestión visual de productos, fotos, precios escalonados y stock.</p>
+      <p class="login-sub">Gestión visual de productos, fotos, precios escalonados y stock para GitHub Pages.</p>
 
       <div style="background: #f1f5f9; border: 1px solid #cbd5e1; border-radius: 8px; padding: 10px 14px; font-size: 12.5px; color: #475569; margin-bottom: 20px; text-align: left; display: flex; align-items: center; gap: 8px;">
         <span style="font-size: 16px;">🔒</span>
@@ -115,6 +115,9 @@
             </div>
 
             <div class="action-hero-buttons">
+              <button type="button" class="btn btn-save-action" onclick="applyAndSaveCatalogChanges()" id="btn-apply-catalog">
+                💾 Cargar Cambios a la Tienda
+              </button>
               <button type="button" class="btn btn-success" onclick="openProductModal()">
                 ➕ Nuevo Producto
               </button>
@@ -125,10 +128,10 @@
                 🚀 Publicar en GitHub
               </button>
               <button type="button" class="btn btn-secondary" onclick="openCodePreviewModal()">
-                📋 Ver / Copiar Código
+                📋 Ver Código
               </button>
               <button type="button" class="btn btn-outline" onclick="resetToOriginalCatalog()" title="Vuelve a los productos originales descartando borradores locales">
-                🔄 Restaurar Original
+                🔄 Restaurar
               </button>
             </div>
           </section>
@@ -182,6 +185,9 @@
             </div>
 
             <div class="action-hero-buttons">
+              <button type="button" class="btn btn-save-action" onclick="applyAndSaveCotizadorChanges()" id="btn-apply-cotizador">
+                💾 Cargar Cambios al Presupuestador
+              </button>
               <button type="button" class="btn btn-primary" onclick="downloadCotizadorJs()">
                 📥 Descargar cotizador-data.js
               </button>
@@ -189,10 +195,10 @@
                 🚀 Publicar en GitHub
               </button>
               <button type="button" class="btn btn-secondary" onclick="openCotizadorCodeModal()">
-                📋 Ver / Copiar Código
+                📋 Ver Código
               </button>
               <button type="button" class="btn btn-outline" onclick="resetToOriginalCotizador()" title="Descartar borrador local y volver a tarifas originales">
-                🔄 Restaurar Original
+                🔄 Restaurar
               </button>
             </div>
           </section>
@@ -367,6 +373,56 @@
               <div class="form-group flex-1">
                 <label for="prod-spec-stock">Disponibilidad / Stock:</label>
                 <input type="text" id="prod-spec-stock" placeholder="Ej: Stock inmediato para entrega o retiro">
+              </div>
+            </div>
+
+            <!-- ========================================================
+                 APARTADO DEDICADO: IMPORTAR Y MODIFICAR IMAGEN
+                 ======================================================== -->
+            <div class="product-image-quick-card">
+              <div class="image-quick-header">
+                <div class="image-quick-title-wrap">
+                  <div class="image-quick-title">
+                    <span>🖼️ Imagen del Producto (Importar / Modificar)</span>
+                  </div>
+                  <span class="image-quick-subtitle">Importá una nueva foto desde tu equipo y publicala directo a GitHub con 1 clic</span>
+                </div>
+                <div class="image-quick-actions">
+                  <button type="button" class="btn btn-primary btn-sm" onclick="triggerMainImageUpload()">
+                    📁 Importar Imagen
+                  </button>
+                  <button type="button" class="btn btn-secondary btn-sm" onclick="openImageGalleryModal('main')">
+                    🖼️ Biblioteca fotos/
+                  </button>
+                </div>
+              </div>
+
+              <div class="image-quick-body">
+                <div class="image-quick-thumb-wrap">
+                  <img id="quick-image-preview" src="" alt="Previsualización de producto" onerror="handlePreviewError(this)">
+                  <span id="quick-image-placeholder" style="display:none; font-size:32px;">📦</span>
+                </div>
+
+                <div class="image-quick-details">
+                  <div class="image-quick-status-row">
+                    <span id="quick-image-badge" class="img-type-badge">Sin imagen</span>
+                    <span id="quick-image-name" class="quick-image-filename">producto.jpg</span>
+                  </div>
+                  <p class="quick-image-hint" id="quick-image-hint">
+                    Hacé clic en <strong>"📁 Importar Imagen"</strong> para cargar una foto desde tu PC o celular (JPG, PNG, WebP). Podés pegarla con Ctrl+V.
+                  </p>
+                  <div class="quick-image-buttons-row">
+                    <button type="button" class="btn btn-outline btn-xs" onclick="triggerMainImageUpload()">
+                      🔄 Cambiar foto
+                    </button>
+                    <button type="button" class="btn btn-secondary btn-xs" onclick="switchProductTab('tab-images')">
+                      📷 Ver carrusel completo
+                    </button>
+                    <button type="button" class="btn btn-danger-ghost btn-xs" onclick="removeMainImage()">
+                      🗑️ Quitar
+                    </button>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
@@ -550,8 +606,11 @@
           <button type="button" class="btn btn-secondary" onclick="closeProductModal()">
             Cancelar
           </button>
+          <button type="button" class="btn btn-modal-github" id="btn-save-and-publish-github" onclick="saveAndPublishProductToGithub(event)">
+            🚀 Guardar y Publicar en GitHub
+          </button>
           <button type="submit" class="btn btn-success">
-            💾 Guardar Cambios en Catálogo
+            💾 Guardar Localmente
           </button>
         </div>
       </form>

@@ -211,9 +211,30 @@ function updateCountsBadge() {
 }
 
 function saveDraft() {
-  localStorage.setItem("nissa_catalog_draft", JSON.stringify(currentProducts));
+  try {
+    localStorage.setItem("nissa_catalog_draft", JSON.stringify(currentProducts));
+  } catch (err) {
+    console.warn("No se pudo guardar en localStorage (cuota de almacenamiento excedida?):", err);
+  }
   checkDraftStatus();
   updateCountsBadge();
+}
+
+function applyAndSaveCatalogChanges() {
+  saveDraft();
+  if (typeof window !== "undefined") {
+    window.products = currentProducts;
+  }
+  renderProductsList();
+  renderCategoryFilter();
+  showAlert(`
+    <div style="display: flex; align-items: center; justify-content: space-between; gap: 14px; flex-wrap: wrap;">
+      <span>✓ ¡Todos los cambios del catálogo fueron cargados con éxito! (${currentProducts.length} productos listos en la tienda).</span>
+      <div style="display: flex; gap: 8px;">
+        <button type="button" class="btn btn-sm btn-primary" onclick="downloadProductsJs()">📥 Descargar products.js</button>
+      </div>
+    </div>
+  `, true);
 }
 
 function resetToOriginalCatalog() {
@@ -236,13 +257,16 @@ function formatPrice(num) {
 
 function resolveAdminPhoto(img, prod) {
   if (!img) return "";
-  if (img.startsWith("http://") || img.startsWith("https://") || img.startsWith("data:")) {
-    return img;
+  let clean = String(img).trim();
+  if (clean.startsWith("http://") || clean.startsWith("https://") || clean.startsWith("data:") || clean.startsWith("//")) {
+    return clean;
   }
-  if (img.startsWith("./fotos/") || img.startsWith("/fotos/")) {
-    return img;
+  // Limpiar cualquier prefijo de ruta para no duplicar fotos/
+  clean = clean.replace(/^(\.\/|\/)+/, "");
+  while (clean.startsWith("fotos/")) {
+    clean = clean.substring("fotos/".length);
   }
-  return "./fotos/" + img;
+  return "./fotos/" + clean;
 }
 
 function updateProductCount() {
@@ -462,9 +486,10 @@ function openProductModal(productId = null) {
       document.getElementById("prod-spec-stock").value = p.specs["Disponibilidad"] || "";
     }
 
-    // Galería
+    // Galería adicional para el carrusel (excluyendo la portada para no duplicarla)
     if (Array.isArray(p.images)) {
-      p.images.forEach(img => addGalleryImageInput(img));
+      const extraImages = p.images.filter(img => img && img !== p.image);
+      extraImages.forEach(img => addGalleryImageInput(img));
     }
 
     // Características
@@ -680,32 +705,60 @@ function updateMainImagePreviewUI(overrideSrc = null) {
 
   if (!previewCard) return;
 
+  const quickImg = document.getElementById("quick-image-preview");
+  const quickPlaceholder = document.getElementById("quick-image-placeholder");
+  const quickBadge = document.getElementById("quick-image-badge");
+  const quickName = document.getElementById("quick-image-name");
+  const quickHint = document.getElementById("quick-image-hint");
+
   const inputVal = (document.getElementById("prod-main-image") || {}).value || "";
-  const displaySrc = overrideSrc || currentMainImageState.dataUrl || resolveAdminPhoto(inputVal);
+  const rawTarget = overrideSrc || currentMainImageState.dataUrl || inputVal;
+  const displaySrc = resolveAdminPhoto(rawTarget);
 
   if (!displaySrc) {
     previewCard.style.display = "none";
     if (dropzone) dropzone.style.display = "block";
+    if (quickImg) quickImg.style.display = "none";
+    if (quickPlaceholder) quickPlaceholder.style.display = "block";
+    if (quickBadge) {
+      quickBadge.className = "img-type-badge";
+      quickBadge.textContent = "Sin imagen";
+    }
+    if (quickName) quickName.textContent = "Ninguna foto asignada";
+    if (quickHint) quickHint.textContent = "Hacé clic en \"📁 Importar Imagen\" para elegir una foto de tu PC o celular (JPG, PNG, WebP).";
     return;
   }
 
   previewCard.style.display = "flex";
+  if (dropzone) dropzone.style.display = "none";
   if (imgEl) {
     imgEl.src = displaySrc;
     imgEl.style.display = "block";
   }
   if (placeholder) placeholder.style.display = "none";
 
+  if (quickImg) {
+    quickImg.src = displaySrc;
+    quickImg.style.display = "block";
+  }
+  if (quickPlaceholder) quickPlaceholder.style.display = "none";
+
   // Badges y datos
   if (currentMainImageState.mode === "base64") {
     if (badge) {
-      badge.className = "img-type-badge";
-      badge.textContent = "🌟 Embebida (Base64)";
+      badge.className = "img-type-badge import-badge";
+      badge.textContent = "✨ Imagen importada (nueva)";
     }
     if (btnBase64) btnBase64.classList.add("active");
     if (btnFotos) btnFotos.classList.remove("active");
     if (fileOptions) fileOptions.style.display = "none";
-    if (title) title.textContent = currentMainImageState.filename || "Imagen embebida";
+    if (title) title.textContent = currentMainImageState.filename || "Imagen importada";
+    if (quickBadge) {
+      quickBadge.className = "img-type-badge import-badge";
+      quickBadge.textContent = "✨ Imagen importada (nueva)";
+    }
+    if (quickName) quickName.textContent = currentMainImageState.filename || "nueva-imagen.jpg";
+    if (quickHint) quickHint.textContent = "✓ Foto importada y optimizada. Al presionar '🚀 Guardar y Publicar en GitHub', se subirá automáticamente a GitHub.";
   } else if (currentMainImageState.mode === "fotos") {
     if (badge) {
       badge.className = "img-type-badge fotos-badge";
@@ -716,6 +769,12 @@ function updateMainImagePreviewUI(overrideSrc = null) {
     if (fileOptions) fileOptions.style.display = "flex";
     if (fnInput) fnInput.value = currentMainImageState.filename;
     if (title) title.textContent = `fotos/${currentMainImageState.filename}`;
+    if (quickBadge) {
+      quickBadge.className = "img-type-badge fotos-badge";
+      quickBadge.textContent = "📁 fotos/";
+    }
+    if (quickName) quickName.textContent = currentMainImageState.filename;
+    if (quickHint) quickHint.textContent = `Foto asignada desde fotos/${currentMainImageState.filename}. Podés reemplazarla importando una nueva.`;
   } else {
     if (badge) {
       badge.className = "img-type-badge url-badge";
@@ -725,6 +784,12 @@ function updateMainImagePreviewUI(overrideSrc = null) {
     if (btnFotos) btnFotos.classList.remove("active");
     if (fileOptions) fileOptions.style.display = "none";
     if (title) title.textContent = inputVal;
+    if (quickBadge) {
+      quickBadge.className = "img-type-badge url-badge";
+      quickBadge.textContent = "🌐 Enlace Web";
+    }
+    if (quickName) quickName.textContent = inputVal.substring(0, 32) + "...";
+    if (quickHint) quickHint.textContent = "Foto cargada desde enlace web externo.";
   }
 
   if (stats) {
@@ -1134,6 +1199,8 @@ function getAllAvailableImages() {
   return Array.from(map.values());
 }
 
+let currentGalleryModalItems = [];
+
 function renderImageGalleryGrid() {
   const grid = document.getElementById("gallery-modal-grid");
   const empty = document.getElementById("gallery-modal-empty");
@@ -1159,6 +1226,8 @@ function renderImageGalleryGrid() {
     items = items.filter(item => item.filename.toLowerCase().includes(activeGallerySearch));
   }
 
+  currentGalleryModalItems = items;
+
   if (items.length === 0) {
     grid.innerHTML = "";
     if (empty) empty.style.display = "block";
@@ -1168,7 +1237,7 @@ function renderImageGalleryGrid() {
   if (empty) empty.style.display = "none";
   grid.innerHTML = "";
 
-  items.forEach(item => {
+  items.forEach((item, idx) => {
     const card = document.createElement("div");
     card.className = "gallery-modal-item";
     card.innerHTML = `
@@ -1180,33 +1249,56 @@ function renderImageGalleryGrid() {
         <span class="gallery-modal-filename" title="${escapeHtml(item.filename)}">${escapeHtml(item.filename)}</span>
         <span class="gallery-modal-source">${escapeHtml(item.source)}</span>
       </div>
-      <button type="button" class="btn-select-gallery-item" onclick="selectImageFromGallery('${escapeHtml(item.filename)}', ${item.isDataUrl}, '${escapeHtml(item.dataUrl)}')">
+      <button type="button" class="btn-select-gallery-item" data-idx="${idx}">
         ${galleryModalTarget === "main" ? "✓ Elegir como Portada" : "➕ Agregar al carrusel"}
       </button>
     `;
+
+    const btn = card.querySelector(".btn-select-gallery-item");
+    if (btn) {
+      btn.addEventListener("click", (e) => {
+        e.stopPropagation();
+        selectGalleryItemByIndex(idx);
+      });
+    }
+
+    card.addEventListener("click", () => {
+      selectGalleryItemByIndex(idx);
+    });
+
     grid.appendChild(card);
   });
 }
 
-function selectImageFromGallery(filename, isDataUrl = false, dataUrl = "") {
+function selectGalleryItemByIndex(idx) {
+  const item = currentGalleryModalItems[idx];
+  if (!item) return;
+
   if (galleryModalTarget === "main") {
-    if (isDataUrl && dataUrl) {
+    if (item.isDataUrl && item.dataUrl) {
       applyProcessedMainImage({
-        dataUrl: dataUrl,
-        filename: filename.endsWith(".jpg") ? filename : "producto.jpg",
+        dataUrl: item.dataUrl,
+        filename: item.filename.endsWith(".jpg") ? item.filename : (item.filename + ".jpg"),
         width: 0,
         height: 0,
-        sizeKb: Math.round((dataUrl.length * 3 / 4) / 1024)
+        sizeKb: Math.round((item.dataUrl.length * 3 / 4) / 1024)
       });
     } else {
-      initMainImageState(filename);
+      initMainImageState(item.filename);
     }
-    showAlert(`✓ Foto de portada seleccionada: ${filename}`);
+    showAlert(`✓ Foto de portada seleccionada: ${item.filename}`);
   } else {
-    addGalleryImageInput(isDataUrl && dataUrl ? dataUrl : filename, filename);
-    showAlert(`✓ Foto agregada al carrusel: ${filename}`);
+    addGalleryImageInput(item.isDataUrl && item.dataUrl ? item.dataUrl : item.filename, item.filename);
+    showAlert(`✓ Foto agregada al carrusel: ${item.filename}`);
   }
   closeImageGalleryModal();
+}
+
+function selectImageFromGallery(filename, isDataUrl = false, dataUrl = "") {
+  const idx = currentGalleryModalItems.findIndex(i => i.filename === filename);
+  if (idx !== -1) {
+    selectGalleryItemByIndex(idx);
+  }
 }
 
 function triggerGalleryModalUpload() {
@@ -1443,6 +1535,257 @@ function saveProduct(e) {
   renderCategoryFilter();
   renderProductsList();
   showAlert(`<span>✓ Producto "${escapeHtml(name)}" guardado.</span> <button type="button" class="btn btn-sm btn-primary" style="margin-left:10px; background:#0284c7; color:#fff;" onclick="downloadProductsJs()">📥 Descargar products.js</button> <button type="button" class="btn btn-sm btn-github" style="margin-left:6px;" onclick="publishDirectlyToGithub()">🚀 Publicar en GitHub</button>`, true);
+}
+
+// ========================================================
+// 5.1 GUARDAR Y PUBLICAR PRODUCTO E IMAGEN DIRECTO A GITHUB
+// ========================================================
+async function saveAndPublishProductToGithub(e) {
+  if (e) e.preventDefault();
+
+  const idVal = document.getElementById("prod-id").value;
+  const name = document.getElementById("prod-name").value.trim();
+  const category = document.getElementById("prod-category").value.trim().toLowerCase();
+  const tag = document.getElementById("prod-tag").value.trim();
+
+  const price = Number(document.getElementById("prod-price").value) || 0;
+  const price3 = Number(document.getElementById("prod-price3").value) || price;
+  const price5 = Number(document.getElementById("prod-price5").value) || price;
+  const price20 = Number(document.getElementById("prod-price20").value) || price;
+
+  if (!name) {
+    switchProductTab("tab-general");
+    document.getElementById("prod-name")?.focus();
+    alert("Por favor ingresá el nombre del producto.");
+    return;
+  }
+  if (price <= 0) {
+    switchProductTab("tab-general");
+    document.getElementById("prod-price")?.focus();
+    alert("Por favor ingresá un precio válido para el producto.");
+    return;
+  }
+
+  // 1. Verificar credenciales de GitHub
+  const cfg = getGithubConfig();
+  if (!cfg.owner || !cfg.repo || !cfg.token) {
+    if (confirm("Para publicar este producto y su imagen directamente en GitHub, necesitás ingresar tu Usuario, Repositorio y Token (gratuito) de GitHub.\n\n¿Deseás configurarlo ahora?")) {
+      openGithubModal();
+    }
+    return;
+  }
+
+  const publishBtn = document.getElementById("btn-save-and-publish-github");
+  const originalBtnHtml = publishBtn ? publishBtn.innerHTML : "";
+  if (publishBtn) {
+    publishBtn.disabled = true;
+    publishBtn.innerHTML = "⏳ Conectando con GitHub...";
+  }
+
+  try {
+    let finalMainImage = document.getElementById("prod-main-image").value.trim();
+
+    // 2. Si se importó una nueva imagen en Base64, subirla directamente a fotos/ en GitHub
+    if (currentMainImageState.dataUrl && currentMainImageState.dataUrl.startsWith("data:")) {
+      let imgFilename = currentMainImageState.filename || "";
+      if (!imgFilename || imgFilename === "producto.jpg" || /^(image|img|foto|screenshot|captura|whatsapp|descarga)/i.test(imgFilename)) {
+        const slug = name.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "");
+        imgFilename = `${slug || "producto"}.jpg`;
+      }
+      if (!/\.(jpe?g|png|webp)$/i.test(imgFilename)) {
+        imgFilename += ".jpg";
+      }
+
+      if (publishBtn) {
+        publishBtn.innerHTML = `⏳ Subiendo fotos/${imgFilename} a GitHub...`;
+      }
+
+      const base64Data = currentMainImageState.dataUrl.split(",")[1];
+      const filePath = `fotos/${imgFilename}`;
+      const imgUrl = `https://api.github.com/repos/${cfg.owner}/${cfg.repo}/contents/${filePath}?ref=${cfg.branch}`;
+
+      // Comprobar si ya existe para obtener SHA
+      let imgSha = null;
+      const checkRes = await fetch(imgUrl, {
+        headers: {
+          "Authorization": `token ${cfg.token}`,
+          "Accept": "application/vnd.github.v3+json"
+        }
+      });
+      if (checkRes.ok) {
+        const existingData = await checkRes.json();
+        imgSha = existingData.sha;
+      }
+
+      // Subir archivo de imagen a fotos/ vía PUT en GitHub API
+      const putImgRes = await fetch(`https://api.github.com/repos/${cfg.owner}/${cfg.repo}/contents/${filePath}`, {
+        method: "PUT",
+        headers: {
+          "Authorization": `token ${cfg.token}`,
+          "Content-Type": "application/json",
+          "Accept": "application/vnd.github.v3+json"
+        },
+        body: JSON.stringify({
+          message: `Subir imagen ${filePath} para producto "${name}" [Admin NISSA]`,
+          content: base64Data,
+          branch: cfg.branch,
+          sha: imgSha || undefined
+        })
+      });
+
+      if (putImgRes.ok) {
+        finalMainImage = imgFilename;
+        currentMainImageState.filename = imgFilename;
+        currentMainImageState.mode = "fotos";
+        currentMainImageState.dataUrl = "";
+        if (!KNOWN_FOTOS.includes(imgFilename)) {
+          KNOWN_FOTOS.unshift(imgFilename);
+        }
+      } else {
+        const errImg = await putImgRes.json().catch(() => ({}));
+        console.warn("No se pudo subir archivo a fotos/:", errImg);
+        finalMainImage = currentMainImageState.dataUrl;
+      }
+    }
+
+    // 3. Recopilar datos completos del producto
+    const description = document.getElementById("prod-desc").value.trim();
+
+    const galleryInputs = document.querySelectorAll(".gallery-input");
+    const images = [];
+    if (finalMainImage) images.push(finalMainImage);
+    galleryInputs.forEach(inp => {
+      const v = inp.value.trim();
+      if (v && !images.includes(v)) images.push(v);
+    });
+
+    const featureInputs = document.querySelectorAll(".feature-input");
+    const features = [];
+    featureInputs.forEach(inp => {
+      const v = inp.value.trim();
+      if (v) features.push(v);
+    });
+
+    const specs = {};
+    const garantia = document.getElementById("prod-spec-garantia").value.trim();
+    const stock = document.getElementById("prod-spec-stock").value.trim();
+    if (garantia) specs["Garantía"] = garantia;
+    if (stock) specs["Disponibilidad"] = stock;
+
+    const specKeyInputs = document.querySelectorAll(".spec-key-input");
+    const specValInputs = document.querySelectorAll(".spec-val-input");
+    for (let i = 0; i < specKeyInputs.length; i++) {
+      const k = specKeyInputs[i].value.trim();
+      const v = specValInputs[i].value.trim();
+      if (k && v) specs[k] = v;
+    }
+
+    let finalId;
+    if (idVal) {
+      finalId = Number(idVal);
+      const existingIndex = currentProducts.findIndex(item => Number(item.id) === finalId);
+      if (existingIndex !== -1) {
+        currentProducts[existingIndex] = {
+          id: finalId,
+          name,
+          category,
+          tag: tag || undefined,
+          price,
+          price3,
+          price5,
+          price20,
+          image: finalMainImage,
+          images: images.length > 0 ? images : [finalMainImage],
+          description,
+          features,
+          specs
+        };
+      }
+    } else {
+      const maxId = currentProducts.reduce((max, item) => Math.max(max, Number(item.id) || 0), 0);
+      finalId = maxId + 1;
+      currentProducts.push({
+        id: finalId,
+        name,
+        category,
+        tag: tag || undefined,
+        price,
+        price3,
+        price5,
+        price20,
+        image: finalMainImage,
+        images: images.length > 0 ? images : [finalMainImage],
+        description,
+        features,
+        specs
+      });
+    }
+
+    // Guardar borrador localmente y actualizar window
+    saveDraft();
+    if (typeof window !== "undefined") {
+      window.products = currentProducts;
+    }
+
+    // 4. Publicar catálogo products.js en GitHub
+    if (publishBtn) {
+      publishBtn.innerHTML = "⏳ Publicando catálogo en GitHub...";
+    }
+
+    const getUrl = `https://api.github.com/repos/${cfg.owner}/${cfg.repo}/contents/${cfg.path}?ref=${cfg.branch}&t=${Date.now()}`;
+    let currentSha = null;
+    const getRes = await fetch(getUrl, {
+      headers: {
+        "Authorization": `token ${cfg.token}`,
+        "Accept": "application/vnd.github.v3+json"
+      }
+    });
+    if (getRes.ok) {
+      const data = await getRes.json();
+      currentSha = data.sha;
+    }
+
+    const newContent = generateProductsJsCode();
+    const base64Content = utf8ToBase64(newContent);
+
+    const putRes = await fetch(`https://api.github.com/repos/${cfg.owner}/${cfg.repo}/contents/${cfg.path}`, {
+      method: "PUT",
+      headers: {
+        "Authorization": `token ${cfg.token}`,
+        "Accept": "application/vnd.github.v3+json",
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        message: `Actualizar producto "${name}" (#${finalId}) e imagen [Admin NISSA]`,
+        content: base64Content,
+        branch: cfg.branch,
+        sha: currentSha || undefined
+      })
+    });
+
+    if (putRes.ok) {
+      closeProductModal();
+      renderCategoryFilter();
+      renderProductsList();
+      showAlert(`🎉 ¡Producto "${escapeHtml(name)}" y su imagen fueron publicados con éxito en GitHub! GitHub Pages actualizará tu tienda en ~30 segundos.`);
+    } else {
+      const errData = await putRes.json().catch(() => ({}));
+      closeProductModal();
+      renderCategoryFilter();
+      renderProductsList();
+      alert(`Los cambios se guardaron localmente en el panel, pero GitHub respondió: ${errData.message || putRes.statusText}\n\nPodés usar el botón "Descargar products.js" para actualizar tu repositorio manualmente.`);
+    }
+
+  } catch (err) {
+    console.error("Error en saveAndPublishProductToGithub:", err);
+    saveProduct();
+    alert("Los cambios se guardaron localmente. Error de conexión con GitHub: " + err.message);
+  } finally {
+    if (publishBtn) {
+      publishBtn.disabled = false;
+      publishBtn.innerHTML = originalBtnHtml;
+    }
+  }
 }
 
 function editProduct(id) {
@@ -1805,19 +2148,15 @@ function loadInitialCotizador() {
   if (draft) {
     try {
       const parsed = JSON.parse(draft);
-      let totalModelsInDraft = 0;
-      if (Array.isArray(parsed?.celulares)) {
-        parsed.celulares.forEach(b => {
-          if (Array.isArray(b.models)) totalModelsInDraft += b.models.length;
-        });
-      }
-      // Solo usar el borrador si es completo (al menos 50 modelos).
-      // Si el borrador era parcial o incompleto, lo descartamos para recuperar todos los modelos originales.
-      if (parsed && typeof parsed === "object" && totalModelsInDraft >= 50) {
+      // Si el borrador previo contenía modelos agrupados con barra (/), descartarlo para usar la nueva lista individualizada
+      const hasOldSharedModels = Array.isArray(parsed?.celulares) && parsed.celulares.some(b => 
+        (b.brand === "Samsung" || b.brand === "Motorola") && (b.models || []).some(m => m.name && m.name.includes(" / "))
+      );
+      if (hasOldSharedModels) {
+        localStorage.removeItem("nissa_cotizador_draft");
+      } else if (parsed && typeof parsed === "object" && Array.isArray(parsed?.celulares) && parsed.celulares.length > 0) {
         currentCotizador = parsed;
         return;
-      } else {
-        localStorage.removeItem("nissa_cotizador_draft");
       }
     } catch (e) {
       console.error("Error al cargar borrador de cotizador:", e);
@@ -1845,12 +2184,32 @@ function loadInitialCotizador() {
 
 function saveCotizadorDraft() {
   if (!currentCotizador) return;
-  localStorage.setItem("nissa_cotizador_draft", JSON.stringify(currentCotizador));
+  try {
+    localStorage.setItem("nissa_cotizador_draft", JSON.stringify(currentCotizador));
+  } catch (e) {
+    console.warn("Error al guardar borrador de cotizador:", e);
+  }
   if (typeof window !== "undefined") {
     window.PRECIOS_WIDGET = currentCotizador;
   }
   checkDraftStatus();
   updateCountsBadge();
+}
+
+function applyAndSaveCotizadorChanges() {
+  saveCotizadorDraft();
+  if (typeof window !== "undefined") {
+    window.PRECIOS_WIDGET = currentCotizador;
+  }
+  renderCotizador();
+  showAlert(`
+    <div style="display: flex; align-items: center; justify-content: space-between; gap: 14px; flex-wrap: wrap;">
+      <span>✓ ¡Todos los cambios del presupuestador fueron cargados y aplicados con éxito!</span>
+      <div style="display: flex; gap: 8px;">
+        <button type="button" class="btn btn-sm btn-primary" onclick="downloadCotizadorJs()">📥 Descargar cotizador-data.js</button>
+      </div>
+    </div>
+  `, true);
 }
 
 function debouncedAutoSaveCotizador() {
@@ -3333,6 +3692,7 @@ window.duplicateProduct = duplicateProduct;
 window.moveProductOrder = moveProductOrder;
 window.deleteProduct = deleteProduct;
 window.saveProduct = saveProduct;
+window.saveAndPublishProductToGithub = saveAndPublishProductToGithub;
 window.calculateDiscounts = calculateDiscounts;
 window.previewMainImage = previewMainImage;
 window.chooseImageSuggestion = chooseImageSuggestion;
@@ -3359,6 +3719,9 @@ window.setGalleryFilter = setGalleryFilter;
 window.filterImageGallery = filterImageGallery;
 window.clearGallerySearch = clearGallerySearch;
 window.selectImageFromGallery = selectImageFromGallery;
+window.selectGalleryItemByIndex = selectGalleryItemByIndex;
+window.applyAndSaveCatalogChanges = applyAndSaveCatalogChanges;
+window.applyAndSaveCotizadorChanges = applyAndSaveCotizadorChanges;
 window.triggerGalleryModalUpload = triggerGalleryModalUpload;
 window.handleGalleryModalUpload = handleGalleryModalUpload;
 window.addFeatureInput = addFeatureInput;

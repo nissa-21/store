@@ -20,8 +20,28 @@ const nav = document.getElementById("nav");
 let selectedCategory = "todos";
 let shoppingCart = JSON.parse(localStorage.getItem("nissaCart")) || [];
 
+// Sincronizar el catálogo local desde el borrador guardado en el Panel Administrador
+function reloadProductsFromStorage() {
+  try {
+    if (typeof localStorage !== "undefined") {
+      const draft = localStorage.getItem("nissa_catalog_draft");
+      if (draft) {
+        const parsed = JSON.parse(draft);
+        if (Array.isArray(parsed) && parsed.length > 0) {
+          products = parsed;
+          if (typeof window !== "undefined") {
+            window.products = parsed;
+          }
+        }
+      }
+    }
+  } catch (e) {}
+}
+reloadProductsFromStorage();
+
 // Sincronizar el carrito local con los precios y datos más recientes definidos en products.js
 function syncCartWithLatestProducts() {
+  reloadProductsFromStorage();
   if (typeof products === "undefined" || !Array.isArray(products)) return;
   let changed = false;
   shoppingCart = shoppingCart.map(item => {
@@ -63,14 +83,14 @@ function getProductImage(product) {
 
   if (!img) return "";
 
-  // Si es URL externa (http/https) o data URI, devolverla tal cual
+  // Si es URL externa (http/https) o data URI, devolverla tal cual sin modificar
   if (/^(https?:|\/\/|data:)/i.test(img)) {
     return img;
   }
 
   // Limpiar cualquier prefijo de ruta para estandarizar
   img = img.replace(/^(\.\/|\/)+/, "");
-  if (img.startsWith(PRODUCT_IMAGES_DIR + "/")) {
+  while (img.startsWith(PRODUCT_IMAGES_DIR + "/")) {
     img = img.substring((PRODUCT_IMAGES_DIR + "/").length);
   }
 
@@ -81,6 +101,16 @@ function getProductImage(product) {
 function handleProductImgError(img, productId) {
   if (!img) return;
   const currentSrc = img.getAttribute("src") || "";
+
+  // Si la imagen es Base64 (data:) o URL externa, no intentar rutas de fotos/
+  if (currentSrc.startsWith("data:") || currentSrc.startsWith("http://") || currentSrc.startsWith("https://") || currentSrc.startsWith("//")) {
+    img.style.display = "none";
+    if (img.nextElementSibling) {
+      img.nextElementSibling.style.display = "block";
+    }
+    return;
+  }
+
   const step = Number(img.dataset.retryStep || 0);
 
   // Extraer el nombre del archivo sin ruta
@@ -89,29 +119,17 @@ function handleProductImgError(img, productId) {
   const nameWithoutExt = dotIndex !== -1 ? filename.substring(0, dotIndex) : filename;
   const currentExt = dotIndex !== -1 ? filename.substring(dotIndex).toLowerCase() : ".jpg";
 
-  // Intentos inteligentes:
-  // 1. Probar en './fotos/' con extensiones alternativas (.png, .jpg, .jpeg)
-  // 2. Probar en la raíz './' (por si las fotos se subieron sueltas en GitHub junto a banner-nissa.jpg)
-  const candidateExtensions = [".png", ".jpg", ".jpeg", ".webp", ".PNG", ".JPG"];
-  const alternateExts = candidateExtensions.filter(ext => ext.toLowerCase() !== currentExt);
+  // Intentar extensiones alternativas estrictamente dentro de ./fotos/
+  const candidateExtensions = [".jpg", ".png", ".jpeg", ".webp", ".JPG", ".PNG"];
+  const alternateExts = candidateExtensions.filter(ext => ext.toLowerCase() !== currentExt.toLowerCase());
 
-  // Pasos para la carpeta fotos/
   if (step < alternateExts.length) {
     img.dataset.retryStep = String(step + 1);
     img.src = `./${PRODUCT_IMAGES_DIR}/${nameWithoutExt}${alternateExts[step]}`;
     return;
   }
 
-  // Pasos para la raíz ./ (sin subcarpeta fotos/)
-  const rootStep = step - alternateExts.length;
-  const allExts = [currentExt, ...alternateExts];
-  if (rootStep < allExts.length) {
-    img.dataset.retryStep = String(step + 1);
-    img.src = `./${nameWithoutExt}${allExts[rootStep]}`;
-    return;
-  }
-
-  // Si fallan todas las rutas en fotos/ y en raíz, ocultar imagen y mostrar emoji fallback
+  // Si fallan todas las extensiones en fotos/, ocultar imagen y mostrar emoji fallback limpio
   img.style.display = "none";
   if (img.parentElement && img.parentElement.classList.contains("pm-thumbnail-btn")) {
     img.parentElement.style.display = "none";
@@ -671,7 +689,7 @@ function resolvePhotoUrl(imgName, product) {
   if (!imgName) return getProductImage(product);
   if (/^(https?:|\/\/|data:)/i.test(imgName)) return imgName;
   let clean = String(imgName).trim().replace(/^(\.\/|\/)+/, "");
-  if (clean.startsWith(PRODUCT_IMAGES_DIR + "/")) {
+  while (clean.startsWith(PRODUCT_IMAGES_DIR + "/")) {
     clean = clean.substring((PRODUCT_IMAGES_DIR + "/").length);
   }
   return `./${PRODUCT_IMAGES_DIR}/${clean}`;
@@ -698,6 +716,15 @@ function getDiscountPercent(basePrice, discountedPrice) {
 function handleModalSlideImgError(img, productId, originalFilename) {
   if (!img) return;
   const currentSrc = img.getAttribute("src") || "";
+
+  if (currentSrc.startsWith("data:") || currentSrc.startsWith("http://") || currentSrc.startsWith("https://") || currentSrc.startsWith("//")) {
+    img.style.display = "none";
+    if (img.nextElementSibling && img.nextElementSibling.classList.contains("pm-main-image-fallback")) {
+      img.nextElementSibling.style.display = "flex";
+    }
+    return;
+  }
+
   const step = Number(img.dataset.retryStep || 0);
 
   const filename = currentSrc.split("/").pop() || originalFilename || "";
@@ -706,19 +733,11 @@ function handleModalSlideImgError(img, productId, originalFilename) {
   const currentExt = dotIndex !== -1 ? filename.substring(dotIndex).toLowerCase() : ".jpg";
 
   const candidateExtensions = [".jpg", ".png", ".jpeg", ".webp", ".JPG", ".PNG"];
-  const alternateExts = candidateExtensions.filter(ext => ext.toLowerCase() !== currentExt);
+  const alternateExts = candidateExtensions.filter(ext => ext.toLowerCase() !== currentExt.toLowerCase());
 
   if (step < alternateExts.length) {
     img.dataset.retryStep = String(step + 1);
     img.src = `./${PRODUCT_IMAGES_DIR}/${nameWithoutExt}${alternateExts[step]}`;
-    return;
-  }
-
-  const rootStep = step - alternateExts.length;
-  const allExts = [currentExt, ...alternateExts];
-  if (rootStep < allExts.length) {
-    img.dataset.retryStep = String(step + 1);
-    img.src = `./${nameWithoutExt}${allExts[rootStep]}`;
     return;
   }
 
@@ -731,6 +750,12 @@ function handleModalSlideImgError(img, productId, originalFilename) {
 function handleModalThumbImgError(img, productId, originalFilename) {
   if (!img) return;
   const currentSrc = img.getAttribute("src") || "";
+
+  if (currentSrc.startsWith("data:") || currentSrc.startsWith("http://") || currentSrc.startsWith("https://") || currentSrc.startsWith("//")) {
+    img.style.display = "none";
+    return;
+  }
+
   const step = Number(img.dataset.retryStep || 0);
 
   const filename = currentSrc.split("/").pop() || originalFilename || "";
@@ -738,7 +763,7 @@ function handleModalThumbImgError(img, productId, originalFilename) {
   const nameWithoutExt = dotIndex !== -1 ? filename.substring(0, dotIndex) : filename;
   const currentExt = dotIndex !== -1 ? filename.substring(dotIndex).toLowerCase() : ".jpg";
 
-  const alternateExts = [".jpg", ".png", ".jpeg", ".webp"].filter(e => e !== currentExt);
+  const alternateExts = [".jpg", ".png", ".jpeg", ".webp", ".JPG", ".PNG"].filter(e => e.toLowerCase() !== currentExt.toLowerCase());
   if (step < alternateExts.length) {
     img.dataset.retryStep = String(step + 1);
     img.src = `./${PRODUCT_IMAGES_DIR}/${nameWithoutExt}${alternateExts[step]}`;
@@ -1236,13 +1261,37 @@ window.changeModalQty = changeModalQty;
 window.setModalQty = setModalQty;
 window.addModalProductToCart = addModalProductToCart;
 
+// Escuchar cambios de almacenamiento y eventos de actualización del Panel Administrador
+function handleCatalogLiveUpdate() {
+  reloadProductsFromStorage();
+  syncCartWithLatestProducts();
+  renderProducts();
+  if (currentModalProduct) {
+    const updated = (typeof products !== "undefined" ? products : []).find(p => Number(p.id) === Number(currentModalProduct.id));
+    if (updated) {
+      currentModalProduct = updated;
+      renderProductModalContent();
+    }
+  }
+}
+
+window.addEventListener("storage", (e) => {
+  if (e.key === "nissa_catalog_draft" || e.key === "nissaProductImages") {
+    handleCatalogLiveUpdate();
+  }
+});
+window.addEventListener("nissa_catalog_updated", handleCatalogLiveUpdate);
+window.addEventListener("focus", handleCatalogLiveUpdate);
+
 // Inicialización de la aplicación y comprobación de URL inicial
 document.addEventListener("DOMContentLoaded", () => {
+  reloadProductsFromStorage();
   syncCartWithLatestProducts();
   renderProducts();
   renderCart();
   checkRoute();
 });
+reloadProductsFromStorage();
 syncCartWithLatestProducts();
 renderProducts();
 renderCart();

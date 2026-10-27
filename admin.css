@@ -267,6 +267,26 @@ textarea:focus {
   transform: translateY(-1px);
 }
 
+.btn-save-action {
+  background: linear-gradient(135deg, #16a34a 0%, #15803d 100%);
+  color: #ffffff;
+  font-weight: 800;
+  font-size: 13px;
+  border: 1px solid #166534;
+  box-shadow: 0 4px 14px rgba(22, 163, 74, 0.35);
+  animation: pulseSaveBtn 3s infinite;
+}
+.btn-save-action:hover {
+  background: #15803d;
+  transform: translateY(-1px);
+  box-shadow: 0 6px 18px rgba(22, 163, 74, 0.5);
+}
+
+@keyframes pulseSaveBtn {
+  0%, 100% { box-shadow: 0 4px 14px rgba(22, 163, 74, 0.3); }
+  50% { box-shadow: 0 4px 20px rgba(22, 163, 74, 0.6); }
+}
+
 .btn-github {
   background: #24292f;
   color: #ffffff;
@@ -1977,5 +1997,154 @@ textarea:focus {
   font-weight: 700;
   color: var(--text-main);
   cursor: pointer;
+}
+
+/* ========================================================
+   APARTADO DEDICADO: IMPORTAR Y MODIFICAR IMAGEN DEL PRODUCTO
+   ======================================================== */
+.product-image-quick-card {
+  background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+  border: 1.5px solid #cbd5e1;
+  border-radius: var(--radius-md);
+  padding: 18px 20px;
+  margin-top: 18px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+}
+
+.image-quick-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-bottom: 14px;
+}
+
+.image-quick-title-wrap {
+  display: flex;
+  flex-direction: column;
+}
+
+.image-quick-title {
+  font-size: 14.5px;
+  font-weight: 800;
+  color: var(--text-main);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.image-quick-subtitle {
+  font-size: 12px;
+  color: var(--text-muted);
+  margin-top: 2px;
+}
+
+.image-quick-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.image-quick-body {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  background: #ffffff;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 14px 16px;
+}
+
+.image-quick-thumb-wrap {
+  width: 90px;
+  height: 90px;
+  border-radius: 8px;
+  background: #f8fafc;
+  border: 1.5px solid #e2e8f0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  flex-shrink: 0;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+.image-quick-thumb-wrap img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  display: block;
+}
+
+.image-quick-details {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 0;
+}
+
+.image-quick-status-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.quick-image-filename {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--text-main);
+  word-break: break-all;
+}
+
+.quick-image-hint {
+  font-size: 12px;
+  color: var(--text-muted);
+  margin: 0;
+  line-height: 1.4;
+}
+
+.quick-image-buttons-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-top: 4px;
+}
+
+.img-type-badge.import-badge {
+  background: #dcfce7;
+  color: #15803d;
+  border: 1px solid #86efac;
+}
+
+.btn-modal-github {
+  background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+  color: #ffffff;
+  border: 1px solid #0f172a;
+  font-weight: 800;
+  font-size: 13.5px;
+  padding: 10px 18px;
+  box-shadow: 0 4px 14px rgba(15, 23, 42, 0.25);
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-modal-github:hover:not(:disabled) {
+  background: linear-gradient(135deg, #0f172a 0%, #020617 100%);
+  box-shadow: 0 6px 18px rgba(15, 23, 42, 0.4);
+  transform: translateY(-1px);
+}
+
+.btn-modal-github:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+  transform: none;
 }
 
