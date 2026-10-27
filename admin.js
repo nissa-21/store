@@ -601,7 +601,11 @@ function openProductModal(productId = null) {
     document.getElementById("prod-main-image").value = p.image || "";
     initMainImageState(p.image || "");
 
-    document.getElementById("prod-desc").value = p.description || "";
+    const descVal = p.description || "";
+    const descEl1 = document.getElementById("prod-desc");
+    if (descEl1) descEl1.value = descVal;
+    const descEl3 = document.getElementById("prod-desc-tab3");
+    if (descEl3) descEl3.value = descVal;
 
     // Garantía y stock desde specs
     if (p.specs) {
@@ -632,6 +636,10 @@ function openProductModal(productId = null) {
   } else {
     if (title) title.textContent = "Agregar Nuevo Producto";
     document.getElementById("prod-id").value = "";
+    const descEl1 = document.getElementById("prod-desc");
+    if (descEl1) descEl1.value = "";
+    const descEl3 = document.getElementById("prod-desc-tab3");
+    if (descEl3) descEl3.value = "";
     document.getElementById("prod-spec-garantia").value = "90 días oficial escrita NISSA";
     document.getElementById("prod-spec-stock").value = "Stock inmediato para entrega o retiro";
     addGalleryImageInput();
@@ -641,6 +649,16 @@ function openProductModal(productId = null) {
 
   calculateDiscounts();
   modal.style.display = "flex";
+}
+
+function syncDescToTab3(val) {
+  const el = document.getElementById("prod-desc-tab3");
+  if (el && el.value !== val) el.value = val;
+}
+
+function syncDescFromTab3(val) {
+  const el = document.getElementById("prod-desc");
+  if (el && el.value !== val) el.value = val;
 }
 
 function closeProductModal() {
@@ -1470,7 +1488,8 @@ async function handleGalleryModalUpload(input) {
 function setupDropzoneAndPasteEvents() {
   const dropzones = [
     document.getElementById("main-image-dropzone"),
-    document.getElementById("quick-image-card")
+    document.getElementById("quick-image-card"),
+    document.getElementById("quick-image-drop-area")
   ].filter(Boolean);
 
   dropzones.forEach(dz => {
@@ -1659,7 +1678,8 @@ function saveProduct(e) {
     finalMainImage = cleanFilename;
   }
 
-  const description = document.getElementById("prod-desc").value.trim();
+  const descInput = document.getElementById("prod-desc") || document.getElementById("prod-desc-tab3");
+  const description = descInput ? descInput.value.trim() : "";
 
   // Galería de fotos
   const galleryInputs = document.querySelectorAll(".gallery-input");
@@ -1791,9 +1811,19 @@ async function saveAndPublishProductToGithub(e) {
   try {
     let finalMainImage = document.getElementById("prod-main-image").value.trim();
 
-    // 2. Si se importó una nueva imagen en Base64, subirla directamente a fotos/ en GitHub
-    if (currentMainImageState.dataUrl && currentMainImageState.dataUrl.startsWith("data:")) {
-      let imgFilename = currentMainImageState.filename || "";
+    // 2. Si se importó una nueva imagen en Base64 o existe en la caché
+    let dataUrlToUpload = currentMainImageState.dataUrl || "";
+    let imgFilename = currentMainImageState.filename || "";
+
+    if (!dataUrlToUpload && imgFilename && window.NISSA_IMAGE_CACHE && window.NISSA_IMAGE_CACHE[imgFilename] && window.NISSA_IMAGE_CACHE[imgFilename].startsWith("data:")) {
+      dataUrlToUpload = window.NISSA_IMAGE_CACHE[imgFilename];
+    }
+    if (!dataUrlToUpload && finalMainImage && window.NISSA_IMAGE_CACHE && window.NISSA_IMAGE_CACHE[finalMainImage] && window.NISSA_IMAGE_CACHE[finalMainImage].startsWith("data:")) {
+      dataUrlToUpload = window.NISSA_IMAGE_CACHE[finalMainImage];
+      if (!imgFilename) imgFilename = finalMainImage;
+    }
+
+    if (dataUrlToUpload && dataUrlToUpload.startsWith("data:")) {
       if (!imgFilename || imgFilename === "producto.jpg" || /^(image|img|foto|screenshot|captura|whatsapp|descarga)/i.test(imgFilename)) {
         const slug = name.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "");
         imgFilename = `${slug || "producto"}.jpg`;
@@ -1803,30 +1833,33 @@ async function saveAndPublishProductToGithub(e) {
       }
 
       // Guardar de inmediato en caché local para que nunca desaparezca de la vista
-      const uploadedDataUrl = currentMainImageState.dataUrl;
       window.NISSA_IMAGE_CACHE = window.NISSA_IMAGE_CACHE || {};
-      window.NISSA_IMAGE_CACHE[imgFilename] = uploadedDataUrl;
-      persistImageInDB(imgFilename, uploadedDataUrl);
+      window.NISSA_IMAGE_CACHE[imgFilename] = dataUrlToUpload;
+      persistImageInDB(imgFilename, dataUrlToUpload);
 
       if (publishBtn) {
         publishBtn.innerHTML = `⏳ Subiendo fotos/${imgFilename} a GitHub...`;
       }
 
-      const base64Data = uploadedDataUrl.split(",")[1];
+      const base64Data = dataUrlToUpload.split(",")[1];
       const filePath = `fotos/${imgFilename}`;
-      const imgUrl = `https://api.github.com/repos/${cfg.owner}/${cfg.repo}/contents/${filePath}?ref=${cfg.branch}`;
+      const imgUrl = `https://api.github.com/repos/${cfg.owner}/${cfg.repo}/contents/${filePath}?ref=${cfg.branch}&t=${Date.now()}`;
 
       // Comprobar si ya existe para obtener SHA
       let imgSha = null;
-      const checkRes = await fetch(imgUrl, {
-        headers: {
-          "Authorization": `token ${cfg.token}`,
-          "Accept": "application/vnd.github.v3+json"
+      try {
+        const checkRes = await fetch(imgUrl, {
+          headers: {
+            "Authorization": `token ${cfg.token}`,
+            "Accept": "application/vnd.github.v3+json"
+          }
+        });
+        if (checkRes.ok) {
+          const existingData = await checkRes.json();
+          imgSha = existingData.sha;
         }
-      });
-      if (checkRes.ok) {
-        const existingData = await checkRes.json();
-        imgSha = existingData.sha;
+      } catch (err) {
+        console.warn("Check file error in GitHub:", err);
       }
 
       // Subir archivo de imagen a fotos/ vía PUT en GitHub API
@@ -1854,13 +1887,13 @@ async function saveAndPublishProductToGithub(e) {
         }
       } else {
         const errImg = await putImgRes.json().catch(() => ({}));
-        console.warn("No se pudo subir archivo a fotos/:", errImg);
-        finalMainImage = imgFilename;
+        throw new Error(`No se pudo subir la foto fotos/${imgFilename} a GitHub: ${errImg.message || putImgRes.statusText}. Verificá que tu Personal Access Token tenga permiso 'repo' o 'contents:write'.`);
       }
     }
 
     // 3. Recopilar datos completos del producto
-    const description = document.getElementById("prod-desc").value.trim();
+    const descInput = document.getElementById("prod-desc") || document.getElementById("prod-desc-tab3");
+    const description = descInput ? descInput.value.trim() : "";
 
     const galleryInputs = document.querySelectorAll(".gallery-input");
     const images = [];
@@ -2251,6 +2284,54 @@ async function publishDirectlyToGithub() {
   }
 
   try {
+    // 0. Si hay fotos nuevas en caché local para los productos, subirlas a fotos/ en GitHub
+    if (window.NISSA_IMAGE_CACHE && Object.keys(window.NISSA_IMAGE_CACHE).length > 0) {
+      for (const prod of currentProducts) {
+        const fn = prod.image || "";
+        const dataUri = window.NISSA_IMAGE_CACHE[fn];
+        if (fn && dataUri && dataUri.startsWith("data:")) {
+          if (publishBtn) {
+            publishBtn.innerHTML = `⏳ Subiendo fotos/${fn} a GitHub...`;
+          }
+          const base64Data = dataUri.split(",")[1];
+          const filePath = `fotos/${fn}`;
+          const checkUrl = `https://api.github.com/repos/${cfg.owner}/${cfg.repo}/contents/${filePath}?ref=${cfg.branch}&t=${Date.now()}`;
+          let imgSha = null;
+          try {
+            const checkRes = await fetch(checkUrl, {
+              headers: {
+                "Authorization": `token ${cfg.token}`,
+                "Accept": "application/vnd.github.v3+json"
+              }
+            });
+            if (checkRes.ok) {
+              const d = await checkRes.json();
+              imgSha = d.sha;
+            }
+          } catch (e) {}
+
+          await fetch(`https://api.github.com/repos/${cfg.owner}/${cfg.repo}/contents/${filePath}`, {
+            method: "PUT",
+            headers: {
+              "Authorization": `token ${cfg.token}`,
+              "Content-Type": "application/json",
+              "Accept": "application/vnd.github.v3+json"
+            },
+            body: JSON.stringify({
+              message: `Subir imagen ${filePath} para catálogo NISSA [Admin]`,
+              content: base64Data,
+              branch: cfg.branch,
+              sha: imgSha || undefined
+            })
+          });
+        }
+      }
+    }
+
+    if (publishBtn) {
+      publishBtn.innerHTML = "⏳ Publicando catálogo en GitHub...";
+    }
+
     // 1. Obtener el SHA actual del archivo en GitHub (si existe)
     const getUrl = `https://api.github.com/repos/${cfg.owner}/${cfg.repo}/contents/${cfg.path}?ref=${cfg.branch}&t=${Date.now()}`;
     let currentSha = null;

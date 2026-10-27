@@ -272,15 +272,16 @@
       </div>
 
       <!-- TABS DE NAVEGACIÓN DENTRO DEL EDITOR -->
+      <!-- TABS DE NAVEGACIÓN DENTRO DEL EDITOR -->
       <div class="modal-tabs">
         <button type="button" class="modal-tab active" data-tab="tab-general" onclick="switchProductTab('tab-general')">
-          🏷️ Datos & Precios
+          🏷️ Datos, Fotos & Precios
         </button>
         <button type="button" class="modal-tab" data-tab="tab-images" onclick="switchProductTab('tab-images')">
           📷 Fotos & Galería
         </button>
         <button type="button" class="modal-tab" data-tab="tab-details" onclick="switchProductTab('tab-details')">
-          ✨ Descripción & Specs
+          ✨ Viñetas & Ficha Técnica
         </button>
       </div>
 
@@ -289,8 +290,10 @@
 
         <div class="modal-body">
           
-          <!-- TAB 1: DATOS GENERALES Y PRECIOS -->
+          <!-- TAB 1: DATOS GENERALES, FOTOS Y PRECIOS -->
           <div id="tab-general" class="tab-content active">
+            
+            <!-- DATOS BÁSICOS -->
             <div class="form-row">
               <div class="form-group flex-2">
                 <label for="prod-name">Nombre del Producto: <span class="req">*</span></label>
@@ -315,6 +318,69 @@
               <div class="form-group flex-1">
                 <label for="prod-tag">Etiqueta destacada:</label>
                 <input type="text" id="prod-tag" placeholder="Ej: Más Vendido, Oferta, Nuevo">
+              </div>
+            </div>
+
+            <!-- ========================================================
+                 APARTADO DEDICADO: IMPORTAR Y MODIFICAR IMAGEN DEL PRODUCTO
+                 ======================================================== -->
+            <div class="product-image-quick-card" id="quick-image-card">
+              <input type="file" id="quick-image-file-input" accept="image/png,image/jpeg,image/webp,image/gif,image/*" class="sr-only-input" onchange="handleMainFileInput(this)">
+              
+              <div class="image-quick-header">
+                <div class="image-quick-title-wrap">
+                  <div class="image-quick-title">
+                    <span>🖼️ Imagen Principal del Producto (Para Tienda y Repositorio GitHub)</span>
+                  </div>
+                  <span class="image-quick-subtitle">Cargá o cambiá la foto del producto. Podés elegirla de tu equipo, arrastrarla o pegarla con Ctrl+V</span>
+                </div>
+                
+                <div class="image-quick-actions">
+                  <label for="quick-image-file-input" class="btn btn-primary btn-sm" id="btn-import-quick-img" style="cursor: pointer;">
+                    📁 Importar Imagen
+                  </label>
+                  <button type="button" class="btn btn-secondary btn-sm" onclick="openImageGalleryModal('main')">
+                    🖼️ Biblioteca fotos/
+                  </button>
+                </div>
+              </div>
+
+              <div class="image-quick-body" id="quick-image-drop-area">
+                <div class="image-quick-thumb-wrap" onclick="triggerMainImageUpload()" title="Hacé clic para elegir una imagen o cambiar la actual" style="cursor: pointer;">
+                  <img id="quick-image-preview" src="" alt="Previsualización de producto" onerror="handlePreviewError(this)" style="display:none;">
+                  <div id="quick-image-placeholder" style="display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; padding:8px;">
+                    <span style="font-size:36px; line-height:1;">📸</span>
+                    <span style="font-size:11px; font-weight:700; color:var(--primary); margin-top:6px;">Elegir foto</span>
+                  </div>
+                </div>
+
+                <div class="image-quick-details">
+                  <div class="image-quick-status-row">
+                    <span id="quick-image-badge" class="img-type-badge">Sin imagen</span>
+                    <span id="quick-image-name" class="quick-image-filename">producto.jpg</span>
+                  </div>
+                  
+                  <p class="quick-image-hint" id="quick-image-hint">
+                    Hacé clic en <strong>"📁 Importar Imagen"</strong> o en la miniatura para cargar una foto desde tu PC o celular. También podés arrastrarla aquí o pegarla con <kbd>Ctrl+V</kbd>.
+                  </p>
+                  
+                  <div class="quick-image-buttons-row">
+                    <label for="quick-image-file-input" class="btn btn-outline btn-xs" style="cursor: pointer;">
+                      🔄 Cambiar foto
+                    </label>
+                    <button type="button" class="btn btn-secondary btn-xs" onclick="switchProductTab('tab-images')">
+                      📷 Fotos Adicionales (Carrusel)
+                    </button>
+                    <button type="button" class="btn btn-danger-ghost btn-xs" onclick="removeMainImage()">
+                      🗑️ Quitar
+                    </button>
+                  </div>
+
+                  <div class="github-image-notice">
+                    <span>🚀</span>
+                    <span>Al presionar <strong>"Guardar y Publicar en GitHub"</strong>, esta foto se subirá automáticamente a la carpeta <code>fotos/</code> de tu repositorio y se mostrará en la tienda online.</span>
+                  </div>
+                </div>
               </div>
             </div>
 
@@ -364,8 +430,14 @@
               </div>
             </div>
 
+            <!-- DESCRIPCIÓN DEL PRODUCTO DIRECTA EN TAB 1 -->
+            <div class="form-group" style="margin-top: 16px;">
+              <label for="prod-desc">Descripción detallada del producto:</label>
+              <textarea id="prod-desc" rows="3" placeholder="Explicá las ventajas, materiales, compatibilidad y detalles importantes para el comprador..." oninput="syncDescToTab3(this.value)"></textarea>
+            </div>
+
             <!-- ESPECIFICACIÓN RÁPIDA DE GARANTÍA Y STOCK -->
-            <div class="form-row" style="margin-top: 16px;">
+            <div class="form-row" style="margin-top: 14px;">
               <div class="form-group flex-1">
                 <label for="prod-spec-garantia">Garantía oficial:</label>
                 <input type="text" id="prod-spec-garantia" placeholder="Ej: 90 días oficial escrita NISSA">
@@ -376,59 +448,6 @@
               </div>
             </div>
 
-            <!-- ========================================================
-                 APARTADO DEDICADO: IMPORTAR Y MODIFICAR IMAGEN
-                 ======================================================== -->
-            <div class="product-image-quick-card" id="quick-image-card">
-              <input type="file" id="quick-image-file-input" accept="image/png,image/jpeg,image/webp,image/gif,image/*" style="display:none;" onchange="handleMainFileInput(this)">
-              <div class="image-quick-header">
-                <div class="image-quick-title-wrap">
-                  <div class="image-quick-title">
-                    <span>🖼️ Imagen del Producto (Importar / Modificar)</span>
-                  </div>
-                  <span class="image-quick-subtitle">Cargá una foto desde tu computadora o celular. Podés arrastrarla o pegarla con Ctrl+V</span>
-                </div>
-                <div class="image-quick-actions">
-                  <button type="button" class="btn btn-primary btn-sm" onclick="triggerMainImageUpload()" id="btn-import-quick-img">
-                    📁 Importar Imagen
-                  </button>
-                  <button type="button" class="btn btn-secondary btn-sm" onclick="openImageGalleryModal('main')">
-                    🖼️ Biblioteca fotos/
-                  </button>
-                </div>
-              </div>
-
-              <div class="image-quick-body">
-                <div class="image-quick-thumb-wrap" onclick="triggerMainImageUpload()" title="Hacé clic para elegir una imagen o cambiar la actual" style="cursor: pointer;">
-                  <img id="quick-image-preview" src="" alt="Previsualización de producto" onerror="handlePreviewError(this)" style="display:none;">
-                  <div id="quick-image-placeholder" style="display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; padding:8px;">
-                    <span style="font-size:32px; line-height:1;">📸</span>
-                    <span style="font-size:10px; color:var(--text-muted); margin-top:4px;">Elegir foto</span>
-                  </div>
-                </div>
-
-                <div class="image-quick-details">
-                  <div class="image-quick-status-row">
-                    <span id="quick-image-badge" class="img-type-badge">Sin imagen</span>
-                    <span id="quick-image-name" class="quick-image-filename">producto.jpg</span>
-                  </div>
-                  <p class="quick-image-hint" id="quick-image-hint">
-                    Hacé clic en <strong>"📁 Importar Imagen"</strong> o en la miniatura para cargar una foto desde tu PC o celular. También podés pegarla con <kbd>Ctrl+V</kbd>.
-                  </p>
-                  <div class="quick-image-buttons-row">
-                    <button type="button" class="btn btn-outline btn-xs" onclick="triggerMainImageUpload()">
-                      🔄 Cambiar foto
-                    </button>
-                    <button type="button" class="btn btn-secondary btn-xs" onclick="switchProductTab('tab-images')">
-                      📷 Ver carrusel completo
-                    </button>
-                    <button type="button" class="btn btn-danger-ghost btn-xs" onclick="removeMainImage()">
-                      🗑️ Quitar
-                    </button>
-                  </div>
-                </div>
-              </div>
-            </div>
           </div>
 
           <!-- TAB 2: FOTOS E IMÁGENES -->
@@ -562,11 +581,11 @@
             </div>
           </div>
 
-          <!-- TAB 3: DESCRIPCIÓN Y ESPECIFICACIONES -->
+          <!-- TAB 3: VIÑETAS Y ESPECIFICACIONES -->
           <div id="tab-details" class="tab-content">
             <div class="form-group">
-              <label for="prod-desc">Descripción detallada del producto:</label>
-              <textarea id="prod-desc" rows="4" placeholder="Explicá las ventajas, materiales, compatibilidad y detalles importantes para el comprador..."></textarea>
+              <label for="prod-desc-tab3">Descripción detallada del producto:</label>
+              <textarea id="prod-desc-tab3" rows="4" placeholder="Explicá las ventajas, materiales, compatibilidad y detalles importantes para el comprador..." oninput="syncDescFromTab3(this.value)"></textarea>
             </div>
 
             <!-- CARACTERÍSTICAS DESTACADAS -->
