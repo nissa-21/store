@@ -194,17 +194,23 @@ function handleProductImgError(img, productId) {
   const nameWithoutExt = dotIndex !== -1 ? filename.substring(0, dotIndex) : filename;
   const currentExt = dotIndex !== -1 ? filename.substring(dotIndex).toLowerCase() : ".jpg";
 
-  // Intentar extensiones alternativas estrictamente dentro de ./fotos/
-  const candidateExtensions = [".jpg", ".png", ".jpeg", ".webp", ".JPG", ".PNG"];
-  const alternateExts = candidateExtensions.filter(ext => ext.toLowerCase() !== currentExt.toLowerCase());
+  // Intentar ubicaciones y extensiones alternativas (en raíz y en fotos/)
+  const candidatePaths = [
+    `./${nameWithoutExt}${currentExt}`,
+    `./${PRODUCT_IMAGES_DIR}/${nameWithoutExt}${currentExt}`,
+    `./${nameWithoutExt}.png`,
+    `./${nameWithoutExt}.webp`,
+    `./${PRODUCT_IMAGES_DIR}/${nameWithoutExt}.png`,
+    `./${PRODUCT_IMAGES_DIR}/${nameWithoutExt}.webp`
+  ].filter(p => !currentSrc.endsWith(p.replace(/^\.\//, "")));
 
-  if (step < alternateExts.length) {
+  if (step < candidatePaths.length) {
     img.dataset.retryStep = String(step + 1);
-    img.src = `./${PRODUCT_IMAGES_DIR}/${nameWithoutExt}${alternateExts[step]}`;
+    img.src = candidatePaths[step];
     return;
   }
 
-  // Si fallan todas las extensiones en fotos/, ocultar imagen y mostrar emoji fallback limpio
+  // Si fallan todas las rutas, ocultar imagen y mostrar emoji fallback limpio
   img.style.display = "none";
   if (img.parentElement && img.parentElement.classList.contains("pm-thumbnail-btn")) {
     img.parentElement.style.display = "none";

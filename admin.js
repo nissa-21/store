@@ -1784,9 +1784,12 @@ function saveProduct(e) {
 
   let finalMainImage = document.getElementById("prod-main-image").value.trim();
 
-  // Si se importó una nueva imagen (Base64 dataURL)
+  // Si se importó una nueva imagen (Base64 dataURL), guardarla directamente embebida
+  // para que NO sea necesaria la carpeta 'fotos/' y el archivo sea 100% autónomo.
   if (currentMainImageState.dataUrl && currentMainImageState.dataUrl.startsWith("data:")) {
-    let cleanFilename = currentMainImageState.filename;
+    finalMainImage = currentMainImageState.dataUrl;
+
+    let cleanFilename = currentMainImageState.filename || "producto.jpg";
     if (!cleanFilename || cleanFilename === "producto.jpg" || /^(image|img|foto|screenshot|captura|whatsapp|descarga)/i.test(cleanFilename)) {
       const slug = name.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "");
       cleanFilename = `${slug || "producto"}.jpg`;
@@ -1795,19 +1798,14 @@ function saveProduct(e) {
       cleanFilename += ".jpg";
     }
 
-    // Persistir en memoria e IndexedDB y disco del servidor
+    currentMainImageState.filename = cleanFilename;
+
+    // Guardar en caché y disco local para máxima compatibilidad
     window.NISSA_IMAGE_CACHE = window.NISSA_IMAGE_CACHE || {};
     window.NISSA_IMAGE_CACHE[cleanFilename] = currentMainImageState.dataUrl;
     persistImageInDB(cleanFilename, currentMainImageState.dataUrl);
     saveRecentImageInLocalStorage(cleanFilename, currentMainImageState.dataUrl);
     saveImageFileToServer(cleanFilename, currentMainImageState.dataUrl);
-
-    if (!KNOWN_FOTOS.includes(cleanFilename)) {
-      KNOWN_FOTOS.unshift(cleanFilename);
-    }
-
-    currentMainImageState.filename = cleanFilename;
-    finalMainImage = cleanFilename;
   }
 
   const descInput = document.getElementById("prod-desc") || document.getElementById("prod-desc-tab3");
@@ -1901,7 +1899,7 @@ function saveProduct(e) {
 }
 
 // ========================================================
-// 5.1 GUARDAR Y PUBLICAR PRODUCTO E IMAGEN DIRECTO A GITHUB
+// 5.1 GUARDAR Y PUBLICAR PRODUCTO DIRECTO A GITHUB (1 CLIC)
 // ========================================================
 async function saveAndPublishProductToGithub(e) {
   if (e) e.preventDefault();
@@ -1941,32 +1939,32 @@ async function saveAndPublishProductToGithub(e) {
     if (!imgFilename) imgFilename = finalMainImage;
   }
 
-  // 1. Si hay imagen nueva en Base64, preparar nombre limpio y guardar de inmediato en disco/memoria local
+  // Si hay imagen nueva en Base64, guardarla embebida directamente en products.js
+  // (Así NO se necesita la carpeta 'fotos/' y se publica en 1 solo commit sin complicaciones)
   if (dataUrlToUpload && dataUrlToUpload.startsWith("data:")) {
-    if (!imgFilename || imgFilename === "producto.jpg" || /^(image|img|foto|screenshot|captura|whatsapp|descarga)/i.test(imgFilename)) {
+    finalMainImage = dataUrlToUpload;
+    currentMainImageState.mode = "base64";
+
+    let cleanFilename = imgFilename || "producto.jpg";
+    if (!cleanFilename || cleanFilename === "producto.jpg" || /^(image|img|foto|screenshot|captura|whatsapp|descarga)/i.test(cleanFilename)) {
       const slug = name.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "");
-      imgFilename = `${slug || "producto"}.jpg`;
+      cleanFilename = `${slug || "producto"}.jpg`;
     }
-    if (!/\.(jpe?g|png|webp)$/i.test(imgFilename)) {
-      imgFilename += ".jpg";
+    if (!/\.(jpe?g|png|webp)$/i.test(cleanFilename)) {
+      cleanFilename += ".jpg";
     }
 
-    finalMainImage = imgFilename;
-    currentMainImageState.filename = imgFilename;
-    currentMainImageState.mode = "fotos";
+    imgFilename = cleanFilename;
+    currentMainImageState.filename = cleanFilename;
 
     window.NISSA_IMAGE_CACHE = window.NISSA_IMAGE_CACHE || {};
-    window.NISSA_IMAGE_CACHE[imgFilename] = dataUrlToUpload;
-    persistImageInDB(imgFilename, dataUrlToUpload);
-    saveRecentImageInLocalStorage(imgFilename, dataUrlToUpload);
-    saveImageFileToServer(imgFilename, dataUrlToUpload);
-
-    if (!KNOWN_FOTOS.includes(imgFilename)) {
-      KNOWN_FOTOS.unshift(imgFilename);
-    }
+    window.NISSA_IMAGE_CACHE[cleanFilename] = dataUrlToUpload;
+    persistImageInDB(cleanFilename, dataUrlToUpload);
+    saveRecentImageInLocalStorage(cleanFilename, dataUrlToUpload);
+    saveImageFileToServer(cleanFilename, dataUrlToUpload);
   }
 
-  // 2. Recopilar datos completos y GUARDAR LOCALMENTE PRIMERO (garantiza que nada se pierda)
+  // Recopilar datos completos del producto
   const descInput = document.getElementById("prod-desc") || document.getElementById("prod-desc-tab3");
   const description = descInput ? descInput.value.trim() : "";
 
@@ -2040,7 +2038,7 @@ async function saveAndPublishProductToGithub(e) {
     });
   }
 
-  // Guardar borrador localmente en el navegador y disco
+  // Guardar localmente primero (garantiza que siempre esté disponible en la tienda)
   saveDraft();
   if (typeof window !== "undefined") {
     window.products = currentProducts;
@@ -2051,7 +2049,7 @@ async function saveAndPublishProductToGithub(e) {
   renderCategoryFilter();
   renderProductsList();
 
-  // 3. Verificar si el usuario configuró GitHub
+  // Verificar si el usuario configuró GitHub
   const cfg = getGithubConfig();
   if (!cfg.owner || !cfg.repo || !cfg.token) {
     closeProductModal();
@@ -2065,57 +2063,11 @@ async function saveAndPublishProductToGithub(e) {
   const originalBtnHtml = publishBtn ? publishBtn.innerHTML : "";
   if (publishBtn) {
     publishBtn.disabled = true;
-    publishBtn.innerHTML = "⏳ Conectando con GitHub...";
+    publishBtn.innerHTML = "⏳ Publicando en GitHub...";
   }
 
   try {
-    // 4. Si hay una nueva imagen para subir a fotos/ en GitHub
-    if (dataUrlToUpload && dataUrlToUpload.startsWith("data:") && imgFilename) {
-      if (publishBtn) {
-        publishBtn.innerHTML = `⏳ Subiendo fotos/${imgFilename} a GitHub...`;
-      }
-
-      const base64Data = dataUrlToUpload.split(",")[1];
-      const filePath = `fotos/${imgFilename}`;
-      const imgCheckUrl = `https://api.github.com/repos/${cfg.owner}/${cfg.repo}/contents/${filePath}?ref=${cfg.branch}&t=${Date.now()}`;
-
-      // Comprobar SHA previo si ya existía en GitHub
-      let imgSha = null;
-      const checkRes = await callGithubApi(imgCheckUrl, { token: cfg.token });
-      if (checkRes.ok && checkRes.data && checkRes.data.sha) {
-        imgSha = checkRes.data.sha;
-      }
-
-      // Subir archivo de imagen a fotos/ vía PUT en GitHub API
-      const putImgRes = await callGithubApi(`https://api.github.com/repos/${cfg.owner}/${cfg.repo}/contents/${filePath}`, {
-        method: "PUT",
-        token: cfg.token,
-        body: {
-          message: `Subir imagen ${filePath} para producto "${name}" [Admin NISSA]`,
-          content: base64Data,
-          branch: cfg.branch,
-          sha: imgSha || undefined
-        }
-      });
-
-      if (!putImgRes.ok) {
-        const ghMsg = putImgRes.data?.message || putImgRes.statusText || "";
-        closeProductModal();
-        if (putImgRes.status === 401 || ghMsg.includes("Bad credentials")) {
-          alert(`✓ Los cambios del producto y su foto SE GUARDARON CORRECTAMENTE en tu panel y en la tienda local.\n\n⚠️ Sin embargo, GitHub rechazó la conexión (401 Bad credentials).\n\nEsto ocurre porque tu Personal Access Token de GitHub expiró, es incorrecto o fue revocado.\n\n👉 Para solucionarlo:\n1. Ingresá a github.com > Settings > Developer Settings > Tokens (classic)\n2. Generá un token con permiso 'repo'\n3. Copialo y pegalo en la configuración de GitHub.`);
-          openGithubModal();
-        } else {
-          alert(`✓ Los cambios se guardaron localmente en el panel y la tienda.\n\nGitHub respondió al subir la foto: ${ghMsg}\n\nPodés descargar el archivo products.js manualmente con el botón "Descargar products.js".`);
-        }
-        return;
-      }
-    }
-
-    // 5. Publicar catálogo products.js en GitHub
-    if (publishBtn) {
-      publishBtn.innerHTML = "⏳ Publicando catálogo en GitHub...";
-    }
-
+    // Publicar catálogo products.js en GitHub (1 solo archivo autónomo)
     const getUrl = `https://api.github.com/repos/${cfg.owner}/${cfg.repo}/contents/${cfg.path}?ref=${cfg.branch}&t=${Date.now()}`;
     let currentSha = null;
     const getRes = await callGithubApi(getUrl, { token: cfg.token });
@@ -2128,7 +2080,7 @@ async function saveAndPublishProductToGithub(e) {
       method: "PUT",
       token: cfg.token,
       body: {
-        message: `Actualizar producto "${name}" (#${finalId}) e imagen [Admin NISSA]`,
+        message: `Actualizar producto "${name}" (#${finalId}) [Admin NISSA]`,
         content: base64Content,
         branch: cfg.branch,
         sha: currentSha || undefined
@@ -2140,7 +2092,7 @@ async function saveAndPublishProductToGithub(e) {
     renderProductsList();
 
     if (putRes.ok) {
-      showAlert(`🎉 ¡Producto "${escapeHtml(name)}" y su imagen fueron publicados con éxito en GitHub! GitHub Pages actualizará tu tienda en ~30 segundos.`);
+      showAlert(`🎉 ¡Producto "${escapeHtml(name)}" publicado con éxito en GitHub! Tu tienda se actualizará en ~30 segundos.`);
     } else {
       const ghMsg = putRes.data?.message || putRes.statusText || "";
       if (putRes.status === 401 || ghMsg.includes("Bad credentials")) {
