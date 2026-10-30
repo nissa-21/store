@@ -2252,7 +2252,7 @@ const DEFAULT_GH_CONFIG = {
   repo: "store",
   branch: "main",
   path: "products.js",
-  token: "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"
+  token: "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"
 };
 
 function cleanRepoName(rawRepo) {
