@@ -65,6 +65,18 @@ try {
   localStorage.removeItem("nissaProductImages");
 } catch (e) {}
 
+// Sincronizar caché rápida de imágenes desde localStorage (inmediata y síncrona)
+window.NISSA_IMAGE_CACHE = window.NISSA_IMAGE_CACHE || {};
+try {
+  const quickMap = localStorage.getItem("nissa_image_map");
+  if (quickMap) {
+    const parsed = JSON.parse(quickMap);
+    if (parsed && typeof parsed === "object") {
+      Object.assign(window.NISSA_IMAGE_CACHE, parsed);
+    }
+  }
+} catch (e) {}
+
 // Carpeta donde se almacenan las fotos de los productos en GitHub
 const PRODUCT_IMAGES_DIR = "fotos";
 
@@ -95,8 +107,18 @@ function getProductImage(product) {
   }
 
   // Verificar si la foto está en la caché de IndexedDB o memoria
-  if (typeof window !== "undefined" && window.NISSA_IMAGE_CACHE && window.NISSA_IMAGE_CACHE[img]) {
-    return window.NISSA_IMAGE_CACHE[img];
+  if (typeof window !== "undefined" && window.NISSA_IMAGE_CACHE) {
+    if (window.NISSA_IMAGE_CACHE[img]) {
+      return window.NISSA_IMAGE_CACHE[img];
+    }
+    // Probar sin extensión o con otras extensiones en caché
+    const dot = img.lastIndexOf(".");
+    const base = dot !== -1 ? img.substring(0, dot) : img;
+    for (const ext of [".jpg", ".png", ".webp", ".jpeg"]) {
+      if (window.NISSA_IMAGE_CACHE[base + ext]) {
+        return window.NISSA_IMAGE_CACHE[base + ext];
+      }
+    }
   }
 
   // Retorna la ruta relativa './fotos/nombre.ext' compatible con GitHub Pages y local
@@ -116,23 +138,22 @@ function getProductImage(product) {
       const getReq = tx.objectStore("product_images").getAll();
       getReq.onsuccess = () => {
         if (Array.isArray(getReq.result)) {
+          let hasNew = false;
           getReq.result.forEach(item => {
             if (item && item.filename && item.dataUrl) {
               window.NISSA_IMAGE_CACHE[item.filename] = item.dataUrl;
+              hasNew = true;
             }
           });
-          // Actualizar imágenes que pudieran haber fallado
-          document.querySelectorAll("img[src*='fotos/']").forEach(imgEl => {
-            const src = imgEl.getAttribute("src") || "";
-            const fn = src.split("/").pop() || "";
-            if (fn && window.NISSA_IMAGE_CACHE[fn]) {
-              imgEl.src = window.NISSA_IMAGE_CACHE[fn];
-              imgEl.style.display = "";
-              if (imgEl.nextElementSibling && imgEl.nextElementSibling.style.display === "block") {
-                imgEl.nextElementSibling.style.display = "none";
-              }
+          if (hasNew) {
+            // Re-renderizar la grilla de productos para que carguen de inmediato
+            if (typeof renderProducts === "function") {
+              renderProducts();
             }
-          });
+            if (typeof currentModalProduct !== "undefined" && currentModalProduct && typeof renderProductModalContent === "function") {
+              renderProductModalContent();
+            }
+          }
         }
       };
     };
@@ -746,6 +767,19 @@ function resolvePhotoUrl(imgName, product) {
   while (clean.startsWith(PRODUCT_IMAGES_DIR + "/")) {
     clean = clean.substring((PRODUCT_IMAGES_DIR + "/").length);
   }
+  // Verificar si la foto está en la caché de IndexedDB o memoria
+  if (typeof window !== "undefined" && window.NISSA_IMAGE_CACHE) {
+    if (window.NISSA_IMAGE_CACHE[clean]) {
+      return window.NISSA_IMAGE_CACHE[clean];
+    }
+    const dot = clean.lastIndexOf(".");
+    const base = dot !== -1 ? clean.substring(0, dot) : clean;
+    for (const ext of [".jpg", ".png", ".webp", ".jpeg"]) {
+      if (window.NISSA_IMAGE_CACHE[base + ext]) {
+        return window.NISSA_IMAGE_CACHE[base + ext];
+      }
+    }
+  }
   return `./${PRODUCT_IMAGES_DIR}/${clean}`;
 }
 
@@ -779,9 +813,20 @@ function handleModalSlideImgError(img, productId, originalFilename) {
     return;
   }
 
-  const step = Number(img.dataset.retryStep || 0);
-
   const filename = currentSrc.split("/").pop() || originalFilename || "";
+
+  // Revisar si está disponible en caché
+  if (filename && typeof window !== "undefined" && window.NISSA_IMAGE_CACHE && window.NISSA_IMAGE_CACHE[filename]) {
+    img.onerror = null;
+    img.src = window.NISSA_IMAGE_CACHE[filename];
+    img.style.display = "block";
+    if (img.nextElementSibling && img.nextElementSibling.classList.contains("pm-main-image-fallback")) {
+      img.nextElementSibling.style.display = "none";
+    }
+    return;
+  }
+
+  const step = Number(img.dataset.retryStep || 0);
   const dotIndex = filename.lastIndexOf(".");
   const nameWithoutExt = dotIndex !== -1 ? filename.substring(0, dotIndex) : filename;
   const currentExt = dotIndex !== -1 ? filename.substring(dotIndex).toLowerCase() : ".jpg";
@@ -810,9 +855,17 @@ function handleModalThumbImgError(img, productId, originalFilename) {
     return;
   }
 
-  const step = Number(img.dataset.retryStep || 0);
-
   const filename = currentSrc.split("/").pop() || originalFilename || "";
+
+  // Revisar si está disponible en caché
+  if (filename && typeof window !== "undefined" && window.NISSA_IMAGE_CACHE && window.NISSA_IMAGE_CACHE[filename]) {
+    img.onerror = null;
+    img.src = window.NISSA_IMAGE_CACHE[filename];
+    img.style.display = "block";
+    return;
+  }
+
+  const step = Number(img.dataset.retryStep || 0);
   const dotIndex = filename.lastIndexOf(".");
   const nameWithoutExt = dotIndex !== -1 ? filename.substring(0, dotIndex) : filename;
   const currentExt = dotIndex !== -1 ? filename.substring(dotIndex).toLowerCase() : ".jpg";

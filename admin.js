@@ -1643,6 +1643,132 @@ function addSpecInput(k = "", v = "") {
 // ========================================================
 // 5. GUARDAR PRODUCTO EN EL CATÁLOGO LOCAL
 // ========================================================
+// SINCRONIZACIÓN LOCAL Y SERVIDOR (DISCO + MEMORIA + INDEXEDDB)
+// ========================================================
+
+// Guardar mapa rápido en localStorage para sincronización síncrona inmediata con script.js
+function saveRecentImageInLocalStorage(filename, dataUrl) {
+  try {
+    if (!filename || !dataUrl) return;
+    let map = {};
+    const existing = localStorage.getItem("nissa_image_map");
+    if (existing) {
+      try { map = JSON.parse(existing) || {}; } catch (e) {}
+    }
+    if (dataUrl.length < 2500000) {
+      map[filename] = dataUrl;
+      const keys = Object.keys(map);
+      if (keys.length > 12) {
+        delete map[keys[0]];
+      }
+      localStorage.setItem("nissa_image_map", JSON.stringify(map));
+    }
+  } catch (err) {
+    console.warn("No se pudo guardar en nissa_image_map de localStorage:", err);
+  }
+}
+
+// Guardar archivo físico en fotos/ del servidor local
+async function saveImageFileToServer(filename, dataUrl) {
+  if (!filename || !dataUrl) return;
+  try {
+    const res = await fetch("/api/save-image", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ filename, dataUrl })
+    });
+    if (res.ok) {
+      const data = await res.json();
+      return data;
+    }
+  } catch (err) {
+    console.warn("Servidor no disponible para /api/save-image:", err);
+  }
+}
+
+// Guardar archivo products.js en el disco del servidor
+async function saveProductsFileToServer(code) {
+  if (!code) return;
+  try {
+    await fetch("/api/save-products", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ code })
+    });
+  } catch (err) {
+    console.warn("Servidor no disponible para /api/save-products:", err);
+  }
+}
+
+// Guardar archivo cotizador-data.js en el disco del servidor
+async function saveCotizadorFileToServer(code) {
+  if (!code) return;
+  try {
+    await fetch("/api/save-cotizador", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ code })
+    });
+  } catch (err) {
+    console.warn("Servidor no disponible para /api/save-cotizador:", err);
+  }
+}
+
+// Wrapper universal para llamadas a la API de GitHub
+async function callGithubApi(url, { method = "GET", token = "", body = null } = {}) {
+  const cleanToken = (token || "").trim().replace(/^["']|["']$/g, "").replace(/^(token|Bearer)\s+/i, "");
+
+  // 1. Probar a través del proxy del servidor /api/github-proxy (evita CORS y bloqueos de navegador)
+  try {
+    const proxyRes = await fetch("/api/github-proxy", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        url,
+        method,
+        headers: {
+          "Authorization": `Bearer ${cleanToken}`,
+          "Accept": "application/vnd.github+json",
+          "X-GitHub-Api-Version": "2022-11-28"
+        },
+        body
+      })
+    });
+    if (proxyRes.ok) {
+      const resJson = await proxyRes.json();
+      return resJson;
+    }
+  } catch (proxyErr) {
+    console.warn("Proxy /api/github-proxy no disponible, intentando fetch directo:", proxyErr);
+  }
+
+  // 2. Fallback a llamada directa desde el navegador
+  const directHeaders = {
+    "Authorization": `Bearer ${cleanToken}`,
+    "Accept": "application/vnd.github+json"
+  };
+  const directOptions = {
+    method,
+    headers: directHeaders
+  };
+  if (body && (method === "POST" || method === "PUT" || method === "PATCH")) {
+    directHeaders["Content-Type"] = "application/json";
+    directOptions.body = typeof body === "string" ? body : JSON.stringify(body);
+  }
+
+  const directRes = await fetch(url, directOptions);
+  const data = await directRes.json().catch(() => ({}));
+  return {
+    ok: directRes.ok,
+    status: directRes.status,
+    statusText: directRes.statusText,
+    data
+  };
+}
+
+// ========================================================
+// 5. GUARDAR PRODUCTO EN EL CATÁLOGO LOCAL
+// ========================================================
 function saveProduct(e) {
   if (e) e.preventDefault();
 
@@ -1669,10 +1795,16 @@ function saveProduct(e) {
       cleanFilename += ".jpg";
     }
 
-    // Persistir en memoria e IndexedDB para que aparezca siempre
+    // Persistir en memoria e IndexedDB y disco del servidor
     window.NISSA_IMAGE_CACHE = window.NISSA_IMAGE_CACHE || {};
     window.NISSA_IMAGE_CACHE[cleanFilename] = currentMainImageState.dataUrl;
     persistImageInDB(cleanFilename, currentMainImageState.dataUrl);
+    saveRecentImageInLocalStorage(cleanFilename, currentMainImageState.dataUrl);
+    saveImageFileToServer(cleanFilename, currentMainImageState.dataUrl);
+
+    if (!KNOWN_FOTOS.includes(cleanFilename)) {
+      KNOWN_FOTOS.unshift(cleanFilename);
+    }
 
     currentMainImageState.filename = cleanFilename;
     finalMainImage = cleanFilename;
@@ -1735,7 +1867,6 @@ function saveProduct(e) {
       };
     }
   } else {
-    // Nuevo ID
     const maxId = currentProducts.reduce((max, item) => Math.max(max, Number(item.id) || 0), 0);
     finalId = maxId + 1;
     currentProducts.push({
@@ -1756,10 +1887,17 @@ function saveProduct(e) {
   }
 
   saveDraft();
+  if (typeof window !== "undefined") {
+    window.products = currentProducts;
+  }
+
+  // Guardar archivo products.js en el disco local
+  saveProductsFileToServer(generateProductsJsCode());
+
   closeProductModal();
   renderCategoryFilter();
   renderProductsList();
-  showAlert(`<span>✓ Producto "${escapeHtml(name)}" guardado con su imagen.</span> <button type="button" class="btn btn-sm btn-primary" style="margin-left:10px; background:#0284c7; color:#fff;" onclick="downloadProductsJs()">📥 Descargar products.js</button> <button type="button" class="btn btn-sm btn-github" style="margin-left:6px;" onclick="publishDirectlyToGithub()">🚀 Publicar en GitHub</button>`, true);
+  showAlert(`<span>✓ Producto "${escapeHtml(name)}" guardado con éxito. Ya está visible en la tienda.</span> <button type="button" class="btn btn-sm btn-primary" style="margin-left:10px; background:#0284c7; color:#fff;" onclick="downloadProductsJs()">📥 Descargar products.js</button> <button type="button" class="btn btn-sm btn-github" style="margin-left:6px;" onclick="publishDirectlyToGithub()">🚀 Publicar en GitHub</button>`, true);
 }
 
 // ========================================================
@@ -1791,164 +1929,82 @@ async function saveAndPublishProductToGithub(e) {
     return;
   }
 
-  // 1. Verificar credenciales de GitHub
-  const cfg = getGithubConfig();
-  if (!cfg.owner || !cfg.repo || !cfg.token) {
-    saveProduct(e);
-    if (confirm("✓ El producto y su imagen fueron guardados localmente en tu panel.\n\nPara publicarlos en GitHub y que tu tienda se actualice online, necesitás ingresar tu Usuario, Repositorio y Token de GitHub.\n\n¿Deseás configurarlo ahora?")) {
-      openGithubModal();
-    }
-    return;
+  let finalMainImage = document.getElementById("prod-main-image").value.trim();
+  let dataUrlToUpload = currentMainImageState.dataUrl || "";
+  let imgFilename = currentMainImageState.filename || "";
+
+  if (!dataUrlToUpload && imgFilename && window.NISSA_IMAGE_CACHE && window.NISSA_IMAGE_CACHE[imgFilename] && window.NISSA_IMAGE_CACHE[imgFilename].startsWith("data:")) {
+    dataUrlToUpload = window.NISSA_IMAGE_CACHE[imgFilename];
+  }
+  if (!dataUrlToUpload && finalMainImage && window.NISSA_IMAGE_CACHE && window.NISSA_IMAGE_CACHE[finalMainImage] && window.NISSA_IMAGE_CACHE[finalMainImage].startsWith("data:")) {
+    dataUrlToUpload = window.NISSA_IMAGE_CACHE[finalMainImage];
+    if (!imgFilename) imgFilename = finalMainImage;
   }
 
-  const publishBtn = document.getElementById("btn-save-and-publish-github");
-  const originalBtnHtml = publishBtn ? publishBtn.innerHTML : "";
-  if (publishBtn) {
-    publishBtn.disabled = true;
-    publishBtn.innerHTML = "⏳ Conectando con GitHub...";
+  // 1. Si hay imagen nueva en Base64, preparar nombre limpio y guardar de inmediato en disco/memoria local
+  if (dataUrlToUpload && dataUrlToUpload.startsWith("data:")) {
+    if (!imgFilename || imgFilename === "producto.jpg" || /^(image|img|foto|screenshot|captura|whatsapp|descarga)/i.test(imgFilename)) {
+      const slug = name.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "");
+      imgFilename = `${slug || "producto"}.jpg`;
+    }
+    if (!/\.(jpe?g|png|webp)$/i.test(imgFilename)) {
+      imgFilename += ".jpg";
+    }
+
+    finalMainImage = imgFilename;
+    currentMainImageState.filename = imgFilename;
+    currentMainImageState.mode = "fotos";
+
+    window.NISSA_IMAGE_CACHE = window.NISSA_IMAGE_CACHE || {};
+    window.NISSA_IMAGE_CACHE[imgFilename] = dataUrlToUpload;
+    persistImageInDB(imgFilename, dataUrlToUpload);
+    saveRecentImageInLocalStorage(imgFilename, dataUrlToUpload);
+    saveImageFileToServer(imgFilename, dataUrlToUpload);
+
+    if (!KNOWN_FOTOS.includes(imgFilename)) {
+      KNOWN_FOTOS.unshift(imgFilename);
+    }
   }
 
-  try {
-    let finalMainImage = document.getElementById("prod-main-image").value.trim();
+  // 2. Recopilar datos completos y GUARDAR LOCALMENTE PRIMERO (garantiza que nada se pierda)
+  const descInput = document.getElementById("prod-desc") || document.getElementById("prod-desc-tab3");
+  const description = descInput ? descInput.value.trim() : "";
 
-    // 2. Si se importó una nueva imagen en Base64 o existe en la caché
-    let dataUrlToUpload = currentMainImageState.dataUrl || "";
-    let imgFilename = currentMainImageState.filename || "";
+  const galleryInputs = document.querySelectorAll(".gallery-input");
+  const images = [];
+  if (finalMainImage) images.push(finalMainImage);
+  galleryInputs.forEach(inp => {
+    const v = inp.value.trim();
+    if (v && !images.includes(v)) images.push(v);
+  });
 
-    if (!dataUrlToUpload && imgFilename && window.NISSA_IMAGE_CACHE && window.NISSA_IMAGE_CACHE[imgFilename] && window.NISSA_IMAGE_CACHE[imgFilename].startsWith("data:")) {
-      dataUrlToUpload = window.NISSA_IMAGE_CACHE[imgFilename];
-    }
-    if (!dataUrlToUpload && finalMainImage && window.NISSA_IMAGE_CACHE && window.NISSA_IMAGE_CACHE[finalMainImage] && window.NISSA_IMAGE_CACHE[finalMainImage].startsWith("data:")) {
-      dataUrlToUpload = window.NISSA_IMAGE_CACHE[finalMainImage];
-      if (!imgFilename) imgFilename = finalMainImage;
-    }
+  const featureInputs = document.querySelectorAll(".feature-input");
+  const features = [];
+  featureInputs.forEach(inp => {
+    const v = inp.value.trim();
+    if (v) features.push(v);
+  });
 
-    if (dataUrlToUpload && dataUrlToUpload.startsWith("data:")) {
-      if (!imgFilename || imgFilename === "producto.jpg" || /^(image|img|foto|screenshot|captura|whatsapp|descarga)/i.test(imgFilename)) {
-        const slug = name.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "");
-        imgFilename = `${slug || "producto"}.jpg`;
-      }
-      if (!/\.(jpe?g|png|webp)$/i.test(imgFilename)) {
-        imgFilename += ".jpg";
-      }
+  const specs = {};
+  const garantia = document.getElementById("prod-spec-garantia").value.trim();
+  const stock = document.getElementById("prod-spec-stock").value.trim();
+  if (garantia) specs["Garantía"] = garantia;
+  if (stock) specs["Disponibilidad"] = stock;
 
-      // Guardar de inmediato en caché local para que nunca desaparezca de la vista
-      window.NISSA_IMAGE_CACHE = window.NISSA_IMAGE_CACHE || {};
-      window.NISSA_IMAGE_CACHE[imgFilename] = dataUrlToUpload;
-      persistImageInDB(imgFilename, dataUrlToUpload);
+  const specKeyInputs = document.querySelectorAll(".spec-key-input");
+  const specValInputs = document.querySelectorAll(".spec-val-input");
+  for (let i = 0; i < specKeyInputs.length; i++) {
+    const k = specKeyInputs[i].value.trim();
+    const v = specValInputs[i].value.trim();
+    if (k && v) specs[k] = v;
+  }
 
-      if (publishBtn) {
-        publishBtn.innerHTML = `⏳ Subiendo fotos/${imgFilename} a GitHub...`;
-      }
-
-      const base64Data = dataUrlToUpload.split(",")[1];
-      const filePath = `fotos/${imgFilename}`;
-      const imgUrl = `https://api.github.com/repos/${cfg.owner}/${cfg.repo}/contents/${filePath}?ref=${cfg.branch}&t=${Date.now()}`;
-
-      // Comprobar si ya existe para obtener SHA
-      let imgSha = null;
-      try {
-        const checkRes = await fetch(imgUrl, {
-          headers: {
-            "Authorization": `token ${cfg.token}`,
-            "Accept": "application/vnd.github.v3+json"
-          }
-        });
-        if (checkRes.ok) {
-          const existingData = await checkRes.json();
-          imgSha = existingData.sha;
-        }
-      } catch (err) {
-        console.warn("Check file error in GitHub:", err);
-      }
-
-      // Subir archivo de imagen a fotos/ vía PUT en GitHub API
-      const putImgRes = await fetch(`https://api.github.com/repos/${cfg.owner}/${cfg.repo}/contents/${filePath}`, {
-        method: "PUT",
-        headers: {
-          "Authorization": `token ${cfg.token}`,
-          "Content-Type": "application/json",
-          "Accept": "application/vnd.github.v3+json"
-        },
-        body: JSON.stringify({
-          message: `Subir imagen ${filePath} para producto "${name}" [Admin NISSA]`,
-          content: base64Data,
-          branch: cfg.branch,
-          sha: imgSha || undefined
-        })
-      });
-
-      if (putImgRes.ok) {
-        finalMainImage = imgFilename;
-        currentMainImageState.filename = imgFilename;
-        currentMainImageState.mode = "fotos";
-        if (!KNOWN_FOTOS.includes(imgFilename)) {
-          KNOWN_FOTOS.unshift(imgFilename);
-        }
-      } else {
-        const errImg = await putImgRes.json().catch(() => ({}));
-        throw new Error(`No se pudo subir la foto fotos/${imgFilename} a GitHub: ${errImg.message || putImgRes.statusText}. Verificá que tu Personal Access Token tenga permiso 'repo' o 'contents:write'.`);
-      }
-    }
-
-    // 3. Recopilar datos completos del producto
-    const descInput = document.getElementById("prod-desc") || document.getElementById("prod-desc-tab3");
-    const description = descInput ? descInput.value.trim() : "";
-
-    const galleryInputs = document.querySelectorAll(".gallery-input");
-    const images = [];
-    if (finalMainImage) images.push(finalMainImage);
-    galleryInputs.forEach(inp => {
-      const v = inp.value.trim();
-      if (v && !images.includes(v)) images.push(v);
-    });
-
-    const featureInputs = document.querySelectorAll(".feature-input");
-    const features = [];
-    featureInputs.forEach(inp => {
-      const v = inp.value.trim();
-      if (v) features.push(v);
-    });
-
-    const specs = {};
-    const garantia = document.getElementById("prod-spec-garantia").value.trim();
-    const stock = document.getElementById("prod-spec-stock").value.trim();
-    if (garantia) specs["Garantía"] = garantia;
-    if (stock) specs["Disponibilidad"] = stock;
-
-    const specKeyInputs = document.querySelectorAll(".spec-key-input");
-    const specValInputs = document.querySelectorAll(".spec-val-input");
-    for (let i = 0; i < specKeyInputs.length; i++) {
-      const k = specKeyInputs[i].value.trim();
-      const v = specValInputs[i].value.trim();
-      if (k && v) specs[k] = v;
-    }
-
-    let finalId;
-    if (idVal) {
-      finalId = Number(idVal);
-      const existingIndex = currentProducts.findIndex(item => Number(item.id) === finalId);
-      if (existingIndex !== -1) {
-        currentProducts[existingIndex] = {
-          id: finalId,
-          name,
-          category,
-          tag: tag || undefined,
-          price,
-          price3,
-          price5,
-          price20,
-          image: finalMainImage,
-          images: images.length > 0 ? images : [finalMainImage],
-          description,
-          features,
-          specs
-        };
-      }
-    } else {
-      const maxId = currentProducts.reduce((max, item) => Math.max(max, Number(item.id) || 0), 0);
-      finalId = maxId + 1;
-      currentProducts.push({
+  let finalId;
+  if (idVal) {
+    finalId = Number(idVal);
+    const existingIndex = currentProducts.findIndex(item => Number(item.id) === finalId);
+    if (existingIndex !== -1) {
+      currentProducts[existingIndex] = {
         id: finalId,
         name,
         category,
@@ -1962,68 +2018,143 @@ async function saveAndPublishProductToGithub(e) {
         description,
         features,
         specs
+      };
+    }
+  } else {
+    const maxId = currentProducts.reduce((max, item) => Math.max(max, Number(item.id) || 0), 0);
+    finalId = maxId + 1;
+    currentProducts.push({
+      id: finalId,
+      name,
+      category,
+      tag: tag || undefined,
+      price,
+      price3,
+      price5,
+      price20,
+      image: finalMainImage,
+      images: images.length > 0 ? images : [finalMainImage],
+      description,
+      features,
+      specs
+    });
+  }
+
+  // Guardar borrador localmente en el navegador y disco
+  saveDraft();
+  if (typeof window !== "undefined") {
+    window.products = currentProducts;
+  }
+  const productsJsCode = generateProductsJsCode();
+  saveProductsFileToServer(productsJsCode);
+
+  renderCategoryFilter();
+  renderProductsList();
+
+  // 3. Verificar si el usuario configuró GitHub
+  const cfg = getGithubConfig();
+  if (!cfg.owner || !cfg.repo || !cfg.token) {
+    closeProductModal();
+    if (confirm("✓ Tu producto y su imagen fueron guardados con éxito en tu panel y ya se muestran en la tienda local.\n\nPara que también se suban a tu repositorio de GitHub y se actualicen en GitHub Pages, ingresá tu Usuario, Repositorio y Token de GitHub.\n\n¿Deseás configurarlo ahora?")) {
+      openGithubModal();
+    }
+    return;
+  }
+
+  const publishBtn = document.getElementById("btn-save-and-publish-github");
+  const originalBtnHtml = publishBtn ? publishBtn.innerHTML : "";
+  if (publishBtn) {
+    publishBtn.disabled = true;
+    publishBtn.innerHTML = "⏳ Conectando con GitHub...";
+  }
+
+  try {
+    // 4. Si hay una nueva imagen para subir a fotos/ en GitHub
+    if (dataUrlToUpload && dataUrlToUpload.startsWith("data:") && imgFilename) {
+      if (publishBtn) {
+        publishBtn.innerHTML = `⏳ Subiendo fotos/${imgFilename} a GitHub...`;
+      }
+
+      const base64Data = dataUrlToUpload.split(",")[1];
+      const filePath = `fotos/${imgFilename}`;
+      const imgCheckUrl = `https://api.github.com/repos/${cfg.owner}/${cfg.repo}/contents/${filePath}?ref=${cfg.branch}&t=${Date.now()}`;
+
+      // Comprobar SHA previo si ya existía en GitHub
+      let imgSha = null;
+      const checkRes = await callGithubApi(imgCheckUrl, { token: cfg.token });
+      if (checkRes.ok && checkRes.data && checkRes.data.sha) {
+        imgSha = checkRes.data.sha;
+      }
+
+      // Subir archivo de imagen a fotos/ vía PUT en GitHub API
+      const putImgRes = await callGithubApi(`https://api.github.com/repos/${cfg.owner}/${cfg.repo}/contents/${filePath}`, {
+        method: "PUT",
+        token: cfg.token,
+        body: {
+          message: `Subir imagen ${filePath} para producto "${name}" [Admin NISSA]`,
+          content: base64Data,
+          branch: cfg.branch,
+          sha: imgSha || undefined
+        }
       });
+
+      if (!putImgRes.ok) {
+        const ghMsg = putImgRes.data?.message || putImgRes.statusText || "";
+        closeProductModal();
+        if (putImgRes.status === 401 || ghMsg.includes("Bad credentials")) {
+          alert(`✓ Los cambios del producto y su foto SE GUARDARON CORRECTAMENTE en tu panel y en la tienda local.\n\n⚠️ Sin embargo, GitHub rechazó la conexión (401 Bad credentials).\n\nEsto ocurre porque tu Personal Access Token de GitHub expiró, es incorrecto o fue revocado.\n\n👉 Para solucionarlo:\n1. Ingresá a github.com > Settings > Developer Settings > Tokens (classic)\n2. Generá un token con permiso 'repo'\n3. Copialo y pegalo en la configuración de GitHub.`);
+          openGithubModal();
+        } else {
+          alert(`✓ Los cambios se guardaron localmente en el panel y la tienda.\n\nGitHub respondió al subir la foto: ${ghMsg}\n\nPodés descargar el archivo products.js manualmente con el botón "Descargar products.js".`);
+        }
+        return;
+      }
     }
 
-    // Guardar borrador localmente y actualizar window
-    saveDraft();
-    if (typeof window !== "undefined") {
-      window.products = currentProducts;
-    }
-
-    // 4. Publicar catálogo products.js en GitHub
+    // 5. Publicar catálogo products.js en GitHub
     if (publishBtn) {
       publishBtn.innerHTML = "⏳ Publicando catálogo en GitHub...";
     }
 
     const getUrl = `https://api.github.com/repos/${cfg.owner}/${cfg.repo}/contents/${cfg.path}?ref=${cfg.branch}&t=${Date.now()}`;
     let currentSha = null;
-    const getRes = await fetch(getUrl, {
-      headers: {
-        "Authorization": `token ${cfg.token}`,
-        "Accept": "application/vnd.github.v3+json"
-      }
-    });
-    if (getRes.ok) {
-      const data = await getRes.json();
-      currentSha = data.sha;
+    const getRes = await callGithubApi(getUrl, { token: cfg.token });
+    if (getRes.ok && getRes.data && getRes.data.sha) {
+      currentSha = getRes.data.sha;
     }
 
-    const newContent = generateProductsJsCode();
-    const base64Content = utf8ToBase64(newContent);
-
-    const putRes = await fetch(`https://api.github.com/repos/${cfg.owner}/${cfg.repo}/contents/${cfg.path}`, {
+    const base64Content = utf8ToBase64(productsJsCode);
+    const putRes = await callGithubApi(`https://api.github.com/repos/${cfg.owner}/${cfg.repo}/contents/${cfg.path}`, {
       method: "PUT",
-      headers: {
-        "Authorization": `token ${cfg.token}`,
-        "Accept": "application/vnd.github.v3+json",
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({
+      token: cfg.token,
+      body: {
         message: `Actualizar producto "${name}" (#${finalId}) e imagen [Admin NISSA]`,
         content: base64Content,
         branch: cfg.branch,
         sha: currentSha || undefined
-      })
+      }
     });
 
+    closeProductModal();
+    renderCategoryFilter();
+    renderProductsList();
+
     if (putRes.ok) {
-      closeProductModal();
-      renderCategoryFilter();
-      renderProductsList();
       showAlert(`🎉 ¡Producto "${escapeHtml(name)}" y su imagen fueron publicados con éxito en GitHub! GitHub Pages actualizará tu tienda en ~30 segundos.`);
     } else {
-      const errData = await putRes.json().catch(() => ({}));
-      closeProductModal();
-      renderCategoryFilter();
-      renderProductsList();
-      alert(`Los cambios se guardaron localmente en el panel, pero GitHub respondió: ${errData.message || putRes.statusText}\n\nPodés usar el botón "Descargar products.js" para actualizar tu repositorio manualmente.`);
+      const ghMsg = putRes.data?.message || putRes.statusText || "";
+      if (putRes.status === 401 || ghMsg.includes("Bad credentials")) {
+        alert(`✓ Los cambios se guardaron localmente en el panel y ya se muestran en la tienda.\n\n⚠️ Sin embargo, GitHub rechazó la publicación (401 Bad credentials).\n\nTu Personal Access Token de GitHub no es válido o expiró. Por favor actualizalo en la configuración de GitHub.`);
+        openGithubModal();
+      } else {
+        alert(`Los cambios se guardaron localmente en el panel y la tienda, pero GitHub respondió: ${ghMsg}\n\nPodés usar el botón "Descargar products.js" para actualizar tu repositorio manualmente.`);
+      }
     }
 
   } catch (err) {
     console.error("Error en saveAndPublishProductToGithub:", err);
-    saveProduct();
-    alert("Los cambios se guardaron localmente. Error de conexión con GitHub: " + err.message);
+    closeProductModal();
+    alert("✓ Los cambios se guardaron localmente y ya están visibles en la tienda.\n\nError de conexión con GitHub: " + (err.message || err));
   } finally {
     if (publishBtn) {
       publishBtn.disabled = false;
@@ -2166,11 +2297,11 @@ function copyGeneratedCode() {
 // ========================================================
 function getGithubConfig() {
   return {
-    owner: localStorage.getItem("gh_owner") || "",
-    repo: localStorage.getItem("gh_repo") || "",
-    branch: localStorage.getItem("gh_branch") || "main",
-    path: localStorage.getItem("gh_path") || "products.js",
-    token: localStorage.getItem("gh_token") || ""
+    owner: (localStorage.getItem("gh_owner") || "").trim(),
+    repo: (localStorage.getItem("gh_repo") || "").trim(),
+    branch: (localStorage.getItem("gh_branch") || "main").trim(),
+    path: (localStorage.getItem("gh_path") || "products.js").trim(),
+    token: (localStorage.getItem("gh_token") || "").trim().replace(/^["']|["']$/g, "")
   };
 }
 
@@ -2200,7 +2331,7 @@ function saveGithubConfig(e) {
   const repo = document.getElementById("gh-repo").value.trim();
   const branch = document.getElementById("gh-branch").value.trim() || "main";
   const path = document.getElementById("gh-path").value.trim() || "products.js";
-  const token = document.getElementById("gh-token").value.trim();
+  const token = document.getElementById("gh-token").value.trim().replace(/^["']|["']$/g, "");
 
   localStorage.setItem("gh_owner", owner);
   localStorage.setItem("gh_repo", repo);
@@ -2217,7 +2348,7 @@ async function testGithubConnection() {
   const repo = document.getElementById("gh-repo").value.trim();
   const branch = document.getElementById("gh-branch").value.trim() || "main";
   const path = document.getElementById("gh-path").value.trim() || "products.js";
-  const token = document.getElementById("gh-token").value.trim();
+  const token = document.getElementById("gh-token").value.trim().replace(/^["']|["']$/g, "");
   const status = document.getElementById("gh-test-status");
 
   if (!owner || !repo || !token) {
@@ -2236,29 +2367,27 @@ async function testGithubConnection() {
   }
 
   try {
-    const url = `https://api.github.com/repos/${owner}/${repo}/contents/${path}?ref=${branch}`;
-    const res = await fetch(url, {
-      headers: {
-        "Authorization": `token ${token}`,
-        "Accept": "application/vnd.github.v3+json"
-      }
-    });
+    const url = `https://api.github.com/repos/${owner}/${repo}/contents/${path}?ref=${branch}&t=${Date.now()}`;
+    const res = await callGithubApi(url, { token });
 
     if (res.ok) {
       status.className = "status-msg success";
-      status.textContent = `✓ ¡Conexión exitosa! El archivo ${path} fue localizado en la rama ${branch}. Ya podés publicar con 1 clic.`;
+      status.textContent = `✓ ¡Conexión exitosa con GitHub! El archivo ${path} fue localizado en la rama ${branch}. Ya podés publicar con 1 clic.`;
     } else if (res.status === 404) {
       status.className = "status-msg success";
-      status.textContent = `✓ Conexión con el repositorio correcta (el archivo ${path} será creado en el primer commit).`;
-    } else {
-      const errData = await res.json().catch(() => ({}));
+      status.textContent = `✓ Conexión con el repositorio "${repo}" correcta. El archivo ${path} será creado en el primer commit.`;
+    } else if (res.status === 401 || (res.data && res.data.message && res.data.message.includes("Bad credentials"))) {
       status.className = "status-msg error";
-      status.textContent = `Error (${res.status}): ${errData.message || "Verificá tu token y nombre de repo."}`;
+      status.innerHTML = `⚠️ <strong>Error 401 (Bad credentials):</strong> Tu Token de GitHub expiró, es incorrecto o fue revocado.<br><br>👉 Creá uno nuevo en GitHub > <strong>Settings</strong> > <strong>Developer Settings</strong> > <strong>Tokens (classic)</strong> con permiso <strong>'repo'</strong>.`;
+    } else {
+      const msg = res.data?.message || res.statusText || "Verificá tu token y nombre de repo.";
+      status.className = "status-msg error";
+      status.textContent = `Error (${res.status}): ${msg}`;
     }
   } catch (err) {
     if (status) {
       status.className = "status-msg error";
-      status.textContent = "Error de red o conexión: " + err.message;
+      status.textContent = "Error de conexión: " + (err.message || err);
     }
   }
 }
@@ -2283,6 +2412,10 @@ async function publishDirectlyToGithub() {
     publishBtn.innerHTML = "⏳ Publicando en GitHub...";
   }
 
+  // Guardar archivo products.js en el disco del servidor
+  const newContent = generateProductsJsCode();
+  saveProductsFileToServer(newContent);
+
   try {
     // 0. Si hay fotos nuevas en caché local para los productos, subirlas a fotos/ en GitHub
     if (window.NISSA_IMAGE_CACHE && Object.keys(window.NISSA_IMAGE_CACHE).length > 0) {
@@ -2297,33 +2430,27 @@ async function publishDirectlyToGithub() {
           const filePath = `fotos/${fn}`;
           const checkUrl = `https://api.github.com/repos/${cfg.owner}/${cfg.repo}/contents/${filePath}?ref=${cfg.branch}&t=${Date.now()}`;
           let imgSha = null;
-          try {
-            const checkRes = await fetch(checkUrl, {
-              headers: {
-                "Authorization": `token ${cfg.token}`,
-                "Accept": "application/vnd.github.v3+json"
-              }
-            });
-            if (checkRes.ok) {
-              const d = await checkRes.json();
-              imgSha = d.sha;
-            }
-          } catch (e) {}
+          const checkRes = await callGithubApi(checkUrl, { token: cfg.token });
+          if (checkRes.ok && checkRes.data && checkRes.data.sha) {
+            imgSha = checkRes.data.sha;
+          }
 
-          await fetch(`https://api.github.com/repos/${cfg.owner}/${cfg.repo}/contents/${filePath}`, {
+          const putImg = await callGithubApi(`https://api.github.com/repos/${cfg.owner}/${cfg.repo}/contents/${filePath}`, {
             method: "PUT",
-            headers: {
-              "Authorization": `token ${cfg.token}`,
-              "Content-Type": "application/json",
-              "Accept": "application/vnd.github.v3+json"
-            },
-            body: JSON.stringify({
+            token: cfg.token,
+            body: {
               message: `Subir imagen ${filePath} para catálogo NISSA [Admin]`,
               content: base64Data,
               branch: cfg.branch,
               sha: imgSha || undefined
-            })
+            }
           });
+
+          if (!putImg.ok && (putImg.status === 401 || putImg.data?.message?.includes("Bad credentials"))) {
+            alert(`✓ Los cambios se guardaron localmente en el panel y en la tienda.\n\n⚠️ Error de GitHub: Bad credentials (Token inválido o expirado).\n\nPor favor actualizá tu Token de GitHub en 'Configurar GitHub'.`);
+            openGithubModal();
+            return;
+          }
         }
       }
     }
@@ -2335,24 +2462,13 @@ async function publishDirectlyToGithub() {
     // 1. Obtener el SHA actual del archivo en GitHub (si existe)
     const getUrl = `https://api.github.com/repos/${cfg.owner}/${cfg.repo}/contents/${cfg.path}?ref=${cfg.branch}&t=${Date.now()}`;
     let currentSha = null;
-
-    const getRes = await fetch(getUrl, {
-      headers: {
-        "Authorization": `token ${cfg.token}`,
-        "Accept": "application/vnd.github.v3+json"
-      }
-    });
-
-    if (getRes.ok) {
-      const data = await getRes.json();
-      currentSha = data.sha;
+    const getRes = await callGithubApi(getUrl, { token: cfg.token });
+    if (getRes.ok && getRes.data && getRes.data.sha) {
+      currentSha = getRes.data.sha;
     }
 
-    // 2. Generar el nuevo contenido de products.js
-    const newContent = generateProductsJsCode();
+    // 2. Hacer el commit mediante PUT
     const base64Content = utf8ToBase64(newContent);
-
-    // 3. Hacer el commit mediante PUT
     const putUrl = `https://api.github.com/repos/${cfg.owner}/${cfg.repo}/contents/${cfg.path}`;
     const payload = {
       message: `Actualización de catálogo NISSA (${currentProducts.length} productos) [Admin Panel]`,
@@ -2363,25 +2479,26 @@ async function publishDirectlyToGithub() {
       payload.sha = currentSha;
     }
 
-    const putRes = await fetch(putUrl, {
+    const putRes = await callGithubApi(putUrl, {
       method: "PUT",
-      headers: {
-        "Authorization": `token ${cfg.token}`,
-        "Accept": "application/vnd.github.v3+json",
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify(payload)
+      token: cfg.token,
+      body: payload
     });
 
     if (putRes.ok) {
       showAlert(`🎉 ¡Catálogo publicado exitosamente en GitHub! GitHub Pages actualizará tu tienda en ~30 segundos.`);
     } else {
-      const errData = await putRes.json().catch(() => ({}));
-      alert(`No se pudo publicar en GitHub: ${errData.message || putRes.statusText}\n\nPodés descargar el archivo products.js manualmente con el botón "Descargar products.js".`);
+      const msg = putRes.data?.message || putRes.statusText || "";
+      if (putRes.status === 401 || msg.includes("Bad credentials")) {
+        alert(`✓ Los cambios se guardaron en la tienda local.\n\n⚠️ Error de GitHub: Bad credentials (Token inválido o expirado).\n\nPor favor actualizá tu Personal Access Token en la configuración de GitHub.`);
+        openGithubModal();
+      } else {
+        alert(`No se pudo publicar en GitHub: ${msg}\n\nPodés descargar el archivo products.js manualmente con el botón "Descargar products.js".`);
+      }
     }
 
   } catch (err) {
-    alert("Error de conexión al publicar en GitHub: " + err.message + "\n\nPodés descargar el archivo products.js manualmente con el botón 'Descargar products.js'.");
+    alert("✓ Los cambios se guardaron localmente en la tienda.\n\nError de conexión al publicar en GitHub: " + (err.message || err));
   } finally {
     if (publishBtn) {
       publishBtn.disabled = false;
@@ -3896,23 +4013,19 @@ async function publishCotizadorDirectlyToGithub() {
     publishBtn.innerHTML = "⏳ Publicando cotizador en GitHub...";
   }
 
+  // Guardar archivo cotizador-data.js en el disco del servidor
+  const newCode = generateCotizadorJsCode();
+  saveCotizadorFileToServer(newCode);
+
   try {
     const path = "cotizador-data.js";
-    const getUrl = `https://api.github.com/repos/${cfg.owner}/${cfg.repo}/contents/${path}?ref=${cfg.branch}`;
-    const getRes = await fetch(getUrl, {
-      headers: {
-        "Authorization": `token ${cfg.token}`,
-        "Accept": "application/vnd.github.v3+json"
-      }
-    });
-
+    const getUrl = `https://api.github.com/repos/${cfg.owner}/${cfg.repo}/contents/${path}?ref=${cfg.branch}&t=${Date.now()}`;
     let sha = null;
-    if (getRes.ok) {
-      const data = await getRes.json();
-      sha = data.sha;
+    const getRes = await callGithubApi(getUrl, { token: cfg.token });
+    if (getRes.ok && getRes.data && getRes.data.sha) {
+      sha = getRes.data.sha;
     }
 
-    const newCode = generateCotizadorJsCode();
     const payload = {
       message: `Actualización de tarifas del presupuestador (${new Date().toLocaleDateString("es-AR")})`,
       content: utf8ToBase64(newCode),
@@ -3921,24 +4034,25 @@ async function publishCotizadorDirectlyToGithub() {
     if (sha) payload.sha = sha;
 
     const putUrl = `https://api.github.com/repos/${cfg.owner}/${cfg.repo}/contents/${path}`;
-    const putRes = await fetch(putUrl, {
+    const putRes = await callGithubApi(putUrl, {
       method: "PUT",
-      headers: {
-        "Authorization": `token ${cfg.token}`,
-        "Accept": "application/vnd.github.v3+json",
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify(payload)
+      token: cfg.token,
+      body: payload
     });
 
     if (putRes.ok) {
       showAlert("🎉 ¡Presupuestador publicado con éxito en GitHub! GitHub Pages actualizará las tarifas en ~30 segundos.");
     } else {
-      const err = await putRes.json().catch(() => ({}));
-      alert(`No se pudo publicar en GitHub: ${err.message || putRes.statusText}\n\nPodés descargar el archivo cotizador-data.js manualmente con el botón "Descargar cotizador-data.js".`);
+      const msg = putRes.data?.message || putRes.statusText || "";
+      if (putRes.status === 401 || msg.includes("Bad credentials")) {
+        alert("✓ Las tarifas se guardaron en la aplicación local.\n\n⚠️ Error de GitHub: Bad credentials (Token inválido o expirado).\n\nPor favor actualizá tu Personal Access Token en la configuración de GitHub.");
+        openGithubModal();
+      } else {
+        alert(`No se pudo publicar en GitHub: ${msg}\n\nPodés descargar el archivo cotizador-data.js con el botón "Descargar cotizador-data.js".`);
+      }
     }
   } catch (err) {
-    alert("Error de conexión al publicar en GitHub: " + err.message + "\n\nPodés descargar el archivo cotizador-data.js con el botón 'Descargar cotizador-data.js'.");
+    alert("✓ Las tarifas se guardaron localmente.\n\nError de conexión al publicar en GitHub: " + (err.message || err));
   } finally {
     if (publishBtn) {
       publishBtn.disabled = false;
