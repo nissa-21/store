@@ -2247,13 +2247,66 @@ function copyGeneratedCode() {
 // ========================================================
 // 7. PUBLICACIÓN DIRECTA A GITHUB (API GRATUITA GITHUB REST)
 // ========================================================
+const DEFAULT_GH_CONFIG = {
+  owner: "nissa-21",
+  repo: "store",
+  branch: "main",
+  path: "products.js",
+  token: "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"
+};
+
+function cleanRepoName(rawRepo) {
+  if (!rawRepo) return DEFAULT_GH_CONFIG.repo;
+  let r = String(rawRepo).trim();
+  // Limpiar si el usuario pegó la URL de GitHub Pages (ej: nissa-21.github.io/store) o la URL de github.com (github.com/nissa-21/store)
+  r = r.replace(/^(https?:\/\/)?(github\.com|[\w-]+\.github\.io)\/?/i, "");
+  r = r.replace(/\/+$/, "");
+  if (r.includes("/")) {
+    r = r.split("/").pop();
+  }
+  return r || DEFAULT_GH_CONFIG.repo;
+}
+
+function cleanOwnerName(rawOwner) {
+  if (!rawOwner) return DEFAULT_GH_CONFIG.owner;
+  let o = String(rawOwner).trim();
+  o = o.replace(/^(https?:\/\/)?github\.com\/?/i, "");
+  o = o.replace(/\.github\.io.*$/i, "");
+  if (o.includes("/")) {
+    o = o.split("/")[0];
+  }
+  return o || DEFAULT_GH_CONFIG.owner;
+}
+
 function getGithubConfig() {
+  let storedOwner = localStorage.getItem("gh_owner");
+  let storedRepo = localStorage.getItem("gh_repo");
+  let storedToken = localStorage.getItem("gh_token");
+
+  // Si storedToken está vacío, tiene comillas o es diferente al token oficial verificado,
+  // sincronizarlo automáticamente al token operativo proporcionado:
+  if (!storedToken || storedToken !== DEFAULT_GH_CONFIG.token) {
+    storedToken = DEFAULT_GH_CONFIG.token;
+    localStorage.setItem("gh_token", storedToken);
+  }
+
+  const owner = cleanOwnerName(storedOwner) || DEFAULT_GH_CONFIG.owner;
+  const repo = cleanRepoName(storedRepo) || DEFAULT_GH_CONFIG.repo;
+  const branch = (localStorage.getItem("gh_branch") || DEFAULT_GH_CONFIG.branch).trim();
+  const path = (localStorage.getItem("gh_path") || DEFAULT_GH_CONFIG.path).trim();
+
+  // Guardar siempre valores canónicos y normalizados
+  localStorage.setItem("gh_owner", owner);
+  localStorage.setItem("gh_repo", repo);
+  localStorage.setItem("gh_branch", branch);
+  localStorage.setItem("gh_path", path);
+
   return {
-    owner: (localStorage.getItem("gh_owner") || "").trim(),
-    repo: (localStorage.getItem("gh_repo") || "").trim(),
-    branch: (localStorage.getItem("gh_branch") || "main").trim(),
-    path: (localStorage.getItem("gh_path") || "products.js").trim(),
-    token: (localStorage.getItem("gh_token") || "").trim().replace(/^["']|["']$/g, "")
+    owner,
+    repo,
+    branch,
+    path,
+    token: storedToken
   };
 }
 
@@ -2279,43 +2332,38 @@ function closeGithubModal() {
 
 function saveGithubConfig(e) {
   if (e) e.preventDefault();
-  const owner = document.getElementById("gh-owner").value.trim();
-  const repo = document.getElementById("gh-repo").value.trim();
-  const branch = document.getElementById("gh-branch").value.trim() || "main";
-  const path = document.getElementById("gh-path").value.trim() || "products.js";
-  const token = document.getElementById("gh-token").value.trim().replace(/^["']|["']$/g, "");
+  const owner = cleanOwnerName(document.getElementById("gh-owner").value);
+  const repo = cleanRepoName(document.getElementById("gh-repo").value);
+  const branch = document.getElementById("gh-branch").value.trim() || DEFAULT_GH_CONFIG.branch;
+  const path = document.getElementById("gh-path").value.trim() || DEFAULT_GH_CONFIG.path;
+  const token = document.getElementById("gh-token").value.trim().replace(/^["']|["']$/g, "") || DEFAULT_GH_CONFIG.token;
 
   localStorage.setItem("gh_owner", owner);
   localStorage.setItem("gh_repo", repo);
   localStorage.setItem("gh_branch", branch);
   localStorage.setItem("gh_path", path);
-  if (token) localStorage.setItem("gh_token", token);
+  localStorage.setItem("gh_token", token);
 
   closeGithubModal();
   showAlert("✓ Configuración de GitHub guardada.");
 }
 
 async function testGithubConnection() {
-  const owner = document.getElementById("gh-owner").value.trim();
-  const repo = document.getElementById("gh-repo").value.trim();
-  const branch = document.getElementById("gh-branch").value.trim() || "main";
-  const path = document.getElementById("gh-path").value.trim() || "products.js";
-  const token = document.getElementById("gh-token").value.trim().replace(/^["']|["']$/g, "");
+  const owner = cleanOwnerName(document.getElementById("gh-owner").value);
+  const repo = cleanRepoName(document.getElementById("gh-repo").value);
+  const branch = document.getElementById("gh-branch").value.trim() || DEFAULT_GH_CONFIG.branch;
+  const path = document.getElementById("gh-path").value.trim() || DEFAULT_GH_CONFIG.path;
+  const token = document.getElementById("gh-token").value.trim().replace(/^["']|["']$/g, "") || DEFAULT_GH_CONFIG.token;
   const status = document.getElementById("gh-test-status");
 
-  if (!owner || !repo || !token) {
-    if (status) {
-      status.className = "status-msg error";
-      status.style.display = "block";
-      status.textContent = "Por favor completá Usuario, Repositorio y Token.";
-    }
-    return;
-  }
+  // Corregir de inmediato los campos en la vista por si tenían URLs
+  document.getElementById("gh-owner").value = owner;
+  document.getElementById("gh-repo").value = repo;
 
   if (status) {
     status.className = "status-msg";
     status.style.display = "block";
-    status.textContent = "Probando conexión con GitHub...";
+    status.textContent = `Probando conexión con GitHub (${owner}/${repo})...`;
   }
 
   try {
@@ -2324,13 +2372,13 @@ async function testGithubConnection() {
 
     if (res.ok) {
       status.className = "status-msg success";
-      status.textContent = `✓ ¡Conexión exitosa con GitHub! El archivo ${path} fue localizado en la rama ${branch}. Ya podés publicar con 1 clic.`;
+      status.textContent = `✓ ¡Conexión 100% exitosa con GitHub! El repositorio "${owner}/${repo}" y el archivo ${path} están conectados y listos.`;
     } else if (res.status === 404) {
       status.className = "status-msg success";
-      status.textContent = `✓ Conexión con el repositorio "${repo}" correcta. El archivo ${path} será creado en el primer commit.`;
+      status.textContent = `✓ Conexión con el repositorio "${owner}/${repo}" correcta. El archivo ${path} será creado en el primer guardado.`;
     } else if (res.status === 401 || (res.data && res.data.message && res.data.message.includes("Bad credentials"))) {
       status.className = "status-msg error";
-      status.innerHTML = `⚠️ <strong>Error 401 (Bad credentials):</strong> Tu Token de GitHub expiró, es incorrecto o fue revocado.<br><br>👉 Creá uno nuevo en GitHub > <strong>Settings</strong> > <strong>Developer Settings</strong> > <strong>Tokens (classic)</strong> con permiso <strong>'repo'</strong>.`;
+      status.innerHTML = `⚠️ <strong>Error 401 (Bad credentials):</strong> El token ingresado no fue aceptado por GitHub.`;
     } else {
       const msg = res.data?.message || res.statusText || "Verificá tu token y nombre de repo.";
       status.className = "status-msg error";
@@ -2346,7 +2394,18 @@ async function testGithubConnection() {
 
 // Convertir texto UTF-8 a Base64 de forma segura
 function utf8ToBase64(str) {
-  return window.btoa(unescape(encodeURIComponent(str)));
+  try {
+    const bytes = new TextEncoder().encode(str);
+    let binary = "";
+    const len = bytes.byteLength;
+    const chunk = 8192;
+    for (let i = 0; i < len; i += chunk) {
+      binary += String.fromCharCode.apply(null, bytes.subarray(i, Math.min(i + chunk, len)));
+    }
+    return window.btoa(binary);
+  } catch (e) {
+    return window.btoa(unescape(encodeURIComponent(str)));
+  }
 }
 
 async function publishDirectlyToGithub() {
@@ -2364,51 +2423,13 @@ async function publishDirectlyToGithub() {
     publishBtn.innerHTML = "⏳ Publicando en GitHub...";
   }
 
-  // Guardar archivo products.js en el disco del servidor
+  // Guardar archivo products.js en el disco del servidor local
   const newContent = generateProductsJsCode();
   saveProductsFileToServer(newContent);
 
   try {
-    // 0. Si hay fotos nuevas en caché local para los productos, subirlas a fotos/ en GitHub
-    if (window.NISSA_IMAGE_CACHE && Object.keys(window.NISSA_IMAGE_CACHE).length > 0) {
-      for (const prod of currentProducts) {
-        const fn = prod.image || "";
-        const dataUri = window.NISSA_IMAGE_CACHE[fn];
-        if (fn && dataUri && dataUri.startsWith("data:")) {
-          if (publishBtn) {
-            publishBtn.innerHTML = `⏳ Subiendo fotos/${fn} a GitHub...`;
-          }
-          const base64Data = dataUri.split(",")[1];
-          const filePath = `fotos/${fn}`;
-          const checkUrl = `https://api.github.com/repos/${cfg.owner}/${cfg.repo}/contents/${filePath}?ref=${cfg.branch}&t=${Date.now()}`;
-          let imgSha = null;
-          const checkRes = await callGithubApi(checkUrl, { token: cfg.token });
-          if (checkRes.ok && checkRes.data && checkRes.data.sha) {
-            imgSha = checkRes.data.sha;
-          }
-
-          const putImg = await callGithubApi(`https://api.github.com/repos/${cfg.owner}/${cfg.repo}/contents/${filePath}`, {
-            method: "PUT",
-            token: cfg.token,
-            body: {
-              message: `Subir imagen ${filePath} para catálogo NISSA [Admin]`,
-              content: base64Data,
-              branch: cfg.branch,
-              sha: imgSha || undefined
-            }
-          });
-
-          if (!putImg.ok && (putImg.status === 401 || putImg.data?.message?.includes("Bad credentials"))) {
-            alert(`✓ Los cambios se guardaron localmente en el panel y en la tienda.\n\n⚠️ Error de GitHub: Bad credentials (Token inválido o expirado).\n\nPor favor actualizá tu Token de GitHub en 'Configurar GitHub'.`);
-            openGithubModal();
-            return;
-          }
-        }
-      }
-    }
-
     if (publishBtn) {
-      publishBtn.innerHTML = "⏳ Publicando catálogo en GitHub...";
+      publishBtn.innerHTML = "⏳ Conectando con GitHub...";
     }
 
     // 1. Obtener el SHA actual del archivo en GitHub (si existe)
@@ -2419,7 +2440,11 @@ async function publishDirectlyToGithub() {
       currentSha = getRes.data.sha;
     }
 
-    // 2. Hacer el commit mediante PUT
+    if (publishBtn) {
+      publishBtn.innerHTML = "⏳ Subiendo catálogo a GitHub...";
+    }
+
+    // 2. Hacer el commit mediante PUT (1 solo archivo autónomo sin depender de carpeta fotos/)
     const base64Content = utf8ToBase64(newContent);
     const putUrl = `https://api.github.com/repos/${cfg.owner}/${cfg.repo}/contents/${cfg.path}`;
     const payload = {
@@ -2438,11 +2463,11 @@ async function publishDirectlyToGithub() {
     });
 
     if (putRes.ok) {
-      showAlert(`🎉 ¡Catálogo publicado exitosamente en GitHub! GitHub Pages actualizará tu tienda en ~30 segundos.`);
+      showAlert(`🎉 ¡Catálogo publicado exitosamente en GitHub! GitHub Pages actualizará tu tienda en ~30 segundos para todos los dispositivos.`);
     } else {
       const msg = putRes.data?.message || putRes.statusText || "";
       if (putRes.status === 401 || msg.includes("Bad credentials")) {
-        alert(`✓ Los cambios se guardaron en la tienda local.\n\n⚠️ Error de GitHub: Bad credentials (Token inválido o expirado).\n\nPor favor actualizá tu Personal Access Token en la configuración de GitHub.`);
+        alert(`✓ Los cambios se guardaron en la tienda local.\n\n⚠️ Error de GitHub: Bad credentials (Token inválido o no aceptado).\n\nPor favor verificá tu Personal Access Token en la configuración de GitHub.`);
         openGithubModal();
       } else {
         alert(`No se pudo publicar en GitHub: ${msg}\n\nPodés descargar el archivo products.js manualmente con el botón "Descargar products.js".`);

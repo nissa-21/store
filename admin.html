@@ -8,7 +8,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/admin.css">
+  <link rel="stylesheet" href="./admin.css">
 </head>
 <body>
 
@@ -285,7 +285,7 @@
         </button>
       </div>
 
-      <form id="product-form" onsubmit="saveProduct(event)">
+      <form id="product-form" onsubmit="saveAndPublishProductToGithub(event)">
         <input type="hidden" id="prod-id">
 
         <div class="modal-body">
@@ -629,11 +629,11 @@
           <button type="button" class="btn btn-secondary" onclick="closeProductModal()">
             Cancelar
           </button>
-          <button type="button" class="btn btn-modal-github" id="btn-save-and-publish-github" onclick="saveAndPublishProductToGithub(event)">
-            🚀 Guardar y Publicar en GitHub
+          <button type="button" class="btn btn-outline" onclick="saveProduct(event)" title="Guarda solo en este navegador sin subir a GitHub">
+            💾 Guardar solo local
           </button>
-          <button type="submit" class="btn btn-success">
-            💾 Guardar Localmente
+          <button type="submit" class="btn btn-modal-github" id="btn-save-and-publish-github">
+            🚀 Guardar y Publicar en GitHub
           </button>
         </div>
       </form>
@@ -1090,9 +1090,9 @@
   </div>
 
   <!-- CARGA DE ARCHIVOS ORIGINALES DE PRODUCTOS Y COTIZADOR -->
-  <script src="/products.js"></script>
-  <script src="/cotizador-data.js"></script>
+  <script src="./products.js"></script>
+  <script src="./cotizador-data.js"></script>
   <!-- LÓGICA COMPLETA DEL ADMINISTRADOR -->
-  <script type="module" src="/admin.js"></script>
+  <script type="module" src="./admin.js"></script>
 </body>
 </html>
