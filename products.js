@@ -1,6 +1,6 @@
 // Catálogo de productos NISSA
 // Generado automáticamente desde el Panel de Administración NISSA
-// Actualizado: 31/10/2026, 01:44:58
+// Actualizado: 31/10/2026, 01:45:36
 // 100% Compatible con GitHub Pages (Costo $0)
 
 let products = [
@@ -37,7 +37,7 @@ let products = [
   },
   {
     "id": 2,
-    "name": "Cargador Rápido USB-C 25W Samsung Super Fast",
+    "name": "Uñass",
     "category": "celulares",
     "tag": "Super Fast Charge",
     "price": 35000,
