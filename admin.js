@@ -247,14 +247,16 @@ function applyAndSaveCatalogChanges() {
   }
   renderProductsList();
   renderCategoryFilter();
-  showAlert(`
-    <div style="display: flex; align-items: center; justify-content: space-between; gap: 14px; flex-wrap: wrap;">
-      <span>✓ ¡Todos los cambios del catálogo fueron cargados con éxito! (${currentProducts.length} productos listos en la tienda).</span>
-      <div style="display: flex; gap: 8px;">
-        <button type="button" class="btn btn-sm btn-primary" onclick="downloadProductsJs()">📥 Descargar products.js</button>
-      </div>
-    </div>
-  `, true);
+
+  const cfg = getGithubConfig();
+  if (!cfg.token) {
+    alert("⚠️ ATENCIÓN: Tus cambios se guardaron únicamente en este navegador local.\n\nPara que cualquier persona del mundo que ingrese a la tienda vea los cambios, precios y fotos nuevas en GitHub Pages, necesitás ingresar tu Token de GitHub.\n\nPresioná Aceptar para configurar tu Token ahora.");
+    openGithubModal();
+    return;
+  }
+
+  // Publicar inmediatamente en GitHub para que se aplique a todo el mundo
+  publishDirectlyToGithub();
 }
 
 function resetToOriginalCatalog() {
@@ -1777,6 +1779,63 @@ async function callGithubApi(url, { method = "GET", token = "", body = null } = 
 }
 
 // ========================================================
+// SUBIDA DE FOTO INDIVIDUAL DIRECTA A fotos/ EN GITHUB
+// ========================================================
+async function uploadSinglePhotoToGithub(filename, dataUrl, cfg) {
+  if (!filename || !dataUrl || !dataUrl.startsWith("data:")) {
+    return { ok: false, error: "Datos de imagen vacíos o inválidos" };
+  }
+  let clean = filename.replace(/^(\.\/|\/)+/, "").replace(/^fotos\//, "").replace(/[^a-zA-Z0-9._-]/g, "_");
+  if (!/\.(jpe?g|png|webp|gif)$/i.test(clean)) {
+    clean += ".jpg";
+  }
+
+  const base64Data = dataUrl.replace(/^data:image\/[a-zA-Z+]+;base64,/, "").trim();
+  const filePath = `fotos/${clean}`;
+  const getUrl = `https://api.github.com/repos/${cfg.owner}/${cfg.repo}/contents/${filePath}?ref=${cfg.branch}&t=${Date.now()}`;
+
+  let sha = null;
+  const checkRes = await callGithubApi(getUrl, { token: cfg.token });
+  if (!checkRes.ok && checkRes.status === 401) {
+    return checkRes;
+  }
+  if (checkRes.ok && checkRes.data && checkRes.data.sha) {
+    sha = checkRes.data.sha;
+  }
+
+  const putUrl = `https://api.github.com/repos/${cfg.owner}/${cfg.repo}/contents/${filePath}`;
+  let putRes = await callGithubApi(putUrl, {
+    method: "PUT",
+    token: cfg.token,
+    body: {
+      message: `Subir imagen ${filePath} desde Admin NISSA`,
+      content: base64Data,
+      branch: cfg.branch,
+      sha: sha || undefined
+    }
+  });
+
+  // Si hubo conflicto de SHA (409), reintentar con el SHA fresco del servidor
+  if (putRes.status === 409) {
+    const reCheck = await callGithubApi(getUrl, { token: cfg.token });
+    if (reCheck.ok && reCheck.data && reCheck.data.sha) {
+      putRes = await callGithubApi(putUrl, {
+        method: "PUT",
+        token: cfg.token,
+        body: {
+          message: `Actualizar imagen ${filePath} desde Admin NISSA`,
+          content: base64Data,
+          branch: cfg.branch,
+          sha: reCheck.data.sha
+        }
+      });
+    }
+  }
+
+  return putRes;
+}
+
+// ========================================================
 // 5. GUARDAR PRODUCTO EN EL CATÁLOGO LOCAL
 // ========================================================
 function saveProduct(e) {
@@ -1792,13 +1851,10 @@ function saveProduct(e) {
   const price5 = Number(document.getElementById("prod-price5").value) || price;
   const price20 = Number(document.getElementById("prod-price20").value) || price;
 
-  let finalMainImage = document.getElementById("prod-main-image").value.trim();
+  let finalMainImage = (document.getElementById("prod-main-image")?.value || "").trim();
 
-  // Si se importó una nueva imagen (Base64 dataURL), guardarla directamente embebida
-  // para que NO sea necesaria la carpeta 'fotos/' y el archivo sea 100% autónomo.
+  // Si se importó una nueva imagen (Base64 dataURL), asignar nombre de archivo limpio en fotos/
   if (currentMainImageState.dataUrl && currentMainImageState.dataUrl.startsWith("data:")) {
-    finalMainImage = currentMainImageState.dataUrl;
-
     let cleanFilename = currentMainImageState.filename || "producto.jpg";
     if (!cleanFilename || cleanFilename === "producto.jpg" || /^(image|img|foto|screenshot|captura|whatsapp|descarga)/i.test(cleanFilename)) {
       const slug = name.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "");
@@ -1808,14 +1864,18 @@ function saveProduct(e) {
       cleanFilename += ".jpg";
     }
 
+    finalMainImage = cleanFilename;
     currentMainImageState.filename = cleanFilename;
 
-    // Guardar en caché y disco local para máxima compatibilidad
+    // Guardar en caché y disco local para previsualización inmediata
     window.NISSA_IMAGE_CACHE = window.NISSA_IMAGE_CACHE || {};
     window.NISSA_IMAGE_CACHE[cleanFilename] = currentMainImageState.dataUrl;
     persistImageInDB(cleanFilename, currentMainImageState.dataUrl);
     saveRecentImageInLocalStorage(cleanFilename, currentMainImageState.dataUrl);
     saveImageFileToServer(cleanFilename, currentMainImageState.dataUrl);
+  } else if (finalMainImage.startsWith("data:")) {
+    const slug = name.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "");
+    finalMainImage = `${slug || "producto"}.jpg`;
   }
 
   const descInput = document.getElementById("prod-desc") || document.getElementById("prod-desc-tab3");
@@ -1937,82 +1997,134 @@ async function saveAndPublishProductToGithub(e) {
     return;
   }
 
-  let finalMainImage = document.getElementById("prod-main-image").value.trim();
-  let dataUrlToUpload = currentMainImageState.dataUrl || "";
-  let imgFilename = currentMainImageState.filename || "";
-
-  if (!dataUrlToUpload && imgFilename && window.NISSA_IMAGE_CACHE && window.NISSA_IMAGE_CACHE[imgFilename] && window.NISSA_IMAGE_CACHE[imgFilename].startsWith("data:")) {
-    dataUrlToUpload = window.NISSA_IMAGE_CACHE[imgFilename];
-  }
-  if (!dataUrlToUpload && finalMainImage && window.NISSA_IMAGE_CACHE && window.NISSA_IMAGE_CACHE[finalMainImage] && window.NISSA_IMAGE_CACHE[finalMainImage].startsWith("data:")) {
-    dataUrlToUpload = window.NISSA_IMAGE_CACHE[finalMainImage];
-    if (!imgFilename) imgFilename = finalMainImage;
+  // Verificar si el usuario configuró GitHub y tiene Token
+  const cfg = getGithubConfig();
+  if (!cfg.owner || !cfg.repo || !cfg.token) {
+    alert("⚠️ Para publicar y que tus cambios se vean en todo el mundo en GitHub Pages, necesitás ingresar tu Token de GitHub.\n\nPresioná Aceptar para abrir la configuración.");
+    openGithubModal();
+    return;
   }
 
-  // Si hay imagen nueva en Base64, guardarla embebida directamente en products.js
-  // (Así NO se necesita la carpeta 'fotos/' y se publica en 1 solo commit sin complicaciones)
-  if (dataUrlToUpload && dataUrlToUpload.startsWith("data:")) {
-    finalMainImage = dataUrlToUpload;
-    currentMainImageState.mode = "base64";
+  const publishBtn = document.getElementById("btn-save-and-publish-github");
+  const originalBtnHtml = publishBtn ? publishBtn.innerHTML : "";
+  if (publishBtn) {
+    publishBtn.disabled = true;
+    publishBtn.innerHTML = "⏳ Conectando con GitHub...";
+  }
 
-    let cleanFilename = imgFilename || "producto.jpg";
-    if (!cleanFilename || cleanFilename === "producto.jpg" || /^(image|img|foto|screenshot|captura|whatsapp|descarga)/i.test(cleanFilename)) {
-      const slug = name.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "");
-      cleanFilename = `${slug || "producto"}.jpg`;
+  try {
+    let finalMainImage = (document.getElementById("prod-main-image")?.value || "").trim();
+    let dataUrlToUpload = currentMainImageState.dataUrl || "";
+    let imgFilename = currentMainImageState.filename || "";
+
+    if (!dataUrlToUpload && imgFilename && window.NISSA_IMAGE_CACHE && window.NISSA_IMAGE_CACHE[imgFilename] && window.NISSA_IMAGE_CACHE[imgFilename].startsWith("data:")) {
+      dataUrlToUpload = window.NISSA_IMAGE_CACHE[imgFilename];
     }
-    if (!/\.(jpe?g|png|webp)$/i.test(cleanFilename)) {
-      cleanFilename += ".jpg";
+    if (!dataUrlToUpload && finalMainImage && window.NISSA_IMAGE_CACHE && window.NISSA_IMAGE_CACHE[finalMainImage] && window.NISSA_IMAGE_CACHE[finalMainImage].startsWith("data:")) {
+      dataUrlToUpload = window.NISSA_IMAGE_CACHE[finalMainImage];
+      if (!imgFilename) imgFilename = finalMainImage;
     }
 
-    imgFilename = cleanFilename;
-    currentMainImageState.filename = cleanFilename;
+    // Si hay una foto cargada desde el equipo (Data URL Base64), subirla a la carpeta fotos/ de GitHub
+    if (dataUrlToUpload && dataUrlToUpload.startsWith("data:")) {
+      let cleanFilename = imgFilename || "producto.jpg";
+      cleanFilename = cleanFilename.replace(/^(\.\/|\/)+/, "").replace(/^fotos\//, "").replace(/[^a-zA-Z0-9._-]/g, "_");
+      if (!cleanFilename || cleanFilename === "producto.jpg" || /^(image|img|foto|screenshot|captura|whatsapp|descarga)/i.test(cleanFilename)) {
+        const slug = name.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "");
+        cleanFilename = `${slug || "producto"}.jpg`;
+      }
+      if (!/\.(jpe?g|png|webp|gif)$/i.test(cleanFilename)) {
+        cleanFilename += ".jpg";
+      }
 
-    window.NISSA_IMAGE_CACHE = window.NISSA_IMAGE_CACHE || {};
-    window.NISSA_IMAGE_CACHE[cleanFilename] = dataUrlToUpload;
-    persistImageInDB(cleanFilename, dataUrlToUpload);
-    saveRecentImageInLocalStorage(cleanFilename, dataUrlToUpload);
-    saveImageFileToServer(cleanFilename, dataUrlToUpload);
-  }
+      if (publishBtn) {
+        publishBtn.innerHTML = `⏳ Subiendo foto (${cleanFilename}) a fotos/...`;
+      }
 
-  // Recopilar datos completos del producto
-  const descInput = document.getElementById("prod-desc") || document.getElementById("prod-desc-tab3");
-  const description = descInput ? descInput.value.trim() : "";
+      // Subir archivo a la carpeta fotos/ del repositorio de GitHub
+      const photoRes = await uploadSinglePhotoToGithub(cleanFilename, dataUrlToUpload, cfg);
+      if (!photoRes.ok) {
+        const errMsg = photoRes.data?.message || photoRes.statusText || photoRes.error || "";
+        if (photoRes.status === 401 || errMsg.includes("Bad credentials")) {
+          alert(`⚠️ GitHub rechazó la subida de la imagen (401 Bad credentials).\n\nTu Personal Access Token expiró o no tiene permiso 'repo'. Por favor actualizalo en la configuración de GitHub.`);
+          openGithubModal();
+          return;
+        } else {
+          console.warn("Aviso al subir imagen a GitHub:", errMsg);
+        }
+      }
 
-  const galleryInputs = document.querySelectorAll(".gallery-input");
-  const images = [];
-  if (finalMainImage) images.push(finalMainImage);
-  galleryInputs.forEach(inp => {
-    const v = inp.value.trim();
-    if (v && !images.includes(v)) images.push(v);
-  });
+      finalMainImage = cleanFilename;
+      currentMainImageState.filename = cleanFilename;
 
-  const featureInputs = document.querySelectorAll(".feature-input");
-  const features = [];
-  featureInputs.forEach(inp => {
-    const v = inp.value.trim();
-    if (v) features.push(v);
-  });
+      window.NISSA_IMAGE_CACHE = window.NISSA_IMAGE_CACHE || {};
+      window.NISSA_IMAGE_CACHE[cleanFilename] = dataUrlToUpload;
+      persistImageInDB(cleanFilename, dataUrlToUpload);
+      saveRecentImageInLocalStorage(cleanFilename, dataUrlToUpload);
+      saveImageFileToServer(cleanFilename, dataUrlToUpload);
+    } else if (finalMainImage) {
+      // Normalizar nombre de archivo si se ingresó con prefijos de ruta
+      finalMainImage = finalMainImage.replace(/^(\.\/|\/)+/, "").replace(/^fotos\//, "");
+    }
 
-  const specs = {};
-  const garantia = document.getElementById("prod-spec-garantia").value.trim();
-  const stock = document.getElementById("prod-spec-stock").value.trim();
-  if (garantia) specs["Garantía"] = garantia;
-  if (stock) specs["Disponibilidad"] = stock;
+    // Recopilar datos completos del producto
+    const descInput = document.getElementById("prod-desc") || document.getElementById("prod-desc-tab3");
+    const description = descInput ? descInput.value.trim() : "";
 
-  const specKeyInputs = document.querySelectorAll(".spec-key-input");
-  const specValInputs = document.querySelectorAll(".spec-val-input");
-  for (let i = 0; i < specKeyInputs.length; i++) {
-    const k = specKeyInputs[i].value.trim();
-    const v = specValInputs[i].value.trim();
-    if (k && v) specs[k] = v;
-  }
+    const galleryInputs = document.querySelectorAll(".gallery-input");
+    const images = [];
+    if (finalMainImage) images.push(finalMainImage);
+    galleryInputs.forEach(inp => {
+      let v = inp.value.trim().replace(/^(\.\/|\/)+/, "").replace(/^fotos\//, "");
+      if (v && !images.includes(v)) images.push(v);
+    });
 
-  let finalId;
-  if (idVal) {
-    finalId = Number(idVal);
-    const existingIndex = currentProducts.findIndex(item => Number(item.id) === finalId);
-    if (existingIndex !== -1) {
-      currentProducts[existingIndex] = {
+    const featureInputs = document.querySelectorAll(".feature-input");
+    const features = [];
+    featureInputs.forEach(inp => {
+      const v = inp.value.trim();
+      if (v) features.push(v);
+    });
+
+    const specs = {};
+    const garantia = document.getElementById("prod-spec-garantia")?.value.trim() || "";
+    const stock = document.getElementById("prod-spec-stock")?.value.trim() || "";
+    if (garantia) specs["Garantía"] = garantia;
+    if (stock) specs["Disponibilidad"] = stock;
+
+    const specKeyInputs = document.querySelectorAll(".spec-key-input");
+    const specValInputs = document.querySelectorAll(".spec-val-input");
+    for (let i = 0; i < specKeyInputs.length; i++) {
+      const k = specKeyInputs[i].value.trim();
+      const v = specValInputs[i].value.trim();
+      if (k && v) specs[k] = v;
+    }
+
+    let finalId;
+    if (idVal) {
+      finalId = Number(idVal);
+      const existingIndex = currentProducts.findIndex(item => Number(item.id) === finalId);
+      if (existingIndex !== -1) {
+        currentProducts[existingIndex] = {
+          id: finalId,
+          name,
+          category,
+          tag: tag || undefined,
+          price,
+          price3,
+          price5,
+          price20,
+          image: finalMainImage,
+          images: images.length > 0 ? images : [finalMainImage],
+          description,
+          features,
+          specs
+        };
+      }
+    } else {
+      const maxId = currentProducts.reduce((max, item) => Math.max(max, Number(item.id) || 0), 0);
+      finalId = maxId + 1;
+      currentProducts.push({
         id: finalId,
         name,
         category,
@@ -2026,58 +2138,20 @@ async function saveAndPublishProductToGithub(e) {
         description,
         features,
         specs
-      };
+      });
     }
-  } else {
-    const maxId = currentProducts.reduce((max, item) => Math.max(max, Number(item.id) || 0), 0);
-    finalId = maxId + 1;
-    currentProducts.push({
-      id: finalId,
-      name,
-      category,
-      tag: tag || undefined,
-      price,
-      price3,
-      price5,
-      price20,
-      image: finalMainImage,
-      images: images.length > 0 ? images : [finalMainImage],
-      description,
-      features,
-      specs
-    });
-  }
 
-  // Guardar localmente primero (garantiza que siempre esté disponible en la tienda)
-  saveDraft();
-  if (typeof window !== "undefined") {
-    window.products = currentProducts;
-  }
-  const productsJsCode = generateProductsJsCode();
-  saveProductsFileToServer(productsJsCode);
-
-  renderCategoryFilter();
-  renderProductsList();
-
-  // Verificar si el usuario configuró GitHub
-  const cfg = getGithubConfig();
-  if (!cfg.owner || !cfg.repo || !cfg.token) {
-    closeProductModal();
-    if (confirm("✓ Tu producto y su imagen fueron guardados con éxito en tu panel y ya se muestran en la tienda local.\n\nPara que también se suban a tu repositorio de GitHub y se actualicen en GitHub Pages, ingresá tu Usuario, Repositorio y Token de GitHub.\n\n¿Deseás configurarlo ahora?")) {
-      openGithubModal();
+    if (typeof window !== "undefined") {
+      window.products = currentProducts;
     }
-    return;
-  }
 
-  const publishBtn = document.getElementById("btn-save-and-publish-github");
-  const originalBtnHtml = publishBtn ? publishBtn.innerHTML : "";
-  if (publishBtn) {
-    publishBtn.disabled = true;
-    publishBtn.innerHTML = "⏳ Publicando en GitHub...";
-  }
+    // Publicar catálogo products.js en GitHub
+    if (publishBtn) {
+      publishBtn.innerHTML = "⏳ Publicando catálogo en GitHub...";
+    }
+    const productsJsCode = generateProductsJsCode();
+    saveProductsFileToServer(productsJsCode);
 
-  try {
-    // Publicar catálogo products.js en GitHub (1 solo archivo autónomo)
     const getUrl = `https://api.github.com/repos/${cfg.owner}/${cfg.repo}/contents/${cfg.path}?ref=${cfg.branch}&t=${Date.now()}`;
     let currentSha = null;
     const getRes = await callGithubApi(getUrl, { token: cfg.token });
@@ -2086,37 +2160,54 @@ async function saveAndPublishProductToGithub(e) {
     }
 
     const base64Content = utf8ToBase64(productsJsCode);
-    const putRes = await callGithubApi(`https://api.github.com/repos/${cfg.owner}/${cfg.repo}/contents/${cfg.path}`, {
+    let putRes = await callGithubApi(`https://api.github.com/repos/${cfg.owner}/${cfg.repo}/contents/${cfg.path}`, {
       method: "PUT",
       token: cfg.token,
       body: {
-        message: `Actualizar producto "${name}" (#${finalId}) [Admin NISSA]`,
+        message: `Actualizar producto "${name}" (#${finalId}) y catálogo [Admin NISSA]`,
         content: base64Content,
         branch: cfg.branch,
         sha: currentSha || undefined
       }
     });
 
-    closeProductModal();
-    renderCategoryFilter();
-    renderProductsList();
+    if (putRes.status === 409) {
+      const freshGet = await callGithubApi(getUrl, { token: cfg.token });
+      if (freshGet.ok && freshGet.data && freshGet.data.sha) {
+        putRes = await callGithubApi(`https://api.github.com/repos/${cfg.owner}/${cfg.repo}/contents/${cfg.path}`, {
+          method: "PUT",
+          token: cfg.token,
+          body: {
+            message: `Actualizar producto "${name}" (#${finalId}) y catálogo [Admin NISSA]`,
+            content: base64Content,
+            branch: cfg.branch,
+            sha: freshGet.data.sha
+          }
+        });
+      }
+    }
 
     if (putRes.ok) {
-      showAlert(`🎉 ¡Producto "${escapeHtml(name)}" publicado con éxito en GitHub! Tu tienda se actualizará en ~30 segundos.`);
+      // Limpiar borrador local para mantener sincronía pura con el repositorio remoto
+      localStorage.removeItem("nissa_catalog_draft");
+      checkDraftStatus();
+      closeProductModal();
+      renderCategoryFilter();
+      renderProductsList();
+      showAlert(`🎉 ¡Éxito! El producto "${escapeHtml(name)}" y su imagen fueron publicados en GitHub.<br><strong>Cualquier persona del mundo que ingrese a la tienda verá los cambios en 1 a 2 minutos</strong> en <a href="https://${cfg.owner}.github.io/${cfg.repo}" target="_blank" style="color:#38bdf8; text-decoration:underline;">https://${cfg.owner}.github.io/${cfg.repo}</a> (tiempo que tarda GitHub Pages en compilar la actualización).`, true);
     } else {
       const ghMsg = putRes.data?.message || putRes.statusText || "";
       if (putRes.status === 401 || ghMsg.includes("Bad credentials")) {
-        alert(`✓ Los cambios se guardaron localmente en el panel y ya se muestran en la tienda.\n\n⚠️ Sin embargo, GitHub rechazó la publicación (401 Bad credentials).\n\nTu Personal Access Token de GitHub no es válido o expiró. Por favor actualizalo en la configuración de GitHub.`);
+        alert(`⚠️ GitHub rechazó la publicación (401 Bad credentials).\n\nTu Personal Access Token no es válido o expiró. Por favor actualizalo en la configuración de GitHub.`);
         openGithubModal();
       } else {
-        alert(`Los cambios se guardaron localmente en el panel y la tienda, pero GitHub respondió: ${ghMsg}\n\nPodés usar el botón "Descargar products.js" para actualizar tu repositorio manualmente.`);
+        alert(`GitHub respondió: ${ghMsg}\n\nPodés usar el botón "Descargar products.js" para actualizar tu repositorio manualmente.`);
       }
     }
 
   } catch (err) {
     console.error("Error en saveAndPublishProductToGithub:", err);
-    closeProductModal();
-    alert("✓ Los cambios se guardaron localmente y ya están visibles en la tienda.\n\nError de conexión con GitHub: " + (err.message || err));
+    alert("Error de conexión con GitHub: " + (err.message || err));
   } finally {
     if (publishBtn) {
       publishBtn.disabled = false;
@@ -2481,7 +2572,7 @@ function utf8ToBase64(str) {
 async function publishDirectlyToGithub() {
   const cfg = getGithubConfig();
   if (!cfg.owner || !cfg.repo || !cfg.token) {
-    alert("Para publicar con 1 clic en GitHub, primero completá tus datos del repositorio y el Token de acceso gratuito.");
+    alert("⚠️ Para publicar y que tus cambios se vean en todo el mundo en GitHub Pages, primero ingresá tu Token de GitHub.\n\nPresioná Aceptar para abrir la configuración.");
     openGithubModal();
     return;
   }
@@ -2490,19 +2581,54 @@ async function publishDirectlyToGithub() {
   const originalBtnText = publishBtn ? publishBtn.innerHTML : "";
   if (publishBtn) {
     publishBtn.disabled = true;
-    publishBtn.innerHTML = "⏳ Publicando en GitHub...";
+    publishBtn.innerHTML = "⏳ Verificando fotos y catálogo...";
   }
 
-  // Guardar archivo products.js en el disco del servidor local
-  const newContent = generateProductsJsCode();
-  saveProductsFileToServer(newContent);
-
   try {
+    // 1. Revisar si hay imágenes pendientes de subir a fotos/ en GitHub
+    let photosUploaded = 0;
+    for (let i = 0; i < currentProducts.length; i++) {
+      const p = currentProducts[i];
+      let img = p.image ? String(p.image).trim() : "";
+
+      // Si la imagen en el producto es un dataURL (Base64)
+      if (img.startsWith("data:")) {
+        const slug = (p.name || `producto-${p.id}`).toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "");
+        const cleanFilename = `${slug || `producto-${p.id}`}.jpg`;
+        if (publishBtn) {
+          publishBtn.innerHTML = `⏳ Subiendo foto (${cleanFilename}) a fotos/...`;
+        }
+        const upRes = await uploadSinglePhotoToGithub(cleanFilename, img, cfg);
+        if (upRes.ok) {
+          p.image = cleanFilename;
+          if (Array.isArray(p.images)) {
+            p.images = p.images.map(item => item === img ? cleanFilename : item);
+          }
+          photosUploaded++;
+        }
+      } else if (img && window.NISSA_IMAGE_CACHE && window.NISSA_IMAGE_CACHE[img] && window.NISSA_IMAGE_CACHE[img].startsWith("data:")) {
+        // La imagen tiene un nombre de archivo y está en caché local, asegurar que esté subida a fotos/ de GitHub
+        const dataUrl = window.NISSA_IMAGE_CACHE[img];
+        const cleanFilename = img.replace(/^(\.\/|\/)+/, "").replace(/^fotos\//, "");
+        if (publishBtn) {
+          publishBtn.innerHTML = `⏳ Sincronizando foto (${cleanFilename}) en fotos/...`;
+        }
+        const upRes = await uploadSinglePhotoToGithub(cleanFilename, dataUrl, cfg);
+        if (upRes.ok) {
+          photosUploaded++;
+        }
+      }
+    }
+
+    // 2. Guardar archivo products.js en el disco del servidor local si está disponible
+    const newContent = generateProductsJsCode();
+    saveProductsFileToServer(newContent);
+
     if (publishBtn) {
       publishBtn.innerHTML = "⏳ Conectando con GitHub...";
     }
 
-    // 1. Obtener el SHA actual del archivo en GitHub (si existe)
+    // 3. Obtener el SHA actual del archivo en GitHub (si existe)
     const getUrl = `https://api.github.com/repos/${cfg.owner}/${cfg.repo}/contents/${cfg.path}?ref=${cfg.branch}&t=${Date.now()}`;
     let currentSha = null;
     const getRes = await callGithubApi(getUrl, { token: cfg.token });
@@ -2514,7 +2640,7 @@ async function publishDirectlyToGithub() {
       publishBtn.innerHTML = "⏳ Subiendo catálogo a GitHub...";
     }
 
-    // 2. Hacer el commit mediante PUT (1 solo archivo autónomo sin depender de carpeta fotos/)
+    // 4. Hacer el commit mediante PUT
     const base64Content = utf8ToBase64(newContent);
     const putUrl = `https://api.github.com/repos/${cfg.owner}/${cfg.repo}/contents/${cfg.path}`;
     const payload = {
@@ -2526,26 +2652,44 @@ async function publishDirectlyToGithub() {
       payload.sha = currentSha;
     }
 
-    const putRes = await callGithubApi(putUrl, {
+    let putRes = await callGithubApi(putUrl, {
       method: "PUT",
       token: cfg.token,
       body: payload
     });
 
+    if (putRes.status === 409) {
+      const freshGet = await callGithubApi(getUrl, { token: cfg.token });
+      if (freshGet.ok && freshGet.data && freshGet.data.sha) {
+        payload.sha = freshGet.data.sha;
+        putRes = await callGithubApi(putUrl, {
+          method: "PUT",
+          token: cfg.token,
+          body: payload
+        });
+      }
+    }
+
     if (putRes.ok) {
-      showAlert(`🎉 ¡Catálogo publicado exitosamente en GitHub! GitHub Pages actualizará tu tienda en ~30 segundos para todos los dispositivos.`);
+      // Limpiar borrador local para mantener sincronía pura con el repositorio remoto
+      localStorage.removeItem("nissa_catalog_draft");
+      checkDraftStatus();
+      renderProductsList();
+
+      const photoMsg = photosUploaded > 0 ? ` (${photosUploaded} foto(s) subida(s) a la carpeta fotos/)` : "";
+      showAlert(`🎉 ¡Catálogo publicado exitosamente en GitHub${photoMsg}!<br><strong>Cualquier persona del mundo que ingrese a tu tienda verá los cambios en 1 a 2 minutos</strong> en <a href="https://${cfg.owner}.github.io/${cfg.repo}" target="_blank" style="color:#38bdf8; text-decoration:underline;">https://${cfg.owner}.github.io/${cfg.repo}</a> (tiempo que tarda GitHub Pages en compilar la actualización).`, true);
     } else {
       const msg = putRes.data?.message || putRes.statusText || "";
       if (putRes.status === 401 || msg.includes("Bad credentials")) {
-        alert(`✓ Los cambios se guardaron en la tienda local.\n\n⚠️ Error de GitHub: Bad credentials (Token inválido o no aceptado).\n\nPor favor verificá tu Personal Access Token en la configuración de GitHub.`);
+        alert(`⚠️ Error de GitHub: Bad credentials (Token no aceptado).\n\nTu Personal Access Token expiró o no tiene permiso 'repo'. Por favor ingresá un nuevo Token en la configuración de GitHub.`);
         openGithubModal();
       } else {
-        alert(`No se pudo publicar en GitHub: ${msg}\n\nPodés descargar el archivo products.js manualmente con el botón "Descargar products.js".`);
+        alert(`No se pudo publicar en GitHub (${putRes.status}): ${msg}\n\nPodés descargar el archivo products.js manualmente con el botón "Descargar products.js".`);
       }
     }
 
   } catch (err) {
-    alert("✓ Los cambios se guardaron localmente en la tienda.\n\nError de conexión al publicar en GitHub: " + (err.message || err));
+    alert("Error de conexión al publicar en GitHub: " + (err.message || err));
   } finally {
     if (publishBtn) {
       publishBtn.disabled = false;
