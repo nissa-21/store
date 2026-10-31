@@ -1,6 +1,6 @@
 // Catálogo de productos NISSA
 // Generado automáticamente desde el Panel de Administración NISSA
-// Actualizado: 31/10/2026, 01:43:03
+// Actualizado: 31/10/2026, 01:44:44
 // 100% Compatible con GitHub Pages (Costo $0)
 
 let products = [
@@ -44,9 +44,9 @@ let products = [
     "price3": 32000,
     "price5": 29500,
     "price20": 27000,
-    "image": "28374.jpg",
+    "image": "b6a33239-b290-46c1-80b5-da7535055729-1-all-464.jpg",
     "images": [
-      "28374.jpg",
+      "b6a33239-b290-46c1-80b5-da7535055729-1-all-464.jpg",
       "cargador-samsung-detalle.jpg"
     ],
     "description": "Cargador de pared de 25W con protocolo Super Fast Charging (Power Delivery 3.0 PPS). Brinda recarga acelerada para smartphones Samsung Galaxy Series A, S, Z y Note, así como para dispositivos Android y consolas portátiles.",
