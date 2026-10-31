@@ -699,10 +699,12 @@
           <div class="form-group">
             <label for="gh-token">Personal Access Token (PAT): <span class="req">*</span></label>
             <div class="input-with-action">
-              <input type="password" id="gh-token" placeholder="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" autocomplete="off">
-              <button type="button" class="btn-toggle-pass" onclick="togglePassVisibility('gh-token')">👁️</button>
+              <input type="password" id="gh-token" placeholder="Pegá tu nuevo token (ghp_... o github_pat_...)" autocomplete="new-password">
+              <button type="button" class="btn-toggle-pass" onclick="togglePassVisibility('gh-token')" title="Ver / Ocultar token">👁️</button>
+              <button type="button" class="btn btn-xs btn-outline" onclick="clearStoredToken()" title="Borrar token guardado en este navegador" style="margin-left: 6px; padding: 6px 10px; font-size: 11.5px; white-space: nowrap;">🗑️ Borrar</button>
             </div>
-            <span class="form-hint">Tu token queda protegido en el almacenamiento local de este navegador.</span>
+            <div id="gh-token-stored-status" style="margin-top: 6px; font-size: 12px; font-weight: 600; color: #475569;"></div>
+            <span class="form-hint" style="color: #0369a1; font-weight: 500;">🔒 <strong>100% Privado:</strong> Tu token se almacena únicamente en el almacenamiento local de este navegador (LocalStorage). Jamás se sube a GitHub ni se incluye en el código fuente, por lo que GitHub no lo revoca.</span>
           </div>
 
           <div id="gh-test-status" class="status-msg" style="display: none;"></div>
@@ -714,6 +716,11 @@
             <button type="submit" class="btn btn-primary">
               💾 Guardar Configuración
             </button>
+          </div>
+
+          <div style="margin-top: 20px; padding: 12px 14px; background: #f8fafc; border: 1px dashed #cbd5e1; border-radius: 8px; font-size: 12.5px; color: #475569;">
+            💡 <strong>¿Preferís no usar ningún Token?</strong><br>
+            Podés guardar tus cambios de productos y fotos con el botón <em>"Guardar solo local"</em> y luego hacer clic en <strong>"📥 Descargar products.js"</strong> en el panel. Subís ese archivo a tu repositorio de GitHub reemplazando el anterior y tu tienda se actualizará en 30 segundos sin necesidad de tokens ni permisos.
           </div>
         </form>
       </div>
