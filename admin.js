@@ -375,7 +375,7 @@ function resolveAdminPhoto(img, prod) {
     return custom.dataUrl;
   }
 
-  return "./fotos/" + clean;
+  return "./" + clean;
 }
 
 function updateProductCount() {
@@ -1730,34 +1730,38 @@ async function saveCotizadorFileToServer(code) {
 async function callGithubApi(url, { method = "GET", token = "", body = null } = {}) {
   const cleanToken = sanitizeGithubToken(token);
 
-  // 1. Probar a través del proxy del servidor /api/github-proxy (evita CORS y bloqueos de navegador)
-  try {
-    const proxyRes = await fetch("/api/github-proxy", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        url,
-        method,
-        headers: {
-          "Authorization": `Bearer ${cleanToken}`,
-          "Accept": "application/vnd.github+json",
-          "X-GitHub-Api-Version": "2022-11-28"
-        },
-        body
-      })
-    });
-    if (proxyRes.ok) {
-      const resJson = await proxyRes.json();
-      return resJson;
+  // 1. Si estamos en desarrollo local o servidor con Node/Vite, probar el proxy
+  const isLocalServer = typeof window !== "undefined" && (window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1" || window.location.hostname.endsWith(".run.app"));
+  if (isLocalServer) {
+    try {
+      const proxyRes = await fetch("/api/github-proxy", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          url,
+          method,
+          headers: {
+            "Authorization": `Bearer ${cleanToken}`,
+            "Accept": "application/vnd.github+json",
+            "X-GitHub-Api-Version": "2022-11-28"
+          },
+          body
+        })
+      });
+      if (proxyRes.ok) {
+        const resJson = await proxyRes.json();
+        return resJson;
+      }
+    } catch (proxyErr) {
+      console.warn("Proxy local /api/github-proxy no disponible, intentando fetch directo:", proxyErr);
     }
-  } catch (proxyErr) {
-    console.warn("Proxy /api/github-proxy no disponible, intentando fetch directo:", proxyErr);
   }
 
-  // 2. Fallback a llamada directa desde el navegador
+  // 2. Llamada directa a GitHub API (funciona 100% en GitHub Pages vía CORS oficial de GitHub)
   const directHeaders = {
     "Authorization": `Bearer ${cleanToken}`,
-    "Accept": "application/vnd.github+json"
+    "Accept": "application/vnd.github+json",
+    "X-GitHub-Api-Version": "2022-11-28"
   };
   const directOptions = {
     method,
@@ -1779,7 +1783,7 @@ async function callGithubApi(url, { method = "GET", token = "", body = null } = 
 }
 
 // ========================================================
-// SUBIDA DE FOTO INDIVIDUAL DIRECTA A fotos/ EN GITHUB
+// SUBIDA DE FOTO DIRECTA A LA RAÍZ DEL REPOSITORIO GITHUB
 // ========================================================
 async function uploadSinglePhotoToGithub(filename, dataUrl, cfg) {
   if (!filename || !dataUrl || !dataUrl.startsWith("data:")) {
@@ -1791,7 +1795,8 @@ async function uploadSinglePhotoToGithub(filename, dataUrl, cfg) {
   }
 
   const base64Data = dataUrl.replace(/^data:image\/[a-zA-Z+]+;base64,/, "").trim();
-  const filePath = `fotos/${clean}`;
+  // Se guarda directamente en la raíz del repositorio de GitHub (sin subcarpeta fotos/)
+  const filePath = clean;
   const getUrl = `https://api.github.com/repos/${cfg.owner}/${cfg.repo}/contents/${filePath}?ref=${cfg.branch}&t=${Date.now()}`;
 
   let sha = null;
@@ -1808,7 +1813,7 @@ async function uploadSinglePhotoToGithub(filename, dataUrl, cfg) {
     method: "PUT",
     token: cfg.token,
     body: {
-      message: `Subir imagen ${filePath} desde Admin NISSA`,
+      message: `Subir imagen ${filePath} al repositorio NISSA`,
       content: base64Data,
       branch: cfg.branch,
       sha: sha || undefined
@@ -1823,7 +1828,7 @@ async function uploadSinglePhotoToGithub(filename, dataUrl, cfg) {
         method: "PUT",
         token: cfg.token,
         body: {
-          message: `Actualizar imagen ${filePath} desde Admin NISSA`,
+          message: `Actualizar imagen ${filePath} al repositorio NISSA`,
           content: base64Data,
           branch: cfg.branch,
           sha: reCheck.data.sha
@@ -1836,136 +1841,11 @@ async function uploadSinglePhotoToGithub(filename, dataUrl, cfg) {
 }
 
 // ========================================================
-// 5. GUARDAR PRODUCTO EN EL CATÁLOGO LOCAL
+// 5. GUARDAR Y PUBLICAR PRODUCTO EN EL CATÁLOGO
 // ========================================================
 function saveProduct(e) {
-  if (e) e.preventDefault();
-
-  const idVal = document.getElementById("prod-id").value;
-  const name = document.getElementById("prod-name").value.trim();
-  const category = document.getElementById("prod-category").value.trim().toLowerCase();
-  const tag = document.getElementById("prod-tag").value.trim();
-
-  const price = Number(document.getElementById("prod-price").value) || 0;
-  const price3 = Number(document.getElementById("prod-price3").value) || price;
-  const price5 = Number(document.getElementById("prod-price5").value) || price;
-  const price20 = Number(document.getElementById("prod-price20").value) || price;
-
-  let finalMainImage = (document.getElementById("prod-main-image")?.value || "").trim();
-
-  // Si se importó una nueva imagen (Base64 dataURL), asignar nombre de archivo limpio en fotos/
-  if (currentMainImageState.dataUrl && currentMainImageState.dataUrl.startsWith("data:")) {
-    let cleanFilename = currentMainImageState.filename || "producto.jpg";
-    if (!cleanFilename || cleanFilename === "producto.jpg" || /^(image|img|foto|screenshot|captura|whatsapp|descarga)/i.test(cleanFilename)) {
-      const slug = name.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "");
-      cleanFilename = `${slug || "producto"}.jpg`;
-    }
-    if (!/\.(jpe?g|png|webp)$/i.test(cleanFilename)) {
-      cleanFilename += ".jpg";
-    }
-
-    finalMainImage = cleanFilename;
-    currentMainImageState.filename = cleanFilename;
-
-    // Guardar en caché y disco local para previsualización inmediata
-    window.NISSA_IMAGE_CACHE = window.NISSA_IMAGE_CACHE || {};
-    window.NISSA_IMAGE_CACHE[cleanFilename] = currentMainImageState.dataUrl;
-    persistImageInDB(cleanFilename, currentMainImageState.dataUrl);
-    saveRecentImageInLocalStorage(cleanFilename, currentMainImageState.dataUrl);
-    saveImageFileToServer(cleanFilename, currentMainImageState.dataUrl);
-  } else if (finalMainImage.startsWith("data:")) {
-    const slug = name.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "");
-    finalMainImage = `${slug || "producto"}.jpg`;
-  }
-
-  const descInput = document.getElementById("prod-desc") || document.getElementById("prod-desc-tab3");
-  const description = descInput ? descInput.value.trim() : "";
-
-  // Galería de fotos
-  const galleryInputs = document.querySelectorAll(".gallery-input");
-  const images = [];
-  if (finalMainImage) images.push(finalMainImage);
-  galleryInputs.forEach(inp => {
-    const v = inp.value.trim();
-    if (v && !images.includes(v)) images.push(v);
-  });
-
-  // Características
-  const featureInputs = document.querySelectorAll(".feature-input");
-  const features = [];
-  featureInputs.forEach(inp => {
-    const v = inp.value.trim();
-    if (v) features.push(v);
-  });
-
-  // Specs
-  const specs = {};
-  const garantia = document.getElementById("prod-spec-garantia").value.trim();
-  const stock = document.getElementById("prod-spec-stock").value.trim();
-  if (garantia) specs["Garantía"] = garantia;
-  if (stock) specs["Disponibilidad"] = stock;
-
-  const specKeyInputs = document.querySelectorAll(".spec-key-input");
-  const specValInputs = document.querySelectorAll(".spec-val-input");
-  for (let i = 0; i < specKeyInputs.length; i++) {
-    const k = specKeyInputs[i].value.trim();
-    const v = specValInputs[i].value.trim();
-    if (k && v) specs[k] = v;
-  }
-
-  let finalId;
-  if (idVal) {
-    finalId = Number(idVal);
-    const existingIndex = currentProducts.findIndex(item => Number(item.id) === finalId);
-    if (existingIndex !== -1) {
-      currentProducts[existingIndex] = {
-        id: finalId,
-        name,
-        category,
-        tag: tag || undefined,
-        price,
-        price3,
-        price5,
-        price20,
-        image: finalMainImage,
-        images: images.length > 0 ? images : [finalMainImage],
-        description,
-        features,
-        specs
-      };
-    }
-  } else {
-    const maxId = currentProducts.reduce((max, item) => Math.max(max, Number(item.id) || 0), 0);
-    finalId = maxId + 1;
-    currentProducts.push({
-      id: finalId,
-      name,
-      category,
-      tag: tag || undefined,
-      price,
-      price3,
-      price5,
-      price20,
-      image: finalMainImage,
-      images: images.length > 0 ? images : [finalMainImage],
-      description,
-      features,
-      specs
-    });
-  }
-
-  saveDraft();
-  if (typeof window !== "undefined") {
-    window.products = currentProducts;
-  }
-
-  // Guardar archivo products.js en el disco local
-  saveProductsFileToServer(generateProductsJsCode());
-
-  closeProductModal();
-  renderCategoryFilter();
-  renderProductsList();
-  showAlert(`<span>✓ Producto "${escapeHtml(name)}" guardado con éxito. Ya está visible en la tienda.</span> <button type="button" class="btn btn-sm btn-primary" style="margin-left:10px; background:#0284c7; color:#fff;" onclick="downloadProductsJs()">📥 Descargar products.js</button> <button type="button" class="btn btn-sm btn-github" style="margin-left:6px;" onclick="publishDirectlyToGithub()">🚀 Publicar en GitHub</button>`, true);
+  // Siempre publica directamente en GitHub para que toda persona del mundo vea los cambios
+  return saveAndPublishProductToGithub(e);
 }
 
 // ========================================================
@@ -2038,10 +1918,10 @@ async function saveAndPublishProductToGithub(e) {
       }
 
       if (publishBtn) {
-        publishBtn.innerHTML = `⏳ Subiendo foto (${cleanFilename}) a fotos/...`;
+        publishBtn.innerHTML = `⏳ Subiendo foto (${cleanFilename}) al repositorio...`;
       }
 
-      // Subir archivo a la carpeta fotos/ del repositorio de GitHub
+      // Subir archivo a la raíz del repositorio de GitHub
       const photoRes = await uploadSinglePhotoToGithub(cleanFilename, dataUrlToUpload, cfg);
       if (!photoRes.ok) {
         const errMsg = photoRes.data?.message || photoRes.statusText || photoRes.error || "";
@@ -2596,7 +2476,7 @@ async function publishDirectlyToGithub() {
         const slug = (p.name || `producto-${p.id}`).toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "");
         const cleanFilename = `${slug || `producto-${p.id}`}.jpg`;
         if (publishBtn) {
-          publishBtn.innerHTML = `⏳ Subiendo foto (${cleanFilename}) a fotos/...`;
+          publishBtn.innerHTML = `⏳ Subiendo foto (${cleanFilename}) al repositorio...`;
         }
         const upRes = await uploadSinglePhotoToGithub(cleanFilename, img, cfg);
         if (upRes.ok) {
@@ -2607,11 +2487,11 @@ async function publishDirectlyToGithub() {
           photosUploaded++;
         }
       } else if (img && window.NISSA_IMAGE_CACHE && window.NISSA_IMAGE_CACHE[img] && window.NISSA_IMAGE_CACHE[img].startsWith("data:")) {
-        // La imagen tiene un nombre de archivo y está en caché local, asegurar que esté subida a fotos/ de GitHub
+        // La imagen tiene un nombre de archivo y está en caché local, asegurar que esté subida a la raíz del repositorio
         const dataUrl = window.NISSA_IMAGE_CACHE[img];
         const cleanFilename = img.replace(/^(\.\/|\/)+/, "").replace(/^fotos\//, "");
         if (publishBtn) {
-          publishBtn.innerHTML = `⏳ Sincronizando foto (${cleanFilename}) en fotos/...`;
+          publishBtn.innerHTML = `⏳ Sincronizando foto (${cleanFilename}) al repositorio...`;
         }
         const upRes = await uploadSinglePhotoToGithub(cleanFilename, dataUrl, cfg);
         if (upRes.ok) {
@@ -2676,7 +2556,7 @@ async function publishDirectlyToGithub() {
       checkDraftStatus();
       renderProductsList();
 
-      const photoMsg = photosUploaded > 0 ? ` (${photosUploaded} foto(s) subida(s) a la carpeta fotos/)` : "";
+      const photoMsg = photosUploaded > 0 ? ` (${photosUploaded} foto(s) subida(s) directamente al repositorio)` : "";
       showAlert(`🎉 ¡Catálogo publicado exitosamente en GitHub${photoMsg}!<br><strong>Cualquier persona del mundo que ingrese a tu tienda verá los cambios en 1 a 2 minutos</strong> en <a href="https://${cfg.owner}.github.io/${cfg.repo}" target="_blank" style="color:#38bdf8; text-decoration:underline;">https://${cfg.owner}.github.io/${cfg.repo}</a> (tiempo que tarda GitHub Pages en compilar la actualización).`, true);
     } else {
       const msg = putRes.data?.message || putRes.statusText || "";

@@ -340,7 +340,7 @@
                     📁 Importar Imagen
                   </label>
                   <button type="button" class="btn btn-secondary btn-sm" onclick="openImageGalleryModal('main')">
-                    🖼️ Biblioteca fotos/
+                    🖼️ Galería de Fotos
                   </button>
                 </div>
               </div>
@@ -498,33 +498,11 @@
                     
                     <div class="preview-title" id="main-image-display-name">producto.jpg</div>
                     
-                    <!-- SELECTOR DE FORMATO DE GUARDADO -->
-                    <div class="storage-mode-box">
-                      <span class="storage-label">Modo de guardado en el catálogo:</span>
-                      <div class="storage-mode-buttons">
-                        <button type="button" class="btn-storage-mode active" id="btn-mode-base64" onclick="setMainImageStorageMode('base64')" title="Se guarda dentro de products.js. ¡Funciona de inmediato sin subir archivos adicionales a GitHub!">
-                          🌟 Embebida (Base64 directo)
-                        </button>
-                        <button type="button" class="btn-storage-mode" id="btn-mode-fotos" onclick="setMainImageStorageMode('fotos')" title="Referencia a fotos/nombre.jpg para mantener el repositorio ordenado.">
-                          📁 Archivo en fotos/
-                        </button>
-                      </div>
-                    </div>
-
-                    <!-- OPCIONES PARA ARCHIVO LOCAL EN FOTOS/ -->
-                    <div id="file-storage-options" class="file-storage-options" style="display: none;">
-                      <div class="file-name-input-wrap">
-                        <label for="prod-filename-input">Nombre en carpeta <code>fotos/</code>:</label>
-                        <input type="text" id="prod-filename-input" placeholder="ej: mi-producto.jpg" oninput="updateFilenameFromInput(this.value)">
-                      </div>
-                      <div class="file-action-buttons">
-                        <button type="button" class="btn btn-outline btn-sm" onclick="downloadMainImageFile()">
-                          📥 Descargar .jpg optimizado
-                        </button>
-                        <button type="button" class="btn btn-github btn-sm" onclick="uploadMainImageToGithub()" id="btn-upload-github-main">
-                          🚀 Subir a fotos/ en GitHub
-                        </button>
-                      </div>
+                    <!-- INDICADOR DE SUBIDA DIRECTA AL REPOSITORIO -->
+                    <div class="storage-mode-box" style="background: rgba(16, 185, 129, 0.08); border: 1px solid rgba(16, 185, 129, 0.25); border-radius: 8px; padding: 10px 14px; margin: 12px 0;">
+                      <span style="font-size: 12px; color: #10b981; font-weight: 600; display: flex; align-items: center; gap: 6px;">
+                        ✓ La foto se optimizará y subirá directamente a la raíz de tu repositorio en GitHub al guardar.
+                      </span>
                     </div>
 
                     <div class="preview-card-footer">
@@ -629,11 +607,8 @@
           <button type="button" class="btn btn-secondary" onclick="closeProductModal()">
             Cancelar
           </button>
-          <button type="button" class="btn btn-outline" onclick="saveProduct(event)" title="Guarda solo en este navegador sin subir a GitHub">
-            💾 Guardar solo local
-          </button>
           <button type="submit" class="btn btn-modal-github" id="btn-save-and-publish-github">
-            🚀 Guardar y Publicar en GitHub
+            🚀 Guardar y Publicar en Tienda (GitHub)
           </button>
         </div>
       </form>

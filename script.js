@@ -121,8 +121,8 @@ function getProductImage(product) {
     }
   }
 
-  // Retorna la ruta relativa './fotos/nombre.ext' compatible con GitHub Pages y local
-  return `./${PRODUCT_IMAGES_DIR}/${img}`;
+  // Retorna la ruta relativa directa en la raíz del repositorio
+  return `./${img}`;
 }
 
 // Cargar imágenes guardadas desde IndexedDB para que se muestren en la tienda pública
