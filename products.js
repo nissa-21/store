@@ -1,6 +1,6 @@
 // Catálogo oficial de productos NISSA
 // Generado automáticamente desde el Panel de Administración NISSA
-// Actualizado: 31/10/2026, 10:46:16
+// Actualizado: 1/11/2026, 05:08:54
 // 100% Compatible con GitHub Pages (Costo $0)
 
 let products = [
@@ -37,32 +37,22 @@ let products = [
   },
   {
     "id": 2,
-    "name": "Cargador Rápido USB-C 25W Samsung Super Fast",
-    "category": "celulares",
-    "tag": "Super Fast Charge",
+    "name": "AirPods Pro 2Gen",
+    "category": "audio",
+    "tag": "Más vendido",
     "price": 35000,
     "price3": 32000,
     "price5": 29500,
     "price20": 27000,
-    "image": "cargador-rapido-usb-c-25w-samsung-super-fast.jpg",
+    "image": "84759.png",
     "images": [
-      "cargador-rapido-usb-c-25w-samsung-super-fast.jpg",
+      "84759.png",
       "cargador-samsung-detalle.jpg"
     ],
-    "description": "Cargador de pared de 25W con protocolo Super Fast Charging (Power Delivery 3.0 PPS). Brinda recarga acelerada para smartphones Samsung Galaxy Series A, S, Z y Note, así como para dispositivos Android y consolas portátiles.",
-    "features": [
-      "Tecnología Samsung Super Fast Charging 25W con control dinámico de voltaje PPS",
-      "Carga del 0% al 60% en aproximadamente 35 minutos",
-      "Cuerpo ignífugo con disipación térmica optimizada para uso continuo seguro",
-      "Compatible con teléfonos Samsung, Xiaomi, Motorola, consolas Nintendo Switch y tablets",
-      "Garantía de laboratorio NISSA por 90 días con soporte técnico especializado"
-    ],
+    "description": "",
+    "features": [],
     "specs": {
-      "Potencia": "25W Super Fast Charging (PD 3.0 PPS)",
-      "Puerto de salida": "USB Tipo-C hembra",
-      "Compatibilidad": "Samsung Galaxy S20 a S24, Galaxy A54/A55/A34/A35, Z Fold/Flip y universales",
-      "Garantía": "90 días oficial escrita NISSA",
-      "Voltaje de entrada": "100-240V auto-regulable para viajes"
+      "Garantía": "90 días oficial escrita NISSA"
     }
   },
   {
