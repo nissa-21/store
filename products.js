@@ -1,6 +1,6 @@
 // Catálogo oficial de productos NISSA
 // Generado automáticamente desde el Panel de Administración NISSA
-// Actualizado: 1/11/2026, 05:08:54
+// Actualizado: 1/11/2026, 05:13:29
 // 100% Compatible con GitHub Pages (Costo $0)
 
 let products = [
@@ -44,9 +44,9 @@ let products = [
     "price3": 32000,
     "price5": 29500,
     "price20": 27000,
-    "image": "84759.png",
+    "image": "84760.webp",
     "images": [
-      "84759.png",
+      "84760.webp",
       "cargador-samsung-detalle.jpg"
     ],
     "description": "",
