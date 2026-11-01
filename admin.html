@@ -5,6 +5,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Panel de Administración - NISSA Catálogo y Precios</title>
   <meta name="robots" content="noindex, nofollow">
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <meta http-equiv="Pragma" content="no-cache">
+  <meta http-equiv="Expires" content="0">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
@@ -124,6 +127,9 @@
               <button type="button" class="btn btn-primary" onclick="downloadProductsJs()">
                 📥 Descargar products.js
               </button>
+              <a href="./nissa-tienda-completa.zip" download="nissa-tienda-completa.zip" class="btn btn-outline" style="text-decoration:none; display:inline-flex; align-items:center; gap:6px;" title="Descargar paquete ZIP con todos los archivos corregidos listos para tu repositorio">
+                📦 Descargar Proyecto Completo (ZIP)
+              </a>
               <button type="button" class="btn btn-github" onclick="publishDirectlyToGithub()" id="btn-publish-github">
                 🚀 Publicar en GitHub
               </button>
@@ -1071,9 +1077,11 @@
     </div>
   </div>
 
-  <!-- CARGA DE ARCHIVOS ORIGINALES DE PRODUCTOS Y COTIZADOR -->
-  <script src="./products.js"></script>
-  <script src="./cotizador-data.js"></script>
+  <!-- CARGA DE ARCHIVOS ORIGINALES DE PRODUCTOS Y COTIZADOR CON ANTI-CACHE -->
+  <script>
+    document.write('<script src="./products.js?t=' + Date.now() + '"><\/script>');
+    document.write('<script src="./cotizador-data.js?t=' + Date.now() + '"><\/script>');
+  </script>
   <!-- LÓGICA COMPLETA DEL ADMINISTRADOR -->
   <script type="module" src="./admin.js"></script>
 </body>

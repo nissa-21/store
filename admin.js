@@ -375,7 +375,7 @@ function resolveAdminPhoto(img, prod) {
     return custom.dataUrl;
   }
 
-  return "./" + clean;
+  return "./fotos/" + clean;
 }
 
 function updateProductCount() {
@@ -1783,7 +1783,7 @@ async function callGithubApi(url, { method = "GET", token = "", body = null } = 
 }
 
 // ========================================================
-// SUBIDA DE FOTO DIRECTA A LA RAÍZ DEL REPOSITORIO GITHUB
+// SUBIDA DE FOTO DIRECTA A LA CARPETA fotos/ EN GITHUB
 // ========================================================
 async function uploadSinglePhotoToGithub(filename, dataUrl, cfg) {
   if (!filename || !dataUrl || !dataUrl.startsWith("data:")) {
@@ -1795,8 +1795,8 @@ async function uploadSinglePhotoToGithub(filename, dataUrl, cfg) {
   }
 
   const base64Data = dataUrl.replace(/^data:image\/[a-zA-Z+]+;base64,/, "").trim();
-  // Se guarda directamente en la raíz del repositorio de GitHub (sin subcarpeta fotos/)
-  const filePath = clean;
+  // Se guarda en la carpeta fotos/ del repositorio de GitHub
+  const filePath = `fotos/${clean}`;
   const getUrl = `https://api.github.com/repos/${cfg.owner}/${cfg.repo}/contents/${filePath}?ref=${cfg.branch}&t=${Date.now()}`;
 
   let sha = null;
@@ -1813,7 +1813,7 @@ async function uploadSinglePhotoToGithub(filename, dataUrl, cfg) {
     method: "PUT",
     token: cfg.token,
     body: {
-      message: `Subir imagen ${filePath} al repositorio NISSA`,
+      message: `Subir imagen ${filePath} al catálogo NISSA`,
       content: base64Data,
       branch: cfg.branch,
       sha: sha || undefined
@@ -1828,7 +1828,7 @@ async function uploadSinglePhotoToGithub(filename, dataUrl, cfg) {
         method: "PUT",
         token: cfg.token,
         body: {
-          message: `Actualizar imagen ${filePath} al repositorio NISSA`,
+          message: `Actualizar imagen ${filePath} al catálogo NISSA`,
           content: base64Data,
           branch: cfg.branch,
           sha: reCheck.data.sha
@@ -2068,13 +2068,14 @@ async function saveAndPublishProductToGithub(e) {
     }
 
     if (putRes.ok) {
+      const commitSha = putRes.data?.commit?.sha ? putRes.data.commit.sha.substring(0, 7) : "confirmado";
       // Limpiar borrador local para mantener sincronía pura con el repositorio remoto
       localStorage.removeItem("nissa_catalog_draft");
       checkDraftStatus();
       closeProductModal();
       renderCategoryFilter();
       renderProductsList();
-      showAlert(`🎉 ¡Éxito! El producto "${escapeHtml(name)}" y su imagen fueron publicados en GitHub.<br><strong>Cualquier persona del mundo que ingrese a la tienda verá los cambios en 1 a 2 minutos</strong> en <a href="https://${cfg.owner}.github.io/${cfg.repo}" target="_blank" style="color:#38bdf8; text-decoration:underline;">https://${cfg.owner}.github.io/${cfg.repo}</a> (tiempo que tarda GitHub Pages en compilar la actualización).`, true);
+      showAlert(`🎉 ¡Confirmado por GitHub! Producto "${escapeHtml(name)}" publicado con éxito (Commit: <code>${commitSha}</code>).<br><strong>⏳ Estado: Publicación enviada a GitHub Pages.</strong> El despliegue mundial se encuentra en proceso (tarda ~60 a 90 segundos en estar visible en vivo para todos los visitantes en <a href="https://${cfg.owner}.github.io/${cfg.repo}" target="_blank" style="color:#38bdf8; text-decoration:underline;">https://${cfg.owner}.github.io/${cfg.repo}</a>).`, true);
     } else {
       const ghMsg = putRes.data?.message || putRes.statusText || "";
       if (putRes.status === 401 || ghMsg.includes("Bad credentials")) {
@@ -2135,12 +2136,18 @@ function deleteProduct(id) {
   const p = currentProducts.find(item => Number(item.id) === Number(id));
   if (!p) return;
 
-  if (confirm(`¿Estás seguro de que deseás eliminar el producto "${p.name}" (#${p.id}) del catálogo?`)) {
+  if (confirm(`¿Estás seguro de que deseás eliminar el producto "${p.name}" (#${p.id}) y publicar la actualización en la tienda de GitHub?`)) {
     currentProducts = currentProducts.filter(item => Number(item.id) !== Number(id));
-    saveDraft();
     renderCategoryFilter();
     renderProductsList();
-    showAlert(`<span>✓ Producto #${id} eliminado.</span> <button type="button" class="btn btn-sm btn-primary" style="margin-left:10px;" onclick="downloadProductsJs()">📥 Descargar archivo</button>`, true);
+    const cfg = getGithubConfig();
+    if (cfg && cfg.token) {
+      publishDirectlyToGithub();
+    } else {
+      saveDraft();
+      showAlert(`✓ Producto #${id} eliminado en panel. Ingresá tu Token de GitHub para publicarlo en la tienda pública.`);
+      openGithubModal();
+    }
   }
 }
 
@@ -2151,25 +2158,12 @@ function generateProductsJsCode() {
   const dateStr = new Date().toLocaleString("es-AR");
   const productsJson = JSON.stringify(currentProducts, null, 2);
 
-  return `// Catálogo de productos NISSA
+  return `// Catálogo oficial de productos NISSA
 // Generado automáticamente desde el Panel de Administración NISSA
 // Actualizado: ${dateStr}
 // 100% Compatible con GitHub Pages (Costo $0)
 
 let products = ${productsJson};
-
-// Si existe un borrador guardado localmente desde el Panel Administrador, aplicarlo para previsualización inmediata:
-try {
-  if (typeof localStorage !== "undefined") {
-    const draft = localStorage.getItem("nissa_catalog_draft");
-    if (draft) {
-      const parsedDraft = JSON.parse(draft);
-      if (Array.isArray(parsedDraft) && parsedDraft.length > 0) {
-        products = parsedDraft;
-      }
-    }
-  }
-} catch (e) {}
 
 // Exponer en window para compatibilidad global
 if (typeof window !== "undefined") {
@@ -2551,13 +2545,14 @@ async function publishDirectlyToGithub() {
     }
 
     if (putRes.ok) {
+      const commitSha = putRes.data?.commit?.sha ? putRes.data.commit.sha.substring(0, 7) : "confirmado";
       // Limpiar borrador local para mantener sincronía pura con el repositorio remoto
       localStorage.removeItem("nissa_catalog_draft");
       checkDraftStatus();
       renderProductsList();
 
-      const photoMsg = photosUploaded > 0 ? ` (${photosUploaded} foto(s) subida(s) directamente al repositorio)` : "";
-      showAlert(`🎉 ¡Catálogo publicado exitosamente en GitHub${photoMsg}!<br><strong>Cualquier persona del mundo que ingrese a tu tienda verá los cambios en 1 a 2 minutos</strong> en <a href="https://${cfg.owner}.github.io/${cfg.repo}" target="_blank" style="color:#38bdf8; text-decoration:underline;">https://${cfg.owner}.github.io/${cfg.repo}</a> (tiempo que tarda GitHub Pages en compilar la actualización).`, true);
+      const photoMsg = photosUploaded > 0 ? ` (${photosUploaded} foto(s) subida(s) a la carpeta fotos/)` : "";
+      showAlert(`🎉 ¡Confirmado por GitHub! Catálogo publicado con éxito (Commit: <code>${commitSha}</code>)${photoMsg}.<br><strong>⏳ Estado: Publicación enviada a GitHub Pages.</strong> El despliegue mundial se encuentra en proceso (tarda ~60 a 90 segundos en estar visible en vivo para todos los visitantes en <a href="https://${cfg.owner}.github.io/${cfg.repo}" target="_blank" style="color:#38bdf8; text-decoration:underline;">https://${cfg.owner}.github.io/${cfg.repo}</a>).`, true);
     } else {
       const msg = putRes.data?.message || putRes.statusText || "";
       if (putRes.status === 401 || msg.includes("Bad credentials")) {

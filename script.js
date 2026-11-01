@@ -20,28 +20,13 @@ const nav = document.getElementById("nav");
 let selectedCategory = "todos";
 let shoppingCart = JSON.parse(localStorage.getItem("nissaCart")) || [];
 
-// Sincronizar el catálogo local desde el borrador guardado en el Panel Administrador
-function reloadProductsFromStorage() {
-  try {
-    if (typeof localStorage !== "undefined") {
-      const draft = localStorage.getItem("nissa_catalog_draft");
-      if (draft) {
-        const parsed = JSON.parse(draft);
-        if (Array.isArray(parsed) && parsed.length > 0) {
-          products = parsed;
-          if (typeof window !== "undefined") {
-            window.products = parsed;
-          }
-        }
-      }
-    }
-  } catch (e) {}
-}
-reloadProductsFromStorage();
+// Limpieza de cualquier borrador anterior para asegurar que la tienda pública use solo el catálogo oficial
+try {
+  localStorage.removeItem("nissa_catalog_draft");
+} catch (e) {}
 
 // Sincronizar el carrito local con los precios y datos más recientes definidos en products.js
 function syncCartWithLatestProducts() {
-  reloadProductsFromStorage();
   if (typeof products === "undefined" || !Array.isArray(products)) return;
   let changed = false;
   shoppingCart = shoppingCart.map(item => {
@@ -121,8 +106,8 @@ function getProductImage(product) {
     }
   }
 
-  // Retorna la ruta relativa directa en la raíz del repositorio
-  return `./${img}`;
+  // Retorna la ruta relativa oficial en la carpeta fotos/
+  return `./${PRODUCT_IMAGES_DIR}/${img}`;
 }
 
 // Cargar imágenes guardadas desde IndexedDB para que se muestren en la tienda pública
@@ -1372,7 +1357,12 @@ window.prevModalImage = prevModalImage;
 window.nextModalImage = nextModalImage;
 window.changeModalQty = changeModalQty;
 window.setModalQty = setModalQty;
-window.addModalProductToCart = addModalProductToCart;
+// Compatibilidad y sincronización limpia sin depender de borradores locales
+function reloadProductsFromStorage() {
+  if (typeof window !== "undefined" && window.products) {
+    products = window.products;
+  }
+}
 
 // Escuchar cambios de almacenamiento y eventos de actualización del Panel Administrador
 function handleCatalogLiveUpdate() {
@@ -1397,15 +1387,17 @@ window.addEventListener("nissa_catalog_updated", handleCatalogLiveUpdate);
 window.addEventListener("focus", handleCatalogLiveUpdate);
 
 // Inicialización de la aplicación y comprobación de URL inicial
-document.addEventListener("DOMContentLoaded", () => {
+function initApp() {
   reloadProductsFromStorage();
   syncCartWithLatestProducts();
   renderProducts();
   renderCart();
   checkRoute();
-});
-reloadProductsFromStorage();
-syncCartWithLatestProducts();
-renderProducts();
-renderCart();
-checkRoute();
+}
+
+if (document.readyState === "loading") {
+  document.addEventListener("DOMContentLoaded", initApp);
+} else {
+  initApp();
+}
+
