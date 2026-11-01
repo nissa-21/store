@@ -1,6 +1,6 @@
 // Catálogo oficial de productos NISSA
 // Generado automáticamente desde el Panel de Administración NISSA
-// Actualizado: 1/11/2026, 05:13:29
+// Actualizado: 1/11/2026, 05:21:13
 // 100% Compatible con GitHub Pages (Costo $0)
 
 let products = [
@@ -83,36 +83,6 @@ let products = [
       "Material exterior": "Nylon trenzado de alta densidad blindado",
       "Compatibilidad": "Toda la línea iPhone (8 al 14 Pro Max), iPad y accesorios",
       "Garantía": "90 días oficial escrita NISSA"
-    }
-  },
-  {
-    "id": 4,
-    "name": "Mando DualSense PS5 Inalámbrico Original",
-    "category": "gaming",
-    "tag": "PlayStation Original",
-    "price": 95000,
-    "price3": 90000,
-    "price5": 86000,
-    "price20": 82000,
-    "image": "b6a33239-b290-46c1-80b5-da7535055729-1-all-450.jpg",
-    "images": [
-      "b6a33239-b290-46c1-80b5-da7535055729-1-all-450.jpg",
-      "mando-ps5-gatillos.jpg"
-    ],
-    "description": "El joystick oficial de PlayStation 5 que redefine la experiencia de juego. Cuenta con gatillos adaptativos dinámicos, retroalimentación háptica inmersiva de doble motor y micrófono integrado con botón mute directo.",
-    "features": [
-      "Gatillos adaptativos con resistencia táctil progresiva según el juego",
-      "Retroalimentación háptica de vanguardia para sentir el entorno en tus manos",
-      "Micrófono incorporado y conector de 3.5mm para headsets gamer",
-      "Batería recargable interna de larga autonomía con puerto USB-C de recarga rápida",
-      "Compatible con PS5, PC Windows (Steam), Mac, iPhone, iPad y celulares Android"
-    ],
-    "specs": {
-      "Garantía": "90 días oficial escrita NISSA",
-      "Conectividad": "Bluetooth 5.1 inalámbrico de baja latencia y USB-C cableado",
-      "Compatibilidad": "PlayStation 5, PC Windows, macOS, Android, iOS",
-      "Batería": "Interna recargable de 1560 mAh Li-ion",
-      "Audio": "Altavoz y micrófono integrados + jack 3.5mm estéreo"
     }
   },
   {
