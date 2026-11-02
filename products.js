@@ -1,6 +1,6 @@
 // Catálogo oficial de productos NISSA
 // Generado automáticamente desde el Panel de Administración NISSA
-// Actualizado: 2/11/2026, 01:01:14
+// Actualizado: 2/11/2026, 01:14:23
 // 100% Compatible con GitHub Pages (Costo $0)
 
 let products = [
@@ -79,96 +79,6 @@ let products = [
       "Longitud": "1.0 metro",
       "Material exterior": "Nylon trenzado de alta densidad blindado",
       "Compatibilidad": "Toda la línea iPhone (8 al 14 Pro Max), iPad y accesorios"
-    }
-  },
-  {
-    "id": 5,
-    "name": "Auriculares Bluetooth In-Ear True Wireless HiFi",
-    "category": "audio",
-    "tag": "Sonido Hi-Fi TWS",
-    "price": 45000,
-    "price3": 42000,
-    "price5": 39000,
-    "price20": 36000,
-    "image": "auriculares-bluetooth-in-ear-true-wireless-hifi.jpg",
-    "images": [
-      "auriculares-bluetooth-in-ear-true-wireless-hifi.jpg",
-      "auriculares-bluetooth-detalle.jpg"
-    ],
-    "description": "Auriculares inalámbricos True Wireless con diafragma de 13mm para una acústica nítida y graves profundos. Cuentan con estuche de carga magnético con conector USB-C y autonomía total de hasta 24 horas.",
-    "features": [
-      "Bluetooth 5.3 con sincronización instantánea y latencia ultrabaja para gaming",
-      "Cancelación de ruido pasiva ergonómica para aislar el sonido exterior",
-      "Controles táctiles inteligentes para pausar, cambiar canciones y atender llamadas",
-      "Micrófono HD de alta sensibilidad para llamadas claras y notas de voz",
-      "Diseño ultraliviano y resistente a salpicaduras (IPX4), ideal para entrenar"
-    ],
-    "specs": {
-      "Conectividad": "Bluetooth 5.3 (hasta 10 metros de cobertura)",
-      "Autonomía": "5 a 6 hs continuas por carga (+18 hs adicionales con el estuche)",
-      "Carga": "Puerto USB-C rápido (carga completa en 60 minutos)",
-      "Compatibilidad": "Android, iOS, Windows, Mac y cualquier dispositivo con Bluetooth",
-      "Garantía": "90 días oficial escrita NISSA"
-    }
-  },
-  {
-    "id": 6,
-    "name": "Vidrio Templado 9D Full Cover Antigolpe",
-    "category": "accesorios",
-    "tag": "Máxima Protección",
-    "price": 8000,
-    "price3": 7200,
-    "price5": 6500,
-    "price20": 5500,
-    "image": "vidrio-templado-9d-full-cover-antigolpe.jpg",
-    "images": [
-      "vidrio-templado-9d-full-cover-antigolpe.jpg",
-      "vidrio-templado-aplicado.jpg"
-    ],
-    "description": "Protector de pantalla 9D de cobertura completa con bordes biselados negros y pegamento estático en toda la superficie. Absorbe impactos directos y caídas protegiendo el módulo original de tu smartphone.",
-    "features": [
-      "Dureza certificada 9H que resiste rayones de llaves, monedas e impactos severos",
-      "Pegado Full Glue total que evita la pérdida de sensibilidad táctil y burbujas",
-      "Bordes pulidos 9D que no se enganchan al colocar fundas o sacar del bolsillo",
-      "Tratamiento oleofóbico superior que reduce notablemente manchas de dedos y grasa",
-      "Instalación profesional bonificada sin cargo en nuestro local NISSA"
-    ],
-    "specs": {
-      "Dureza": "9H Tempered Glass de alta densidad",
-      "Cobertura": "100% de la pantalla (Edge to Edge)",
-      "Espesor": "0.33mm de alta transparencia HD",
-      "Compatibilidad": "Disponible para modelos iPhone, Samsung y Motorola",
-      "Garantía": "90 días oficial escrita NISSA"
-    }
-  },
-  {
-    "id": 7,
-    "name": "Funda Case Magnética Silicona Suave MagSafe",
-    "category": "accesorios",
-    "tag": "MagSafe Integrado",
-    "price": 22000,
-    "price3": 20000,
-    "price5": 18500,
-    "price20": 16500,
-    "image": "funda-case-magnetica-silicona-suave-magsafe.jpg",
-    "images": [
-      "funda-case-magnetica-silicona-suave-magsafe.jpg",
-      "funda-magsafe-interior.jpg"
-    ],
-    "description": "Funda de silicona líquida premium con anillo magnético MagSafe de 38 imanes de neodimio integrados. Su interior de microfibra aterciopelada previene ralladuras en la tapa trasera del celular.",
-    "features": [
-      "Alineación magnética fuerte para cargadores inalámbricos, soportes y billeteras MagSafe",
-      "Interior forrado en suave terciopelo para máxima protección del cristal trasero",
-      "Bordes biselados sobre la pantalla y la cámara para amortiguar caídas frontales",
-      "Acabado Soft-Touch antideslizante, agradable al tacto y fácil de limpiar",
-      "Botones independientes que brindan un clic táctil firme y preciso"
-    ],
-    "specs": {
-      "Material": "Silicona líquida exterior + microfibra interior aterciopelada",
-      "Tecnología": "Anillo magnético MagSafe de alta adherencia",
-      "Protección": "Absorción contra impactos en esquinas y bisel de cámara",
-      "Compatibilidad": "Línea iPhone y modelos Samsung compatibles",
-      "Garantía": "90 días oficial escrita NISSA"
     }
   },
   {
