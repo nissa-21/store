@@ -1,6 +1,6 @@
 // Catálogo oficial de productos NISSA
 // Generado automáticamente desde el Panel de Administración NISSA
-// Actualizado: 1/11/2026, 05:21:13
+// Actualizado: 2/11/2026, 12:44:36
 // 100% Compatible con GitHub Pages (Costo $0)
 
 let products = [
@@ -43,7 +43,7 @@ let products = [
     "price": 35000,
     "price3": 32000,
     "price5": 29500,
-    "price20": 27000,
+    "price20": 35000,
     "image": "84760.webp",
     "images": [
       "84760.webp",
