@@ -1,6 +1,6 @@
 // Catálogo oficial de productos NISSA
 // Generado automáticamente desde el Panel de Administración NISSA
-// Actualizado: 2/11/2026, 01:14:33
+// Actualizado: 2/11/2026, 01:14:43
 // 100% Compatible con GitHub Pages (Costo $0)
 
 let products = [
