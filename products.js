@@ -1,6 +1,6 @@
 // Catálogo oficial de productos NISSA
 // Generado automáticamente desde el Panel de Administración NISSA
-// Actualizado: 2/11/2026, 01:14:23
+// Actualizado: 2/11/2026, 01:14:33
 // 100% Compatible con GitHub Pages (Costo $0)
 
 let products = [
@@ -79,36 +79,6 @@ let products = [
       "Longitud": "1.0 metro",
       "Material exterior": "Nylon trenzado de alta densidad blindado",
       "Compatibilidad": "Toda la línea iPhone (8 al 14 Pro Max), iPad y accesorios"
-    }
-  },
-  {
-    "id": 8,
-    "name": "Mando DualShock 4 PS4 Inalámbrico",
-    "category": "gaming",
-    "tag": "PlayStation 4",
-    "price": 68000,
-    "price3": 64000,
-    "price5": 60000,
-    "price20": 56000,
-    "image": "mando-dualshock-4-ps4-inalambrico.jpg",
-    "images": [
-      "mando-dualshock-4-ps4-inalambrico.jpg",
-      "mando-ps4-trasera.jpg"
-    ],
-    "description": "El clásico joystick inalámbrico DualShock 4 para PlayStation 4 y PC. Equipado con panel multitáctil, sensor de movimiento SixAxis, barra luminosa reactiva y palancas analógicas de alta precisión.",
-    "features": [
-      "Panel táctil frontal clicable de 2 puntos para interacción en juegos",
-      "Doble motor de vibración interna que intensifica la acción en pantalla",
-      "Barra luminosa con indicación visual de estado y jugador asignado",
-      "Altavoz integrado y salida de audio estéreo 3.5mm para auriculares",
-      "Compatible con PS4, PS4 Slim, PS4 Pro, computadoras Windows (Steam) y Smart TVs"
-    ],
-    "specs": {
-      "Conectividad": "Bluetooth 2.1 + EDR inalámbrico y Micro-USB",
-      "Compatibilidad": "PlayStation 4 (todos los modelos), PC Windows, macOS, Android, iOS",
-      "Batería": "Recargable de 1000 mAh integrada",
-      "Conectores": "Jack 3.5mm estéreo + puerto de extensión y Micro-USB",
-      "Garantía": "90 días oficial escrita NISSA"
     }
   }
 ];
