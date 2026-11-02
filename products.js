@@ -1,6 +1,6 @@
 // Catálogo oficial de productos NISSA
 // Generado automáticamente desde el Panel de Administración NISSA
-// Actualizado: 2/11/2026, 12:58:08
+// Actualizado: 2/11/2026, 01:00:01
 // 100% Compatible con GitHub Pages (Costo $0)
 
 let products = [
@@ -13,11 +13,9 @@ let products = [
     "price3": 31000,
     "price5": 28000,
     "price20": 24000,
-    "image": "pack-apple-original-certificado-20w.jpg",
+    "image": "85825.png",
     "images": [
-      "pack-apple-original-certificado-20w.jpg",
-      "pack-apple-caja.jpg",
-      "pack-apple-cable-detalle.jpg"
+      "85825.png"
     ],
     "description": "Combo completo de cargador de pared 20W Power Delivery + Cable USB-C a Lightning reforzado. Diseñado bajo estándares certificados para cuidar la salud de la batería de tu iPhone, proporcionando una recarga rápida y segura del 0% al 50% en solo 30 minutos.",
     "features": [
@@ -28,11 +26,11 @@ let products = [
       "Hasta 90 días de garantía oficial escrita en laboratorio NISSA con cambio directo"
     ],
     "specs": {
+      "Garantía": "90 días oficial escrita NISSA",
+      "Disponibilidad": "Stock inmediato para entrega o retiro",
       "Potencia de salida": "20W Power Delivery (USB-C)",
       "Conector incluido": "USB-C a Lightning (1 metro)",
-      "Compatibilidad": "iPhone 8 hasta iPhone 14 Pro Max / iPad / AirPods",
-      "Garantía": "90 días oficial escrita NISSA",
-      "Disponibilidad": "Stock inmediato para entrega o retiro"
+      "Compatibilidad": "iPhone 8 hasta iPhone 14 Pro Max / iPad / AirPods"
     }
   },
   {
