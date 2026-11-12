@@ -469,53 +469,150 @@ button,input{font:inherit}
 .re-relative {
   position: relative;
 }
-#widget-model-search {
+/* Barra dual: 7/10 para abrir lista sin teclado + 3/10 con símbolo de teclado para escribir */
+.re-model-bar-dual {
+  display: flex;
+  align-items: stretch;
   width: 100%;
-  font-size: 13px;
-  font-weight: 600;
-  background-color: #ffffff;
   border: 1.5px solid #cbd5e1;
   border-radius: 12px;
-  padding: 12px 40px 12px 38px;
-  color: #0f172a;
-  transition: all 0.2s;
-  outline: none;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
-  height: 46px;
-}
-#widget-model-search:focus {
-  border-color: #2563eb;
   background-color: #ffffff;
-  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+  overflow: hidden;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
+  transition: all 0.2s ease;
+  height: 48px;
 }
-.re-search-icon {
-  position: absolute;
-  left: 14px;
-  top: 13px;
-  font-size: 14px;
-  color: #94a3b8;
-  pointer-events: none;
+.re-model-bar-dual:hover,
+.re-model-bar-dual:focus-within {
+  border-color: #2563eb;
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
 }
-.re-dropdown-toggle {
-  position: absolute;
-  right: 14px;
-  top: 13px;
-  background: none;
+
+/* 7 décimos: botón desplegable para abrir la lista sin teclado */
+.re-model-dropdown-trigger {
+  flex: 7;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 14px;
+  background: transparent;
   border: none;
-  color: #94a3b8;
   cursor: pointer;
-  font-size: 11px;
+  text-align: left;
+  font-size: 13px;
+  font-weight: 600;
+  color: #0f172a;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
 }
+.re-model-dropdown-trigger:hover {
+  background-color: #f8fafc;
+}
+.re-model-dropdown-trigger .re-trigger-text {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.re-model-dropdown-trigger .re-trigger-arrow {
+  color: #64748b;
+  font-size: 11px;
+  margin-left: 8px;
+}
+
+.re-model-bar-divider {
+  width: 1px;
+  background-color: #e2e8f0;
+  margin: 6px 0;
+}
+
+/* 3 décimos: botón con símbolo de teclado para activar escritura */
+.re-model-keyboard-btn {
+  flex: 3;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 0 12px;
+  background: #f1f5f9;
+  border: none;
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 700;
+  color: #1e3a8a;
+  transition: all 0.15s ease;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+}
+.re-model-keyboard-btn:hover {
+  background-color: #e2e8f0;
+  color: #1d4ed8;
+}
+.re-model-keyboard-btn .re-keyboard-icon {
+  font-size: 15px;
+}
+
+/* Modo de escritura activo con buscador */
+.re-model-search-active {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  border: 1.5px solid #2563eb;
+  border-radius: 12px;
+  background-color: #ffffff;
+  padding: 0 10px 0 14px;
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+  height: 48px;
+  gap: 8px;
+}
+.re-model-search-active .re-search-input-icon {
+  font-size: 14px;
+  color: #2563eb;
+}
+.re-model-search-active input {
+  flex: 1;
+  border: none;
+  outline: none;
+  font-size: 13px;
+  font-weight: 600;
+  color: #0f172a;
+  background: transparent;
+  padding: 6px 0;
+}
+.re-btn-close-search {
+  background: #f1f5f9;
+  border: none;
+  border-radius: 8px;
+  padding: 6px 12px;
+  font-size: 11px;
+  font-weight: 700;
+  color: #475569;
+  cursor: pointer;
+  transition: all 0.15s;
+  white-space: nowrap;
+}
+.re-btn-close-search:hover {
+  background: #e2e8f0;
+  color: #0f172a;
+}
+
 .re-dropdown {
   position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
   z-index: 100;
   width: 100%;
   background-color: #ffffff;
   border: 1.5px solid #e2e8f0;
   border-radius: 14px;
   margin-top: 6px;
-  max-height: 230px;
+  max-height: 240px;
   overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior: contain;
   box-shadow: 0 16px 36px -4px rgba(15, 23, 42, 0.12);
 }
 .re-dropdown-item {
@@ -2058,8 +2155,8 @@ footer{background:#0f172a;color:#fff;border-top:1px solid #1e293b}
 /* Grilla interactiva de escalones de volumen */
 .pm-tiers-grid {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 8px;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
 }
 
 .pm-tier-btn {

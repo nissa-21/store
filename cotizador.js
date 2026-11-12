@@ -552,6 +552,9 @@ function selectBrand(brand) {
     }, 50);
   } else {
     safeSetStyle('wrapper-dropdown-modelo', 'display', 'block');
+    safeSetStyle('re-model-bar-search', 'display', 'none');
+    safeSetStyle('re-model-bar-normal', 'display', 'flex');
+    safeSetText('re-model-trigger-label', 'Elegir modelo de la lista...');
     safeSetStyle('wrapper-custom-celular', 'display', 'none');
     safeSetStyle('wrapper-phone-repairs-section', 'display', 'none');
     filterModels();
@@ -564,6 +567,9 @@ function changeBrand() {
   selectedModelObj = null;
   selectedRepairId = '';
   safeSetValue('widget-model-search', '');
+  safeSetText('re-model-trigger-label', 'Elegir modelo de la lista...');
+  safeSetStyle('re-model-bar-search', 'display', 'none');
+  safeSetStyle('re-model-bar-normal', 'display', 'flex');
   safeSetValue('custom-brand', '');
   safeSetValue('custom-model', '');
   hideBudgetBox();
@@ -579,6 +585,26 @@ function changeBrand() {
 
   populateBrands();
   updateSelectionTracker();
+}
+
+function activateModelSearchMode() {
+  safeSetStyle('re-model-bar-normal', 'display', 'none');
+  safeSetStyle('re-model-bar-search', 'display', 'flex');
+  const input = document.getElementById('widget-model-search');
+  if (input) {
+    input.value = '';
+    setTimeout(() => {
+      input.focus();
+    }, 40);
+  }
+  showModelDropdown(true);
+}
+
+function deactivateModelSearchMode() {
+  safeSetValue('widget-model-search', '');
+  safeSetStyle('re-model-bar-search', 'display', 'none');
+  safeSetStyle('re-model-bar-normal', 'display', 'flex');
+  showModelDropdown(false);
 }
 
 function filterModels() {
@@ -603,27 +629,45 @@ function filterModels() {
     });
     dropdown.style.display = 'block';
   } else {
-    dropdown.innerHTML = '';
-    dropdown.style.display = 'none';
+    dropdown.innerHTML = '<div class="re-dropdown-empty">No encontramos ese modelo. Podés seleccionar "Otros" para cotizarlo personalizado.</div>';
+    dropdown.style.display = 'block';
   }
 }
 
 function showModelDropdown(show) {
-  if (show) filterModels();
-  else safeSetStyle('widget-model-dropdown', 'display', 'none');
+  const dd = document.getElementById('widget-model-dropdown');
+  const arrow = document.getElementById('re-model-trigger-arrow');
+  if (show) {
+    filterModels();
+    if (arrow) arrow.innerText = '▲';
+  } else {
+    if (dd) dd.style.display = 'none';
+    if (arrow) arrow.innerText = '▼';
+  }
 }
 
 function toggleModelDropdown() {
   const dd = document.getElementById('widget-model-dropdown');
-  if (dd && dd.style.display === 'none') filterModels();
-  else safeSetStyle('widget-model-dropdown', 'display', 'none');
+  if (dd && dd.style.display === 'block') {
+    showModelDropdown(false);
+  } else {
+    // Abrir lista sin enfocar el input para no disparar el teclado en celulares
+    showModelDropdown(true);
+  }
 }
 
 function selectModel(modelObj) {
   selectedModelObj = modelObj;
   safeSetValue('widget-model-search', modelObj.name);
+  safeSetText('re-model-trigger-label', modelObj.name);
   showModelDropdown(false);
+  safeSetStyle('re-model-bar-search', 'display', 'none');
+  safeSetStyle('re-model-bar-normal', 'display', 'flex');
   safeSetStyle('wrapper-dropdown-modelo', 'display', 'none');
+
+  if (document.activeElement && typeof document.activeElement.blur === 'function') {
+    document.activeElement.blur();
+  }
 
   selectedRepairId = '';
   hideBudgetBox();
@@ -638,6 +682,9 @@ function changeModel() {
   selectedModelObj = null;
   selectedRepairId = '';
   safeSetValue('widget-model-search', '');
+  safeSetText('re-model-trigger-label', 'Elegir modelo de la lista...');
+  safeSetStyle('re-model-bar-search', 'display', 'none');
+  safeSetStyle('re-model-bar-normal', 'display', 'flex');
   hideBudgetBox();
   safeSetStyle('re-phone-repair-selected-badge', 'display', 'none');
   safeSetStyle('widget-phone-repairs-grid', 'display', 'grid');
@@ -1154,9 +1201,9 @@ function resetWidget() {
 // Click outside model search dropdown to close
 document.addEventListener('click', (e) => {
   const dd = document.getElementById('widget-model-dropdown');
-  const inp = document.getElementById('widget-model-search');
-  if (dd && inp && !inp.contains(e.target) && !dd.contains(e.target)) {
-    dd.style.display = 'none';
+  const container = document.getElementById('re-model-selector-container');
+  if (dd && container && !container.contains(e.target)) {
+    showModelDropdown(false);
   }
 });
 
@@ -1166,6 +1213,9 @@ window.focusWarrantySection = focusWarrantySection;
 window.handleTermsConsentChange = handleTermsConsentChange;
 window.triggerTermsAttention = triggerTermsAttention;
 window.toggleTermsCheckbox = toggleTermsCheckbox;
+window.activateModelSearchMode = activateModelSearchMode;
+window.deactivateModelSearchMode = deactivateModelSearchMode;
+window.toggleModelDropdown = toggleModelDropdown;
 
 document.addEventListener('DOMContentLoaded', () => {
   resetWidget();

@@ -309,20 +309,12 @@ function renderProducts() {
 
         <div class="price-table" aria-label="Precios por cantidad">
           <div class="price-row main-price">
-            <span class="price-from">Desde 1 u.</span>
+            <span class="price-from">Por unidad</span>
             <strong>${formatPrice(product.price)}</strong>
           </div>
           <div class="price-row">
-            <span class="price-from">Desde 3 u.</span>
+            <span class="price-from">A partir de 3 u.</span>
             <strong>${formatPrice(product.price3 || product.price)}</strong>
-          </div>
-          <div class="price-row">
-            <span class="price-from">Desde 5 u.</span>
-            <strong>${formatPrice(product.price5 || product.price)}</strong>
-          </div>
-          <div class="price-row wholesale">
-            <span class="price-from">+20 Mayor</span>
-            <strong>${formatPrice(product.price20 || product.price)}</strong>
           </div>
         </div>
 
@@ -778,11 +770,7 @@ function getUnitPriceForQty(product, qty) {
   if (!product) return 0;
   const p = parseNumericPrice(product.price);
   const p3 = product.price3 !== undefined ? parseNumericPrice(product.price3) : p;
-  const p5 = product.price5 !== undefined ? parseNumericPrice(product.price5) : p;
-  const p20 = product.price20 !== undefined ? parseNumericPrice(product.price20) : p;
 
-  if (qty >= 20) return p20;
-  if (qty >= 5) return p5;
   if (qty >= 3) return p3;
   return p;
 }
@@ -1027,31 +1015,19 @@ function renderProductModalContent() {
           <!-- ESCALONES DE VOLUMEN (CLICABLES) -->
           <div>
             <div style="font-size:11px; font-weight:800; color:#475569; text-transform:uppercase; margin-bottom:6px; letter-spacing:0.04em;">
-              💡 Descuentos por cantidad:
+              💡 Precios por cantidad:
             </div>
             <div class="pm-tiers-grid">
               <button type="button" class="pm-tier-btn ${currentModalQty < 3 ? 'active' : ''}" onclick="setModalQty(1)" title="Seleccionar 1 unidad">
-                <span class="pm-tier-qty">1 u.</span>
+                <span class="pm-tier-qty">Por unidad</span>
                 <span class="pm-tier-price">${formatPrice(p.price)}</span>
-                <span class="pm-tier-badge">Lista</span>
+                <span class="pm-tier-badge">Individual</span>
               </button>
 
-              <button type="button" class="pm-tier-btn ${currentModalQty >= 3 && currentModalQty < 5 ? 'active' : ''}" onclick="setModalQty(3)" title="Seleccionar 3 unidades">
-                <span class="pm-tier-qty">Desde 3 u.</span>
+              <button type="button" class="pm-tier-btn ${currentModalQty >= 3 ? 'active' : ''}" onclick="setModalQty(3)" title="Seleccionar 3 o más unidades">
+                <span class="pm-tier-qty">A partir de 3 u.</span>
                 <span class="pm-tier-price">${formatPrice(p.price3 || p.price)}</span>
-                <span class="pm-tier-badge">${disc3 > 0 ? `-${disc3}%` : 'Ahorro'}</span>
-              </button>
-
-              <button type="button" class="pm-tier-btn ${currentModalQty >= 5 && currentModalQty < 20 ? 'active' : ''}" onclick="setModalQty(5)" title="Seleccionar 5 unidades">
-                <span class="pm-tier-qty">Desde 5 u.</span>
-                <span class="pm-tier-price">${formatPrice(p.price5 || p.price)}</span>
-                <span class="pm-tier-badge">${disc5 > 0 ? `-${disc5}%` : 'Ahorro'}</span>
-              </button>
-
-              <button type="button" class="pm-tier-btn wholesale ${currentModalQty >= 20 ? 'active' : ''}" onclick="setModalQty(20)" title="Seleccionar 20 unidades mayoristas">
-                <span class="pm-tier-qty">+20 Mayor</span>
-                <span class="pm-tier-price">${formatPrice(p.price20 || p.price)}</span>
-                <span class="pm-tier-badge">${disc20 > 0 ? `-${disc20}%` : 'Mayor'}</span>
+                <span class="pm-tier-badge">${disc3 > 0 ? `-${disc3}%` : 'Con descuento'}</span>
               </button>
             </div>
           </div>
@@ -1061,11 +1037,11 @@ function renderProductModalContent() {
             ${totalSavings > 0 ? `
               <div class="pm-savings-box">
                 <span class="pm-savings-icon">🎉</span>
-                <span>¡Descuento activo! Ahorrás <strong>${formatPrice(totalSavings)}</strong> en tu compra.</span>
+                <span>¡Precio con descuento activo! Ahorrás <strong>${formatPrice(totalSavings)}</strong> en tu compra.</span>
               </div>
             ` : `
               <div style="font-size:11.5px; color:#64748b; background:#ffffff; border:1px dashed #cbd5e1; border-radius:10px; padding:8px 12px; text-align:center;">
-                ⚡ Llevando <strong>3 unidades o más</strong> accedés a precios con descuento.
+                ⚡ Llevando <strong>3 unidades o más</strong> accedés al precio especial con descuento (${formatPrice(p.price3 || p.price)} c/u).
               </div>
             `}
           </div>

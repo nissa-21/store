@@ -1,5 +1,5 @@
 // Tarifas y modelos exactos del presupuestador NISSA
-// Actualizado: cada modelo es una opción individual sin casilleros compartidos.
+// Actualizado: 170 modelos exactos de Samsung individuales (Galaxy A, M, S, Z Flip, Z Fold).
 // Modelos de Samsung y Motorola configurados como "Consultar" presupuesto.
 var PRECIOS_WIDGET = {
   "whatsapp": "5491136620653",
@@ -1023,52 +1023,52 @@ var PRECIOS_WIDGET = {
       "brand": "Samsung",
       "models": [
         {
-          "name": "Galaxy A01",
+          "name": "Samsung Galaxy A01",
           "repairs": [
             {
-              "id": "sam_galaxy_a01_pantalla",
+              "id": "samsung_galaxy_a01_pantalla",
               "name": "📱 Pantalla / Módulo",
               "price": "Consultar",
               "note": "Seleccioná la calidad deseada o consultá presupuesto"
             },
             {
-              "id": "sam_galaxy_a01_bateria",
+              "id": "samsung_galaxy_a01_bateria",
               "name": "🔋 Batería",
               "price": "Consultar",
               "note": "Condición al 100% de salud"
             },
             {
-              "id": "sam_galaxy_a01_pin",
+              "id": "samsung_galaxy_a01_pin",
               "name": "🔌 Pin de carga",
               "price": "Consultar",
               "note": "Reparación o cambio de conector de carga"
             },
             {
-              "id": "sam_galaxy_a01_selfie",
+              "id": "samsung_galaxy_a01_selfie",
               "name": "📸 Cámara Selfie (Frontal)",
               "price": "Consultar",
               "note": "Módulo de cámara frontal"
             },
             {
-              "id": "sam_galaxy_a01_trasera",
+              "id": "samsung_galaxy_a01_trasera",
               "name": "📷 Cámara Principal (Trasera)",
               "price": "Consultar",
               "note": "Módulo de cámara trasera original"
             },
             {
-              "id": "sam_galaxy_a01_tapa",
+              "id": "samsung_galaxy_a01_tapa",
               "name": "📱 Tapa Trasera / Cristal",
               "price": "Consultar",
               "note": "Cambio de tapa o cristal trasero"
             },
             {
-              "id": "sam_galaxy_a01_desbloqueo",
+              "id": "samsung_galaxy_a01_desbloqueo",
               "name": "🔓 Desbloqueo (Cuenta Google / iCloud / PIN)",
               "price": "NO REALIZAMOS",
               "note": "NO REALIZAMOS ESTE SERVICIO"
             },
             {
-              "id": "sam_galaxy_a01_liberacion",
+              "id": "samsung_galaxy_a01_liberacion",
               "name": "📶 Liberación de Compañía / Banda",
               "price": "NO REALIZAMOS",
               "note": "NO REALIZAMOS ESTE SERVICIO"
@@ -1076,52 +1076,52 @@ var PRECIOS_WIDGET = {
           ]
         },
         {
-          "name": "Galaxy A01 Core",
+          "name": "Samsung Galaxy A01 Core",
           "repairs": [
             {
-              "id": "sam_galaxy_a01_core_pantalla",
+              "id": "samsung_galaxy_a01_core_pantalla",
               "name": "📱 Pantalla / Módulo",
               "price": "Consultar",
               "note": "Seleccioná la calidad deseada o consultá presupuesto"
             },
             {
-              "id": "sam_galaxy_a01_core_bateria",
+              "id": "samsung_galaxy_a01_core_bateria",
               "name": "🔋 Batería",
               "price": "Consultar",
               "note": "Condición al 100% de salud"
             },
             {
-              "id": "sam_galaxy_a01_core_pin",
+              "id": "samsung_galaxy_a01_core_pin",
               "name": "🔌 Pin de carga",
               "price": "Consultar",
               "note": "Reparación o cambio de conector de carga"
             },
             {
-              "id": "sam_galaxy_a01_core_selfie",
+              "id": "samsung_galaxy_a01_core_selfie",
               "name": "📸 Cámara Selfie (Frontal)",
               "price": "Consultar",
               "note": "Módulo de cámara frontal"
             },
             {
-              "id": "sam_galaxy_a01_core_trasera",
+              "id": "samsung_galaxy_a01_core_trasera",
               "name": "📷 Cámara Principal (Trasera)",
               "price": "Consultar",
               "note": "Módulo de cámara trasera original"
             },
             {
-              "id": "sam_galaxy_a01_core_tapa",
+              "id": "samsung_galaxy_a01_core_tapa",
               "name": "📱 Tapa Trasera / Cristal",
               "price": "Consultar",
               "note": "Cambio de tapa o cristal trasero"
             },
             {
-              "id": "sam_galaxy_a01_core_desbloqueo",
+              "id": "samsung_galaxy_a01_core_desbloqueo",
               "name": "🔓 Desbloqueo (Cuenta Google / iCloud / PIN)",
               "price": "NO REALIZAMOS",
               "note": "NO REALIZAMOS ESTE SERVICIO"
             },
             {
-              "id": "sam_galaxy_a01_core_liberacion",
+              "id": "samsung_galaxy_a01_core_liberacion",
               "name": "📶 Liberación de Compañía / Banda",
               "price": "NO REALIZAMOS",
               "note": "NO REALIZAMOS ESTE SERVICIO"
@@ -1129,52 +1129,52 @@ var PRECIOS_WIDGET = {
           ]
         },
         {
-          "name": "Galaxy A02",
+          "name": "Samsung Galaxy A02",
           "repairs": [
             {
-              "id": "sam_galaxy_a02_pantalla",
+              "id": "samsung_galaxy_a02_pantalla",
               "name": "📱 Pantalla / Módulo",
               "price": "Consultar",
               "note": "Seleccioná la calidad deseada o consultá presupuesto"
             },
             {
-              "id": "sam_galaxy_a02_bateria",
+              "id": "samsung_galaxy_a02_bateria",
               "name": "🔋 Batería",
               "price": "Consultar",
               "note": "Condición al 100% de salud"
             },
             {
-              "id": "sam_galaxy_a02_pin",
+              "id": "samsung_galaxy_a02_pin",
               "name": "🔌 Pin de carga",
               "price": "Consultar",
               "note": "Reparación o cambio de conector de carga"
             },
             {
-              "id": "sam_galaxy_a02_selfie",
+              "id": "samsung_galaxy_a02_selfie",
               "name": "📸 Cámara Selfie (Frontal)",
               "price": "Consultar",
               "note": "Módulo de cámara frontal"
             },
             {
-              "id": "sam_galaxy_a02_trasera",
+              "id": "samsung_galaxy_a02_trasera",
               "name": "📷 Cámara Principal (Trasera)",
               "price": "Consultar",
               "note": "Módulo de cámara trasera original"
             },
             {
-              "id": "sam_galaxy_a02_tapa",
+              "id": "samsung_galaxy_a02_tapa",
               "name": "📱 Tapa Trasera / Cristal",
               "price": "Consultar",
               "note": "Cambio de tapa o cristal trasero"
             },
             {
-              "id": "sam_galaxy_a02_desbloqueo",
+              "id": "samsung_galaxy_a02_desbloqueo",
               "name": "🔓 Desbloqueo (Cuenta Google / iCloud / PIN)",
               "price": "NO REALIZAMOS",
               "note": "NO REALIZAMOS ESTE SERVICIO"
             },
             {
-              "id": "sam_galaxy_a02_liberacion",
+              "id": "samsung_galaxy_a02_liberacion",
               "name": "📶 Liberación de Compañía / Banda",
               "price": "NO REALIZAMOS",
               "note": "NO REALIZAMOS ESTE SERVICIO"
@@ -1182,52 +1182,52 @@ var PRECIOS_WIDGET = {
           ]
         },
         {
-          "name": "Galaxy A02s",
+          "name": "Samsung Galaxy A02s",
           "repairs": [
             {
-              "id": "sam_galaxy_a02s_pantalla",
+              "id": "samsung_galaxy_a02s_pantalla",
               "name": "📱 Pantalla / Módulo",
               "price": "Consultar",
               "note": "Seleccioná la calidad deseada o consultá presupuesto"
             },
             {
-              "id": "sam_galaxy_a02s_bateria",
+              "id": "samsung_galaxy_a02s_bateria",
               "name": "🔋 Batería",
               "price": "Consultar",
               "note": "Condición al 100% de salud"
             },
             {
-              "id": "sam_galaxy_a02s_pin",
+              "id": "samsung_galaxy_a02s_pin",
               "name": "🔌 Pin de carga",
               "price": "Consultar",
               "note": "Reparación o cambio de conector de carga"
             },
             {
-              "id": "sam_galaxy_a02s_selfie",
+              "id": "samsung_galaxy_a02s_selfie",
               "name": "📸 Cámara Selfie (Frontal)",
               "price": "Consultar",
               "note": "Módulo de cámara frontal"
             },
             {
-              "id": "sam_galaxy_a02s_trasera",
+              "id": "samsung_galaxy_a02s_trasera",
               "name": "📷 Cámara Principal (Trasera)",
               "price": "Consultar",
               "note": "Módulo de cámara trasera original"
             },
             {
-              "id": "sam_galaxy_a02s_tapa",
+              "id": "samsung_galaxy_a02s_tapa",
               "name": "📱 Tapa Trasera / Cristal",
               "price": "Consultar",
               "note": "Cambio de tapa o cristal trasero"
             },
             {
-              "id": "sam_galaxy_a02s_desbloqueo",
+              "id": "samsung_galaxy_a02s_desbloqueo",
               "name": "🔓 Desbloqueo (Cuenta Google / iCloud / PIN)",
               "price": "NO REALIZAMOS",
               "note": "NO REALIZAMOS ESTE SERVICIO"
             },
             {
-              "id": "sam_galaxy_a02s_liberacion",
+              "id": "samsung_galaxy_a02s_liberacion",
               "name": "📶 Liberación de Compañía / Banda",
               "price": "NO REALIZAMOS",
               "note": "NO REALIZAMOS ESTE SERVICIO"
@@ -1235,52 +1235,52 @@ var PRECIOS_WIDGET = {
           ]
         },
         {
-          "name": "Galaxy A03",
+          "name": "Samsung Galaxy A03",
           "repairs": [
             {
-              "id": "sam_galaxy_a03_pantalla",
+              "id": "samsung_galaxy_a03_pantalla",
               "name": "📱 Pantalla / Módulo",
               "price": "Consultar",
               "note": "Seleccioná la calidad deseada o consultá presupuesto"
             },
             {
-              "id": "sam_galaxy_a03_bateria",
+              "id": "samsung_galaxy_a03_bateria",
               "name": "🔋 Batería",
               "price": "Consultar",
               "note": "Condición al 100% de salud"
             },
             {
-              "id": "sam_galaxy_a03_pin",
+              "id": "samsung_galaxy_a03_pin",
               "name": "🔌 Pin de carga",
               "price": "Consultar",
               "note": "Reparación o cambio de conector de carga"
             },
             {
-              "id": "sam_galaxy_a03_selfie",
+              "id": "samsung_galaxy_a03_selfie",
               "name": "📸 Cámara Selfie (Frontal)",
               "price": "Consultar",
               "note": "Módulo de cámara frontal"
             },
             {
-              "id": "sam_galaxy_a03_trasera",
+              "id": "samsung_galaxy_a03_trasera",
               "name": "📷 Cámara Principal (Trasera)",
               "price": "Consultar",
               "note": "Módulo de cámara trasera original"
             },
             {
-              "id": "sam_galaxy_a03_tapa",
+              "id": "samsung_galaxy_a03_tapa",
               "name": "📱 Tapa Trasera / Cristal",
               "price": "Consultar",
               "note": "Cambio de tapa o cristal trasero"
             },
             {
-              "id": "sam_galaxy_a03_desbloqueo",
+              "id": "samsung_galaxy_a03_desbloqueo",
               "name": "🔓 Desbloqueo (Cuenta Google / iCloud / PIN)",
               "price": "NO REALIZAMOS",
               "note": "NO REALIZAMOS ESTE SERVICIO"
             },
             {
-              "id": "sam_galaxy_a03_liberacion",
+              "id": "samsung_galaxy_a03_liberacion",
               "name": "📶 Liberación de Compañía / Banda",
               "price": "NO REALIZAMOS",
               "note": "NO REALIZAMOS ESTE SERVICIO"
@@ -1288,52 +1288,52 @@ var PRECIOS_WIDGET = {
           ]
         },
         {
-          "name": "Galaxy A03s",
+          "name": "Samsung Galaxy A03 Core",
           "repairs": [
             {
-              "id": "sam_galaxy_a03s_pantalla",
+              "id": "samsung_galaxy_a03_core_pantalla",
               "name": "📱 Pantalla / Módulo",
               "price": "Consultar",
               "note": "Seleccioná la calidad deseada o consultá presupuesto"
             },
             {
-              "id": "sam_galaxy_a03s_bateria",
+              "id": "samsung_galaxy_a03_core_bateria",
               "name": "🔋 Batería",
               "price": "Consultar",
               "note": "Condición al 100% de salud"
             },
             {
-              "id": "sam_galaxy_a03s_pin",
+              "id": "samsung_galaxy_a03_core_pin",
               "name": "🔌 Pin de carga",
               "price": "Consultar",
               "note": "Reparación o cambio de conector de carga"
             },
             {
-              "id": "sam_galaxy_a03s_selfie",
+              "id": "samsung_galaxy_a03_core_selfie",
               "name": "📸 Cámara Selfie (Frontal)",
               "price": "Consultar",
               "note": "Módulo de cámara frontal"
             },
             {
-              "id": "sam_galaxy_a03s_trasera",
+              "id": "samsung_galaxy_a03_core_trasera",
               "name": "📷 Cámara Principal (Trasera)",
               "price": "Consultar",
               "note": "Módulo de cámara trasera original"
             },
             {
-              "id": "sam_galaxy_a03s_tapa",
+              "id": "samsung_galaxy_a03_core_tapa",
               "name": "📱 Tapa Trasera / Cristal",
               "price": "Consultar",
               "note": "Cambio de tapa o cristal trasero"
             },
             {
-              "id": "sam_galaxy_a03s_desbloqueo",
+              "id": "samsung_galaxy_a03_core_desbloqueo",
               "name": "🔓 Desbloqueo (Cuenta Google / iCloud / PIN)",
               "price": "NO REALIZAMOS",
               "note": "NO REALIZAMOS ESTE SERVICIO"
             },
             {
-              "id": "sam_galaxy_a03s_liberacion",
+              "id": "samsung_galaxy_a03_core_liberacion",
               "name": "📶 Liberación de Compañía / Banda",
               "price": "NO REALIZAMOS",
               "note": "NO REALIZAMOS ESTE SERVICIO"
@@ -1341,52 +1341,52 @@ var PRECIOS_WIDGET = {
           ]
         },
         {
-          "name": "Galaxy A03 Core",
+          "name": "Samsung Galaxy A03s",
           "repairs": [
             {
-              "id": "sam_galaxy_a03_core_pantalla",
+              "id": "samsung_galaxy_a03s_pantalla",
               "name": "📱 Pantalla / Módulo",
               "price": "Consultar",
               "note": "Seleccioná la calidad deseada o consultá presupuesto"
             },
             {
-              "id": "sam_galaxy_a03_core_bateria",
+              "id": "samsung_galaxy_a03s_bateria",
               "name": "🔋 Batería",
               "price": "Consultar",
               "note": "Condición al 100% de salud"
             },
             {
-              "id": "sam_galaxy_a03_core_pin",
+              "id": "samsung_galaxy_a03s_pin",
               "name": "🔌 Pin de carga",
               "price": "Consultar",
               "note": "Reparación o cambio de conector de carga"
             },
             {
-              "id": "sam_galaxy_a03_core_selfie",
+              "id": "samsung_galaxy_a03s_selfie",
               "name": "📸 Cámara Selfie (Frontal)",
               "price": "Consultar",
               "note": "Módulo de cámara frontal"
             },
             {
-              "id": "sam_galaxy_a03_core_trasera",
+              "id": "samsung_galaxy_a03s_trasera",
               "name": "📷 Cámara Principal (Trasera)",
               "price": "Consultar",
               "note": "Módulo de cámara trasera original"
             },
             {
-              "id": "sam_galaxy_a03_core_tapa",
+              "id": "samsung_galaxy_a03s_tapa",
               "name": "📱 Tapa Trasera / Cristal",
               "price": "Consultar",
               "note": "Cambio de tapa o cristal trasero"
             },
             {
-              "id": "sam_galaxy_a03_core_desbloqueo",
+              "id": "samsung_galaxy_a03s_desbloqueo",
               "name": "🔓 Desbloqueo (Cuenta Google / iCloud / PIN)",
               "price": "NO REALIZAMOS",
               "note": "NO REALIZAMOS ESTE SERVICIO"
             },
             {
-              "id": "sam_galaxy_a03_core_liberacion",
+              "id": "samsung_galaxy_a03s_liberacion",
               "name": "📶 Liberación de Compañía / Banda",
               "price": "NO REALIZAMOS",
               "note": "NO REALIZAMOS ESTE SERVICIO"
@@ -1394,52 +1394,52 @@ var PRECIOS_WIDGET = {
           ]
         },
         {
-          "name": "Galaxy A04",
+          "name": "Samsung Galaxy A04",
           "repairs": [
             {
-              "id": "sam_galaxy_a04_pantalla",
+              "id": "samsung_galaxy_a04_pantalla",
               "name": "📱 Pantalla / Módulo",
               "price": "Consultar",
               "note": "Seleccioná la calidad deseada o consultá presupuesto"
             },
             {
-              "id": "sam_galaxy_a04_bateria",
+              "id": "samsung_galaxy_a04_bateria",
               "name": "🔋 Batería",
               "price": "Consultar",
               "note": "Condición al 100% de salud"
             },
             {
-              "id": "sam_galaxy_a04_pin",
+              "id": "samsung_galaxy_a04_pin",
               "name": "🔌 Pin de carga",
               "price": "Consultar",
               "note": "Reparación o cambio de conector de carga"
             },
             {
-              "id": "sam_galaxy_a04_selfie",
+              "id": "samsung_galaxy_a04_selfie",
               "name": "📸 Cámara Selfie (Frontal)",
               "price": "Consultar",
               "note": "Módulo de cámara frontal"
             },
             {
-              "id": "sam_galaxy_a04_trasera",
+              "id": "samsung_galaxy_a04_trasera",
               "name": "📷 Cámara Principal (Trasera)",
               "price": "Consultar",
               "note": "Módulo de cámara trasera original"
             },
             {
-              "id": "sam_galaxy_a04_tapa",
+              "id": "samsung_galaxy_a04_tapa",
               "name": "📱 Tapa Trasera / Cristal",
               "price": "Consultar",
               "note": "Cambio de tapa o cristal trasero"
             },
             {
-              "id": "sam_galaxy_a04_desbloqueo",
+              "id": "samsung_galaxy_a04_desbloqueo",
               "name": "🔓 Desbloqueo (Cuenta Google / iCloud / PIN)",
               "price": "NO REALIZAMOS",
               "note": "NO REALIZAMOS ESTE SERVICIO"
             },
             {
-              "id": "sam_galaxy_a04_liberacion",
+              "id": "samsung_galaxy_a04_liberacion",
               "name": "📶 Liberación de Compañía / Banda",
               "price": "NO REALIZAMOS",
               "note": "NO REALIZAMOS ESTE SERVICIO"
@@ -1447,52 +1447,52 @@ var PRECIOS_WIDGET = {
           ]
         },
         {
-          "name": "Galaxy A04s",
+          "name": "Samsung Galaxy A04e",
           "repairs": [
             {
-              "id": "sam_galaxy_a04s_pantalla",
+              "id": "samsung_galaxy_a04e_pantalla",
               "name": "📱 Pantalla / Módulo",
               "price": "Consultar",
               "note": "Seleccioná la calidad deseada o consultá presupuesto"
             },
             {
-              "id": "sam_galaxy_a04s_bateria",
+              "id": "samsung_galaxy_a04e_bateria",
               "name": "🔋 Batería",
               "price": "Consultar",
               "note": "Condición al 100% de salud"
             },
             {
-              "id": "sam_galaxy_a04s_pin",
+              "id": "samsung_galaxy_a04e_pin",
               "name": "🔌 Pin de carga",
               "price": "Consultar",
               "note": "Reparación o cambio de conector de carga"
             },
             {
-              "id": "sam_galaxy_a04s_selfie",
+              "id": "samsung_galaxy_a04e_selfie",
               "name": "📸 Cámara Selfie (Frontal)",
               "price": "Consultar",
               "note": "Módulo de cámara frontal"
             },
             {
-              "id": "sam_galaxy_a04s_trasera",
+              "id": "samsung_galaxy_a04e_trasera",
               "name": "📷 Cámara Principal (Trasera)",
               "price": "Consultar",
               "note": "Módulo de cámara trasera original"
             },
             {
-              "id": "sam_galaxy_a04s_tapa",
+              "id": "samsung_galaxy_a04e_tapa",
               "name": "📱 Tapa Trasera / Cristal",
               "price": "Consultar",
               "note": "Cambio de tapa o cristal trasero"
             },
             {
-              "id": "sam_galaxy_a04s_desbloqueo",
+              "id": "samsung_galaxy_a04e_desbloqueo",
               "name": "🔓 Desbloqueo (Cuenta Google / iCloud / PIN)",
               "price": "NO REALIZAMOS",
               "note": "NO REALIZAMOS ESTE SERVICIO"
             },
             {
-              "id": "sam_galaxy_a04s_liberacion",
+              "id": "samsung_galaxy_a04e_liberacion",
               "name": "📶 Liberación de Compañía / Banda",
               "price": "NO REALIZAMOS",
               "note": "NO REALIZAMOS ESTE SERVICIO"
@@ -1500,52 +1500,52 @@ var PRECIOS_WIDGET = {
           ]
         },
         {
-          "name": "Galaxy A04e",
+          "name": "Samsung Galaxy A04s",
           "repairs": [
             {
-              "id": "sam_galaxy_a04e_pantalla",
+              "id": "samsung_galaxy_a04s_pantalla",
               "name": "📱 Pantalla / Módulo",
               "price": "Consultar",
               "note": "Seleccioná la calidad deseada o consultá presupuesto"
             },
             {
-              "id": "sam_galaxy_a04e_bateria",
+              "id": "samsung_galaxy_a04s_bateria",
               "name": "🔋 Batería",
               "price": "Consultar",
               "note": "Condición al 100% de salud"
             },
             {
-              "id": "sam_galaxy_a04e_pin",
+              "id": "samsung_galaxy_a04s_pin",
               "name": "🔌 Pin de carga",
               "price": "Consultar",
               "note": "Reparación o cambio de conector de carga"
             },
             {
-              "id": "sam_galaxy_a04e_selfie",
+              "id": "samsung_galaxy_a04s_selfie",
               "name": "📸 Cámara Selfie (Frontal)",
               "price": "Consultar",
               "note": "Módulo de cámara frontal"
             },
             {
-              "id": "sam_galaxy_a04e_trasera",
+              "id": "samsung_galaxy_a04s_trasera",
               "name": "📷 Cámara Principal (Trasera)",
               "price": "Consultar",
               "note": "Módulo de cámara trasera original"
             },
             {
-              "id": "sam_galaxy_a04e_tapa",
+              "id": "samsung_galaxy_a04s_tapa",
               "name": "📱 Tapa Trasera / Cristal",
               "price": "Consultar",
               "note": "Cambio de tapa o cristal trasero"
             },
             {
-              "id": "sam_galaxy_a04e_desbloqueo",
+              "id": "samsung_galaxy_a04s_desbloqueo",
               "name": "🔓 Desbloqueo (Cuenta Google / iCloud / PIN)",
               "price": "NO REALIZAMOS",
               "note": "NO REALIZAMOS ESTE SERVICIO"
             },
             {
-              "id": "sam_galaxy_a04e_liberacion",
+              "id": "samsung_galaxy_a04s_liberacion",
               "name": "📶 Liberación de Compañía / Banda",
               "price": "NO REALIZAMOS",
               "note": "NO REALIZAMOS ESTE SERVICIO"
@@ -1553,52 +1553,52 @@ var PRECIOS_WIDGET = {
           ]
         },
         {
-          "name": "Galaxy A05",
+          "name": "Samsung Galaxy A05",
           "repairs": [
             {
-              "id": "sam_galaxy_a05_pantalla",
+              "id": "samsung_galaxy_a05_pantalla",
               "name": "📱 Pantalla / Módulo",
               "price": "Consultar",
               "note": "Seleccioná la calidad deseada o consultá presupuesto"
             },
             {
-              "id": "sam_galaxy_a05_bateria",
+              "id": "samsung_galaxy_a05_bateria",
               "name": "🔋 Batería",
               "price": "Consultar",
               "note": "Condición al 100% de salud"
             },
             {
-              "id": "sam_galaxy_a05_pin",
+              "id": "samsung_galaxy_a05_pin",
               "name": "🔌 Pin de carga",
               "price": "Consultar",
               "note": "Reparación o cambio de conector de carga"
             },
             {
-              "id": "sam_galaxy_a05_selfie",
+              "id": "samsung_galaxy_a05_selfie",
               "name": "📸 Cámara Selfie (Frontal)",
               "price": "Consultar",
               "note": "Módulo de cámara frontal"
             },
             {
-              "id": "sam_galaxy_a05_trasera",
+              "id": "samsung_galaxy_a05_trasera",
               "name": "📷 Cámara Principal (Trasera)",
               "price": "Consultar",
               "note": "Módulo de cámara trasera original"
             },
             {
-              "id": "sam_galaxy_a05_tapa",
+              "id": "samsung_galaxy_a05_tapa",
               "name": "📱 Tapa Trasera / Cristal",
               "price": "Consultar",
               "note": "Cambio de tapa o cristal trasero"
             },
             {
-              "id": "sam_galaxy_a05_desbloqueo",
+              "id": "samsung_galaxy_a05_desbloqueo",
               "name": "🔓 Desbloqueo (Cuenta Google / iCloud / PIN)",
               "price": "NO REALIZAMOS",
               "note": "NO REALIZAMOS ESTE SERVICIO"
             },
             {
-              "id": "sam_galaxy_a05_liberacion",
+              "id": "samsung_galaxy_a05_liberacion",
               "name": "📶 Liberación de Compañía / Banda",
               "price": "NO REALIZAMOS",
               "note": "NO REALIZAMOS ESTE SERVICIO"
@@ -1606,52 +1606,52 @@ var PRECIOS_WIDGET = {
           ]
         },
         {
-          "name": "Galaxy A05s",
+          "name": "Samsung Galaxy A05s",
           "repairs": [
             {
-              "id": "sam_galaxy_a05s_pantalla",
+              "id": "samsung_galaxy_a05s_pantalla",
               "name": "📱 Pantalla / Módulo",
               "price": "Consultar",
               "note": "Seleccioná la calidad deseada o consultá presupuesto"
             },
             {
-              "id": "sam_galaxy_a05s_bateria",
+              "id": "samsung_galaxy_a05s_bateria",
               "name": "🔋 Batería",
               "price": "Consultar",
               "note": "Condición al 100% de salud"
             },
             {
-              "id": "sam_galaxy_a05s_pin",
+              "id": "samsung_galaxy_a05s_pin",
               "name": "🔌 Pin de carga",
               "price": "Consultar",
               "note": "Reparación o cambio de conector de carga"
             },
             {
-              "id": "sam_galaxy_a05s_selfie",
+              "id": "samsung_galaxy_a05s_selfie",
               "name": "📸 Cámara Selfie (Frontal)",
               "price": "Consultar",
               "note": "Módulo de cámara frontal"
             },
             {
-              "id": "sam_galaxy_a05s_trasera",
+              "id": "samsung_galaxy_a05s_trasera",
               "name": "📷 Cámara Principal (Trasera)",
               "price": "Consultar",
               "note": "Módulo de cámara trasera original"
             },
             {
-              "id": "sam_galaxy_a05s_tapa",
+              "id": "samsung_galaxy_a05s_tapa",
               "name": "📱 Tapa Trasera / Cristal",
               "price": "Consultar",
               "note": "Cambio de tapa o cristal trasero"
             },
             {
-              "id": "sam_galaxy_a05s_desbloqueo",
+              "id": "samsung_galaxy_a05s_desbloqueo",
               "name": "🔓 Desbloqueo (Cuenta Google / iCloud / PIN)",
               "price": "NO REALIZAMOS",
               "note": "NO REALIZAMOS ESTE SERVICIO"
             },
             {
-              "id": "sam_galaxy_a05s_liberacion",
+              "id": "samsung_galaxy_a05s_liberacion",
               "name": "📶 Liberación de Compañía / Banda",
               "price": "NO REALIZAMOS",
               "note": "NO REALIZAMOS ESTE SERVICIO"
@@ -1659,52 +1659,52 @@ var PRECIOS_WIDGET = {
           ]
         },
         {
-          "name": "Galaxy A06",
+          "name": "Samsung Galaxy A06",
           "repairs": [
             {
-              "id": "sam_galaxy_a06_pantalla",
+              "id": "samsung_galaxy_a06_pantalla",
               "name": "📱 Pantalla / Módulo",
               "price": "Consultar",
               "note": "Seleccioná la calidad deseada o consultá presupuesto"
             },
             {
-              "id": "sam_galaxy_a06_bateria",
+              "id": "samsung_galaxy_a06_bateria",
               "name": "🔋 Batería",
               "price": "Consultar",
               "note": "Condición al 100% de salud"
             },
             {
-              "id": "sam_galaxy_a06_pin",
+              "id": "samsung_galaxy_a06_pin",
               "name": "🔌 Pin de carga",
               "price": "Consultar",
               "note": "Reparación o cambio de conector de carga"
             },
             {
-              "id": "sam_galaxy_a06_selfie",
+              "id": "samsung_galaxy_a06_selfie",
               "name": "📸 Cámara Selfie (Frontal)",
               "price": "Consultar",
               "note": "Módulo de cámara frontal"
             },
             {
-              "id": "sam_galaxy_a06_trasera",
+              "id": "samsung_galaxy_a06_trasera",
               "name": "📷 Cámara Principal (Trasera)",
               "price": "Consultar",
               "note": "Módulo de cámara trasera original"
             },
             {
-              "id": "sam_galaxy_a06_tapa",
+              "id": "samsung_galaxy_a06_tapa",
               "name": "📱 Tapa Trasera / Cristal",
               "price": "Consultar",
               "note": "Cambio de tapa o cristal trasero"
             },
             {
-              "id": "sam_galaxy_a06_desbloqueo",
+              "id": "samsung_galaxy_a06_desbloqueo",
               "name": "🔓 Desbloqueo (Cuenta Google / iCloud / PIN)",
               "price": "NO REALIZAMOS",
               "note": "NO REALIZAMOS ESTE SERVICIO"
             },
             {
-              "id": "sam_galaxy_a06_liberacion",
+              "id": "samsung_galaxy_a06_liberacion",
               "name": "📶 Liberación de Compañía / Banda",
               "price": "NO REALIZAMOS",
               "note": "NO REALIZAMOS ESTE SERVICIO"
@@ -1712,52 +1712,52 @@ var PRECIOS_WIDGET = {
           ]
         },
         {
-          "name": "Galaxy A10",
+          "name": "Samsung Galaxy A06 5G",
           "repairs": [
             {
-              "id": "sam_galaxy_a10_pantalla",
+              "id": "samsung_galaxy_a06_5g_pantalla",
               "name": "📱 Pantalla / Módulo",
               "price": "Consultar",
               "note": "Seleccioná la calidad deseada o consultá presupuesto"
             },
             {
-              "id": "sam_galaxy_a10_bateria",
+              "id": "samsung_galaxy_a06_5g_bateria",
               "name": "🔋 Batería",
               "price": "Consultar",
               "note": "Condición al 100% de salud"
             },
             {
-              "id": "sam_galaxy_a10_pin",
+              "id": "samsung_galaxy_a06_5g_pin",
               "name": "🔌 Pin de carga",
               "price": "Consultar",
               "note": "Reparación o cambio de conector de carga"
             },
             {
-              "id": "sam_galaxy_a10_selfie",
+              "id": "samsung_galaxy_a06_5g_selfie",
               "name": "📸 Cámara Selfie (Frontal)",
               "price": "Consultar",
               "note": "Módulo de cámara frontal"
             },
             {
-              "id": "sam_galaxy_a10_trasera",
+              "id": "samsung_galaxy_a06_5g_trasera",
               "name": "📷 Cámara Principal (Trasera)",
               "price": "Consultar",
               "note": "Módulo de cámara trasera original"
             },
             {
-              "id": "sam_galaxy_a10_tapa",
+              "id": "samsung_galaxy_a06_5g_tapa",
               "name": "📱 Tapa Trasera / Cristal",
               "price": "Consultar",
               "note": "Cambio de tapa o cristal trasero"
             },
             {
-              "id": "sam_galaxy_a10_desbloqueo",
+              "id": "samsung_galaxy_a06_5g_desbloqueo",
               "name": "🔓 Desbloqueo (Cuenta Google / iCloud / PIN)",
               "price": "NO REALIZAMOS",
               "note": "NO REALIZAMOS ESTE SERVICIO"
             },
             {
-              "id": "sam_galaxy_a10_liberacion",
+              "id": "samsung_galaxy_a06_5g_liberacion",
               "name": "📶 Liberación de Compañía / Banda",
               "price": "NO REALIZAMOS",
               "note": "NO REALIZAMOS ESTE SERVICIO"
@@ -1765,52 +1765,52 @@ var PRECIOS_WIDGET = {
           ]
         },
         {
-          "name": "Galaxy A10s",
+          "name": "Samsung Galaxy A07",
           "repairs": [
             {
-              "id": "sam_galaxy_a10s_pantalla",
+              "id": "samsung_galaxy_a07_pantalla",
               "name": "📱 Pantalla / Módulo",
               "price": "Consultar",
               "note": "Seleccioná la calidad deseada o consultá presupuesto"
             },
             {
-              "id": "sam_galaxy_a10s_bateria",
+              "id": "samsung_galaxy_a07_bateria",
               "name": "🔋 Batería",
               "price": "Consultar",
               "note": "Condición al 100% de salud"
             },
             {
-              "id": "sam_galaxy_a10s_pin",
+              "id": "samsung_galaxy_a07_pin",
               "name": "🔌 Pin de carga",
               "price": "Consultar",
               "note": "Reparación o cambio de conector de carga"
             },
             {
-              "id": "sam_galaxy_a10s_selfie",
+              "id": "samsung_galaxy_a07_selfie",
               "name": "📸 Cámara Selfie (Frontal)",
               "price": "Consultar",
               "note": "Módulo de cámara frontal"
             },
             {
-              "id": "sam_galaxy_a10s_trasera",
+              "id": "samsung_galaxy_a07_trasera",
               "name": "📷 Cámara Principal (Trasera)",
               "price": "Consultar",
               "note": "Módulo de cámara trasera original"
             },
             {
-              "id": "sam_galaxy_a10s_tapa",
+              "id": "samsung_galaxy_a07_tapa",
               "name": "📱 Tapa Trasera / Cristal",
               "price": "Consultar",
               "note": "Cambio de tapa o cristal trasero"
             },
             {
-              "id": "sam_galaxy_a10s_desbloqueo",
+              "id": "samsung_galaxy_a07_desbloqueo",
               "name": "🔓 Desbloqueo (Cuenta Google / iCloud / PIN)",
               "price": "NO REALIZAMOS",
               "note": "NO REALIZAMOS ESTE SERVICIO"
             },
             {
-              "id": "sam_galaxy_a10s_liberacion",
+              "id": "samsung_galaxy_a07_liberacion",
               "name": "📶 Liberación de Compañía / Banda",
               "price": "NO REALIZAMOS",
               "note": "NO REALIZAMOS ESTE SERVICIO"
@@ -1818,52 +1818,52 @@ var PRECIOS_WIDGET = {
           ]
         },
         {
-          "name": "Galaxy A11",
+          "name": "Samsung Galaxy A07 5G",
           "repairs": [
             {
-              "id": "sam_galaxy_a11_pantalla",
+              "id": "samsung_galaxy_a07_5g_pantalla",
               "name": "📱 Pantalla / Módulo",
               "price": "Consultar",
               "note": "Seleccioná la calidad deseada o consultá presupuesto"
             },
             {
-              "id": "sam_galaxy_a11_bateria",
+              "id": "samsung_galaxy_a07_5g_bateria",
               "name": "🔋 Batería",
               "price": "Consultar",
               "note": "Condición al 100% de salud"
             },
             {
-              "id": "sam_galaxy_a11_pin",
+              "id": "samsung_galaxy_a07_5g_pin",
               "name": "🔌 Pin de carga",
               "price": "Consultar",
               "note": "Reparación o cambio de conector de carga"
             },
             {
-              "id": "sam_galaxy_a11_selfie",
+              "id": "samsung_galaxy_a07_5g_selfie",
               "name": "📸 Cámara Selfie (Frontal)",
               "price": "Consultar",
               "note": "Módulo de cámara frontal"
             },
             {
-              "id": "sam_galaxy_a11_trasera",
+              "id": "samsung_galaxy_a07_5g_trasera",
               "name": "📷 Cámara Principal (Trasera)",
               "price": "Consultar",
               "note": "Módulo de cámara trasera original"
             },
             {
-              "id": "sam_galaxy_a11_tapa",
+              "id": "samsung_galaxy_a07_5g_tapa",
               "name": "📱 Tapa Trasera / Cristal",
               "price": "Consultar",
               "note": "Cambio de tapa o cristal trasero"
             },
             {
-              "id": "sam_galaxy_a11_desbloqueo",
+              "id": "samsung_galaxy_a07_5g_desbloqueo",
               "name": "🔓 Desbloqueo (Cuenta Google / iCloud / PIN)",
               "price": "NO REALIZAMOS",
               "note": "NO REALIZAMOS ESTE SERVICIO"
             },
             {
-              "id": "sam_galaxy_a11_liberacion",
+              "id": "samsung_galaxy_a07_5g_liberacion",
               "name": "📶 Liberación de Compañía / Banda",
               "price": "NO REALIZAMOS",
               "note": "NO REALIZAMOS ESTE SERVICIO"
@@ -1871,52 +1871,52 @@ var PRECIOS_WIDGET = {
           ]
         },
         {
-          "name": "Galaxy A12",
+          "name": "Samsung Galaxy A10",
           "repairs": [
             {
-              "id": "sam_galaxy_a12_pantalla",
+              "id": "samsung_galaxy_a10_pantalla",
               "name": "📱 Pantalla / Módulo",
               "price": "Consultar",
               "note": "Seleccioná la calidad deseada o consultá presupuesto"
             },
             {
-              "id": "sam_galaxy_a12_bateria",
+              "id": "samsung_galaxy_a10_bateria",
               "name": "🔋 Batería",
               "price": "Consultar",
               "note": "Condición al 100% de salud"
             },
             {
-              "id": "sam_galaxy_a12_pin",
+              "id": "samsung_galaxy_a10_pin",
               "name": "🔌 Pin de carga",
               "price": "Consultar",
               "note": "Reparación o cambio de conector de carga"
             },
             {
-              "id": "sam_galaxy_a12_selfie",
+              "id": "samsung_galaxy_a10_selfie",
               "name": "📸 Cámara Selfie (Frontal)",
               "price": "Consultar",
               "note": "Módulo de cámara frontal"
             },
             {
-              "id": "sam_galaxy_a12_trasera",
+              "id": "samsung_galaxy_a10_trasera",
               "name": "📷 Cámara Principal (Trasera)",
               "price": "Consultar",
               "note": "Módulo de cámara trasera original"
             },
             {
-              "id": "sam_galaxy_a12_tapa",
+              "id": "samsung_galaxy_a10_tapa",
               "name": "📱 Tapa Trasera / Cristal",
               "price": "Consultar",
               "note": "Cambio de tapa o cristal trasero"
             },
             {
-              "id": "sam_galaxy_a12_desbloqueo",
+              "id": "samsung_galaxy_a10_desbloqueo",
               "name": "🔓 Desbloqueo (Cuenta Google / iCloud / PIN)",
               "price": "NO REALIZAMOS",
               "note": "NO REALIZAMOS ESTE SERVICIO"
             },
             {
-              "id": "sam_galaxy_a12_liberacion",
+              "id": "samsung_galaxy_a10_liberacion",
               "name": "📶 Liberación de Compañía / Banda",
               "price": "NO REALIZAMOS",
               "note": "NO REALIZAMOS ESTE SERVICIO"
@@ -1924,52 +1924,52 @@ var PRECIOS_WIDGET = {
           ]
         },
         {
-          "name": "Galaxy A13 4G",
+          "name": "Samsung Galaxy A10e",
           "repairs": [
             {
-              "id": "sam_galaxy_a13_4g_pantalla",
+              "id": "samsung_galaxy_a10e_pantalla",
               "name": "📱 Pantalla / Módulo",
               "price": "Consultar",
               "note": "Seleccioná la calidad deseada o consultá presupuesto"
             },
             {
-              "id": "sam_galaxy_a13_4g_bateria",
+              "id": "samsung_galaxy_a10e_bateria",
               "name": "🔋 Batería",
               "price": "Consultar",
               "note": "Condición al 100% de salud"
             },
             {
-              "id": "sam_galaxy_a13_4g_pin",
+              "id": "samsung_galaxy_a10e_pin",
               "name": "🔌 Pin de carga",
               "price": "Consultar",
               "note": "Reparación o cambio de conector de carga"
             },
             {
-              "id": "sam_galaxy_a13_4g_selfie",
+              "id": "samsung_galaxy_a10e_selfie",
               "name": "📸 Cámara Selfie (Frontal)",
               "price": "Consultar",
               "note": "Módulo de cámara frontal"
             },
             {
-              "id": "sam_galaxy_a13_4g_trasera",
+              "id": "samsung_galaxy_a10e_trasera",
               "name": "📷 Cámara Principal (Trasera)",
               "price": "Consultar",
               "note": "Módulo de cámara trasera original"
             },
             {
-              "id": "sam_galaxy_a13_4g_tapa",
+              "id": "samsung_galaxy_a10e_tapa",
               "name": "📱 Tapa Trasera / Cristal",
               "price": "Consultar",
               "note": "Cambio de tapa o cristal trasero"
             },
             {
-              "id": "sam_galaxy_a13_4g_desbloqueo",
+              "id": "samsung_galaxy_a10e_desbloqueo",
               "name": "🔓 Desbloqueo (Cuenta Google / iCloud / PIN)",
               "price": "NO REALIZAMOS",
               "note": "NO REALIZAMOS ESTE SERVICIO"
             },
             {
-              "id": "sam_galaxy_a13_4g_liberacion",
+              "id": "samsung_galaxy_a10e_liberacion",
               "name": "📶 Liberación de Compañía / Banda",
               "price": "NO REALIZAMOS",
               "note": "NO REALIZAMOS ESTE SERVICIO"
@@ -1977,52 +1977,52 @@ var PRECIOS_WIDGET = {
           ]
         },
         {
-          "name": "Galaxy A13 5G",
+          "name": "Samsung Galaxy A10s",
           "repairs": [
             {
-              "id": "sam_galaxy_a13_5g_pantalla",
+              "id": "samsung_galaxy_a10s_pantalla",
               "name": "📱 Pantalla / Módulo",
               "price": "Consultar",
               "note": "Seleccioná la calidad deseada o consultá presupuesto"
             },
             {
-              "id": "sam_galaxy_a13_5g_bateria",
+              "id": "samsung_galaxy_a10s_bateria",
               "name": "🔋 Batería",
               "price": "Consultar",
               "note": "Condición al 100% de salud"
             },
             {
-              "id": "sam_galaxy_a13_5g_pin",
+              "id": "samsung_galaxy_a10s_pin",
               "name": "🔌 Pin de carga",
               "price": "Consultar",
               "note": "Reparación o cambio de conector de carga"
             },
             {
-              "id": "sam_galaxy_a13_5g_selfie",
+              "id": "samsung_galaxy_a10s_selfie",
               "name": "📸 Cámara Selfie (Frontal)",
               "price": "Consultar",
               "note": "Módulo de cámara frontal"
             },
             {
-              "id": "sam_galaxy_a13_5g_trasera",
+              "id": "samsung_galaxy_a10s_trasera",
               "name": "📷 Cámara Principal (Trasera)",
               "price": "Consultar",
               "note": "Módulo de cámara trasera original"
             },
             {
-              "id": "sam_galaxy_a13_5g_tapa",
+              "id": "samsung_galaxy_a10s_tapa",
               "name": "📱 Tapa Trasera / Cristal",
               "price": "Consultar",
               "note": "Cambio de tapa o cristal trasero"
             },
             {
-              "id": "sam_galaxy_a13_5g_desbloqueo",
+              "id": "samsung_galaxy_a10s_desbloqueo",
               "name": "🔓 Desbloqueo (Cuenta Google / iCloud / PIN)",
               "price": "NO REALIZAMOS",
               "note": "NO REALIZAMOS ESTE SERVICIO"
             },
             {
-              "id": "sam_galaxy_a13_5g_liberacion",
+              "id": "samsung_galaxy_a10s_liberacion",
               "name": "📶 Liberación de Compañía / Banda",
               "price": "NO REALIZAMOS",
               "note": "NO REALIZAMOS ESTE SERVICIO"
@@ -2030,52 +2030,52 @@ var PRECIOS_WIDGET = {
           ]
         },
         {
-          "name": "Galaxy A14 4G",
+          "name": "Samsung Galaxy A11",
           "repairs": [
             {
-              "id": "sam_galaxy_a14_4g_pantalla",
+              "id": "samsung_galaxy_a11_pantalla",
               "name": "📱 Pantalla / Módulo",
               "price": "Consultar",
               "note": "Seleccioná la calidad deseada o consultá presupuesto"
             },
             {
-              "id": "sam_galaxy_a14_4g_bateria",
+              "id": "samsung_galaxy_a11_bateria",
               "name": "🔋 Batería",
               "price": "Consultar",
               "note": "Condición al 100% de salud"
             },
             {
-              "id": "sam_galaxy_a14_4g_pin",
+              "id": "samsung_galaxy_a11_pin",
               "name": "🔌 Pin de carga",
               "price": "Consultar",
               "note": "Reparación o cambio de conector de carga"
             },
             {
-              "id": "sam_galaxy_a14_4g_selfie",
+              "id": "samsung_galaxy_a11_selfie",
               "name": "📸 Cámara Selfie (Frontal)",
               "price": "Consultar",
               "note": "Módulo de cámara frontal"
             },
             {
-              "id": "sam_galaxy_a14_4g_trasera",
+              "id": "samsung_galaxy_a11_trasera",
               "name": "📷 Cámara Principal (Trasera)",
               "price": "Consultar",
               "note": "Módulo de cámara trasera original"
             },
             {
-              "id": "sam_galaxy_a14_4g_tapa",
+              "id": "samsung_galaxy_a11_tapa",
               "name": "📱 Tapa Trasera / Cristal",
               "price": "Consultar",
               "note": "Cambio de tapa o cristal trasero"
             },
             {
-              "id": "sam_galaxy_a14_4g_desbloqueo",
+              "id": "samsung_galaxy_a11_desbloqueo",
               "name": "🔓 Desbloqueo (Cuenta Google / iCloud / PIN)",
               "price": "NO REALIZAMOS",
               "note": "NO REALIZAMOS ESTE SERVICIO"
             },
             {
-              "id": "sam_galaxy_a14_4g_liberacion",
+              "id": "samsung_galaxy_a11_liberacion",
               "name": "📶 Liberación de Compañía / Banda",
               "price": "NO REALIZAMOS",
               "note": "NO REALIZAMOS ESTE SERVICIO"
@@ -2083,52 +2083,52 @@ var PRECIOS_WIDGET = {
           ]
         },
         {
-          "name": "Galaxy A14 5G",
+          "name": "Samsung Galaxy A12",
           "repairs": [
             {
-              "id": "sam_galaxy_a14_5g_pantalla",
+              "id": "samsung_galaxy_a12_pantalla",
               "name": "📱 Pantalla / Módulo",
               "price": "Consultar",
               "note": "Seleccioná la calidad deseada o consultá presupuesto"
             },
             {
-              "id": "sam_galaxy_a14_5g_bateria",
+              "id": "samsung_galaxy_a12_bateria",
               "name": "🔋 Batería",
               "price": "Consultar",
               "note": "Condición al 100% de salud"
             },
             {
-              "id": "sam_galaxy_a14_5g_pin",
+              "id": "samsung_galaxy_a12_pin",
               "name": "🔌 Pin de carga",
               "price": "Consultar",
               "note": "Reparación o cambio de conector de carga"
             },
             {
-              "id": "sam_galaxy_a14_5g_selfie",
+              "id": "samsung_galaxy_a12_selfie",
               "name": "📸 Cámara Selfie (Frontal)",
               "price": "Consultar",
               "note": "Módulo de cámara frontal"
             },
             {
-              "id": "sam_galaxy_a14_5g_trasera",
+              "id": "samsung_galaxy_a12_trasera",
               "name": "📷 Cámara Principal (Trasera)",
               "price": "Consultar",
               "note": "Módulo de cámara trasera original"
             },
             {
-              "id": "sam_galaxy_a14_5g_tapa",
+              "id": "samsung_galaxy_a12_tapa",
               "name": "📱 Tapa Trasera / Cristal",
               "price": "Consultar",
               "note": "Cambio de tapa o cristal trasero"
             },
             {
-              "id": "sam_galaxy_a14_5g_desbloqueo",
+              "id": "samsung_galaxy_a12_desbloqueo",
               "name": "🔓 Desbloqueo (Cuenta Google / iCloud / PIN)",
               "price": "NO REALIZAMOS",
               "note": "NO REALIZAMOS ESTE SERVICIO"
             },
             {
-              "id": "sam_galaxy_a14_5g_liberacion",
+              "id": "samsung_galaxy_a12_liberacion",
               "name": "📶 Liberación de Compañía / Banda",
               "price": "NO REALIZAMOS",
               "note": "NO REALIZAMOS ESTE SERVICIO"
@@ -2136,52 +2136,52 @@ var PRECIOS_WIDGET = {
           ]
         },
         {
-          "name": "Galaxy A15 4G",
+          "name": "Samsung Galaxy A13",
           "repairs": [
             {
-              "id": "sam_galaxy_a15_4g_pantalla",
+              "id": "samsung_galaxy_a13_pantalla",
               "name": "📱 Pantalla / Módulo",
               "price": "Consultar",
               "note": "Seleccioná la calidad deseada o consultá presupuesto"
             },
             {
-              "id": "sam_galaxy_a15_4g_bateria",
+              "id": "samsung_galaxy_a13_bateria",
               "name": "🔋 Batería",
               "price": "Consultar",
               "note": "Condición al 100% de salud"
             },
             {
-              "id": "sam_galaxy_a15_4g_pin",
+              "id": "samsung_galaxy_a13_pin",
               "name": "🔌 Pin de carga",
               "price": "Consultar",
               "note": "Reparación o cambio de conector de carga"
             },
             {
-              "id": "sam_galaxy_a15_4g_selfie",
+              "id": "samsung_galaxy_a13_selfie",
               "name": "📸 Cámara Selfie (Frontal)",
               "price": "Consultar",
               "note": "Módulo de cámara frontal"
             },
             {
-              "id": "sam_galaxy_a15_4g_trasera",
+              "id": "samsung_galaxy_a13_trasera",
               "name": "📷 Cámara Principal (Trasera)",
               "price": "Consultar",
               "note": "Módulo de cámara trasera original"
             },
             {
-              "id": "sam_galaxy_a15_4g_tapa",
+              "id": "samsung_galaxy_a13_tapa",
               "name": "📱 Tapa Trasera / Cristal",
               "price": "Consultar",
               "note": "Cambio de tapa o cristal trasero"
             },
             {
-              "id": "sam_galaxy_a15_4g_desbloqueo",
+              "id": "samsung_galaxy_a13_desbloqueo",
               "name": "🔓 Desbloqueo (Cuenta Google / iCloud / PIN)",
               "price": "NO REALIZAMOS",
               "note": "NO REALIZAMOS ESTE SERVICIO"
             },
             {
-              "id": "sam_galaxy_a15_4g_liberacion",
+              "id": "samsung_galaxy_a13_liberacion",
               "name": "📶 Liberación de Compañía / Banda",
               "price": "NO REALIZAMOS",
               "note": "NO REALIZAMOS ESTE SERVICIO"
@@ -2189,52 +2189,52 @@ var PRECIOS_WIDGET = {
           ]
         },
         {
-          "name": "Galaxy A15 5G",
+          "name": "Samsung Galaxy A13 5G",
           "repairs": [
             {
-              "id": "sam_galaxy_a15_5g_pantalla",
+              "id": "samsung_galaxy_a13_5g_pantalla",
               "name": "📱 Pantalla / Módulo",
               "price": "Consultar",
               "note": "Seleccioná la calidad deseada o consultá presupuesto"
             },
             {
-              "id": "sam_galaxy_a15_5g_bateria",
+              "id": "samsung_galaxy_a13_5g_bateria",
               "name": "🔋 Batería",
               "price": "Consultar",
               "note": "Condición al 100% de salud"
             },
             {
-              "id": "sam_galaxy_a15_5g_pin",
+              "id": "samsung_galaxy_a13_5g_pin",
               "name": "🔌 Pin de carga",
               "price": "Consultar",
               "note": "Reparación o cambio de conector de carga"
             },
             {
-              "id": "sam_galaxy_a15_5g_selfie",
+              "id": "samsung_galaxy_a13_5g_selfie",
               "name": "📸 Cámara Selfie (Frontal)",
               "price": "Consultar",
               "note": "Módulo de cámara frontal"
             },
             {
-              "id": "sam_galaxy_a15_5g_trasera",
+              "id": "samsung_galaxy_a13_5g_trasera",
               "name": "📷 Cámara Principal (Trasera)",
               "price": "Consultar",
               "note": "Módulo de cámara trasera original"
             },
             {
-              "id": "sam_galaxy_a15_5g_tapa",
+              "id": "samsung_galaxy_a13_5g_tapa",
               "name": "📱 Tapa Trasera / Cristal",
               "price": "Consultar",
               "note": "Cambio de tapa o cristal trasero"
             },
             {
-              "id": "sam_galaxy_a15_5g_desbloqueo",
+              "id": "samsung_galaxy_a13_5g_desbloqueo",
               "name": "🔓 Desbloqueo (Cuenta Google / iCloud / PIN)",
               "price": "NO REALIZAMOS",
               "note": "NO REALIZAMOS ESTE SERVICIO"
             },
             {
-              "id": "sam_galaxy_a15_5g_liberacion",
+              "id": "samsung_galaxy_a13_5g_liberacion",
               "name": "📶 Liberación de Compañía / Banda",
               "price": "NO REALIZAMOS",
               "note": "NO REALIZAMOS ESTE SERVICIO"
@@ -2242,52 +2242,52 @@ var PRECIOS_WIDGET = {
           ]
         },
         {
-          "name": "Galaxy A20",
+          "name": "Samsung Galaxy A14",
           "repairs": [
             {
-              "id": "sam_galaxy_a20_pantalla",
+              "id": "samsung_galaxy_a14_pantalla",
               "name": "📱 Pantalla / Módulo",
               "price": "Consultar",
               "note": "Seleccioná la calidad deseada o consultá presupuesto"
             },
             {
-              "id": "sam_galaxy_a20_bateria",
+              "id": "samsung_galaxy_a14_bateria",
               "name": "🔋 Batería",
               "price": "Consultar",
               "note": "Condición al 100% de salud"
             },
             {
-              "id": "sam_galaxy_a20_pin",
+              "id": "samsung_galaxy_a14_pin",
               "name": "🔌 Pin de carga",
               "price": "Consultar",
               "note": "Reparación o cambio de conector de carga"
             },
             {
-              "id": "sam_galaxy_a20_selfie",
+              "id": "samsung_galaxy_a14_selfie",
               "name": "📸 Cámara Selfie (Frontal)",
               "price": "Consultar",
               "note": "Módulo de cámara frontal"
             },
             {
-              "id": "sam_galaxy_a20_trasera",
+              "id": "samsung_galaxy_a14_trasera",
               "name": "📷 Cámara Principal (Trasera)",
               "price": "Consultar",
               "note": "Módulo de cámara trasera original"
             },
             {
-              "id": "sam_galaxy_a20_tapa",
+              "id": "samsung_galaxy_a14_tapa",
               "name": "📱 Tapa Trasera / Cristal",
               "price": "Consultar",
               "note": "Cambio de tapa o cristal trasero"
             },
             {
-              "id": "sam_galaxy_a20_desbloqueo",
+              "id": "samsung_galaxy_a14_desbloqueo",
               "name": "🔓 Desbloqueo (Cuenta Google / iCloud / PIN)",
               "price": "NO REALIZAMOS",
               "note": "NO REALIZAMOS ESTE SERVICIO"
             },
             {
-              "id": "sam_galaxy_a20_liberacion",
+              "id": "samsung_galaxy_a14_liberacion",
               "name": "📶 Liberación de Compañía / Banda",
               "price": "NO REALIZAMOS",
               "note": "NO REALIZAMOS ESTE SERVICIO"
@@ -2295,52 +2295,52 @@ var PRECIOS_WIDGET = {
           ]
         },
         {
-          "name": "Galaxy A20s",
+          "name": "Samsung Galaxy A14 5G",
           "repairs": [
             {
-              "id": "sam_galaxy_a20s_pantalla",
+              "id": "samsung_galaxy_a14_5g_pantalla",
               "name": "📱 Pantalla / Módulo",
               "price": "Consultar",
               "note": "Seleccioná la calidad deseada o consultá presupuesto"
             },
             {
-              "id": "sam_galaxy_a20s_bateria",
+              "id": "samsung_galaxy_a14_5g_bateria",
               "name": "🔋 Batería",
               "price": "Consultar",
               "note": "Condición al 100% de salud"
             },
             {
-              "id": "sam_galaxy_a20s_pin",
+              "id": "samsung_galaxy_a14_5g_pin",
               "name": "🔌 Pin de carga",
               "price": "Consultar",
               "note": "Reparación o cambio de conector de carga"
             },
             {
-              "id": "sam_galaxy_a20s_selfie",
+              "id": "samsung_galaxy_a14_5g_selfie",
               "name": "📸 Cámara Selfie (Frontal)",
               "price": "Consultar",
               "note": "Módulo de cámara frontal"
             },
             {
-              "id": "sam_galaxy_a20s_trasera",
+              "id": "samsung_galaxy_a14_5g_trasera",
               "name": "📷 Cámara Principal (Trasera)",
               "price": "Consultar",
               "note": "Módulo de cámara trasera original"
             },
             {
-              "id": "sam_galaxy_a20s_tapa",
+              "id": "samsung_galaxy_a14_5g_tapa",
               "name": "📱 Tapa Trasera / Cristal",
               "price": "Consultar",
               "note": "Cambio de tapa o cristal trasero"
             },
             {
-              "id": "sam_galaxy_a20s_desbloqueo",
+              "id": "samsung_galaxy_a14_5g_desbloqueo",
               "name": "🔓 Desbloqueo (Cuenta Google / iCloud / PIN)",
               "price": "NO REALIZAMOS",
               "note": "NO REALIZAMOS ESTE SERVICIO"
             },
             {
-              "id": "sam_galaxy_a20s_liberacion",
+              "id": "samsung_galaxy_a14_5g_liberacion",
               "name": "📶 Liberación de Compañía / Banda",
               "price": "NO REALIZAMOS",
               "note": "NO REALIZAMOS ESTE SERVICIO"
@@ -2348,52 +2348,52 @@ var PRECIOS_WIDGET = {
           ]
         },
         {
-          "name": "Galaxy A21s",
+          "name": "Samsung Galaxy A15",
           "repairs": [
             {
-              "id": "sam_galaxy_a21s_pantalla",
+              "id": "samsung_galaxy_a15_pantalla",
               "name": "📱 Pantalla / Módulo",
               "price": "Consultar",
               "note": "Seleccioná la calidad deseada o consultá presupuesto"
             },
             {
-              "id": "sam_galaxy_a21s_bateria",
+              "id": "samsung_galaxy_a15_bateria",
               "name": "🔋 Batería",
               "price": "Consultar",
               "note": "Condición al 100% de salud"
             },
             {
-              "id": "sam_galaxy_a21s_pin",
+              "id": "samsung_galaxy_a15_pin",
               "name": "🔌 Pin de carga",
               "price": "Consultar",
               "note": "Reparación o cambio de conector de carga"
             },
             {
-              "id": "sam_galaxy_a21s_selfie",
+              "id": "samsung_galaxy_a15_selfie",
               "name": "📸 Cámara Selfie (Frontal)",
               "price": "Consultar",
               "note": "Módulo de cámara frontal"
             },
             {
-              "id": "sam_galaxy_a21s_trasera",
+              "id": "samsung_galaxy_a15_trasera",
               "name": "📷 Cámara Principal (Trasera)",
               "price": "Consultar",
               "note": "Módulo de cámara trasera original"
             },
             {
-              "id": "sam_galaxy_a21s_tapa",
+              "id": "samsung_galaxy_a15_tapa",
               "name": "📱 Tapa Trasera / Cristal",
               "price": "Consultar",
               "note": "Cambio de tapa o cristal trasero"
             },
             {
-              "id": "sam_galaxy_a21s_desbloqueo",
+              "id": "samsung_galaxy_a15_desbloqueo",
               "name": "🔓 Desbloqueo (Cuenta Google / iCloud / PIN)",
               "price": "NO REALIZAMOS",
               "note": "NO REALIZAMOS ESTE SERVICIO"
             },
             {
-              "id": "sam_galaxy_a21s_liberacion",
+              "id": "samsung_galaxy_a15_liberacion",
               "name": "📶 Liberación de Compañía / Banda",
               "price": "NO REALIZAMOS",
               "note": "NO REALIZAMOS ESTE SERVICIO"
@@ -2401,52 +2401,52 @@ var PRECIOS_WIDGET = {
           ]
         },
         {
-          "name": "Galaxy A22 4G",
+          "name": "Samsung Galaxy A15 5G",
           "repairs": [
             {
-              "id": "sam_galaxy_a22_4g_pantalla",
+              "id": "samsung_galaxy_a15_5g_pantalla",
               "name": "📱 Pantalla / Módulo",
               "price": "Consultar",
               "note": "Seleccioná la calidad deseada o consultá presupuesto"
             },
             {
-              "id": "sam_galaxy_a22_4g_bateria",
+              "id": "samsung_galaxy_a15_5g_bateria",
               "name": "🔋 Batería",
               "price": "Consultar",
               "note": "Condición al 100% de salud"
             },
             {
-              "id": "sam_galaxy_a22_4g_pin",
+              "id": "samsung_galaxy_a15_5g_pin",
               "name": "🔌 Pin de carga",
               "price": "Consultar",
               "note": "Reparación o cambio de conector de carga"
             },
             {
-              "id": "sam_galaxy_a22_4g_selfie",
+              "id": "samsung_galaxy_a15_5g_selfie",
               "name": "📸 Cámara Selfie (Frontal)",
               "price": "Consultar",
               "note": "Módulo de cámara frontal"
             },
             {
-              "id": "sam_galaxy_a22_4g_trasera",
+              "id": "samsung_galaxy_a15_5g_trasera",
               "name": "📷 Cámara Principal (Trasera)",
               "price": "Consultar",
               "note": "Módulo de cámara trasera original"
             },
             {
-              "id": "sam_galaxy_a22_4g_tapa",
+              "id": "samsung_galaxy_a15_5g_tapa",
               "name": "📱 Tapa Trasera / Cristal",
               "price": "Consultar",
               "note": "Cambio de tapa o cristal trasero"
             },
             {
-              "id": "sam_galaxy_a22_4g_desbloqueo",
+              "id": "samsung_galaxy_a15_5g_desbloqueo",
               "name": "🔓 Desbloqueo (Cuenta Google / iCloud / PIN)",
               "price": "NO REALIZAMOS",
               "note": "NO REALIZAMOS ESTE SERVICIO"
             },
             {
-              "id": "sam_galaxy_a22_4g_liberacion",
+              "id": "samsung_galaxy_a15_5g_liberacion",
               "name": "📶 Liberación de Compañía / Banda",
               "price": "NO REALIZAMOS",
               "note": "NO REALIZAMOS ESTE SERVICIO"
@@ -2454,52 +2454,52 @@ var PRECIOS_WIDGET = {
           ]
         },
         {
-          "name": "Galaxy A22 5G",
+          "name": "Samsung Galaxy A16",
           "repairs": [
             {
-              "id": "sam_galaxy_a22_5g_pantalla",
+              "id": "samsung_galaxy_a16_pantalla",
               "name": "📱 Pantalla / Módulo",
               "price": "Consultar",
               "note": "Seleccioná la calidad deseada o consultá presupuesto"
             },
             {
-              "id": "sam_galaxy_a22_5g_bateria",
+              "id": "samsung_galaxy_a16_bateria",
               "name": "🔋 Batería",
               "price": "Consultar",
               "note": "Condición al 100% de salud"
             },
             {
-              "id": "sam_galaxy_a22_5g_pin",
+              "id": "samsung_galaxy_a16_pin",
               "name": "🔌 Pin de carga",
               "price": "Consultar",
               "note": "Reparación o cambio de conector de carga"
             },
             {
-              "id": "sam_galaxy_a22_5g_selfie",
+              "id": "samsung_galaxy_a16_selfie",
               "name": "📸 Cámara Selfie (Frontal)",
               "price": "Consultar",
               "note": "Módulo de cámara frontal"
             },
             {
-              "id": "sam_galaxy_a22_5g_trasera",
+              "id": "samsung_galaxy_a16_trasera",
               "name": "📷 Cámara Principal (Trasera)",
               "price": "Consultar",
               "note": "Módulo de cámara trasera original"
             },
             {
-              "id": "sam_galaxy_a22_5g_tapa",
+              "id": "samsung_galaxy_a16_tapa",
               "name": "📱 Tapa Trasera / Cristal",
               "price": "Consultar",
               "note": "Cambio de tapa o cristal trasero"
             },
             {
-              "id": "sam_galaxy_a22_5g_desbloqueo",
+              "id": "samsung_galaxy_a16_desbloqueo",
               "name": "🔓 Desbloqueo (Cuenta Google / iCloud / PIN)",
               "price": "NO REALIZAMOS",
               "note": "NO REALIZAMOS ESTE SERVICIO"
             },
             {
-              "id": "sam_galaxy_a22_5g_liberacion",
+              "id": "samsung_galaxy_a16_liberacion",
               "name": "📶 Liberación de Compañía / Banda",
               "price": "NO REALIZAMOS",
               "note": "NO REALIZAMOS ESTE SERVICIO"
@@ -2507,52 +2507,52 @@ var PRECIOS_WIDGET = {
           ]
         },
         {
-          "name": "Galaxy A23 4G",
+          "name": "Samsung Galaxy A16 5G",
           "repairs": [
             {
-              "id": "sam_galaxy_a23_4g_pantalla",
+              "id": "samsung_galaxy_a16_5g_pantalla",
               "name": "📱 Pantalla / Módulo",
               "price": "Consultar",
               "note": "Seleccioná la calidad deseada o consultá presupuesto"
             },
             {
-              "id": "sam_galaxy_a23_4g_bateria",
+              "id": "samsung_galaxy_a16_5g_bateria",
               "name": "🔋 Batería",
               "price": "Consultar",
               "note": "Condición al 100% de salud"
             },
             {
-              "id": "sam_galaxy_a23_4g_pin",
+              "id": "samsung_galaxy_a16_5g_pin",
               "name": "🔌 Pin de carga",
               "price": "Consultar",
               "note": "Reparación o cambio de conector de carga"
             },
             {
-              "id": "sam_galaxy_a23_4g_selfie",
+              "id": "samsung_galaxy_a16_5g_selfie",
               "name": "📸 Cámara Selfie (Frontal)",
               "price": "Consultar",
               "note": "Módulo de cámara frontal"
             },
             {
-              "id": "sam_galaxy_a23_4g_trasera",
+              "id": "samsung_galaxy_a16_5g_trasera",
               "name": "📷 Cámara Principal (Trasera)",
               "price": "Consultar",
               "note": "Módulo de cámara trasera original"
             },
             {
-              "id": "sam_galaxy_a23_4g_tapa",
+              "id": "samsung_galaxy_a16_5g_tapa",
               "name": "📱 Tapa Trasera / Cristal",
               "price": "Consultar",
               "note": "Cambio de tapa o cristal trasero"
             },
             {
-              "id": "sam_galaxy_a23_4g_desbloqueo",
+              "id": "samsung_galaxy_a16_5g_desbloqueo",
               "name": "🔓 Desbloqueo (Cuenta Google / iCloud / PIN)",
               "price": "NO REALIZAMOS",
               "note": "NO REALIZAMOS ESTE SERVICIO"
             },
             {
-              "id": "sam_galaxy_a23_4g_liberacion",
+              "id": "samsung_galaxy_a16_5g_liberacion",
               "name": "📶 Liberación de Compañía / Banda",
               "price": "NO REALIZAMOS",
               "note": "NO REALIZAMOS ESTE SERVICIO"
@@ -2560,52 +2560,52 @@ var PRECIOS_WIDGET = {
           ]
         },
         {
-          "name": "Galaxy A23 5G",
+          "name": "Samsung Galaxy A17",
           "repairs": [
             {
-              "id": "sam_galaxy_a23_5g_pantalla",
+              "id": "samsung_galaxy_a17_pantalla",
               "name": "📱 Pantalla / Módulo",
               "price": "Consultar",
               "note": "Seleccioná la calidad deseada o consultá presupuesto"
             },
             {
-              "id": "sam_galaxy_a23_5g_bateria",
+              "id": "samsung_galaxy_a17_bateria",
               "name": "🔋 Batería",
               "price": "Consultar",
               "note": "Condición al 100% de salud"
             },
             {
-              "id": "sam_galaxy_a23_5g_pin",
+              "id": "samsung_galaxy_a17_pin",
               "name": "🔌 Pin de carga",
               "price": "Consultar",
               "note": "Reparación o cambio de conector de carga"
             },
             {
-              "id": "sam_galaxy_a23_5g_selfie",
+              "id": "samsung_galaxy_a17_selfie",
               "name": "📸 Cámara Selfie (Frontal)",
               "price": "Consultar",
               "note": "Módulo de cámara frontal"
             },
             {
-              "id": "sam_galaxy_a23_5g_trasera",
+              "id": "samsung_galaxy_a17_trasera",
               "name": "📷 Cámara Principal (Trasera)",
               "price": "Consultar",
               "note": "Módulo de cámara trasera original"
             },
             {
-              "id": "sam_galaxy_a23_5g_tapa",
+              "id": "samsung_galaxy_a17_tapa",
               "name": "📱 Tapa Trasera / Cristal",
               "price": "Consultar",
               "note": "Cambio de tapa o cristal trasero"
             },
             {
-              "id": "sam_galaxy_a23_5g_desbloqueo",
+              "id": "samsung_galaxy_a17_desbloqueo",
               "name": "🔓 Desbloqueo (Cuenta Google / iCloud / PIN)",
               "price": "NO REALIZAMOS",
               "note": "NO REALIZAMOS ESTE SERVICIO"
             },
             {
-              "id": "sam_galaxy_a23_5g_liberacion",
+              "id": "samsung_galaxy_a17_liberacion",
               "name": "📶 Liberación de Compañía / Banda",
               "price": "NO REALIZAMOS",
               "note": "NO REALIZAMOS ESTE SERVICIO"
@@ -2613,52 +2613,52 @@ var PRECIOS_WIDGET = {
           ]
         },
         {
-          "name": "Galaxy A24",
+          "name": "Samsung Galaxy A17 5G",
           "repairs": [
             {
-              "id": "sam_galaxy_a24_pantalla",
+              "id": "samsung_galaxy_a17_5g_pantalla",
               "name": "📱 Pantalla / Módulo",
               "price": "Consultar",
               "note": "Seleccioná la calidad deseada o consultá presupuesto"
             },
             {
-              "id": "sam_galaxy_a24_bateria",
+              "id": "samsung_galaxy_a17_5g_bateria",
               "name": "🔋 Batería",
               "price": "Consultar",
               "note": "Condición al 100% de salud"
             },
             {
-              "id": "sam_galaxy_a24_pin",
+              "id": "samsung_galaxy_a17_5g_pin",
               "name": "🔌 Pin de carga",
               "price": "Consultar",
               "note": "Reparación o cambio de conector de carga"
             },
             {
-              "id": "sam_galaxy_a24_selfie",
+              "id": "samsung_galaxy_a17_5g_selfie",
               "name": "📸 Cámara Selfie (Frontal)",
               "price": "Consultar",
               "note": "Módulo de cámara frontal"
             },
             {
-              "id": "sam_galaxy_a24_trasera",
+              "id": "samsung_galaxy_a17_5g_trasera",
               "name": "📷 Cámara Principal (Trasera)",
               "price": "Consultar",
               "note": "Módulo de cámara trasera original"
             },
             {
-              "id": "sam_galaxy_a24_tapa",
+              "id": "samsung_galaxy_a17_5g_tapa",
               "name": "📱 Tapa Trasera / Cristal",
               "price": "Consultar",
               "note": "Cambio de tapa o cristal trasero"
             },
             {
-              "id": "sam_galaxy_a24_desbloqueo",
+              "id": "samsung_galaxy_a17_5g_desbloqueo",
               "name": "🔓 Desbloqueo (Cuenta Google / iCloud / PIN)",
               "price": "NO REALIZAMOS",
               "note": "NO REALIZAMOS ESTE SERVICIO"
             },
             {
-              "id": "sam_galaxy_a24_liberacion",
+              "id": "samsung_galaxy_a17_5g_liberacion",
               "name": "📶 Liberación de Compañía / Banda",
               "price": "NO REALIZAMOS",
               "note": "NO REALIZAMOS ESTE SERVICIO"
@@ -2666,52 +2666,52 @@ var PRECIOS_WIDGET = {
           ]
         },
         {
-          "name": "Galaxy A25 5G",
+          "name": "Samsung Galaxy A20",
           "repairs": [
             {
-              "id": "sam_galaxy_a25_5g_pantalla",
+              "id": "samsung_galaxy_a20_pantalla",
               "name": "📱 Pantalla / Módulo",
               "price": "Consultar",
               "note": "Seleccioná la calidad deseada o consultá presupuesto"
             },
             {
-              "id": "sam_galaxy_a25_5g_bateria",
+              "id": "samsung_galaxy_a20_bateria",
               "name": "🔋 Batería",
               "price": "Consultar",
               "note": "Condición al 100% de salud"
             },
             {
-              "id": "sam_galaxy_a25_5g_pin",
+              "id": "samsung_galaxy_a20_pin",
               "name": "🔌 Pin de carga",
               "price": "Consultar",
               "note": "Reparación o cambio de conector de carga"
             },
             {
-              "id": "sam_galaxy_a25_5g_selfie",
+              "id": "samsung_galaxy_a20_selfie",
               "name": "📸 Cámara Selfie (Frontal)",
               "price": "Consultar",
               "note": "Módulo de cámara frontal"
             },
             {
-              "id": "sam_galaxy_a25_5g_trasera",
+              "id": "samsung_galaxy_a20_trasera",
               "name": "📷 Cámara Principal (Trasera)",
               "price": "Consultar",
               "note": "Módulo de cámara trasera original"
             },
             {
-              "id": "sam_galaxy_a25_5g_tapa",
+              "id": "samsung_galaxy_a20_tapa",
               "name": "📱 Tapa Trasera / Cristal",
               "price": "Consultar",
               "note": "Cambio de tapa o cristal trasero"
             },
             {
-              "id": "sam_galaxy_a25_5g_desbloqueo",
+              "id": "samsung_galaxy_a20_desbloqueo",
               "name": "🔓 Desbloqueo (Cuenta Google / iCloud / PIN)",
               "price": "NO REALIZAMOS",
               "note": "NO REALIZAMOS ESTE SERVICIO"
             },
             {
-              "id": "sam_galaxy_a25_5g_liberacion",
+              "id": "samsung_galaxy_a20_liberacion",
               "name": "📶 Liberación de Compañía / Banda",
               "price": "NO REALIZAMOS",
               "note": "NO REALIZAMOS ESTE SERVICIO"
@@ -2719,52 +2719,52 @@ var PRECIOS_WIDGET = {
           ]
         },
         {
-          "name": "Galaxy A30",
+          "name": "Samsung Galaxy A20e",
           "repairs": [
             {
-              "id": "sam_galaxy_a30_pantalla",
+              "id": "samsung_galaxy_a20e_pantalla",
               "name": "📱 Pantalla / Módulo",
               "price": "Consultar",
               "note": "Seleccioná la calidad deseada o consultá presupuesto"
             },
             {
-              "id": "sam_galaxy_a30_bateria",
+              "id": "samsung_galaxy_a20e_bateria",
               "name": "🔋 Batería",
               "price": "Consultar",
               "note": "Condición al 100% de salud"
             },
             {
-              "id": "sam_galaxy_a30_pin",
+              "id": "samsung_galaxy_a20e_pin",
               "name": "🔌 Pin de carga",
               "price": "Consultar",
               "note": "Reparación o cambio de conector de carga"
             },
             {
-              "id": "sam_galaxy_a30_selfie",
+              "id": "samsung_galaxy_a20e_selfie",
               "name": "📸 Cámara Selfie (Frontal)",
               "price": "Consultar",
               "note": "Módulo de cámara frontal"
             },
             {
-              "id": "sam_galaxy_a30_trasera",
+              "id": "samsung_galaxy_a20e_trasera",
               "name": "📷 Cámara Principal (Trasera)",
               "price": "Consultar",
               "note": "Módulo de cámara trasera original"
             },
             {
-              "id": "sam_galaxy_a30_tapa",
+              "id": "samsung_galaxy_a20e_tapa",
               "name": "📱 Tapa Trasera / Cristal",
               "price": "Consultar",
               "note": "Cambio de tapa o cristal trasero"
             },
             {
-              "id": "sam_galaxy_a30_desbloqueo",
+              "id": "samsung_galaxy_a20e_desbloqueo",
               "name": "🔓 Desbloqueo (Cuenta Google / iCloud / PIN)",
               "price": "NO REALIZAMOS",
               "note": "NO REALIZAMOS ESTE SERVICIO"
             },
             {
-              "id": "sam_galaxy_a30_liberacion",
+              "id": "samsung_galaxy_a20e_liberacion",
               "name": "📶 Liberación de Compañía / Banda",
               "price": "NO REALIZAMOS",
               "note": "NO REALIZAMOS ESTE SERVICIO"
@@ -2772,52 +2772,52 @@ var PRECIOS_WIDGET = {
           ]
         },
         {
-          "name": "Galaxy A30s",
+          "name": "Samsung Galaxy A20s",
           "repairs": [
             {
-              "id": "sam_galaxy_a30s_pantalla",
+              "id": "samsung_galaxy_a20s_pantalla",
               "name": "📱 Pantalla / Módulo",
               "price": "Consultar",
               "note": "Seleccioná la calidad deseada o consultá presupuesto"
             },
             {
-              "id": "sam_galaxy_a30s_bateria",
+              "id": "samsung_galaxy_a20s_bateria",
               "name": "🔋 Batería",
               "price": "Consultar",
               "note": "Condición al 100% de salud"
             },
             {
-              "id": "sam_galaxy_a30s_pin",
+              "id": "samsung_galaxy_a20s_pin",
               "name": "🔌 Pin de carga",
               "price": "Consultar",
               "note": "Reparación o cambio de conector de carga"
             },
             {
-              "id": "sam_galaxy_a30s_selfie",
+              "id": "samsung_galaxy_a20s_selfie",
               "name": "📸 Cámara Selfie (Frontal)",
               "price": "Consultar",
               "note": "Módulo de cámara frontal"
             },
             {
-              "id": "sam_galaxy_a30s_trasera",
+              "id": "samsung_galaxy_a20s_trasera",
               "name": "📷 Cámara Principal (Trasera)",
               "price": "Consultar",
               "note": "Módulo de cámara trasera original"
             },
             {
-              "id": "sam_galaxy_a30s_tapa",
+              "id": "samsung_galaxy_a20s_tapa",
               "name": "📱 Tapa Trasera / Cristal",
               "price": "Consultar",
               "note": "Cambio de tapa o cristal trasero"
             },
             {
-              "id": "sam_galaxy_a30s_desbloqueo",
+              "id": "samsung_galaxy_a20s_desbloqueo",
               "name": "🔓 Desbloqueo (Cuenta Google / iCloud / PIN)",
               "price": "NO REALIZAMOS",
               "note": "NO REALIZAMOS ESTE SERVICIO"
             },
             {
-              "id": "sam_galaxy_a30s_liberacion",
+              "id": "samsung_galaxy_a20s_liberacion",
               "name": "📶 Liberación de Compañía / Banda",
               "price": "NO REALIZAMOS",
               "note": "NO REALIZAMOS ESTE SERVICIO"
@@ -2825,52 +2825,52 @@ var PRECIOS_WIDGET = {
           ]
         },
         {
-          "name": "Galaxy A31",
+          "name": "Samsung Galaxy A21",
           "repairs": [
             {
-              "id": "sam_galaxy_a31_pantalla",
+              "id": "samsung_galaxy_a21_pantalla",
               "name": "📱 Pantalla / Módulo",
               "price": "Consultar",
               "note": "Seleccioná la calidad deseada o consultá presupuesto"
             },
             {
-              "id": "sam_galaxy_a31_bateria",
+              "id": "samsung_galaxy_a21_bateria",
               "name": "🔋 Batería",
               "price": "Consultar",
               "note": "Condición al 100% de salud"
             },
             {
-              "id": "sam_galaxy_a31_pin",
+              "id": "samsung_galaxy_a21_pin",
               "name": "🔌 Pin de carga",
               "price": "Consultar",
               "note": "Reparación o cambio de conector de carga"
             },
             {
-              "id": "sam_galaxy_a31_selfie",
+              "id": "samsung_galaxy_a21_selfie",
               "name": "📸 Cámara Selfie (Frontal)",
               "price": "Consultar",
               "note": "Módulo de cámara frontal"
             },
             {
-              "id": "sam_galaxy_a31_trasera",
+              "id": "samsung_galaxy_a21_trasera",
               "name": "📷 Cámara Principal (Trasera)",
               "price": "Consultar",
               "note": "Módulo de cámara trasera original"
             },
             {
-              "id": "sam_galaxy_a31_tapa",
+              "id": "samsung_galaxy_a21_tapa",
               "name": "📱 Tapa Trasera / Cristal",
               "price": "Consultar",
               "note": "Cambio de tapa o cristal trasero"
             },
             {
-              "id": "sam_galaxy_a31_desbloqueo",
+              "id": "samsung_galaxy_a21_desbloqueo",
               "name": "🔓 Desbloqueo (Cuenta Google / iCloud / PIN)",
               "price": "NO REALIZAMOS",
               "note": "NO REALIZAMOS ESTE SERVICIO"
             },
             {
-              "id": "sam_galaxy_a31_liberacion",
+              "id": "samsung_galaxy_a21_liberacion",
               "name": "📶 Liberación de Compañía / Banda",
               "price": "NO REALIZAMOS",
               "note": "NO REALIZAMOS ESTE SERVICIO"
@@ -2878,52 +2878,52 @@ var PRECIOS_WIDGET = {
           ]
         },
         {
-          "name": "Galaxy A32 4G",
+          "name": "Samsung Galaxy A21s",
           "repairs": [
             {
-              "id": "sam_galaxy_a32_4g_pantalla",
+              "id": "samsung_galaxy_a21s_pantalla",
               "name": "📱 Pantalla / Módulo",
               "price": "Consultar",
               "note": "Seleccioná la calidad deseada o consultá presupuesto"
             },
             {
-              "id": "sam_galaxy_a32_4g_bateria",
+              "id": "samsung_galaxy_a21s_bateria",
               "name": "🔋 Batería",
               "price": "Consultar",
               "note": "Condición al 100% de salud"
             },
             {
-              "id": "sam_galaxy_a32_4g_pin",
+              "id": "samsung_galaxy_a21s_pin",
               "name": "🔌 Pin de carga",
               "price": "Consultar",
               "note": "Reparación o cambio de conector de carga"
             },
             {
-              "id": "sam_galaxy_a32_4g_selfie",
+              "id": "samsung_galaxy_a21s_selfie",
               "name": "📸 Cámara Selfie (Frontal)",
               "price": "Consultar",
               "note": "Módulo de cámara frontal"
             },
             {
-              "id": "sam_galaxy_a32_4g_trasera",
+              "id": "samsung_galaxy_a21s_trasera",
               "name": "📷 Cámara Principal (Trasera)",
               "price": "Consultar",
               "note": "Módulo de cámara trasera original"
             },
             {
-              "id": "sam_galaxy_a32_4g_tapa",
+              "id": "samsung_galaxy_a21s_tapa",
               "name": "📱 Tapa Trasera / Cristal",
               "price": "Consultar",
               "note": "Cambio de tapa o cristal trasero"
             },
             {
-              "id": "sam_galaxy_a32_4g_desbloqueo",
+              "id": "samsung_galaxy_a21s_desbloqueo",
               "name": "🔓 Desbloqueo (Cuenta Google / iCloud / PIN)",
               "price": "NO REALIZAMOS",
               "note": "NO REALIZAMOS ESTE SERVICIO"
             },
             {
-              "id": "sam_galaxy_a32_4g_liberacion",
+              "id": "samsung_galaxy_a21s_liberacion",
               "name": "📶 Liberación de Compañía / Banda",
               "price": "NO REALIZAMOS",
               "note": "NO REALIZAMOS ESTE SERVICIO"
@@ -2931,52 +2931,52 @@ var PRECIOS_WIDGET = {
           ]
         },
         {
-          "name": "Galaxy A32 5G",
+          "name": "Samsung Galaxy A22",
           "repairs": [
             {
-              "id": "sam_galaxy_a32_5g_pantalla",
+              "id": "samsung_galaxy_a22_pantalla",
               "name": "📱 Pantalla / Módulo",
               "price": "Consultar",
               "note": "Seleccioná la calidad deseada o consultá presupuesto"
             },
             {
-              "id": "sam_galaxy_a32_5g_bateria",
+              "id": "samsung_galaxy_a22_bateria",
               "name": "🔋 Batería",
               "price": "Consultar",
               "note": "Condición al 100% de salud"
             },
             {
-              "id": "sam_galaxy_a32_5g_pin",
+              "id": "samsung_galaxy_a22_pin",
               "name": "🔌 Pin de carga",
               "price": "Consultar",
               "note": "Reparación o cambio de conector de carga"
             },
             {
-              "id": "sam_galaxy_a32_5g_selfie",
+              "id": "samsung_galaxy_a22_selfie",
               "name": "📸 Cámara Selfie (Frontal)",
               "price": "Consultar",
               "note": "Módulo de cámara frontal"
             },
             {
-              "id": "sam_galaxy_a32_5g_trasera",
+              "id": "samsung_galaxy_a22_trasera",
               "name": "📷 Cámara Principal (Trasera)",
               "price": "Consultar",
               "note": "Módulo de cámara trasera original"
             },
             {
-              "id": "sam_galaxy_a32_5g_tapa",
+              "id": "samsung_galaxy_a22_tapa",
               "name": "📱 Tapa Trasera / Cristal",
               "price": "Consultar",
               "note": "Cambio de tapa o cristal trasero"
             },
             {
-              "id": "sam_galaxy_a32_5g_desbloqueo",
+              "id": "samsung_galaxy_a22_desbloqueo",
               "name": "🔓 Desbloqueo (Cuenta Google / iCloud / PIN)",
               "price": "NO REALIZAMOS",
               "note": "NO REALIZAMOS ESTE SERVICIO"
             },
             {
-              "id": "sam_galaxy_a32_5g_liberacion",
+              "id": "samsung_galaxy_a22_liberacion",
               "name": "📶 Liberación de Compañía / Banda",
               "price": "NO REALIZAMOS",
               "note": "NO REALIZAMOS ESTE SERVICIO"
@@ -2984,52 +2984,52 @@ var PRECIOS_WIDGET = {
           ]
         },
         {
-          "name": "Galaxy A33 5G",
+          "name": "Samsung Galaxy A22 5G",
           "repairs": [
             {
-              "id": "sam_galaxy_a33_5g_pantalla",
+              "id": "samsung_galaxy_a22_5g_pantalla",
               "name": "📱 Pantalla / Módulo",
               "price": "Consultar",
               "note": "Seleccioná la calidad deseada o consultá presupuesto"
             },
             {
-              "id": "sam_galaxy_a33_5g_bateria",
+              "id": "samsung_galaxy_a22_5g_bateria",
               "name": "🔋 Batería",
               "price": "Consultar",
               "note": "Condición al 100% de salud"
             },
             {
-              "id": "sam_galaxy_a33_5g_pin",
+              "id": "samsung_galaxy_a22_5g_pin",
               "name": "🔌 Pin de carga",
               "price": "Consultar",
               "note": "Reparación o cambio de conector de carga"
             },
             {
-              "id": "sam_galaxy_a33_5g_selfie",
+              "id": "samsung_galaxy_a22_5g_selfie",
               "name": "📸 Cámara Selfie (Frontal)",
               "price": "Consultar",
               "note": "Módulo de cámara frontal"
             },
             {
-              "id": "sam_galaxy_a33_5g_trasera",
+              "id": "samsung_galaxy_a22_5g_trasera",
               "name": "📷 Cámara Principal (Trasera)",
               "price": "Consultar",
               "note": "Módulo de cámara trasera original"
             },
             {
-              "id": "sam_galaxy_a33_5g_tapa",
+              "id": "samsung_galaxy_a22_5g_tapa",
               "name": "📱 Tapa Trasera / Cristal",
               "price": "Consultar",
               "note": "Cambio de tapa o cristal trasero"
             },
             {
-              "id": "sam_galaxy_a33_5g_desbloqueo",
+              "id": "samsung_galaxy_a22_5g_desbloqueo",
               "name": "🔓 Desbloqueo (Cuenta Google / iCloud / PIN)",
               "price": "NO REALIZAMOS",
               "note": "NO REALIZAMOS ESTE SERVICIO"
             },
             {
-              "id": "sam_galaxy_a33_5g_liberacion",
+              "id": "samsung_galaxy_a22_5g_liberacion",
               "name": "📶 Liberación de Compañía / Banda",
               "price": "NO REALIZAMOS",
               "note": "NO REALIZAMOS ESTE SERVICIO"
@@ -3037,52 +3037,52 @@ var PRECIOS_WIDGET = {
           ]
         },
         {
-          "name": "Galaxy A34 5G",
+          "name": "Samsung Galaxy A23",
           "repairs": [
             {
-              "id": "sam_galaxy_a34_5g_pantalla",
+              "id": "samsung_galaxy_a23_pantalla",
               "name": "📱 Pantalla / Módulo",
               "price": "Consultar",
               "note": "Seleccioná la calidad deseada o consultá presupuesto"
             },
             {
-              "id": "sam_galaxy_a34_5g_bateria",
+              "id": "samsung_galaxy_a23_bateria",
               "name": "🔋 Batería",
               "price": "Consultar",
               "note": "Condición al 100% de salud"
             },
             {
-              "id": "sam_galaxy_a34_5g_pin",
+              "id": "samsung_galaxy_a23_pin",
               "name": "🔌 Pin de carga",
               "price": "Consultar",
               "note": "Reparación o cambio de conector de carga"
             },
             {
-              "id": "sam_galaxy_a34_5g_selfie",
+              "id": "samsung_galaxy_a23_selfie",
               "name": "📸 Cámara Selfie (Frontal)",
               "price": "Consultar",
               "note": "Módulo de cámara frontal"
             },
             {
-              "id": "sam_galaxy_a34_5g_trasera",
+              "id": "samsung_galaxy_a23_trasera",
               "name": "📷 Cámara Principal (Trasera)",
               "price": "Consultar",
               "note": "Módulo de cámara trasera original"
             },
             {
-              "id": "sam_galaxy_a34_5g_tapa",
+              "id": "samsung_galaxy_a23_tapa",
               "name": "📱 Tapa Trasera / Cristal",
               "price": "Consultar",
               "note": "Cambio de tapa o cristal trasero"
             },
             {
-              "id": "sam_galaxy_a34_5g_desbloqueo",
+              "id": "samsung_galaxy_a23_desbloqueo",
               "name": "🔓 Desbloqueo (Cuenta Google / iCloud / PIN)",
               "price": "NO REALIZAMOS",
               "note": "NO REALIZAMOS ESTE SERVICIO"
             },
             {
-              "id": "sam_galaxy_a34_5g_liberacion",
+              "id": "samsung_galaxy_a23_liberacion",
               "name": "📶 Liberación de Compañía / Banda",
               "price": "NO REALIZAMOS",
               "note": "NO REALIZAMOS ESTE SERVICIO"
@@ -3090,52 +3090,52 @@ var PRECIOS_WIDGET = {
           ]
         },
         {
-          "name": "Galaxy A35 5G",
+          "name": "Samsung Galaxy A23 5G",
           "repairs": [
             {
-              "id": "sam_galaxy_a35_5g_pantalla",
+              "id": "samsung_galaxy_a23_5g_pantalla",
               "name": "📱 Pantalla / Módulo",
               "price": "Consultar",
               "note": "Seleccioná la calidad deseada o consultá presupuesto"
             },
             {
-              "id": "sam_galaxy_a35_5g_bateria",
+              "id": "samsung_galaxy_a23_5g_bateria",
               "name": "🔋 Batería",
               "price": "Consultar",
               "note": "Condición al 100% de salud"
             },
             {
-              "id": "sam_galaxy_a35_5g_pin",
+              "id": "samsung_galaxy_a23_5g_pin",
               "name": "🔌 Pin de carga",
               "price": "Consultar",
               "note": "Reparación o cambio de conector de carga"
             },
             {
-              "id": "sam_galaxy_a35_5g_selfie",
+              "id": "samsung_galaxy_a23_5g_selfie",
               "name": "📸 Cámara Selfie (Frontal)",
               "price": "Consultar",
               "note": "Módulo de cámara frontal"
             },
             {
-              "id": "sam_galaxy_a35_5g_trasera",
+              "id": "samsung_galaxy_a23_5g_trasera",
               "name": "📷 Cámara Principal (Trasera)",
               "price": "Consultar",
               "note": "Módulo de cámara trasera original"
             },
             {
-              "id": "sam_galaxy_a35_5g_tapa",
+              "id": "samsung_galaxy_a23_5g_tapa",
               "name": "📱 Tapa Trasera / Cristal",
               "price": "Consultar",
               "note": "Cambio de tapa o cristal trasero"
             },
             {
-              "id": "sam_galaxy_a35_5g_desbloqueo",
+              "id": "samsung_galaxy_a23_5g_desbloqueo",
               "name": "🔓 Desbloqueo (Cuenta Google / iCloud / PIN)",
               "price": "NO REALIZAMOS",
               "note": "NO REALIZAMOS ESTE SERVICIO"
             },
             {
-              "id": "sam_galaxy_a35_5g_liberacion",
+              "id": "samsung_galaxy_a23_5g_liberacion",
               "name": "📶 Liberación de Compañía / Banda",
               "price": "NO REALIZAMOS",
               "note": "NO REALIZAMOS ESTE SERVICIO"
@@ -3143,52 +3143,52 @@ var PRECIOS_WIDGET = {
           ]
         },
         {
-          "name": "Galaxy A50",
+          "name": "Samsung Galaxy A24",
           "repairs": [
             {
-              "id": "sam_galaxy_a50_pantalla",
+              "id": "samsung_galaxy_a24_pantalla",
               "name": "📱 Pantalla / Módulo",
               "price": "Consultar",
               "note": "Seleccioná la calidad deseada o consultá presupuesto"
             },
             {
-              "id": "sam_galaxy_a50_bateria",
+              "id": "samsung_galaxy_a24_bateria",
               "name": "🔋 Batería",
               "price": "Consultar",
               "note": "Condición al 100% de salud"
             },
             {
-              "id": "sam_galaxy_a50_pin",
+              "id": "samsung_galaxy_a24_pin",
               "name": "🔌 Pin de carga",
               "price": "Consultar",
               "note": "Reparación o cambio de conector de carga"
             },
             {
-              "id": "sam_galaxy_a50_selfie",
+              "id": "samsung_galaxy_a24_selfie",
               "name": "📸 Cámara Selfie (Frontal)",
               "price": "Consultar",
               "note": "Módulo de cámara frontal"
             },
             {
-              "id": "sam_galaxy_a50_trasera",
+              "id": "samsung_galaxy_a24_trasera",
               "name": "📷 Cámara Principal (Trasera)",
               "price": "Consultar",
               "note": "Módulo de cámara trasera original"
             },
             {
-              "id": "sam_galaxy_a50_tapa",
+              "id": "samsung_galaxy_a24_tapa",
               "name": "📱 Tapa Trasera / Cristal",
               "price": "Consultar",
               "note": "Cambio de tapa o cristal trasero"
             },
             {
-              "id": "sam_galaxy_a50_desbloqueo",
+              "id": "samsung_galaxy_a24_desbloqueo",
               "name": "🔓 Desbloqueo (Cuenta Google / iCloud / PIN)",
               "price": "NO REALIZAMOS",
               "note": "NO REALIZAMOS ESTE SERVICIO"
             },
             {
-              "id": "sam_galaxy_a50_liberacion",
+              "id": "samsung_galaxy_a24_liberacion",
               "name": "📶 Liberación de Compañía / Banda",
               "price": "NO REALIZAMOS",
               "note": "NO REALIZAMOS ESTE SERVICIO"
@@ -3196,52 +3196,52 @@ var PRECIOS_WIDGET = {
           ]
         },
         {
-          "name": "Galaxy A51",
+          "name": "Samsung Galaxy A25 5G",
           "repairs": [
             {
-              "id": "sam_galaxy_a51_pantalla",
+              "id": "samsung_galaxy_a25_5g_pantalla",
               "name": "📱 Pantalla / Módulo",
               "price": "Consultar",
               "note": "Seleccioná la calidad deseada o consultá presupuesto"
             },
             {
-              "id": "sam_galaxy_a51_bateria",
+              "id": "samsung_galaxy_a25_5g_bateria",
               "name": "🔋 Batería",
               "price": "Consultar",
               "note": "Condición al 100% de salud"
             },
             {
-              "id": "sam_galaxy_a51_pin",
+              "id": "samsung_galaxy_a25_5g_pin",
               "name": "🔌 Pin de carga",
               "price": "Consultar",
               "note": "Reparación o cambio de conector de carga"
             },
             {
-              "id": "sam_galaxy_a51_selfie",
+              "id": "samsung_galaxy_a25_5g_selfie",
               "name": "📸 Cámara Selfie (Frontal)",
               "price": "Consultar",
               "note": "Módulo de cámara frontal"
             },
             {
-              "id": "sam_galaxy_a51_trasera",
+              "id": "samsung_galaxy_a25_5g_trasera",
               "name": "📷 Cámara Principal (Trasera)",
               "price": "Consultar",
               "note": "Módulo de cámara trasera original"
             },
             {
-              "id": "sam_galaxy_a51_tapa",
+              "id": "samsung_galaxy_a25_5g_tapa",
               "name": "📱 Tapa Trasera / Cristal",
               "price": "Consultar",
               "note": "Cambio de tapa o cristal trasero"
             },
             {
-              "id": "sam_galaxy_a51_desbloqueo",
+              "id": "samsung_galaxy_a25_5g_desbloqueo",
               "name": "🔓 Desbloqueo (Cuenta Google / iCloud / PIN)",
               "price": "NO REALIZAMOS",
               "note": "NO REALIZAMOS ESTE SERVICIO"
             },
             {
-              "id": "sam_galaxy_a51_liberacion",
+              "id": "samsung_galaxy_a25_5g_liberacion",
               "name": "📶 Liberación de Compañía / Banda",
               "price": "NO REALIZAMOS",
               "note": "NO REALIZAMOS ESTE SERVICIO"
@@ -3249,52 +3249,52 @@ var PRECIOS_WIDGET = {
           ]
         },
         {
-          "name": "Galaxy A52",
+          "name": "Samsung Galaxy A26 5G",
           "repairs": [
             {
-              "id": "sam_galaxy_a52_pantalla",
+              "id": "samsung_galaxy_a26_5g_pantalla",
               "name": "📱 Pantalla / Módulo",
               "price": "Consultar",
               "note": "Seleccioná la calidad deseada o consultá presupuesto"
             },
             {
-              "id": "sam_galaxy_a52_bateria",
+              "id": "samsung_galaxy_a26_5g_bateria",
               "name": "🔋 Batería",
               "price": "Consultar",
               "note": "Condición al 100% de salud"
             },
             {
-              "id": "sam_galaxy_a52_pin",
+              "id": "samsung_galaxy_a26_5g_pin",
               "name": "🔌 Pin de carga",
               "price": "Consultar",
               "note": "Reparación o cambio de conector de carga"
             },
             {
-              "id": "sam_galaxy_a52_selfie",
+              "id": "samsung_galaxy_a26_5g_selfie",
               "name": "📸 Cámara Selfie (Frontal)",
               "price": "Consultar",
               "note": "Módulo de cámara frontal"
             },
             {
-              "id": "sam_galaxy_a52_trasera",
+              "id": "samsung_galaxy_a26_5g_trasera",
               "name": "📷 Cámara Principal (Trasera)",
               "price": "Consultar",
               "note": "Módulo de cámara trasera original"
             },
             {
-              "id": "sam_galaxy_a52_tapa",
+              "id": "samsung_galaxy_a26_5g_tapa",
               "name": "📱 Tapa Trasera / Cristal",
               "price": "Consultar",
               "note": "Cambio de tapa o cristal trasero"
             },
             {
-              "id": "sam_galaxy_a52_desbloqueo",
+              "id": "samsung_galaxy_a26_5g_desbloqueo",
               "name": "🔓 Desbloqueo (Cuenta Google / iCloud / PIN)",
               "price": "NO REALIZAMOS",
               "note": "NO REALIZAMOS ESTE SERVICIO"
             },
             {
-              "id": "sam_galaxy_a52_liberacion",
+              "id": "samsung_galaxy_a26_5g_liberacion",
               "name": "📶 Liberación de Compañía / Banda",
               "price": "NO REALIZAMOS",
               "note": "NO REALIZAMOS ESTE SERVICIO"
@@ -3302,52 +3302,52 @@ var PRECIOS_WIDGET = {
           ]
         },
         {
-          "name": "Galaxy A52s",
+          "name": "Samsung Galaxy A30",
           "repairs": [
             {
-              "id": "sam_galaxy_a52s_pantalla",
+              "id": "samsung_galaxy_a30_pantalla",
               "name": "📱 Pantalla / Módulo",
               "price": "Consultar",
               "note": "Seleccioná la calidad deseada o consultá presupuesto"
             },
             {
-              "id": "sam_galaxy_a52s_bateria",
+              "id": "samsung_galaxy_a30_bateria",
               "name": "🔋 Batería",
               "price": "Consultar",
               "note": "Condición al 100% de salud"
             },
             {
-              "id": "sam_galaxy_a52s_pin",
+              "id": "samsung_galaxy_a30_pin",
               "name": "🔌 Pin de carga",
               "price": "Consultar",
               "note": "Reparación o cambio de conector de carga"
             },
             {
-              "id": "sam_galaxy_a52s_selfie",
+              "id": "samsung_galaxy_a30_selfie",
               "name": "📸 Cámara Selfie (Frontal)",
               "price": "Consultar",
               "note": "Módulo de cámara frontal"
             },
             {
-              "id": "sam_galaxy_a52s_trasera",
+              "id": "samsung_galaxy_a30_trasera",
               "name": "📷 Cámara Principal (Trasera)",
               "price": "Consultar",
               "note": "Módulo de cámara trasera original"
             },
             {
-              "id": "sam_galaxy_a52s_tapa",
+              "id": "samsung_galaxy_a30_tapa",
               "name": "📱 Tapa Trasera / Cristal",
               "price": "Consultar",
               "note": "Cambio de tapa o cristal trasero"
             },
             {
-              "id": "sam_galaxy_a52s_desbloqueo",
+              "id": "samsung_galaxy_a30_desbloqueo",
               "name": "🔓 Desbloqueo (Cuenta Google / iCloud / PIN)",
               "price": "NO REALIZAMOS",
               "note": "NO REALIZAMOS ESTE SERVICIO"
             },
             {
-              "id": "sam_galaxy_a52s_liberacion",
+              "id": "samsung_galaxy_a30_liberacion",
               "name": "📶 Liberación de Compañía / Banda",
               "price": "NO REALIZAMOS",
               "note": "NO REALIZAMOS ESTE SERVICIO"
@@ -3355,52 +3355,52 @@ var PRECIOS_WIDGET = {
           ]
         },
         {
-          "name": "Galaxy A52 5G",
+          "name": "Samsung Galaxy A30s",
           "repairs": [
             {
-              "id": "sam_galaxy_a52_5g_pantalla",
+              "id": "samsung_galaxy_a30s_pantalla",
               "name": "📱 Pantalla / Módulo",
               "price": "Consultar",
               "note": "Seleccioná la calidad deseada o consultá presupuesto"
             },
             {
-              "id": "sam_galaxy_a52_5g_bateria",
+              "id": "samsung_galaxy_a30s_bateria",
               "name": "🔋 Batería",
               "price": "Consultar",
               "note": "Condición al 100% de salud"
             },
             {
-              "id": "sam_galaxy_a52_5g_pin",
+              "id": "samsung_galaxy_a30s_pin",
               "name": "🔌 Pin de carga",
               "price": "Consultar",
               "note": "Reparación o cambio de conector de carga"
             },
             {
-              "id": "sam_galaxy_a52_5g_selfie",
+              "id": "samsung_galaxy_a30s_selfie",
               "name": "📸 Cámara Selfie (Frontal)",
               "price": "Consultar",
               "note": "Módulo de cámara frontal"
             },
             {
-              "id": "sam_galaxy_a52_5g_trasera",
+              "id": "samsung_galaxy_a30s_trasera",
               "name": "📷 Cámara Principal (Trasera)",
               "price": "Consultar",
               "note": "Módulo de cámara trasera original"
             },
             {
-              "id": "sam_galaxy_a52_5g_tapa",
+              "id": "samsung_galaxy_a30s_tapa",
               "name": "📱 Tapa Trasera / Cristal",
               "price": "Consultar",
               "note": "Cambio de tapa o cristal trasero"
             },
             {
-              "id": "sam_galaxy_a52_5g_desbloqueo",
+              "id": "samsung_galaxy_a30s_desbloqueo",
               "name": "🔓 Desbloqueo (Cuenta Google / iCloud / PIN)",
               "price": "NO REALIZAMOS",
               "note": "NO REALIZAMOS ESTE SERVICIO"
             },
             {
-              "id": "sam_galaxy_a52_5g_liberacion",
+              "id": "samsung_galaxy_a30s_liberacion",
               "name": "📶 Liberación de Compañía / Banda",
               "price": "NO REALIZAMOS",
               "note": "NO REALIZAMOS ESTE SERVICIO"
@@ -3408,52 +3408,52 @@ var PRECIOS_WIDGET = {
           ]
         },
         {
-          "name": "Galaxy A53 5G",
+          "name": "Samsung Galaxy A31",
           "repairs": [
             {
-              "id": "sam_galaxy_a53_5g_pantalla",
+              "id": "samsung_galaxy_a31_pantalla",
               "name": "📱 Pantalla / Módulo",
               "price": "Consultar",
               "note": "Seleccioná la calidad deseada o consultá presupuesto"
             },
             {
-              "id": "sam_galaxy_a53_5g_bateria",
+              "id": "samsung_galaxy_a31_bateria",
               "name": "🔋 Batería",
               "price": "Consultar",
               "note": "Condición al 100% de salud"
             },
             {
-              "id": "sam_galaxy_a53_5g_pin",
+              "id": "samsung_galaxy_a31_pin",
               "name": "🔌 Pin de carga",
               "price": "Consultar",
               "note": "Reparación o cambio de conector de carga"
             },
             {
-              "id": "sam_galaxy_a53_5g_selfie",
+              "id": "samsung_galaxy_a31_selfie",
               "name": "📸 Cámara Selfie (Frontal)",
               "price": "Consultar",
               "note": "Módulo de cámara frontal"
             },
             {
-              "id": "sam_galaxy_a53_5g_trasera",
+              "id": "samsung_galaxy_a31_trasera",
               "name": "📷 Cámara Principal (Trasera)",
               "price": "Consultar",
               "note": "Módulo de cámara trasera original"
             },
             {
-              "id": "sam_galaxy_a53_5g_tapa",
+              "id": "samsung_galaxy_a31_tapa",
               "name": "📱 Tapa Trasera / Cristal",
               "price": "Consultar",
               "note": "Cambio de tapa o cristal trasero"
             },
             {
-              "id": "sam_galaxy_a53_5g_desbloqueo",
+              "id": "samsung_galaxy_a31_desbloqueo",
               "name": "🔓 Desbloqueo (Cuenta Google / iCloud / PIN)",
               "price": "NO REALIZAMOS",
               "note": "NO REALIZAMOS ESTE SERVICIO"
             },
             {
-              "id": "sam_galaxy_a53_5g_liberacion",
+              "id": "samsung_galaxy_a31_liberacion",
               "name": "📶 Liberación de Compañía / Banda",
               "price": "NO REALIZAMOS",
               "note": "NO REALIZAMOS ESTE SERVICIO"
@@ -3461,52 +3461,52 @@ var PRECIOS_WIDGET = {
           ]
         },
         {
-          "name": "Galaxy A54 5G",
+          "name": "Samsung Galaxy A32",
           "repairs": [
             {
-              "id": "sam_galaxy_a54_5g_pantalla",
+              "id": "samsung_galaxy_a32_pantalla",
               "name": "📱 Pantalla / Módulo",
               "price": "Consultar",
               "note": "Seleccioná la calidad deseada o consultá presupuesto"
             },
             {
-              "id": "sam_galaxy_a54_5g_bateria",
+              "id": "samsung_galaxy_a32_bateria",
               "name": "🔋 Batería",
               "price": "Consultar",
               "note": "Condición al 100% de salud"
             },
             {
-              "id": "sam_galaxy_a54_5g_pin",
+              "id": "samsung_galaxy_a32_pin",
               "name": "🔌 Pin de carga",
               "price": "Consultar",
               "note": "Reparación o cambio de conector de carga"
             },
             {
-              "id": "sam_galaxy_a54_5g_selfie",
+              "id": "samsung_galaxy_a32_selfie",
               "name": "📸 Cámara Selfie (Frontal)",
               "price": "Consultar",
               "note": "Módulo de cámara frontal"
             },
             {
-              "id": "sam_galaxy_a54_5g_trasera",
+              "id": "samsung_galaxy_a32_trasera",
               "name": "📷 Cámara Principal (Trasera)",
               "price": "Consultar",
               "note": "Módulo de cámara trasera original"
             },
             {
-              "id": "sam_galaxy_a54_5g_tapa",
+              "id": "samsung_galaxy_a32_tapa",
               "name": "📱 Tapa Trasera / Cristal",
               "price": "Consultar",
               "note": "Cambio de tapa o cristal trasero"
             },
             {
-              "id": "sam_galaxy_a54_5g_desbloqueo",
+              "id": "samsung_galaxy_a32_desbloqueo",
               "name": "🔓 Desbloqueo (Cuenta Google / iCloud / PIN)",
               "price": "NO REALIZAMOS",
               "note": "NO REALIZAMOS ESTE SERVICIO"
             },
             {
-              "id": "sam_galaxy_a54_5g_liberacion",
+              "id": "samsung_galaxy_a32_liberacion",
               "name": "📶 Liberación de Compañía / Banda",
               "price": "NO REALIZAMOS",
               "note": "NO REALIZAMOS ESTE SERVICIO"
@@ -3514,52 +3514,52 @@ var PRECIOS_WIDGET = {
           ]
         },
         {
-          "name": "Galaxy A55 5G",
+          "name": "Samsung Galaxy A32 5G",
           "repairs": [
             {
-              "id": "sam_galaxy_a55_5g_pantalla",
+              "id": "samsung_galaxy_a32_5g_pantalla",
               "name": "📱 Pantalla / Módulo",
               "price": "Consultar",
               "note": "Seleccioná la calidad deseada o consultá presupuesto"
             },
             {
-              "id": "sam_galaxy_a55_5g_bateria",
+              "id": "samsung_galaxy_a32_5g_bateria",
               "name": "🔋 Batería",
               "price": "Consultar",
               "note": "Condición al 100% de salud"
             },
             {
-              "id": "sam_galaxy_a55_5g_pin",
+              "id": "samsung_galaxy_a32_5g_pin",
               "name": "🔌 Pin de carga",
               "price": "Consultar",
               "note": "Reparación o cambio de conector de carga"
             },
             {
-              "id": "sam_galaxy_a55_5g_selfie",
+              "id": "samsung_galaxy_a32_5g_selfie",
               "name": "📸 Cámara Selfie (Frontal)",
               "price": "Consultar",
               "note": "Módulo de cámara frontal"
             },
             {
-              "id": "sam_galaxy_a55_5g_trasera",
+              "id": "samsung_galaxy_a32_5g_trasera",
               "name": "📷 Cámara Principal (Trasera)",
               "price": "Consultar",
               "note": "Módulo de cámara trasera original"
             },
             {
-              "id": "sam_galaxy_a55_5g_tapa",
+              "id": "samsung_galaxy_a32_5g_tapa",
               "name": "📱 Tapa Trasera / Cristal",
               "price": "Consultar",
               "note": "Cambio de tapa o cristal trasero"
             },
             {
-              "id": "sam_galaxy_a55_5g_desbloqueo",
+              "id": "samsung_galaxy_a32_5g_desbloqueo",
               "name": "🔓 Desbloqueo (Cuenta Google / iCloud / PIN)",
               "price": "NO REALIZAMOS",
               "note": "NO REALIZAMOS ESTE SERVICIO"
             },
             {
-              "id": "sam_galaxy_a55_5g_liberacion",
+              "id": "samsung_galaxy_a32_5g_liberacion",
               "name": "📶 Liberación de Compañía / Banda",
               "price": "NO REALIZAMOS",
               "note": "NO REALIZAMOS ESTE SERVICIO"
@@ -3567,52 +3567,52 @@ var PRECIOS_WIDGET = {
           ]
         },
         {
-          "name": "Galaxy A70",
+          "name": "Samsung Galaxy A33 5G",
           "repairs": [
             {
-              "id": "sam_galaxy_a70_pantalla",
+              "id": "samsung_galaxy_a33_5g_pantalla",
               "name": "📱 Pantalla / Módulo",
               "price": "Consultar",
               "note": "Seleccioná la calidad deseada o consultá presupuesto"
             },
             {
-              "id": "sam_galaxy_a70_bateria",
+              "id": "samsung_galaxy_a33_5g_bateria",
               "name": "🔋 Batería",
               "price": "Consultar",
               "note": "Condición al 100% de salud"
             },
             {
-              "id": "sam_galaxy_a70_pin",
+              "id": "samsung_galaxy_a33_5g_pin",
               "name": "🔌 Pin de carga",
               "price": "Consultar",
               "note": "Reparación o cambio de conector de carga"
             },
             {
-              "id": "sam_galaxy_a70_selfie",
+              "id": "samsung_galaxy_a33_5g_selfie",
               "name": "📸 Cámara Selfie (Frontal)",
               "price": "Consultar",
               "note": "Módulo de cámara frontal"
             },
             {
-              "id": "sam_galaxy_a70_trasera",
+              "id": "samsung_galaxy_a33_5g_trasera",
               "name": "📷 Cámara Principal (Trasera)",
               "price": "Consultar",
               "note": "Módulo de cámara trasera original"
             },
             {
-              "id": "sam_galaxy_a70_tapa",
+              "id": "samsung_galaxy_a33_5g_tapa",
               "name": "📱 Tapa Trasera / Cristal",
               "price": "Consultar",
               "note": "Cambio de tapa o cristal trasero"
             },
             {
-              "id": "sam_galaxy_a70_desbloqueo",
+              "id": "samsung_galaxy_a33_5g_desbloqueo",
               "name": "🔓 Desbloqueo (Cuenta Google / iCloud / PIN)",
               "price": "NO REALIZAMOS",
               "note": "NO REALIZAMOS ESTE SERVICIO"
             },
             {
-              "id": "sam_galaxy_a70_liberacion",
+              "id": "samsung_galaxy_a33_5g_liberacion",
               "name": "📶 Liberación de Compañía / Banda",
               "price": "NO REALIZAMOS",
               "note": "NO REALIZAMOS ESTE SERVICIO"
@@ -3620,52 +3620,52 @@ var PRECIOS_WIDGET = {
           ]
         },
         {
-          "name": "Galaxy A71",
+          "name": "Samsung Galaxy A34 5G",
           "repairs": [
             {
-              "id": "sam_galaxy_a71_pantalla",
+              "id": "samsung_galaxy_a34_5g_pantalla",
               "name": "📱 Pantalla / Módulo",
               "price": "Consultar",
               "note": "Seleccioná la calidad deseada o consultá presupuesto"
             },
             {
-              "id": "sam_galaxy_a71_bateria",
+              "id": "samsung_galaxy_a34_5g_bateria",
               "name": "🔋 Batería",
               "price": "Consultar",
               "note": "Condición al 100% de salud"
             },
             {
-              "id": "sam_galaxy_a71_pin",
+              "id": "samsung_galaxy_a34_5g_pin",
               "name": "🔌 Pin de carga",
               "price": "Consultar",
               "note": "Reparación o cambio de conector de carga"
             },
             {
-              "id": "sam_galaxy_a71_selfie",
+              "id": "samsung_galaxy_a34_5g_selfie",
               "name": "📸 Cámara Selfie (Frontal)",
               "price": "Consultar",
               "note": "Módulo de cámara frontal"
             },
             {
-              "id": "sam_galaxy_a71_trasera",
+              "id": "samsung_galaxy_a34_5g_trasera",
               "name": "📷 Cámara Principal (Trasera)",
               "price": "Consultar",
               "note": "Módulo de cámara trasera original"
             },
             {
-              "id": "sam_galaxy_a71_tapa",
+              "id": "samsung_galaxy_a34_5g_tapa",
               "name": "📱 Tapa Trasera / Cristal",
               "price": "Consultar",
               "note": "Cambio de tapa o cristal trasero"
             },
             {
-              "id": "sam_galaxy_a71_desbloqueo",
+              "id": "samsung_galaxy_a34_5g_desbloqueo",
               "name": "🔓 Desbloqueo (Cuenta Google / iCloud / PIN)",
               "price": "NO REALIZAMOS",
               "note": "NO REALIZAMOS ESTE SERVICIO"
             },
             {
-              "id": "sam_galaxy_a71_liberacion",
+              "id": "samsung_galaxy_a34_5g_liberacion",
               "name": "📶 Liberación de Compañía / Banda",
               "price": "NO REALIZAMOS",
               "note": "NO REALIZAMOS ESTE SERVICIO"
@@ -3673,52 +3673,52 @@ var PRECIOS_WIDGET = {
           ]
         },
         {
-          "name": "Galaxy A72",
+          "name": "Samsung Galaxy A35 5G",
           "repairs": [
             {
-              "id": "sam_galaxy_a72_pantalla",
+              "id": "samsung_galaxy_a35_5g_pantalla",
               "name": "📱 Pantalla / Módulo",
               "price": "Consultar",
               "note": "Seleccioná la calidad deseada o consultá presupuesto"
             },
             {
-              "id": "sam_galaxy_a72_bateria",
+              "id": "samsung_galaxy_a35_5g_bateria",
               "name": "🔋 Batería",
               "price": "Consultar",
               "note": "Condición al 100% de salud"
             },
             {
-              "id": "sam_galaxy_a72_pin",
+              "id": "samsung_galaxy_a35_5g_pin",
               "name": "🔌 Pin de carga",
               "price": "Consultar",
               "note": "Reparación o cambio de conector de carga"
             },
             {
-              "id": "sam_galaxy_a72_selfie",
+              "id": "samsung_galaxy_a35_5g_selfie",
               "name": "📸 Cámara Selfie (Frontal)",
               "price": "Consultar",
               "note": "Módulo de cámara frontal"
             },
             {
-              "id": "sam_galaxy_a72_trasera",
+              "id": "samsung_galaxy_a35_5g_trasera",
               "name": "📷 Cámara Principal (Trasera)",
               "price": "Consultar",
               "note": "Módulo de cámara trasera original"
             },
             {
-              "id": "sam_galaxy_a72_tapa",
+              "id": "samsung_galaxy_a35_5g_tapa",
               "name": "📱 Tapa Trasera / Cristal",
               "price": "Consultar",
               "note": "Cambio de tapa o cristal trasero"
             },
             {
-              "id": "sam_galaxy_a72_desbloqueo",
+              "id": "samsung_galaxy_a35_5g_desbloqueo",
               "name": "🔓 Desbloqueo (Cuenta Google / iCloud / PIN)",
               "price": "NO REALIZAMOS",
               "note": "NO REALIZAMOS ESTE SERVICIO"
             },
             {
-              "id": "sam_galaxy_a72_liberacion",
+              "id": "samsung_galaxy_a35_5g_liberacion",
               "name": "📶 Liberación de Compañía / Banda",
               "price": "NO REALIZAMOS",
               "note": "NO REALIZAMOS ESTE SERVICIO"
@@ -3726,52 +3726,52 @@ var PRECIOS_WIDGET = {
           ]
         },
         {
-          "name": "Galaxy A73 5G",
+          "name": "Samsung Galaxy A36 5G",
           "repairs": [
             {
-              "id": "sam_galaxy_a73_5g_pantalla",
+              "id": "samsung_galaxy_a36_5g_pantalla",
               "name": "📱 Pantalla / Módulo",
               "price": "Consultar",
               "note": "Seleccioná la calidad deseada o consultá presupuesto"
             },
             {
-              "id": "sam_galaxy_a73_5g_bateria",
+              "id": "samsung_galaxy_a36_5g_bateria",
               "name": "🔋 Batería",
               "price": "Consultar",
               "note": "Condición al 100% de salud"
             },
             {
-              "id": "sam_galaxy_a73_5g_pin",
+              "id": "samsung_galaxy_a36_5g_pin",
               "name": "🔌 Pin de carga",
               "price": "Consultar",
               "note": "Reparación o cambio de conector de carga"
             },
             {
-              "id": "sam_galaxy_a73_5g_selfie",
+              "id": "samsung_galaxy_a36_5g_selfie",
               "name": "📸 Cámara Selfie (Frontal)",
               "price": "Consultar",
               "note": "Módulo de cámara frontal"
             },
             {
-              "id": "sam_galaxy_a73_5g_trasera",
+              "id": "samsung_galaxy_a36_5g_trasera",
               "name": "📷 Cámara Principal (Trasera)",
               "price": "Consultar",
               "note": "Módulo de cámara trasera original"
             },
             {
-              "id": "sam_galaxy_a73_5g_tapa",
+              "id": "samsung_galaxy_a36_5g_tapa",
               "name": "📱 Tapa Trasera / Cristal",
               "price": "Consultar",
               "note": "Cambio de tapa o cristal trasero"
             },
             {
-              "id": "sam_galaxy_a73_5g_desbloqueo",
+              "id": "samsung_galaxy_a36_5g_desbloqueo",
               "name": "🔓 Desbloqueo (Cuenta Google / iCloud / PIN)",
               "price": "NO REALIZAMOS",
               "note": "NO REALIZAMOS ESTE SERVICIO"
             },
             {
-              "id": "sam_galaxy_a73_5g_liberacion",
+              "id": "samsung_galaxy_a36_5g_liberacion",
               "name": "📶 Liberación de Compañía / Banda",
               "price": "NO REALIZAMOS",
               "note": "NO REALIZAMOS ESTE SERVICIO"
@@ -3779,52 +3779,52 @@ var PRECIOS_WIDGET = {
           ]
         },
         {
-          "name": "Galaxy S8",
+          "name": "Samsung Galaxy A37 5G",
           "repairs": [
             {
-              "id": "sam_galaxy_s8_pantalla",
+              "id": "samsung_galaxy_a37_5g_pantalla",
               "name": "📱 Pantalla / Módulo",
               "price": "Consultar",
               "note": "Seleccioná la calidad deseada o consultá presupuesto"
             },
             {
-              "id": "sam_galaxy_s8_bateria",
+              "id": "samsung_galaxy_a37_5g_bateria",
               "name": "🔋 Batería",
               "price": "Consultar",
               "note": "Condición al 100% de salud"
             },
             {
-              "id": "sam_galaxy_s8_pin",
+              "id": "samsung_galaxy_a37_5g_pin",
               "name": "🔌 Pin de carga",
               "price": "Consultar",
               "note": "Reparación o cambio de conector de carga"
             },
             {
-              "id": "sam_galaxy_s8_selfie",
+              "id": "samsung_galaxy_a37_5g_selfie",
               "name": "📸 Cámara Selfie (Frontal)",
               "price": "Consultar",
               "note": "Módulo de cámara frontal"
             },
             {
-              "id": "sam_galaxy_s8_trasera",
+              "id": "samsung_galaxy_a37_5g_trasera",
               "name": "📷 Cámara Principal (Trasera)",
               "price": "Consultar",
               "note": "Módulo de cámara trasera original"
             },
             {
-              "id": "sam_galaxy_s8_tapa",
+              "id": "samsung_galaxy_a37_5g_tapa",
               "name": "📱 Tapa Trasera / Cristal",
               "price": "Consultar",
               "note": "Cambio de tapa o cristal trasero"
             },
             {
-              "id": "sam_galaxy_s8_desbloqueo",
+              "id": "samsung_galaxy_a37_5g_desbloqueo",
               "name": "🔓 Desbloqueo (Cuenta Google / iCloud / PIN)",
               "price": "NO REALIZAMOS",
               "note": "NO REALIZAMOS ESTE SERVICIO"
             },
             {
-              "id": "sam_galaxy_s8_liberacion",
+              "id": "samsung_galaxy_a37_5g_liberacion",
               "name": "📶 Liberación de Compañía / Banda",
               "price": "NO REALIZAMOS",
               "note": "NO REALIZAMOS ESTE SERVICIO"
@@ -3832,52 +3832,52 @@ var PRECIOS_WIDGET = {
           ]
         },
         {
-          "name": "Galaxy S8 Plus",
+          "name": "Samsung Galaxy A40",
           "repairs": [
             {
-              "id": "sam_galaxy_s8_plus_pantalla",
+              "id": "samsung_galaxy_a40_pantalla",
               "name": "📱 Pantalla / Módulo",
               "price": "Consultar",
               "note": "Seleccioná la calidad deseada o consultá presupuesto"
             },
             {
-              "id": "sam_galaxy_s8_plus_bateria",
+              "id": "samsung_galaxy_a40_bateria",
               "name": "🔋 Batería",
               "price": "Consultar",
               "note": "Condición al 100% de salud"
             },
             {
-              "id": "sam_galaxy_s8_plus_pin",
+              "id": "samsung_galaxy_a40_pin",
               "name": "🔌 Pin de carga",
               "price": "Consultar",
               "note": "Reparación o cambio de conector de carga"
             },
             {
-              "id": "sam_galaxy_s8_plus_selfie",
+              "id": "samsung_galaxy_a40_selfie",
               "name": "📸 Cámara Selfie (Frontal)",
               "price": "Consultar",
               "note": "Módulo de cámara frontal"
             },
             {
-              "id": "sam_galaxy_s8_plus_trasera",
+              "id": "samsung_galaxy_a40_trasera",
               "name": "📷 Cámara Principal (Trasera)",
               "price": "Consultar",
               "note": "Módulo de cámara trasera original"
             },
             {
-              "id": "sam_galaxy_s8_plus_tapa",
+              "id": "samsung_galaxy_a40_tapa",
               "name": "📱 Tapa Trasera / Cristal",
               "price": "Consultar",
               "note": "Cambio de tapa o cristal trasero"
             },
             {
-              "id": "sam_galaxy_s8_plus_desbloqueo",
+              "id": "samsung_galaxy_a40_desbloqueo",
               "name": "🔓 Desbloqueo (Cuenta Google / iCloud / PIN)",
               "price": "NO REALIZAMOS",
               "note": "NO REALIZAMOS ESTE SERVICIO"
             },
             {
-              "id": "sam_galaxy_s8_plus_liberacion",
+              "id": "samsung_galaxy_a40_liberacion",
               "name": "📶 Liberación de Compañía / Banda",
               "price": "NO REALIZAMOS",
               "note": "NO REALIZAMOS ESTE SERVICIO"
@@ -3885,52 +3885,52 @@ var PRECIOS_WIDGET = {
           ]
         },
         {
-          "name": "Galaxy S9",
+          "name": "Samsung Galaxy A41",
           "repairs": [
             {
-              "id": "sam_galaxy_s9_pantalla",
+              "id": "samsung_galaxy_a41_pantalla",
               "name": "📱 Pantalla / Módulo",
               "price": "Consultar",
               "note": "Seleccioná la calidad deseada o consultá presupuesto"
             },
             {
-              "id": "sam_galaxy_s9_bateria",
+              "id": "samsung_galaxy_a41_bateria",
               "name": "🔋 Batería",
               "price": "Consultar",
               "note": "Condición al 100% de salud"
             },
             {
-              "id": "sam_galaxy_s9_pin",
+              "id": "samsung_galaxy_a41_pin",
               "name": "🔌 Pin de carga",
               "price": "Consultar",
               "note": "Reparación o cambio de conector de carga"
             },
             {
-              "id": "sam_galaxy_s9_selfie",
+              "id": "samsung_galaxy_a41_selfie",
               "name": "📸 Cámara Selfie (Frontal)",
               "price": "Consultar",
               "note": "Módulo de cámara frontal"
             },
             {
-              "id": "sam_galaxy_s9_trasera",
+              "id": "samsung_galaxy_a41_trasera",
               "name": "📷 Cámara Principal (Trasera)",
               "price": "Consultar",
               "note": "Módulo de cámara trasera original"
             },
             {
-              "id": "sam_galaxy_s9_tapa",
+              "id": "samsung_galaxy_a41_tapa",
               "name": "📱 Tapa Trasera / Cristal",
               "price": "Consultar",
               "note": "Cambio de tapa o cristal trasero"
             },
             {
-              "id": "sam_galaxy_s9_desbloqueo",
+              "id": "samsung_galaxy_a41_desbloqueo",
               "name": "🔓 Desbloqueo (Cuenta Google / iCloud / PIN)",
               "price": "NO REALIZAMOS",
               "note": "NO REALIZAMOS ESTE SERVICIO"
             },
             {
-              "id": "sam_galaxy_s9_liberacion",
+              "id": "samsung_galaxy_a41_liberacion",
               "name": "📶 Liberación de Compañía / Banda",
               "price": "NO REALIZAMOS",
               "note": "NO REALIZAMOS ESTE SERVICIO"
@@ -3938,52 +3938,52 @@ var PRECIOS_WIDGET = {
           ]
         },
         {
-          "name": "Galaxy S9 Plus",
+          "name": "Samsung Galaxy A42 5G",
           "repairs": [
             {
-              "id": "sam_galaxy_s9_plus_pantalla",
+              "id": "samsung_galaxy_a42_5g_pantalla",
               "name": "📱 Pantalla / Módulo",
               "price": "Consultar",
               "note": "Seleccioná la calidad deseada o consultá presupuesto"
             },
             {
-              "id": "sam_galaxy_s9_plus_bateria",
+              "id": "samsung_galaxy_a42_5g_bateria",
               "name": "🔋 Batería",
               "price": "Consultar",
               "note": "Condición al 100% de salud"
             },
             {
-              "id": "sam_galaxy_s9_plus_pin",
+              "id": "samsung_galaxy_a42_5g_pin",
               "name": "🔌 Pin de carga",
               "price": "Consultar",
               "note": "Reparación o cambio de conector de carga"
             },
             {
-              "id": "sam_galaxy_s9_plus_selfie",
+              "id": "samsung_galaxy_a42_5g_selfie",
               "name": "📸 Cámara Selfie (Frontal)",
               "price": "Consultar",
               "note": "Módulo de cámara frontal"
             },
             {
-              "id": "sam_galaxy_s9_plus_trasera",
+              "id": "samsung_galaxy_a42_5g_trasera",
               "name": "📷 Cámara Principal (Trasera)",
               "price": "Consultar",
               "note": "Módulo de cámara trasera original"
             },
             {
-              "id": "sam_galaxy_s9_plus_tapa",
+              "id": "samsung_galaxy_a42_5g_tapa",
               "name": "📱 Tapa Trasera / Cristal",
               "price": "Consultar",
               "note": "Cambio de tapa o cristal trasero"
             },
             {
-              "id": "sam_galaxy_s9_plus_desbloqueo",
+              "id": "samsung_galaxy_a42_5g_desbloqueo",
               "name": "🔓 Desbloqueo (Cuenta Google / iCloud / PIN)",
               "price": "NO REALIZAMOS",
               "note": "NO REALIZAMOS ESTE SERVICIO"
             },
             {
-              "id": "sam_galaxy_s9_plus_liberacion",
+              "id": "samsung_galaxy_a42_5g_liberacion",
               "name": "📶 Liberación de Compañía / Banda",
               "price": "NO REALIZAMOS",
               "note": "NO REALIZAMOS ESTE SERVICIO"
@@ -3991,52 +3991,52 @@ var PRECIOS_WIDGET = {
           ]
         },
         {
-          "name": "Galaxy S10",
+          "name": "Samsung Galaxy A50",
           "repairs": [
             {
-              "id": "sam_galaxy_s10_pantalla",
+              "id": "samsung_galaxy_a50_pantalla",
               "name": "📱 Pantalla / Módulo",
               "price": "Consultar",
               "note": "Seleccioná la calidad deseada o consultá presupuesto"
             },
             {
-              "id": "sam_galaxy_s10_bateria",
+              "id": "samsung_galaxy_a50_bateria",
               "name": "🔋 Batería",
               "price": "Consultar",
               "note": "Condición al 100% de salud"
             },
             {
-              "id": "sam_galaxy_s10_pin",
+              "id": "samsung_galaxy_a50_pin",
               "name": "🔌 Pin de carga",
               "price": "Consultar",
               "note": "Reparación o cambio de conector de carga"
             },
             {
-              "id": "sam_galaxy_s10_selfie",
+              "id": "samsung_galaxy_a50_selfie",
               "name": "📸 Cámara Selfie (Frontal)",
               "price": "Consultar",
               "note": "Módulo de cámara frontal"
             },
             {
-              "id": "sam_galaxy_s10_trasera",
+              "id": "samsung_galaxy_a50_trasera",
               "name": "📷 Cámara Principal (Trasera)",
               "price": "Consultar",
               "note": "Módulo de cámara trasera original"
             },
             {
-              "id": "sam_galaxy_s10_tapa",
+              "id": "samsung_galaxy_a50_tapa",
               "name": "📱 Tapa Trasera / Cristal",
               "price": "Consultar",
               "note": "Cambio de tapa o cristal trasero"
             },
             {
-              "id": "sam_galaxy_s10_desbloqueo",
+              "id": "samsung_galaxy_a50_desbloqueo",
               "name": "🔓 Desbloqueo (Cuenta Google / iCloud / PIN)",
               "price": "NO REALIZAMOS",
               "note": "NO REALIZAMOS ESTE SERVICIO"
             },
             {
-              "id": "sam_galaxy_s10_liberacion",
+              "id": "samsung_galaxy_a50_liberacion",
               "name": "📶 Liberación de Compañía / Banda",
               "price": "NO REALIZAMOS",
               "note": "NO REALIZAMOS ESTE SERVICIO"
@@ -4044,52 +4044,52 @@ var PRECIOS_WIDGET = {
           ]
         },
         {
-          "name": "Galaxy S10e",
+          "name": "Samsung Galaxy A50s",
           "repairs": [
             {
-              "id": "sam_galaxy_s10e_pantalla",
+              "id": "samsung_galaxy_a50s_pantalla",
               "name": "📱 Pantalla / Módulo",
               "price": "Consultar",
               "note": "Seleccioná la calidad deseada o consultá presupuesto"
             },
             {
-              "id": "sam_galaxy_s10e_bateria",
+              "id": "samsung_galaxy_a50s_bateria",
               "name": "🔋 Batería",
               "price": "Consultar",
               "note": "Condición al 100% de salud"
             },
             {
-              "id": "sam_galaxy_s10e_pin",
+              "id": "samsung_galaxy_a50s_pin",
               "name": "🔌 Pin de carga",
               "price": "Consultar",
               "note": "Reparación o cambio de conector de carga"
             },
             {
-              "id": "sam_galaxy_s10e_selfie",
+              "id": "samsung_galaxy_a50s_selfie",
               "name": "📸 Cámara Selfie (Frontal)",
               "price": "Consultar",
               "note": "Módulo de cámara frontal"
             },
             {
-              "id": "sam_galaxy_s10e_trasera",
+              "id": "samsung_galaxy_a50s_trasera",
               "name": "📷 Cámara Principal (Trasera)",
               "price": "Consultar",
               "note": "Módulo de cámara trasera original"
             },
             {
-              "id": "sam_galaxy_s10e_tapa",
+              "id": "samsung_galaxy_a50s_tapa",
               "name": "📱 Tapa Trasera / Cristal",
               "price": "Consultar",
               "note": "Cambio de tapa o cristal trasero"
             },
             {
-              "id": "sam_galaxy_s10e_desbloqueo",
+              "id": "samsung_galaxy_a50s_desbloqueo",
               "name": "🔓 Desbloqueo (Cuenta Google / iCloud / PIN)",
               "price": "NO REALIZAMOS",
               "note": "NO REALIZAMOS ESTE SERVICIO"
             },
             {
-              "id": "sam_galaxy_s10e_liberacion",
+              "id": "samsung_galaxy_a50s_liberacion",
               "name": "📶 Liberación de Compañía / Banda",
               "price": "NO REALIZAMOS",
               "note": "NO REALIZAMOS ESTE SERVICIO"
@@ -4097,52 +4097,52 @@ var PRECIOS_WIDGET = {
           ]
         },
         {
-          "name": "Galaxy S10 Plus",
+          "name": "Samsung Galaxy A51",
           "repairs": [
             {
-              "id": "sam_galaxy_s10_plus_pantalla",
+              "id": "samsung_galaxy_a51_pantalla",
               "name": "📱 Pantalla / Módulo",
               "price": "Consultar",
               "note": "Seleccioná la calidad deseada o consultá presupuesto"
             },
             {
-              "id": "sam_galaxy_s10_plus_bateria",
+              "id": "samsung_galaxy_a51_bateria",
               "name": "🔋 Batería",
               "price": "Consultar",
               "note": "Condición al 100% de salud"
             },
             {
-              "id": "sam_galaxy_s10_plus_pin",
+              "id": "samsung_galaxy_a51_pin",
               "name": "🔌 Pin de carga",
               "price": "Consultar",
               "note": "Reparación o cambio de conector de carga"
             },
             {
-              "id": "sam_galaxy_s10_plus_selfie",
+              "id": "samsung_galaxy_a51_selfie",
               "name": "📸 Cámara Selfie (Frontal)",
               "price": "Consultar",
               "note": "Módulo de cámara frontal"
             },
             {
-              "id": "sam_galaxy_s10_plus_trasera",
+              "id": "samsung_galaxy_a51_trasera",
               "name": "📷 Cámara Principal (Trasera)",
               "price": "Consultar",
               "note": "Módulo de cámara trasera original"
             },
             {
-              "id": "sam_galaxy_s10_plus_tapa",
+              "id": "samsung_galaxy_a51_tapa",
               "name": "📱 Tapa Trasera / Cristal",
               "price": "Consultar",
               "note": "Cambio de tapa o cristal trasero"
             },
             {
-              "id": "sam_galaxy_s10_plus_desbloqueo",
+              "id": "samsung_galaxy_a51_desbloqueo",
               "name": "🔓 Desbloqueo (Cuenta Google / iCloud / PIN)",
               "price": "NO REALIZAMOS",
               "note": "NO REALIZAMOS ESTE SERVICIO"
             },
             {
-              "id": "sam_galaxy_s10_plus_liberacion",
+              "id": "samsung_galaxy_a51_liberacion",
               "name": "📶 Liberación de Compañía / Banda",
               "price": "NO REALIZAMOS",
               "note": "NO REALIZAMOS ESTE SERVICIO"
@@ -4150,52 +4150,52 @@ var PRECIOS_WIDGET = {
           ]
         },
         {
-          "name": "Galaxy S20",
+          "name": "Samsung Galaxy A51 5G",
           "repairs": [
             {
-              "id": "sam_galaxy_s20_pantalla",
+              "id": "samsung_galaxy_a51_5g_pantalla",
               "name": "📱 Pantalla / Módulo",
               "price": "Consultar",
               "note": "Seleccioná la calidad deseada o consultá presupuesto"
             },
             {
-              "id": "sam_galaxy_s20_bateria",
+              "id": "samsung_galaxy_a51_5g_bateria",
               "name": "🔋 Batería",
               "price": "Consultar",
               "note": "Condición al 100% de salud"
             },
             {
-              "id": "sam_galaxy_s20_pin",
+              "id": "samsung_galaxy_a51_5g_pin",
               "name": "🔌 Pin de carga",
               "price": "Consultar",
               "note": "Reparación o cambio de conector de carga"
             },
             {
-              "id": "sam_galaxy_s20_selfie",
+              "id": "samsung_galaxy_a51_5g_selfie",
               "name": "📸 Cámara Selfie (Frontal)",
               "price": "Consultar",
               "note": "Módulo de cámara frontal"
             },
             {
-              "id": "sam_galaxy_s20_trasera",
+              "id": "samsung_galaxy_a51_5g_trasera",
               "name": "📷 Cámara Principal (Trasera)",
               "price": "Consultar",
               "note": "Módulo de cámara trasera original"
             },
             {
-              "id": "sam_galaxy_s20_tapa",
+              "id": "samsung_galaxy_a51_5g_tapa",
               "name": "📱 Tapa Trasera / Cristal",
               "price": "Consultar",
               "note": "Cambio de tapa o cristal trasero"
             },
             {
-              "id": "sam_galaxy_s20_desbloqueo",
+              "id": "samsung_galaxy_a51_5g_desbloqueo",
               "name": "🔓 Desbloqueo (Cuenta Google / iCloud / PIN)",
               "price": "NO REALIZAMOS",
               "note": "NO REALIZAMOS ESTE SERVICIO"
             },
             {
-              "id": "sam_galaxy_s20_liberacion",
+              "id": "samsung_galaxy_a51_5g_liberacion",
               "name": "📶 Liberación de Compañía / Banda",
               "price": "NO REALIZAMOS",
               "note": "NO REALIZAMOS ESTE SERVICIO"
@@ -4203,52 +4203,52 @@ var PRECIOS_WIDGET = {
           ]
         },
         {
-          "name": "Galaxy S20 FE",
+          "name": "Samsung Galaxy A52",
           "repairs": [
             {
-              "id": "sam_galaxy_s20_fe_pantalla",
+              "id": "samsung_galaxy_a52_pantalla",
               "name": "📱 Pantalla / Módulo",
               "price": "Consultar",
               "note": "Seleccioná la calidad deseada o consultá presupuesto"
             },
             {
-              "id": "sam_galaxy_s20_fe_bateria",
+              "id": "samsung_galaxy_a52_bateria",
               "name": "🔋 Batería",
               "price": "Consultar",
               "note": "Condición al 100% de salud"
             },
             {
-              "id": "sam_galaxy_s20_fe_pin",
+              "id": "samsung_galaxy_a52_pin",
               "name": "🔌 Pin de carga",
               "price": "Consultar",
               "note": "Reparación o cambio de conector de carga"
             },
             {
-              "id": "sam_galaxy_s20_fe_selfie",
+              "id": "samsung_galaxy_a52_selfie",
               "name": "📸 Cámara Selfie (Frontal)",
               "price": "Consultar",
               "note": "Módulo de cámara frontal"
             },
             {
-              "id": "sam_galaxy_s20_fe_trasera",
+              "id": "samsung_galaxy_a52_trasera",
               "name": "📷 Cámara Principal (Trasera)",
               "price": "Consultar",
               "note": "Módulo de cámara trasera original"
             },
             {
-              "id": "sam_galaxy_s20_fe_tapa",
+              "id": "samsung_galaxy_a52_tapa",
               "name": "📱 Tapa Trasera / Cristal",
               "price": "Consultar",
               "note": "Cambio de tapa o cristal trasero"
             },
             {
-              "id": "sam_galaxy_s20_fe_desbloqueo",
+              "id": "samsung_galaxy_a52_desbloqueo",
               "name": "🔓 Desbloqueo (Cuenta Google / iCloud / PIN)",
               "price": "NO REALIZAMOS",
               "note": "NO REALIZAMOS ESTE SERVICIO"
             },
             {
-              "id": "sam_galaxy_s20_fe_liberacion",
+              "id": "samsung_galaxy_a52_liberacion",
               "name": "📶 Liberación de Compañía / Banda",
               "price": "NO REALIZAMOS",
               "note": "NO REALIZAMOS ESTE SERVICIO"
@@ -4256,52 +4256,52 @@ var PRECIOS_WIDGET = {
           ]
         },
         {
-          "name": "Galaxy S20 Plus",
+          "name": "Samsung Galaxy A52 5G",
           "repairs": [
             {
-              "id": "sam_galaxy_s20_plus_pantalla",
+              "id": "samsung_galaxy_a52_5g_pantalla",
               "name": "📱 Pantalla / Módulo",
               "price": "Consultar",
               "note": "Seleccioná la calidad deseada o consultá presupuesto"
             },
             {
-              "id": "sam_galaxy_s20_plus_bateria",
+              "id": "samsung_galaxy_a52_5g_bateria",
               "name": "🔋 Batería",
               "price": "Consultar",
               "note": "Condición al 100% de salud"
             },
             {
-              "id": "sam_galaxy_s20_plus_pin",
+              "id": "samsung_galaxy_a52_5g_pin",
               "name": "🔌 Pin de carga",
               "price": "Consultar",
               "note": "Reparación o cambio de conector de carga"
             },
             {
-              "id": "sam_galaxy_s20_plus_selfie",
+              "id": "samsung_galaxy_a52_5g_selfie",
               "name": "📸 Cámara Selfie (Frontal)",
               "price": "Consultar",
               "note": "Módulo de cámara frontal"
             },
             {
-              "id": "sam_galaxy_s20_plus_trasera",
+              "id": "samsung_galaxy_a52_5g_trasera",
               "name": "📷 Cámara Principal (Trasera)",
               "price": "Consultar",
               "note": "Módulo de cámara trasera original"
             },
             {
-              "id": "sam_galaxy_s20_plus_tapa",
+              "id": "samsung_galaxy_a52_5g_tapa",
               "name": "📱 Tapa Trasera / Cristal",
               "price": "Consultar",
               "note": "Cambio de tapa o cristal trasero"
             },
             {
-              "id": "sam_galaxy_s20_plus_desbloqueo",
+              "id": "samsung_galaxy_a52_5g_desbloqueo",
               "name": "🔓 Desbloqueo (Cuenta Google / iCloud / PIN)",
               "price": "NO REALIZAMOS",
               "note": "NO REALIZAMOS ESTE SERVICIO"
             },
             {
-              "id": "sam_galaxy_s20_plus_liberacion",
+              "id": "samsung_galaxy_a52_5g_liberacion",
               "name": "📶 Liberación de Compañía / Banda",
               "price": "NO REALIZAMOS",
               "note": "NO REALIZAMOS ESTE SERVICIO"
@@ -4309,52 +4309,52 @@ var PRECIOS_WIDGET = {
           ]
         },
         {
-          "name": "Galaxy S20 Ultra",
+          "name": "Samsung Galaxy A52s 5G",
           "repairs": [
             {
-              "id": "sam_galaxy_s20_ultra_pantalla",
+              "id": "samsung_galaxy_a52s_5g_pantalla",
               "name": "📱 Pantalla / Módulo",
               "price": "Consultar",
               "note": "Seleccioná la calidad deseada o consultá presupuesto"
             },
             {
-              "id": "sam_galaxy_s20_ultra_bateria",
+              "id": "samsung_galaxy_a52s_5g_bateria",
               "name": "🔋 Batería",
               "price": "Consultar",
               "note": "Condición al 100% de salud"
             },
             {
-              "id": "sam_galaxy_s20_ultra_pin",
+              "id": "samsung_galaxy_a52s_5g_pin",
               "name": "🔌 Pin de carga",
               "price": "Consultar",
               "note": "Reparación o cambio de conector de carga"
             },
             {
-              "id": "sam_galaxy_s20_ultra_selfie",
+              "id": "samsung_galaxy_a52s_5g_selfie",
               "name": "📸 Cámara Selfie (Frontal)",
               "price": "Consultar",
               "note": "Módulo de cámara frontal"
             },
             {
-              "id": "sam_galaxy_s20_ultra_trasera",
+              "id": "samsung_galaxy_a52s_5g_trasera",
               "name": "📷 Cámara Principal (Trasera)",
               "price": "Consultar",
               "note": "Módulo de cámara trasera original"
             },
             {
-              "id": "sam_galaxy_s20_ultra_tapa",
+              "id": "samsung_galaxy_a52s_5g_tapa",
               "name": "📱 Tapa Trasera / Cristal",
               "price": "Consultar",
               "note": "Cambio de tapa o cristal trasero"
             },
             {
-              "id": "sam_galaxy_s20_ultra_desbloqueo",
+              "id": "samsung_galaxy_a52s_5g_desbloqueo",
               "name": "🔓 Desbloqueo (Cuenta Google / iCloud / PIN)",
               "price": "NO REALIZAMOS",
               "note": "NO REALIZAMOS ESTE SERVICIO"
             },
             {
-              "id": "sam_galaxy_s20_ultra_liberacion",
+              "id": "samsung_galaxy_a52s_5g_liberacion",
               "name": "📶 Liberación de Compañía / Banda",
               "price": "NO REALIZAMOS",
               "note": "NO REALIZAMOS ESTE SERVICIO"
@@ -4362,52 +4362,52 @@ var PRECIOS_WIDGET = {
           ]
         },
         {
-          "name": "Galaxy S21",
+          "name": "Samsung Galaxy A53 5G",
           "repairs": [
             {
-              "id": "sam_galaxy_s21_pantalla",
+              "id": "samsung_galaxy_a53_5g_pantalla",
               "name": "📱 Pantalla / Módulo",
               "price": "Consultar",
               "note": "Seleccioná la calidad deseada o consultá presupuesto"
             },
             {
-              "id": "sam_galaxy_s21_bateria",
+              "id": "samsung_galaxy_a53_5g_bateria",
               "name": "🔋 Batería",
               "price": "Consultar",
               "note": "Condición al 100% de salud"
             },
             {
-              "id": "sam_galaxy_s21_pin",
+              "id": "samsung_galaxy_a53_5g_pin",
               "name": "🔌 Pin de carga",
               "price": "Consultar",
               "note": "Reparación o cambio de conector de carga"
             },
             {
-              "id": "sam_galaxy_s21_selfie",
+              "id": "samsung_galaxy_a53_5g_selfie",
               "name": "📸 Cámara Selfie (Frontal)",
               "price": "Consultar",
               "note": "Módulo de cámara frontal"
             },
             {
-              "id": "sam_galaxy_s21_trasera",
+              "id": "samsung_galaxy_a53_5g_trasera",
               "name": "📷 Cámara Principal (Trasera)",
               "price": "Consultar",
               "note": "Módulo de cámara trasera original"
             },
             {
-              "id": "sam_galaxy_s21_tapa",
+              "id": "samsung_galaxy_a53_5g_tapa",
               "name": "📱 Tapa Trasera / Cristal",
               "price": "Consultar",
               "note": "Cambio de tapa o cristal trasero"
             },
             {
-              "id": "sam_galaxy_s21_desbloqueo",
+              "id": "samsung_galaxy_a53_5g_desbloqueo",
               "name": "🔓 Desbloqueo (Cuenta Google / iCloud / PIN)",
               "price": "NO REALIZAMOS",
               "note": "NO REALIZAMOS ESTE SERVICIO"
             },
             {
-              "id": "sam_galaxy_s21_liberacion",
+              "id": "samsung_galaxy_a53_5g_liberacion",
               "name": "📶 Liberación de Compañía / Banda",
               "price": "NO REALIZAMOS",
               "note": "NO REALIZAMOS ESTE SERVICIO"
@@ -4415,52 +4415,52 @@ var PRECIOS_WIDGET = {
           ]
         },
         {
-          "name": "Galaxy S21 FE",
+          "name": "Samsung Galaxy A54 5G",
           "repairs": [
             {
-              "id": "sam_galaxy_s21_fe_pantalla",
+              "id": "samsung_galaxy_a54_5g_pantalla",
               "name": "📱 Pantalla / Módulo",
               "price": "Consultar",
               "note": "Seleccioná la calidad deseada o consultá presupuesto"
             },
             {
-              "id": "sam_galaxy_s21_fe_bateria",
+              "id": "samsung_galaxy_a54_5g_bateria",
               "name": "🔋 Batería",
               "price": "Consultar",
               "note": "Condición al 100% de salud"
             },
             {
-              "id": "sam_galaxy_s21_fe_pin",
+              "id": "samsung_galaxy_a54_5g_pin",
               "name": "🔌 Pin de carga",
               "price": "Consultar",
               "note": "Reparación o cambio de conector de carga"
             },
             {
-              "id": "sam_galaxy_s21_fe_selfie",
+              "id": "samsung_galaxy_a54_5g_selfie",
               "name": "📸 Cámara Selfie (Frontal)",
               "price": "Consultar",
               "note": "Módulo de cámara frontal"
             },
             {
-              "id": "sam_galaxy_s21_fe_trasera",
+              "id": "samsung_galaxy_a54_5g_trasera",
               "name": "📷 Cámara Principal (Trasera)",
               "price": "Consultar",
               "note": "Módulo de cámara trasera original"
             },
             {
-              "id": "sam_galaxy_s21_fe_tapa",
+              "id": "samsung_galaxy_a54_5g_tapa",
               "name": "📱 Tapa Trasera / Cristal",
               "price": "Consultar",
               "note": "Cambio de tapa o cristal trasero"
             },
             {
-              "id": "sam_galaxy_s21_fe_desbloqueo",
+              "id": "samsung_galaxy_a54_5g_desbloqueo",
               "name": "🔓 Desbloqueo (Cuenta Google / iCloud / PIN)",
               "price": "NO REALIZAMOS",
               "note": "NO REALIZAMOS ESTE SERVICIO"
             },
             {
-              "id": "sam_galaxy_s21_fe_liberacion",
+              "id": "samsung_galaxy_a54_5g_liberacion",
               "name": "📶 Liberación de Compañía / Banda",
               "price": "NO REALIZAMOS",
               "note": "NO REALIZAMOS ESTE SERVICIO"
@@ -4468,52 +4468,52 @@ var PRECIOS_WIDGET = {
           ]
         },
         {
-          "name": "Galaxy S21 Plus",
+          "name": "Samsung Galaxy A55 5G",
           "repairs": [
             {
-              "id": "sam_galaxy_s21_plus_pantalla",
+              "id": "samsung_galaxy_a55_5g_pantalla",
               "name": "📱 Pantalla / Módulo",
               "price": "Consultar",
               "note": "Seleccioná la calidad deseada o consultá presupuesto"
             },
             {
-              "id": "sam_galaxy_s21_plus_bateria",
+              "id": "samsung_galaxy_a55_5g_bateria",
               "name": "🔋 Batería",
               "price": "Consultar",
               "note": "Condición al 100% de salud"
             },
             {
-              "id": "sam_galaxy_s21_plus_pin",
+              "id": "samsung_galaxy_a55_5g_pin",
               "name": "🔌 Pin de carga",
               "price": "Consultar",
               "note": "Reparación o cambio de conector de carga"
             },
             {
-              "id": "sam_galaxy_s21_plus_selfie",
+              "id": "samsung_galaxy_a55_5g_selfie",
               "name": "📸 Cámara Selfie (Frontal)",
               "price": "Consultar",
               "note": "Módulo de cámara frontal"
             },
             {
-              "id": "sam_galaxy_s21_plus_trasera",
+              "id": "samsung_galaxy_a55_5g_trasera",
               "name": "📷 Cámara Principal (Trasera)",
               "price": "Consultar",
               "note": "Módulo de cámara trasera original"
             },
             {
-              "id": "sam_galaxy_s21_plus_tapa",
+              "id": "samsung_galaxy_a55_5g_tapa",
               "name": "📱 Tapa Trasera / Cristal",
               "price": "Consultar",
               "note": "Cambio de tapa o cristal trasero"
             },
             {
-              "id": "sam_galaxy_s21_plus_desbloqueo",
+              "id": "samsung_galaxy_a55_5g_desbloqueo",
               "name": "🔓 Desbloqueo (Cuenta Google / iCloud / PIN)",
               "price": "NO REALIZAMOS",
               "note": "NO REALIZAMOS ESTE SERVICIO"
             },
             {
-              "id": "sam_galaxy_s21_plus_liberacion",
+              "id": "samsung_galaxy_a55_5g_liberacion",
               "name": "📶 Liberación de Compañía / Banda",
               "price": "NO REALIZAMOS",
               "note": "NO REALIZAMOS ESTE SERVICIO"
@@ -4521,52 +4521,52 @@ var PRECIOS_WIDGET = {
           ]
         },
         {
-          "name": "Galaxy S21 Ultra",
+          "name": "Samsung Galaxy A56 5G",
           "repairs": [
             {
-              "id": "sam_galaxy_s21_ultra_pantalla",
+              "id": "samsung_galaxy_a56_5g_pantalla",
               "name": "📱 Pantalla / Módulo",
               "price": "Consultar",
               "note": "Seleccioná la calidad deseada o consultá presupuesto"
             },
             {
-              "id": "sam_galaxy_s21_ultra_bateria",
+              "id": "samsung_galaxy_a56_5g_bateria",
               "name": "🔋 Batería",
               "price": "Consultar",
               "note": "Condición al 100% de salud"
             },
             {
-              "id": "sam_galaxy_s21_ultra_pin",
+              "id": "samsung_galaxy_a56_5g_pin",
               "name": "🔌 Pin de carga",
               "price": "Consultar",
               "note": "Reparación o cambio de conector de carga"
             },
             {
-              "id": "sam_galaxy_s21_ultra_selfie",
+              "id": "samsung_galaxy_a56_5g_selfie",
               "name": "📸 Cámara Selfie (Frontal)",
               "price": "Consultar",
               "note": "Módulo de cámara frontal"
             },
             {
-              "id": "sam_galaxy_s21_ultra_trasera",
+              "id": "samsung_galaxy_a56_5g_trasera",
               "name": "📷 Cámara Principal (Trasera)",
               "price": "Consultar",
               "note": "Módulo de cámara trasera original"
             },
             {
-              "id": "sam_galaxy_s21_ultra_tapa",
+              "id": "samsung_galaxy_a56_5g_tapa",
               "name": "📱 Tapa Trasera / Cristal",
               "price": "Consultar",
               "note": "Cambio de tapa o cristal trasero"
             },
             {
-              "id": "sam_galaxy_s21_ultra_desbloqueo",
+              "id": "samsung_galaxy_a56_5g_desbloqueo",
               "name": "🔓 Desbloqueo (Cuenta Google / iCloud / PIN)",
               "price": "NO REALIZAMOS",
               "note": "NO REALIZAMOS ESTE SERVICIO"
             },
             {
-              "id": "sam_galaxy_s21_ultra_liberacion",
+              "id": "samsung_galaxy_a56_5g_liberacion",
               "name": "📶 Liberación de Compañía / Banda",
               "price": "NO REALIZAMOS",
               "note": "NO REALIZAMOS ESTE SERVICIO"
@@ -4574,52 +4574,52 @@ var PRECIOS_WIDGET = {
           ]
         },
         {
-          "name": "Galaxy S22",
+          "name": "Samsung Galaxy A57 5G",
           "repairs": [
             {
-              "id": "sam_galaxy_s22_pantalla",
+              "id": "samsung_galaxy_a57_5g_pantalla",
               "name": "📱 Pantalla / Módulo",
               "price": "Consultar",
               "note": "Seleccioná la calidad deseada o consultá presupuesto"
             },
             {
-              "id": "sam_galaxy_s22_bateria",
+              "id": "samsung_galaxy_a57_5g_bateria",
               "name": "🔋 Batería",
               "price": "Consultar",
               "note": "Condición al 100% de salud"
             },
             {
-              "id": "sam_galaxy_s22_pin",
+              "id": "samsung_galaxy_a57_5g_pin",
               "name": "🔌 Pin de carga",
               "price": "Consultar",
               "note": "Reparación o cambio de conector de carga"
             },
             {
-              "id": "sam_galaxy_s22_selfie",
+              "id": "samsung_galaxy_a57_5g_selfie",
               "name": "📸 Cámara Selfie (Frontal)",
               "price": "Consultar",
               "note": "Módulo de cámara frontal"
             },
             {
-              "id": "sam_galaxy_s22_trasera",
+              "id": "samsung_galaxy_a57_5g_trasera",
               "name": "📷 Cámara Principal (Trasera)",
               "price": "Consultar",
               "note": "Módulo de cámara trasera original"
             },
             {
-              "id": "sam_galaxy_s22_tapa",
+              "id": "samsung_galaxy_a57_5g_tapa",
               "name": "📱 Tapa Trasera / Cristal",
               "price": "Consultar",
               "note": "Cambio de tapa o cristal trasero"
             },
             {
-              "id": "sam_galaxy_s22_desbloqueo",
+              "id": "samsung_galaxy_a57_5g_desbloqueo",
               "name": "🔓 Desbloqueo (Cuenta Google / iCloud / PIN)",
               "price": "NO REALIZAMOS",
               "note": "NO REALIZAMOS ESTE SERVICIO"
             },
             {
-              "id": "sam_galaxy_s22_liberacion",
+              "id": "samsung_galaxy_a57_5g_liberacion",
               "name": "📶 Liberación de Compañía / Banda",
               "price": "NO REALIZAMOS",
               "note": "NO REALIZAMOS ESTE SERVICIO"
@@ -4627,52 +4627,52 @@ var PRECIOS_WIDGET = {
           ]
         },
         {
-          "name": "Galaxy S22 Plus",
+          "name": "Samsung Galaxy A60",
           "repairs": [
             {
-              "id": "sam_galaxy_s22_plus_pantalla",
+              "id": "samsung_galaxy_a60_pantalla",
               "name": "📱 Pantalla / Módulo",
               "price": "Consultar",
               "note": "Seleccioná la calidad deseada o consultá presupuesto"
             },
             {
-              "id": "sam_galaxy_s22_plus_bateria",
+              "id": "samsung_galaxy_a60_bateria",
               "name": "🔋 Batería",
               "price": "Consultar",
               "note": "Condición al 100% de salud"
             },
             {
-              "id": "sam_galaxy_s22_plus_pin",
+              "id": "samsung_galaxy_a60_pin",
               "name": "🔌 Pin de carga",
               "price": "Consultar",
               "note": "Reparación o cambio de conector de carga"
             },
             {
-              "id": "sam_galaxy_s22_plus_selfie",
+              "id": "samsung_galaxy_a60_selfie",
               "name": "📸 Cámara Selfie (Frontal)",
               "price": "Consultar",
               "note": "Módulo de cámara frontal"
             },
             {
-              "id": "sam_galaxy_s22_plus_trasera",
+              "id": "samsung_galaxy_a60_trasera",
               "name": "📷 Cámara Principal (Trasera)",
               "price": "Consultar",
               "note": "Módulo de cámara trasera original"
             },
             {
-              "id": "sam_galaxy_s22_plus_tapa",
+              "id": "samsung_galaxy_a60_tapa",
               "name": "📱 Tapa Trasera / Cristal",
               "price": "Consultar",
               "note": "Cambio de tapa o cristal trasero"
             },
             {
-              "id": "sam_galaxy_s22_plus_desbloqueo",
+              "id": "samsung_galaxy_a60_desbloqueo",
               "name": "🔓 Desbloqueo (Cuenta Google / iCloud / PIN)",
               "price": "NO REALIZAMOS",
               "note": "NO REALIZAMOS ESTE SERVICIO"
             },
             {
-              "id": "sam_galaxy_s22_plus_liberacion",
+              "id": "samsung_galaxy_a60_liberacion",
               "name": "📶 Liberación de Compañía / Banda",
               "price": "NO REALIZAMOS",
               "note": "NO REALIZAMOS ESTE SERVICIO"
@@ -4680,52 +4680,52 @@ var PRECIOS_WIDGET = {
           ]
         },
         {
-          "name": "Galaxy S22 Ultra",
+          "name": "Samsung Galaxy A70",
           "repairs": [
             {
-              "id": "sam_galaxy_s22_ultra_pantalla",
+              "id": "samsung_galaxy_a70_pantalla",
               "name": "📱 Pantalla / Módulo",
               "price": "Consultar",
               "note": "Seleccioná la calidad deseada o consultá presupuesto"
             },
             {
-              "id": "sam_galaxy_s22_ultra_bateria",
+              "id": "samsung_galaxy_a70_bateria",
               "name": "🔋 Batería",
               "price": "Consultar",
               "note": "Condición al 100% de salud"
             },
             {
-              "id": "sam_galaxy_s22_ultra_pin",
+              "id": "samsung_galaxy_a70_pin",
               "name": "🔌 Pin de carga",
               "price": "Consultar",
               "note": "Reparación o cambio de conector de carga"
             },
             {
-              "id": "sam_galaxy_s22_ultra_selfie",
+              "id": "samsung_galaxy_a70_selfie",
               "name": "📸 Cámara Selfie (Frontal)",
               "price": "Consultar",
               "note": "Módulo de cámara frontal"
             },
             {
-              "id": "sam_galaxy_s22_ultra_trasera",
+              "id": "samsung_galaxy_a70_trasera",
               "name": "📷 Cámara Principal (Trasera)",
               "price": "Consultar",
               "note": "Módulo de cámara trasera original"
             },
             {
-              "id": "sam_galaxy_s22_ultra_tapa",
+              "id": "samsung_galaxy_a70_tapa",
               "name": "📱 Tapa Trasera / Cristal",
               "price": "Consultar",
               "note": "Cambio de tapa o cristal trasero"
             },
             {
-              "id": "sam_galaxy_s22_ultra_desbloqueo",
+              "id": "samsung_galaxy_a70_desbloqueo",
               "name": "🔓 Desbloqueo (Cuenta Google / iCloud / PIN)",
               "price": "NO REALIZAMOS",
               "note": "NO REALIZAMOS ESTE SERVICIO"
             },
             {
-              "id": "sam_galaxy_s22_ultra_liberacion",
+              "id": "samsung_galaxy_a70_liberacion",
               "name": "📶 Liberación de Compañía / Banda",
               "price": "NO REALIZAMOS",
               "note": "NO REALIZAMOS ESTE SERVICIO"
@@ -4733,52 +4733,52 @@ var PRECIOS_WIDGET = {
           ]
         },
         {
-          "name": "Galaxy S23",
+          "name": "Samsung Galaxy A70s",
           "repairs": [
             {
-              "id": "sam_galaxy_s23_pantalla",
+              "id": "samsung_galaxy_a70s_pantalla",
               "name": "📱 Pantalla / Módulo",
               "price": "Consultar",
               "note": "Seleccioná la calidad deseada o consultá presupuesto"
             },
             {
-              "id": "sam_galaxy_s23_bateria",
+              "id": "samsung_galaxy_a70s_bateria",
               "name": "🔋 Batería",
               "price": "Consultar",
               "note": "Condición al 100% de salud"
             },
             {
-              "id": "sam_galaxy_s23_pin",
+              "id": "samsung_galaxy_a70s_pin",
               "name": "🔌 Pin de carga",
               "price": "Consultar",
               "note": "Reparación o cambio de conector de carga"
             },
             {
-              "id": "sam_galaxy_s23_selfie",
+              "id": "samsung_galaxy_a70s_selfie",
               "name": "📸 Cámara Selfie (Frontal)",
               "price": "Consultar",
               "note": "Módulo de cámara frontal"
             },
             {
-              "id": "sam_galaxy_s23_trasera",
+              "id": "samsung_galaxy_a70s_trasera",
               "name": "📷 Cámara Principal (Trasera)",
               "price": "Consultar",
               "note": "Módulo de cámara trasera original"
             },
             {
-              "id": "sam_galaxy_s23_tapa",
+              "id": "samsung_galaxy_a70s_tapa",
               "name": "📱 Tapa Trasera / Cristal",
               "price": "Consultar",
               "note": "Cambio de tapa o cristal trasero"
             },
             {
-              "id": "sam_galaxy_s23_desbloqueo",
+              "id": "samsung_galaxy_a70s_desbloqueo",
               "name": "🔓 Desbloqueo (Cuenta Google / iCloud / PIN)",
               "price": "NO REALIZAMOS",
               "note": "NO REALIZAMOS ESTE SERVICIO"
             },
             {
-              "id": "sam_galaxy_s23_liberacion",
+              "id": "samsung_galaxy_a70s_liberacion",
               "name": "📶 Liberación de Compañía / Banda",
               "price": "NO REALIZAMOS",
               "note": "NO REALIZAMOS ESTE SERVICIO"
@@ -4786,52 +4786,52 @@ var PRECIOS_WIDGET = {
           ]
         },
         {
-          "name": "Galaxy S23 FE",
+          "name": "Samsung Galaxy A71",
           "repairs": [
             {
-              "id": "sam_galaxy_s23_fe_pantalla",
+              "id": "samsung_galaxy_a71_pantalla",
               "name": "📱 Pantalla / Módulo",
               "price": "Consultar",
               "note": "Seleccioná la calidad deseada o consultá presupuesto"
             },
             {
-              "id": "sam_galaxy_s23_fe_bateria",
+              "id": "samsung_galaxy_a71_bateria",
               "name": "🔋 Batería",
               "price": "Consultar",
               "note": "Condición al 100% de salud"
             },
             {
-              "id": "sam_galaxy_s23_fe_pin",
+              "id": "samsung_galaxy_a71_pin",
               "name": "🔌 Pin de carga",
               "price": "Consultar",
               "note": "Reparación o cambio de conector de carga"
             },
             {
-              "id": "sam_galaxy_s23_fe_selfie",
+              "id": "samsung_galaxy_a71_selfie",
               "name": "📸 Cámara Selfie (Frontal)",
               "price": "Consultar",
               "note": "Módulo de cámara frontal"
             },
             {
-              "id": "sam_galaxy_s23_fe_trasera",
+              "id": "samsung_galaxy_a71_trasera",
               "name": "📷 Cámara Principal (Trasera)",
               "price": "Consultar",
               "note": "Módulo de cámara trasera original"
             },
             {
-              "id": "sam_galaxy_s23_fe_tapa",
+              "id": "samsung_galaxy_a71_tapa",
               "name": "📱 Tapa Trasera / Cristal",
               "price": "Consultar",
               "note": "Cambio de tapa o cristal trasero"
             },
             {
-              "id": "sam_galaxy_s23_fe_desbloqueo",
+              "id": "samsung_galaxy_a71_desbloqueo",
               "name": "🔓 Desbloqueo (Cuenta Google / iCloud / PIN)",
               "price": "NO REALIZAMOS",
               "note": "NO REALIZAMOS ESTE SERVICIO"
             },
             {
-              "id": "sam_galaxy_s23_fe_liberacion",
+              "id": "samsung_galaxy_a71_liberacion",
               "name": "📶 Liberación de Compañía / Banda",
               "price": "NO REALIZAMOS",
               "note": "NO REALIZAMOS ESTE SERVICIO"
@@ -4839,52 +4839,52 @@ var PRECIOS_WIDGET = {
           ]
         },
         {
-          "name": "Galaxy S23 Plus",
+          "name": "Samsung Galaxy A71 5G",
           "repairs": [
             {
-              "id": "sam_galaxy_s23_plus_pantalla",
+              "id": "samsung_galaxy_a71_5g_pantalla",
               "name": "📱 Pantalla / Módulo",
               "price": "Consultar",
               "note": "Seleccioná la calidad deseada o consultá presupuesto"
             },
             {
-              "id": "sam_galaxy_s23_plus_bateria",
+              "id": "samsung_galaxy_a71_5g_bateria",
               "name": "🔋 Batería",
               "price": "Consultar",
               "note": "Condición al 100% de salud"
             },
             {
-              "id": "sam_galaxy_s23_plus_pin",
+              "id": "samsung_galaxy_a71_5g_pin",
               "name": "🔌 Pin de carga",
               "price": "Consultar",
               "note": "Reparación o cambio de conector de carga"
             },
             {
-              "id": "sam_galaxy_s23_plus_selfie",
+              "id": "samsung_galaxy_a71_5g_selfie",
               "name": "📸 Cámara Selfie (Frontal)",
               "price": "Consultar",
               "note": "Módulo de cámara frontal"
             },
             {
-              "id": "sam_galaxy_s23_plus_trasera",
+              "id": "samsung_galaxy_a71_5g_trasera",
               "name": "📷 Cámara Principal (Trasera)",
               "price": "Consultar",
               "note": "Módulo de cámara trasera original"
             },
             {
-              "id": "sam_galaxy_s23_plus_tapa",
+              "id": "samsung_galaxy_a71_5g_tapa",
               "name": "📱 Tapa Trasera / Cristal",
               "price": "Consultar",
               "note": "Cambio de tapa o cristal trasero"
             },
             {
-              "id": "sam_galaxy_s23_plus_desbloqueo",
+              "id": "samsung_galaxy_a71_5g_desbloqueo",
               "name": "🔓 Desbloqueo (Cuenta Google / iCloud / PIN)",
               "price": "NO REALIZAMOS",
               "note": "NO REALIZAMOS ESTE SERVICIO"
             },
             {
-              "id": "sam_galaxy_s23_plus_liberacion",
+              "id": "samsung_galaxy_a71_5g_liberacion",
               "name": "📶 Liberación de Compañía / Banda",
               "price": "NO REALIZAMOS",
               "note": "NO REALIZAMOS ESTE SERVICIO"
@@ -4892,52 +4892,52 @@ var PRECIOS_WIDGET = {
           ]
         },
         {
-          "name": "Galaxy S23 Ultra",
+          "name": "Samsung Galaxy A72",
           "repairs": [
             {
-              "id": "sam_galaxy_s23_ultra_pantalla",
+              "id": "samsung_galaxy_a72_pantalla",
               "name": "📱 Pantalla / Módulo",
               "price": "Consultar",
               "note": "Seleccioná la calidad deseada o consultá presupuesto"
             },
             {
-              "id": "sam_galaxy_s23_ultra_bateria",
+              "id": "samsung_galaxy_a72_bateria",
               "name": "🔋 Batería",
               "price": "Consultar",
               "note": "Condición al 100% de salud"
             },
             {
-              "id": "sam_galaxy_s23_ultra_pin",
+              "id": "samsung_galaxy_a72_pin",
               "name": "🔌 Pin de carga",
               "price": "Consultar",
               "note": "Reparación o cambio de conector de carga"
             },
             {
-              "id": "sam_galaxy_s23_ultra_selfie",
+              "id": "samsung_galaxy_a72_selfie",
               "name": "📸 Cámara Selfie (Frontal)",
               "price": "Consultar",
               "note": "Módulo de cámara frontal"
             },
             {
-              "id": "sam_galaxy_s23_ultra_trasera",
+              "id": "samsung_galaxy_a72_trasera",
               "name": "📷 Cámara Principal (Trasera)",
               "price": "Consultar",
               "note": "Módulo de cámara trasera original"
             },
             {
-              "id": "sam_galaxy_s23_ultra_tapa",
+              "id": "samsung_galaxy_a72_tapa",
               "name": "📱 Tapa Trasera / Cristal",
               "price": "Consultar",
               "note": "Cambio de tapa o cristal trasero"
             },
             {
-              "id": "sam_galaxy_s23_ultra_desbloqueo",
+              "id": "samsung_galaxy_a72_desbloqueo",
               "name": "🔓 Desbloqueo (Cuenta Google / iCloud / PIN)",
               "price": "NO REALIZAMOS",
               "note": "NO REALIZAMOS ESTE SERVICIO"
             },
             {
-              "id": "sam_galaxy_s23_ultra_liberacion",
+              "id": "samsung_galaxy_a72_liberacion",
               "name": "📶 Liberación de Compañía / Banda",
               "price": "NO REALIZAMOS",
               "note": "NO REALIZAMOS ESTE SERVICIO"
@@ -4945,52 +4945,52 @@ var PRECIOS_WIDGET = {
           ]
         },
         {
-          "name": "Galaxy S24",
+          "name": "Samsung Galaxy A73 5G",
           "repairs": [
             {
-              "id": "sam_galaxy_s24_pantalla",
+              "id": "samsung_galaxy_a73_5g_pantalla",
               "name": "📱 Pantalla / Módulo",
               "price": "Consultar",
               "note": "Seleccioná la calidad deseada o consultá presupuesto"
             },
             {
-              "id": "sam_galaxy_s24_bateria",
+              "id": "samsung_galaxy_a73_5g_bateria",
               "name": "🔋 Batería",
               "price": "Consultar",
               "note": "Condición al 100% de salud"
             },
             {
-              "id": "sam_galaxy_s24_pin",
+              "id": "samsung_galaxy_a73_5g_pin",
               "name": "🔌 Pin de carga",
               "price": "Consultar",
               "note": "Reparación o cambio de conector de carga"
             },
             {
-              "id": "sam_galaxy_s24_selfie",
+              "id": "samsung_galaxy_a73_5g_selfie",
               "name": "📸 Cámara Selfie (Frontal)",
               "price": "Consultar",
               "note": "Módulo de cámara frontal"
             },
             {
-              "id": "sam_galaxy_s24_trasera",
+              "id": "samsung_galaxy_a73_5g_trasera",
               "name": "📷 Cámara Principal (Trasera)",
               "price": "Consultar",
               "note": "Módulo de cámara trasera original"
             },
             {
-              "id": "sam_galaxy_s24_tapa",
+              "id": "samsung_galaxy_a73_5g_tapa",
               "name": "📱 Tapa Trasera / Cristal",
               "price": "Consultar",
               "note": "Cambio de tapa o cristal trasero"
             },
             {
-              "id": "sam_galaxy_s24_desbloqueo",
+              "id": "samsung_galaxy_a73_5g_desbloqueo",
               "name": "🔓 Desbloqueo (Cuenta Google / iCloud / PIN)",
               "price": "NO REALIZAMOS",
               "note": "NO REALIZAMOS ESTE SERVICIO"
             },
             {
-              "id": "sam_galaxy_s24_liberacion",
+              "id": "samsung_galaxy_a73_5g_liberacion",
               "name": "📶 Liberación de Compañía / Banda",
               "price": "NO REALIZAMOS",
               "note": "NO REALIZAMOS ESTE SERVICIO"
@@ -4998,52 +4998,52 @@ var PRECIOS_WIDGET = {
           ]
         },
         {
-          "name": "Galaxy S24 FE",
+          "name": "Samsung Galaxy A80",
           "repairs": [
             {
-              "id": "sam_galaxy_s24_fe_pantalla",
+              "id": "samsung_galaxy_a80_pantalla",
               "name": "📱 Pantalla / Módulo",
               "price": "Consultar",
               "note": "Seleccioná la calidad deseada o consultá presupuesto"
             },
             {
-              "id": "sam_galaxy_s24_fe_bateria",
+              "id": "samsung_galaxy_a80_bateria",
               "name": "🔋 Batería",
               "price": "Consultar",
               "note": "Condición al 100% de salud"
             },
             {
-              "id": "sam_galaxy_s24_fe_pin",
+              "id": "samsung_galaxy_a80_pin",
               "name": "🔌 Pin de carga",
               "price": "Consultar",
               "note": "Reparación o cambio de conector de carga"
             },
             {
-              "id": "sam_galaxy_s24_fe_selfie",
+              "id": "samsung_galaxy_a80_selfie",
               "name": "📸 Cámara Selfie (Frontal)",
               "price": "Consultar",
               "note": "Módulo de cámara frontal"
             },
             {
-              "id": "sam_galaxy_s24_fe_trasera",
+              "id": "samsung_galaxy_a80_trasera",
               "name": "📷 Cámara Principal (Trasera)",
               "price": "Consultar",
               "note": "Módulo de cámara trasera original"
             },
             {
-              "id": "sam_galaxy_s24_fe_tapa",
+              "id": "samsung_galaxy_a80_tapa",
               "name": "📱 Tapa Trasera / Cristal",
               "price": "Consultar",
               "note": "Cambio de tapa o cristal trasero"
             },
             {
-              "id": "sam_galaxy_s24_fe_desbloqueo",
+              "id": "samsung_galaxy_a80_desbloqueo",
               "name": "🔓 Desbloqueo (Cuenta Google / iCloud / PIN)",
               "price": "NO REALIZAMOS",
               "note": "NO REALIZAMOS ESTE SERVICIO"
             },
             {
-              "id": "sam_galaxy_s24_fe_liberacion",
+              "id": "samsung_galaxy_a80_liberacion",
               "name": "📶 Liberación de Compañía / Banda",
               "price": "NO REALIZAMOS",
               "note": "NO REALIZAMOS ESTE SERVICIO"
@@ -5051,52 +5051,52 @@ var PRECIOS_WIDGET = {
           ]
         },
         {
-          "name": "Galaxy S24 Plus",
+          "name": "Samsung Galaxy A90 5G",
           "repairs": [
             {
-              "id": "sam_galaxy_s24_plus_pantalla",
+              "id": "samsung_galaxy_a90_5g_pantalla",
               "name": "📱 Pantalla / Módulo",
               "price": "Consultar",
               "note": "Seleccioná la calidad deseada o consultá presupuesto"
             },
             {
-              "id": "sam_galaxy_s24_plus_bateria",
+              "id": "samsung_galaxy_a90_5g_bateria",
               "name": "🔋 Batería",
               "price": "Consultar",
               "note": "Condición al 100% de salud"
             },
             {
-              "id": "sam_galaxy_s24_plus_pin",
+              "id": "samsung_galaxy_a90_5g_pin",
               "name": "🔌 Pin de carga",
               "price": "Consultar",
               "note": "Reparación o cambio de conector de carga"
             },
             {
-              "id": "sam_galaxy_s24_plus_selfie",
+              "id": "samsung_galaxy_a90_5g_selfie",
               "name": "📸 Cámara Selfie (Frontal)",
               "price": "Consultar",
               "note": "Módulo de cámara frontal"
             },
             {
-              "id": "sam_galaxy_s24_plus_trasera",
+              "id": "samsung_galaxy_a90_5g_trasera",
               "name": "📷 Cámara Principal (Trasera)",
               "price": "Consultar",
               "note": "Módulo de cámara trasera original"
             },
             {
-              "id": "sam_galaxy_s24_plus_tapa",
+              "id": "samsung_galaxy_a90_5g_tapa",
               "name": "📱 Tapa Trasera / Cristal",
               "price": "Consultar",
               "note": "Cambio de tapa o cristal trasero"
             },
             {
-              "id": "sam_galaxy_s24_plus_desbloqueo",
+              "id": "samsung_galaxy_a90_5g_desbloqueo",
               "name": "🔓 Desbloqueo (Cuenta Google / iCloud / PIN)",
               "price": "NO REALIZAMOS",
               "note": "NO REALIZAMOS ESTE SERVICIO"
             },
             {
-              "id": "sam_galaxy_s24_plus_liberacion",
+              "id": "samsung_galaxy_a90_5g_liberacion",
               "name": "📶 Liberación de Compañía / Banda",
               "price": "NO REALIZAMOS",
               "note": "NO REALIZAMOS ESTE SERVICIO"
@@ -5104,52 +5104,52 @@ var PRECIOS_WIDGET = {
           ]
         },
         {
-          "name": "Galaxy S24 Ultra",
+          "name": "Samsung Galaxy M10",
           "repairs": [
             {
-              "id": "sam_galaxy_s24_ultra_pantalla",
+              "id": "samsung_galaxy_m10_pantalla",
               "name": "📱 Pantalla / Módulo",
               "price": "Consultar",
               "note": "Seleccioná la calidad deseada o consultá presupuesto"
             },
             {
-              "id": "sam_galaxy_s24_ultra_bateria",
+              "id": "samsung_galaxy_m10_bateria",
               "name": "🔋 Batería",
               "price": "Consultar",
               "note": "Condición al 100% de salud"
             },
             {
-              "id": "sam_galaxy_s24_ultra_pin",
+              "id": "samsung_galaxy_m10_pin",
               "name": "🔌 Pin de carga",
               "price": "Consultar",
               "note": "Reparación o cambio de conector de carga"
             },
             {
-              "id": "sam_galaxy_s24_ultra_selfie",
+              "id": "samsung_galaxy_m10_selfie",
               "name": "📸 Cámara Selfie (Frontal)",
               "price": "Consultar",
               "note": "Módulo de cámara frontal"
             },
             {
-              "id": "sam_galaxy_s24_ultra_trasera",
+              "id": "samsung_galaxy_m10_trasera",
               "name": "📷 Cámara Principal (Trasera)",
               "price": "Consultar",
               "note": "Módulo de cámara trasera original"
             },
             {
-              "id": "sam_galaxy_s24_ultra_tapa",
+              "id": "samsung_galaxy_m10_tapa",
               "name": "📱 Tapa Trasera / Cristal",
               "price": "Consultar",
               "note": "Cambio de tapa o cristal trasero"
             },
             {
-              "id": "sam_galaxy_s24_ultra_desbloqueo",
+              "id": "samsung_galaxy_m10_desbloqueo",
               "name": "🔓 Desbloqueo (Cuenta Google / iCloud / PIN)",
               "price": "NO REALIZAMOS",
               "note": "NO REALIZAMOS ESTE SERVICIO"
             },
             {
-              "id": "sam_galaxy_s24_ultra_liberacion",
+              "id": "samsung_galaxy_m10_liberacion",
               "name": "📶 Liberación de Compañía / Banda",
               "price": "NO REALIZAMOS",
               "note": "NO REALIZAMOS ESTE SERVICIO"
@@ -5157,52 +5157,52 @@ var PRECIOS_WIDGET = {
           ]
         },
         {
-          "name": "Galaxy Note 8",
+          "name": "Samsung Galaxy M10s",
           "repairs": [
             {
-              "id": "sam_galaxy_note_8_pantalla",
+              "id": "samsung_galaxy_m10s_pantalla",
               "name": "📱 Pantalla / Módulo",
               "price": "Consultar",
               "note": "Seleccioná la calidad deseada o consultá presupuesto"
             },
             {
-              "id": "sam_galaxy_note_8_bateria",
+              "id": "samsung_galaxy_m10s_bateria",
               "name": "🔋 Batería",
               "price": "Consultar",
               "note": "Condición al 100% de salud"
             },
             {
-              "id": "sam_galaxy_note_8_pin",
+              "id": "samsung_galaxy_m10s_pin",
               "name": "🔌 Pin de carga",
               "price": "Consultar",
               "note": "Reparación o cambio de conector de carga"
             },
             {
-              "id": "sam_galaxy_note_8_selfie",
+              "id": "samsung_galaxy_m10s_selfie",
               "name": "📸 Cámara Selfie (Frontal)",
               "price": "Consultar",
               "note": "Módulo de cámara frontal"
             },
             {
-              "id": "sam_galaxy_note_8_trasera",
+              "id": "samsung_galaxy_m10s_trasera",
               "name": "📷 Cámara Principal (Trasera)",
               "price": "Consultar",
               "note": "Módulo de cámara trasera original"
             },
             {
-              "id": "sam_galaxy_note_8_tapa",
+              "id": "samsung_galaxy_m10s_tapa",
               "name": "📱 Tapa Trasera / Cristal",
               "price": "Consultar",
               "note": "Cambio de tapa o cristal trasero"
             },
             {
-              "id": "sam_galaxy_note_8_desbloqueo",
+              "id": "samsung_galaxy_m10s_desbloqueo",
               "name": "🔓 Desbloqueo (Cuenta Google / iCloud / PIN)",
               "price": "NO REALIZAMOS",
               "note": "NO REALIZAMOS ESTE SERVICIO"
             },
             {
-              "id": "sam_galaxy_note_8_liberacion",
+              "id": "samsung_galaxy_m10s_liberacion",
               "name": "📶 Liberación de Compañía / Banda",
               "price": "NO REALIZAMOS",
               "note": "NO REALIZAMOS ESTE SERVICIO"
@@ -5210,52 +5210,52 @@ var PRECIOS_WIDGET = {
           ]
         },
         {
-          "name": "Galaxy Note 9",
+          "name": "Samsung Galaxy M11",
           "repairs": [
             {
-              "id": "sam_galaxy_note_9_pantalla",
+              "id": "samsung_galaxy_m11_pantalla",
               "name": "📱 Pantalla / Módulo",
               "price": "Consultar",
               "note": "Seleccioná la calidad deseada o consultá presupuesto"
             },
             {
-              "id": "sam_galaxy_note_9_bateria",
+              "id": "samsung_galaxy_m11_bateria",
               "name": "🔋 Batería",
               "price": "Consultar",
               "note": "Condición al 100% de salud"
             },
             {
-              "id": "sam_galaxy_note_9_pin",
+              "id": "samsung_galaxy_m11_pin",
               "name": "🔌 Pin de carga",
               "price": "Consultar",
               "note": "Reparación o cambio de conector de carga"
             },
             {
-              "id": "sam_galaxy_note_9_selfie",
+              "id": "samsung_galaxy_m11_selfie",
               "name": "📸 Cámara Selfie (Frontal)",
               "price": "Consultar",
               "note": "Módulo de cámara frontal"
             },
             {
-              "id": "sam_galaxy_note_9_trasera",
+              "id": "samsung_galaxy_m11_trasera",
               "name": "📷 Cámara Principal (Trasera)",
               "price": "Consultar",
               "note": "Módulo de cámara trasera original"
             },
             {
-              "id": "sam_galaxy_note_9_tapa",
+              "id": "samsung_galaxy_m11_tapa",
               "name": "📱 Tapa Trasera / Cristal",
               "price": "Consultar",
               "note": "Cambio de tapa o cristal trasero"
             },
             {
-              "id": "sam_galaxy_note_9_desbloqueo",
+              "id": "samsung_galaxy_m11_desbloqueo",
               "name": "🔓 Desbloqueo (Cuenta Google / iCloud / PIN)",
               "price": "NO REALIZAMOS",
               "note": "NO REALIZAMOS ESTE SERVICIO"
             },
             {
-              "id": "sam_galaxy_note_9_liberacion",
+              "id": "samsung_galaxy_m11_liberacion",
               "name": "📶 Liberación de Compañía / Banda",
               "price": "NO REALIZAMOS",
               "note": "NO REALIZAMOS ESTE SERVICIO"
@@ -5263,52 +5263,52 @@ var PRECIOS_WIDGET = {
           ]
         },
         {
-          "name": "Galaxy Note 10",
+          "name": "Samsung Galaxy M12",
           "repairs": [
             {
-              "id": "sam_galaxy_note_10_pantalla",
+              "id": "samsung_galaxy_m12_pantalla",
               "name": "📱 Pantalla / Módulo",
               "price": "Consultar",
               "note": "Seleccioná la calidad deseada o consultá presupuesto"
             },
             {
-              "id": "sam_galaxy_note_10_bateria",
+              "id": "samsung_galaxy_m12_bateria",
               "name": "🔋 Batería",
               "price": "Consultar",
               "note": "Condición al 100% de salud"
             },
             {
-              "id": "sam_galaxy_note_10_pin",
+              "id": "samsung_galaxy_m12_pin",
               "name": "🔌 Pin de carga",
               "price": "Consultar",
               "note": "Reparación o cambio de conector de carga"
             },
             {
-              "id": "sam_galaxy_note_10_selfie",
+              "id": "samsung_galaxy_m12_selfie",
               "name": "📸 Cámara Selfie (Frontal)",
               "price": "Consultar",
               "note": "Módulo de cámara frontal"
             },
             {
-              "id": "sam_galaxy_note_10_trasera",
+              "id": "samsung_galaxy_m12_trasera",
               "name": "📷 Cámara Principal (Trasera)",
               "price": "Consultar",
               "note": "Módulo de cámara trasera original"
             },
             {
-              "id": "sam_galaxy_note_10_tapa",
+              "id": "samsung_galaxy_m12_tapa",
               "name": "📱 Tapa Trasera / Cristal",
               "price": "Consultar",
               "note": "Cambio de tapa o cristal trasero"
             },
             {
-              "id": "sam_galaxy_note_10_desbloqueo",
+              "id": "samsung_galaxy_m12_desbloqueo",
               "name": "🔓 Desbloqueo (Cuenta Google / iCloud / PIN)",
               "price": "NO REALIZAMOS",
               "note": "NO REALIZAMOS ESTE SERVICIO"
             },
             {
-              "id": "sam_galaxy_note_10_liberacion",
+              "id": "samsung_galaxy_m12_liberacion",
               "name": "📶 Liberación de Compañía / Banda",
               "price": "NO REALIZAMOS",
               "note": "NO REALIZAMOS ESTE SERVICIO"
@@ -5316,52 +5316,52 @@ var PRECIOS_WIDGET = {
           ]
         },
         {
-          "name": "Galaxy Note 10 Plus",
+          "name": "Samsung Galaxy M13",
           "repairs": [
             {
-              "id": "sam_galaxy_note_10_plus_pantalla",
+              "id": "samsung_galaxy_m13_pantalla",
               "name": "📱 Pantalla / Módulo",
               "price": "Consultar",
               "note": "Seleccioná la calidad deseada o consultá presupuesto"
             },
             {
-              "id": "sam_galaxy_note_10_plus_bateria",
+              "id": "samsung_galaxy_m13_bateria",
               "name": "🔋 Batería",
               "price": "Consultar",
               "note": "Condición al 100% de salud"
             },
             {
-              "id": "sam_galaxy_note_10_plus_pin",
+              "id": "samsung_galaxy_m13_pin",
               "name": "🔌 Pin de carga",
               "price": "Consultar",
               "note": "Reparación o cambio de conector de carga"
             },
             {
-              "id": "sam_galaxy_note_10_plus_selfie",
+              "id": "samsung_galaxy_m13_selfie",
               "name": "📸 Cámara Selfie (Frontal)",
               "price": "Consultar",
               "note": "Módulo de cámara frontal"
             },
             {
-              "id": "sam_galaxy_note_10_plus_trasera",
+              "id": "samsung_galaxy_m13_trasera",
               "name": "📷 Cámara Principal (Trasera)",
               "price": "Consultar",
               "note": "Módulo de cámara trasera original"
             },
             {
-              "id": "sam_galaxy_note_10_plus_tapa",
+              "id": "samsung_galaxy_m13_tapa",
               "name": "📱 Tapa Trasera / Cristal",
               "price": "Consultar",
               "note": "Cambio de tapa o cristal trasero"
             },
             {
-              "id": "sam_galaxy_note_10_plus_desbloqueo",
+              "id": "samsung_galaxy_m13_desbloqueo",
               "name": "🔓 Desbloqueo (Cuenta Google / iCloud / PIN)",
               "price": "NO REALIZAMOS",
               "note": "NO REALIZAMOS ESTE SERVICIO"
             },
             {
-              "id": "sam_galaxy_note_10_plus_liberacion",
+              "id": "samsung_galaxy_m13_liberacion",
               "name": "📶 Liberación de Compañía / Banda",
               "price": "NO REALIZAMOS",
               "note": "NO REALIZAMOS ESTE SERVICIO"
@@ -5369,52 +5369,52 @@ var PRECIOS_WIDGET = {
           ]
         },
         {
-          "name": "Galaxy Note 20",
+          "name": "Samsung Galaxy M13 5G",
           "repairs": [
             {
-              "id": "sam_galaxy_note_20_pantalla",
+              "id": "samsung_galaxy_m13_5g_pantalla",
               "name": "📱 Pantalla / Módulo",
               "price": "Consultar",
               "note": "Seleccioná la calidad deseada o consultá presupuesto"
             },
             {
-              "id": "sam_galaxy_note_20_bateria",
+              "id": "samsung_galaxy_m13_5g_bateria",
               "name": "🔋 Batería",
               "price": "Consultar",
               "note": "Condición al 100% de salud"
             },
             {
-              "id": "sam_galaxy_note_20_pin",
+              "id": "samsung_galaxy_m13_5g_pin",
               "name": "🔌 Pin de carga",
               "price": "Consultar",
               "note": "Reparación o cambio de conector de carga"
             },
             {
-              "id": "sam_galaxy_note_20_selfie",
+              "id": "samsung_galaxy_m13_5g_selfie",
               "name": "📸 Cámara Selfie (Frontal)",
               "price": "Consultar",
               "note": "Módulo de cámara frontal"
             },
             {
-              "id": "sam_galaxy_note_20_trasera",
+              "id": "samsung_galaxy_m13_5g_trasera",
               "name": "📷 Cámara Principal (Trasera)",
               "price": "Consultar",
               "note": "Módulo de cámara trasera original"
             },
             {
-              "id": "sam_galaxy_note_20_tapa",
+              "id": "samsung_galaxy_m13_5g_tapa",
               "name": "📱 Tapa Trasera / Cristal",
               "price": "Consultar",
               "note": "Cambio de tapa o cristal trasero"
             },
             {
-              "id": "sam_galaxy_note_20_desbloqueo",
+              "id": "samsung_galaxy_m13_5g_desbloqueo",
               "name": "🔓 Desbloqueo (Cuenta Google / iCloud / PIN)",
               "price": "NO REALIZAMOS",
               "note": "NO REALIZAMOS ESTE SERVICIO"
             },
             {
-              "id": "sam_galaxy_note_20_liberacion",
+              "id": "samsung_galaxy_m13_5g_liberacion",
               "name": "📶 Liberación de Compañía / Banda",
               "price": "NO REALIZAMOS",
               "note": "NO REALIZAMOS ESTE SERVICIO"
@@ -5422,52 +5422,52 @@ var PRECIOS_WIDGET = {
           ]
         },
         {
-          "name": "Galaxy Note 20 Ultra",
+          "name": "Samsung Galaxy M14 5G",
           "repairs": [
             {
-              "id": "sam_galaxy_note_20_ultra_pantalla",
+              "id": "samsung_galaxy_m14_5g_pantalla",
               "name": "📱 Pantalla / Módulo",
               "price": "Consultar",
               "note": "Seleccioná la calidad deseada o consultá presupuesto"
             },
             {
-              "id": "sam_galaxy_note_20_ultra_bateria",
+              "id": "samsung_galaxy_m14_5g_bateria",
               "name": "🔋 Batería",
               "price": "Consultar",
               "note": "Condición al 100% de salud"
             },
             {
-              "id": "sam_galaxy_note_20_ultra_pin",
+              "id": "samsung_galaxy_m14_5g_pin",
               "name": "🔌 Pin de carga",
               "price": "Consultar",
               "note": "Reparación o cambio de conector de carga"
             },
             {
-              "id": "sam_galaxy_note_20_ultra_selfie",
+              "id": "samsung_galaxy_m14_5g_selfie",
               "name": "📸 Cámara Selfie (Frontal)",
               "price": "Consultar",
               "note": "Módulo de cámara frontal"
             },
             {
-              "id": "sam_galaxy_note_20_ultra_trasera",
+              "id": "samsung_galaxy_m14_5g_trasera",
               "name": "📷 Cámara Principal (Trasera)",
               "price": "Consultar",
               "note": "Módulo de cámara trasera original"
             },
             {
-              "id": "sam_galaxy_note_20_ultra_tapa",
+              "id": "samsung_galaxy_m14_5g_tapa",
               "name": "📱 Tapa Trasera / Cristal",
               "price": "Consultar",
               "note": "Cambio de tapa o cristal trasero"
             },
             {
-              "id": "sam_galaxy_note_20_ultra_desbloqueo",
+              "id": "samsung_galaxy_m14_5g_desbloqueo",
               "name": "🔓 Desbloqueo (Cuenta Google / iCloud / PIN)",
               "price": "NO REALIZAMOS",
               "note": "NO REALIZAMOS ESTE SERVICIO"
             },
             {
-              "id": "sam_galaxy_note_20_ultra_liberacion",
+              "id": "samsung_galaxy_m14_5g_liberacion",
               "name": "📶 Liberación de Compañía / Banda",
               "price": "NO REALIZAMOS",
               "note": "NO REALIZAMOS ESTE SERVICIO"
@@ -5475,52 +5475,52 @@ var PRECIOS_WIDGET = {
           ]
         },
         {
-          "name": "Galaxy Z Flip 3",
+          "name": "Samsung Galaxy M15 5G",
           "repairs": [
             {
-              "id": "sam_galaxy_z_flip_3_pantalla",
+              "id": "samsung_galaxy_m15_5g_pantalla",
               "name": "📱 Pantalla / Módulo",
               "price": "Consultar",
               "note": "Seleccioná la calidad deseada o consultá presupuesto"
             },
             {
-              "id": "sam_galaxy_z_flip_3_bateria",
+              "id": "samsung_galaxy_m15_5g_bateria",
               "name": "🔋 Batería",
               "price": "Consultar",
               "note": "Condición al 100% de salud"
             },
             {
-              "id": "sam_galaxy_z_flip_3_pin",
+              "id": "samsung_galaxy_m15_5g_pin",
               "name": "🔌 Pin de carga",
               "price": "Consultar",
               "note": "Reparación o cambio de conector de carga"
             },
             {
-              "id": "sam_galaxy_z_flip_3_selfie",
+              "id": "samsung_galaxy_m15_5g_selfie",
               "name": "📸 Cámara Selfie (Frontal)",
               "price": "Consultar",
               "note": "Módulo de cámara frontal"
             },
             {
-              "id": "sam_galaxy_z_flip_3_trasera",
+              "id": "samsung_galaxy_m15_5g_trasera",
               "name": "📷 Cámara Principal (Trasera)",
               "price": "Consultar",
               "note": "Módulo de cámara trasera original"
             },
             {
-              "id": "sam_galaxy_z_flip_3_tapa",
+              "id": "samsung_galaxy_m15_5g_tapa",
               "name": "📱 Tapa Trasera / Cristal",
               "price": "Consultar",
               "note": "Cambio de tapa o cristal trasero"
             },
             {
-              "id": "sam_galaxy_z_flip_3_desbloqueo",
+              "id": "samsung_galaxy_m15_5g_desbloqueo",
               "name": "🔓 Desbloqueo (Cuenta Google / iCloud / PIN)",
               "price": "NO REALIZAMOS",
               "note": "NO REALIZAMOS ESTE SERVICIO"
             },
             {
-              "id": "sam_galaxy_z_flip_3_liberacion",
+              "id": "samsung_galaxy_m15_5g_liberacion",
               "name": "📶 Liberación de Compañía / Banda",
               "price": "NO REALIZAMOS",
               "note": "NO REALIZAMOS ESTE SERVICIO"
@@ -5528,52 +5528,52 @@ var PRECIOS_WIDGET = {
           ]
         },
         {
-          "name": "Galaxy Z Flip 4",
+          "name": "Samsung Galaxy M16 5G",
           "repairs": [
             {
-              "id": "sam_galaxy_z_flip_4_pantalla",
+              "id": "samsung_galaxy_m16_5g_pantalla",
               "name": "📱 Pantalla / Módulo",
               "price": "Consultar",
               "note": "Seleccioná la calidad deseada o consultá presupuesto"
             },
             {
-              "id": "sam_galaxy_z_flip_4_bateria",
+              "id": "samsung_galaxy_m16_5g_bateria",
               "name": "🔋 Batería",
               "price": "Consultar",
               "note": "Condición al 100% de salud"
             },
             {
-              "id": "sam_galaxy_z_flip_4_pin",
+              "id": "samsung_galaxy_m16_5g_pin",
               "name": "🔌 Pin de carga",
               "price": "Consultar",
               "note": "Reparación o cambio de conector de carga"
             },
             {
-              "id": "sam_galaxy_z_flip_4_selfie",
+              "id": "samsung_galaxy_m16_5g_selfie",
               "name": "📸 Cámara Selfie (Frontal)",
               "price": "Consultar",
               "note": "Módulo de cámara frontal"
             },
             {
-              "id": "sam_galaxy_z_flip_4_trasera",
+              "id": "samsung_galaxy_m16_5g_trasera",
               "name": "📷 Cámara Principal (Trasera)",
               "price": "Consultar",
               "note": "Módulo de cámara trasera original"
             },
             {
-              "id": "sam_galaxy_z_flip_4_tapa",
+              "id": "samsung_galaxy_m16_5g_tapa",
               "name": "📱 Tapa Trasera / Cristal",
               "price": "Consultar",
               "note": "Cambio de tapa o cristal trasero"
             },
             {
-              "id": "sam_galaxy_z_flip_4_desbloqueo",
+              "id": "samsung_galaxy_m16_5g_desbloqueo",
               "name": "🔓 Desbloqueo (Cuenta Google / iCloud / PIN)",
               "price": "NO REALIZAMOS",
               "note": "NO REALIZAMOS ESTE SERVICIO"
             },
             {
-              "id": "sam_galaxy_z_flip_4_liberacion",
+              "id": "samsung_galaxy_m16_5g_liberacion",
               "name": "📶 Liberación de Compañía / Banda",
               "price": "NO REALIZAMOS",
               "note": "NO REALIZAMOS ESTE SERVICIO"
@@ -5581,52 +5581,52 @@ var PRECIOS_WIDGET = {
           ]
         },
         {
-          "name": "Galaxy Z Flip 5",
+          "name": "Samsung Galaxy M20",
           "repairs": [
             {
-              "id": "sam_galaxy_z_flip_5_pantalla",
+              "id": "samsung_galaxy_m20_pantalla",
               "name": "📱 Pantalla / Módulo",
               "price": "Consultar",
               "note": "Seleccioná la calidad deseada o consultá presupuesto"
             },
             {
-              "id": "sam_galaxy_z_flip_5_bateria",
+              "id": "samsung_galaxy_m20_bateria",
               "name": "🔋 Batería",
               "price": "Consultar",
               "note": "Condición al 100% de salud"
             },
             {
-              "id": "sam_galaxy_z_flip_5_pin",
+              "id": "samsung_galaxy_m20_pin",
               "name": "🔌 Pin de carga",
               "price": "Consultar",
               "note": "Reparación o cambio de conector de carga"
             },
             {
-              "id": "sam_galaxy_z_flip_5_selfie",
+              "id": "samsung_galaxy_m20_selfie",
               "name": "📸 Cámara Selfie (Frontal)",
               "price": "Consultar",
               "note": "Módulo de cámara frontal"
             },
             {
-              "id": "sam_galaxy_z_flip_5_trasera",
+              "id": "samsung_galaxy_m20_trasera",
               "name": "📷 Cámara Principal (Trasera)",
               "price": "Consultar",
               "note": "Módulo de cámara trasera original"
             },
             {
-              "id": "sam_galaxy_z_flip_5_tapa",
+              "id": "samsung_galaxy_m20_tapa",
               "name": "📱 Tapa Trasera / Cristal",
               "price": "Consultar",
               "note": "Cambio de tapa o cristal trasero"
             },
             {
-              "id": "sam_galaxy_z_flip_5_desbloqueo",
+              "id": "samsung_galaxy_m20_desbloqueo",
               "name": "🔓 Desbloqueo (Cuenta Google / iCloud / PIN)",
               "price": "NO REALIZAMOS",
               "note": "NO REALIZAMOS ESTE SERVICIO"
             },
             {
-              "id": "sam_galaxy_z_flip_5_liberacion",
+              "id": "samsung_galaxy_m20_liberacion",
               "name": "📶 Liberación de Compañía / Banda",
               "price": "NO REALIZAMOS",
               "note": "NO REALIZAMOS ESTE SERVICIO"
@@ -5634,52 +5634,52 @@ var PRECIOS_WIDGET = {
           ]
         },
         {
-          "name": "Galaxy Z Flip 6",
+          "name": "Samsung Galaxy M21",
           "repairs": [
             {
-              "id": "sam_galaxy_z_flip_6_pantalla",
+              "id": "samsung_galaxy_m21_pantalla",
               "name": "📱 Pantalla / Módulo",
               "price": "Consultar",
               "note": "Seleccioná la calidad deseada o consultá presupuesto"
             },
             {
-              "id": "sam_galaxy_z_flip_6_bateria",
+              "id": "samsung_galaxy_m21_bateria",
               "name": "🔋 Batería",
               "price": "Consultar",
               "note": "Condición al 100% de salud"
             },
             {
-              "id": "sam_galaxy_z_flip_6_pin",
+              "id": "samsung_galaxy_m21_pin",
               "name": "🔌 Pin de carga",
               "price": "Consultar",
               "note": "Reparación o cambio de conector de carga"
             },
             {
-              "id": "sam_galaxy_z_flip_6_selfie",
+              "id": "samsung_galaxy_m21_selfie",
               "name": "📸 Cámara Selfie (Frontal)",
               "price": "Consultar",
               "note": "Módulo de cámara frontal"
             },
             {
-              "id": "sam_galaxy_z_flip_6_trasera",
+              "id": "samsung_galaxy_m21_trasera",
               "name": "📷 Cámara Principal (Trasera)",
               "price": "Consultar",
               "note": "Módulo de cámara trasera original"
             },
             {
-              "id": "sam_galaxy_z_flip_6_tapa",
+              "id": "samsung_galaxy_m21_tapa",
               "name": "📱 Tapa Trasera / Cristal",
               "price": "Consultar",
               "note": "Cambio de tapa o cristal trasero"
             },
             {
-              "id": "sam_galaxy_z_flip_6_desbloqueo",
+              "id": "samsung_galaxy_m21_desbloqueo",
               "name": "🔓 Desbloqueo (Cuenta Google / iCloud / PIN)",
               "price": "NO REALIZAMOS",
               "note": "NO REALIZAMOS ESTE SERVICIO"
             },
             {
-              "id": "sam_galaxy_z_flip_6_liberacion",
+              "id": "samsung_galaxy_m21_liberacion",
               "name": "📶 Liberación de Compañía / Banda",
               "price": "NO REALIZAMOS",
               "note": "NO REALIZAMOS ESTE SERVICIO"
@@ -5687,52 +5687,52 @@ var PRECIOS_WIDGET = {
           ]
         },
         {
-          "name": "Galaxy Z Fold 3",
+          "name": "Samsung Galaxy M21s",
           "repairs": [
             {
-              "id": "sam_galaxy_z_fold_3_pantalla",
+              "id": "samsung_galaxy_m21s_pantalla",
               "name": "📱 Pantalla / Módulo",
               "price": "Consultar",
               "note": "Seleccioná la calidad deseada o consultá presupuesto"
             },
             {
-              "id": "sam_galaxy_z_fold_3_bateria",
+              "id": "samsung_galaxy_m21s_bateria",
               "name": "🔋 Batería",
               "price": "Consultar",
               "note": "Condición al 100% de salud"
             },
             {
-              "id": "sam_galaxy_z_fold_3_pin",
+              "id": "samsung_galaxy_m21s_pin",
               "name": "🔌 Pin de carga",
               "price": "Consultar",
               "note": "Reparación o cambio de conector de carga"
             },
             {
-              "id": "sam_galaxy_z_fold_3_selfie",
+              "id": "samsung_galaxy_m21s_selfie",
               "name": "📸 Cámara Selfie (Frontal)",
               "price": "Consultar",
               "note": "Módulo de cámara frontal"
             },
             {
-              "id": "sam_galaxy_z_fold_3_trasera",
+              "id": "samsung_galaxy_m21s_trasera",
               "name": "📷 Cámara Principal (Trasera)",
               "price": "Consultar",
               "note": "Módulo de cámara trasera original"
             },
             {
-              "id": "sam_galaxy_z_fold_3_tapa",
+              "id": "samsung_galaxy_m21s_tapa",
               "name": "📱 Tapa Trasera / Cristal",
               "price": "Consultar",
               "note": "Cambio de tapa o cristal trasero"
             },
             {
-              "id": "sam_galaxy_z_fold_3_desbloqueo",
+              "id": "samsung_galaxy_m21s_desbloqueo",
               "name": "🔓 Desbloqueo (Cuenta Google / iCloud / PIN)",
               "price": "NO REALIZAMOS",
               "note": "NO REALIZAMOS ESTE SERVICIO"
             },
             {
-              "id": "sam_galaxy_z_fold_3_liberacion",
+              "id": "samsung_galaxy_m21s_liberacion",
               "name": "📶 Liberación de Compañía / Banda",
               "price": "NO REALIZAMOS",
               "note": "NO REALIZAMOS ESTE SERVICIO"
@@ -5740,52 +5740,52 @@ var PRECIOS_WIDGET = {
           ]
         },
         {
-          "name": "Galaxy Z Fold 4",
+          "name": "Samsung Galaxy M22",
           "repairs": [
             {
-              "id": "sam_galaxy_z_fold_4_pantalla",
+              "id": "samsung_galaxy_m22_pantalla",
               "name": "📱 Pantalla / Módulo",
               "price": "Consultar",
               "note": "Seleccioná la calidad deseada o consultá presupuesto"
             },
             {
-              "id": "sam_galaxy_z_fold_4_bateria",
+              "id": "samsung_galaxy_m22_bateria",
               "name": "🔋 Batería",
               "price": "Consultar",
               "note": "Condición al 100% de salud"
             },
             {
-              "id": "sam_galaxy_z_fold_4_pin",
+              "id": "samsung_galaxy_m22_pin",
               "name": "🔌 Pin de carga",
               "price": "Consultar",
               "note": "Reparación o cambio de conector de carga"
             },
             {
-              "id": "sam_galaxy_z_fold_4_selfie",
+              "id": "samsung_galaxy_m22_selfie",
               "name": "📸 Cámara Selfie (Frontal)",
               "price": "Consultar",
               "note": "Módulo de cámara frontal"
             },
             {
-              "id": "sam_galaxy_z_fold_4_trasera",
+              "id": "samsung_galaxy_m22_trasera",
               "name": "📷 Cámara Principal (Trasera)",
               "price": "Consultar",
               "note": "Módulo de cámara trasera original"
             },
             {
-              "id": "sam_galaxy_z_fold_4_tapa",
+              "id": "samsung_galaxy_m22_tapa",
               "name": "📱 Tapa Trasera / Cristal",
               "price": "Consultar",
               "note": "Cambio de tapa o cristal trasero"
             },
             {
-              "id": "sam_galaxy_z_fold_4_desbloqueo",
+              "id": "samsung_galaxy_m22_desbloqueo",
               "name": "🔓 Desbloqueo (Cuenta Google / iCloud / PIN)",
               "price": "NO REALIZAMOS",
               "note": "NO REALIZAMOS ESTE SERVICIO"
             },
             {
-              "id": "sam_galaxy_z_fold_4_liberacion",
+              "id": "samsung_galaxy_m22_liberacion",
               "name": "📶 Liberación de Compañía / Banda",
               "price": "NO REALIZAMOS",
               "note": "NO REALIZAMOS ESTE SERVICIO"
@@ -5793,52 +5793,52 @@ var PRECIOS_WIDGET = {
           ]
         },
         {
-          "name": "Galaxy Z Fold 5",
+          "name": "Samsung Galaxy M23 5G",
           "repairs": [
             {
-              "id": "sam_galaxy_z_fold_5_pantalla",
+              "id": "samsung_galaxy_m23_5g_pantalla",
               "name": "📱 Pantalla / Módulo",
               "price": "Consultar",
               "note": "Seleccioná la calidad deseada o consultá presupuesto"
             },
             {
-              "id": "sam_galaxy_z_fold_5_bateria",
+              "id": "samsung_galaxy_m23_5g_bateria",
               "name": "🔋 Batería",
               "price": "Consultar",
               "note": "Condición al 100% de salud"
             },
             {
-              "id": "sam_galaxy_z_fold_5_pin",
+              "id": "samsung_galaxy_m23_5g_pin",
               "name": "🔌 Pin de carga",
               "price": "Consultar",
               "note": "Reparación o cambio de conector de carga"
             },
             {
-              "id": "sam_galaxy_z_fold_5_selfie",
+              "id": "samsung_galaxy_m23_5g_selfie",
               "name": "📸 Cámara Selfie (Frontal)",
               "price": "Consultar",
               "note": "Módulo de cámara frontal"
             },
             {
-              "id": "sam_galaxy_z_fold_5_trasera",
+              "id": "samsung_galaxy_m23_5g_trasera",
               "name": "📷 Cámara Principal (Trasera)",
               "price": "Consultar",
               "note": "Módulo de cámara trasera original"
             },
             {
-              "id": "sam_galaxy_z_fold_5_tapa",
+              "id": "samsung_galaxy_m23_5g_tapa",
               "name": "📱 Tapa Trasera / Cristal",
               "price": "Consultar",
               "note": "Cambio de tapa o cristal trasero"
             },
             {
-              "id": "sam_galaxy_z_fold_5_desbloqueo",
+              "id": "samsung_galaxy_m23_5g_desbloqueo",
               "name": "🔓 Desbloqueo (Cuenta Google / iCloud / PIN)",
               "price": "NO REALIZAMOS",
               "note": "NO REALIZAMOS ESTE SERVICIO"
             },
             {
-              "id": "sam_galaxy_z_fold_5_liberacion",
+              "id": "samsung_galaxy_m23_5g_liberacion",
               "name": "📶 Liberación de Compañía / Banda",
               "price": "NO REALIZAMOS",
               "note": "NO REALIZAMOS ESTE SERVICIO"
@@ -5846,52 +5846,52 @@ var PRECIOS_WIDGET = {
           ]
         },
         {
-          "name": "Galaxy Z Fold 6",
+          "name": "Samsung Galaxy M30",
           "repairs": [
             {
-              "id": "sam_galaxy_z_fold_6_pantalla",
+              "id": "samsung_galaxy_m30_pantalla",
               "name": "📱 Pantalla / Módulo",
               "price": "Consultar",
               "note": "Seleccioná la calidad deseada o consultá presupuesto"
             },
             {
-              "id": "sam_galaxy_z_fold_6_bateria",
+              "id": "samsung_galaxy_m30_bateria",
               "name": "🔋 Batería",
               "price": "Consultar",
               "note": "Condición al 100% de salud"
             },
             {
-              "id": "sam_galaxy_z_fold_6_pin",
+              "id": "samsung_galaxy_m30_pin",
               "name": "🔌 Pin de carga",
               "price": "Consultar",
               "note": "Reparación o cambio de conector de carga"
             },
             {
-              "id": "sam_galaxy_z_fold_6_selfie",
+              "id": "samsung_galaxy_m30_selfie",
               "name": "📸 Cámara Selfie (Frontal)",
               "price": "Consultar",
               "note": "Módulo de cámara frontal"
             },
             {
-              "id": "sam_galaxy_z_fold_6_trasera",
+              "id": "samsung_galaxy_m30_trasera",
               "name": "📷 Cámara Principal (Trasera)",
               "price": "Consultar",
               "note": "Módulo de cámara trasera original"
             },
             {
-              "id": "sam_galaxy_z_fold_6_tapa",
+              "id": "samsung_galaxy_m30_tapa",
               "name": "📱 Tapa Trasera / Cristal",
               "price": "Consultar",
               "note": "Cambio de tapa o cristal trasero"
             },
             {
-              "id": "sam_galaxy_z_fold_6_desbloqueo",
+              "id": "samsung_galaxy_m30_desbloqueo",
               "name": "🔓 Desbloqueo (Cuenta Google / iCloud / PIN)",
               "price": "NO REALIZAMOS",
               "note": "NO REALIZAMOS ESTE SERVICIO"
             },
             {
-              "id": "sam_galaxy_z_fold_6_liberacion",
+              "id": "samsung_galaxy_m30_liberacion",
               "name": "📶 Liberación de Compañía / Banda",
               "price": "NO REALIZAMOS",
               "note": "NO REALIZAMOS ESTE SERVICIO"
@@ -5899,52 +5899,52 @@ var PRECIOS_WIDGET = {
           ]
         },
         {
-          "name": "Galaxy M12",
+          "name": "Samsung Galaxy M30s",
           "repairs": [
             {
-              "id": "sam_galaxy_m12_pantalla",
+              "id": "samsung_galaxy_m30s_pantalla",
               "name": "📱 Pantalla / Módulo",
               "price": "Consultar",
               "note": "Seleccioná la calidad deseada o consultá presupuesto"
             },
             {
-              "id": "sam_galaxy_m12_bateria",
+              "id": "samsung_galaxy_m30s_bateria",
               "name": "🔋 Batería",
               "price": "Consultar",
               "note": "Condición al 100% de salud"
             },
             {
-              "id": "sam_galaxy_m12_pin",
+              "id": "samsung_galaxy_m30s_pin",
               "name": "🔌 Pin de carga",
               "price": "Consultar",
               "note": "Reparación o cambio de conector de carga"
             },
             {
-              "id": "sam_galaxy_m12_selfie",
+              "id": "samsung_galaxy_m30s_selfie",
               "name": "📸 Cámara Selfie (Frontal)",
               "price": "Consultar",
               "note": "Módulo de cámara frontal"
             },
             {
-              "id": "sam_galaxy_m12_trasera",
+              "id": "samsung_galaxy_m30s_trasera",
               "name": "📷 Cámara Principal (Trasera)",
               "price": "Consultar",
               "note": "Módulo de cámara trasera original"
             },
             {
-              "id": "sam_galaxy_m12_tapa",
+              "id": "samsung_galaxy_m30s_tapa",
               "name": "📱 Tapa Trasera / Cristal",
               "price": "Consultar",
               "note": "Cambio de tapa o cristal trasero"
             },
             {
-              "id": "sam_galaxy_m12_desbloqueo",
+              "id": "samsung_galaxy_m30s_desbloqueo",
               "name": "🔓 Desbloqueo (Cuenta Google / iCloud / PIN)",
               "price": "NO REALIZAMOS",
               "note": "NO REALIZAMOS ESTE SERVICIO"
             },
             {
-              "id": "sam_galaxy_m12_liberacion",
+              "id": "samsung_galaxy_m30s_liberacion",
               "name": "📶 Liberación de Compañía / Banda",
               "price": "NO REALIZAMOS",
               "note": "NO REALIZAMOS ESTE SERVICIO"
@@ -5952,52 +5952,52 @@ var PRECIOS_WIDGET = {
           ]
         },
         {
-          "name": "Galaxy M13",
+          "name": "Samsung Galaxy M31",
           "repairs": [
             {
-              "id": "sam_galaxy_m13_pantalla",
+              "id": "samsung_galaxy_m31_pantalla",
               "name": "📱 Pantalla / Módulo",
               "price": "Consultar",
               "note": "Seleccioná la calidad deseada o consultá presupuesto"
             },
             {
-              "id": "sam_galaxy_m13_bateria",
+              "id": "samsung_galaxy_m31_bateria",
               "name": "🔋 Batería",
               "price": "Consultar",
               "note": "Condición al 100% de salud"
             },
             {
-              "id": "sam_galaxy_m13_pin",
+              "id": "samsung_galaxy_m31_pin",
               "name": "🔌 Pin de carga",
               "price": "Consultar",
               "note": "Reparación o cambio de conector de carga"
             },
             {
-              "id": "sam_galaxy_m13_selfie",
+              "id": "samsung_galaxy_m31_selfie",
               "name": "📸 Cámara Selfie (Frontal)",
               "price": "Consultar",
               "note": "Módulo de cámara frontal"
             },
             {
-              "id": "sam_galaxy_m13_trasera",
+              "id": "samsung_galaxy_m31_trasera",
               "name": "📷 Cámara Principal (Trasera)",
               "price": "Consultar",
               "note": "Módulo de cámara trasera original"
             },
             {
-              "id": "sam_galaxy_m13_tapa",
+              "id": "samsung_galaxy_m31_tapa",
               "name": "📱 Tapa Trasera / Cristal",
               "price": "Consultar",
               "note": "Cambio de tapa o cristal trasero"
             },
             {
-              "id": "sam_galaxy_m13_desbloqueo",
+              "id": "samsung_galaxy_m31_desbloqueo",
               "name": "🔓 Desbloqueo (Cuenta Google / iCloud / PIN)",
               "price": "NO REALIZAMOS",
               "note": "NO REALIZAMOS ESTE SERVICIO"
             },
             {
-              "id": "sam_galaxy_m13_liberacion",
+              "id": "samsung_galaxy_m31_liberacion",
               "name": "📶 Liberación de Compañía / Banda",
               "price": "NO REALIZAMOS",
               "note": "NO REALIZAMOS ESTE SERVICIO"
@@ -6005,52 +6005,52 @@ var PRECIOS_WIDGET = {
           ]
         },
         {
-          "name": "Galaxy M14",
+          "name": "Samsung Galaxy M31 Prime",
           "repairs": [
             {
-              "id": "sam_galaxy_m14_pantalla",
+              "id": "samsung_galaxy_m31_prime_pantalla",
               "name": "📱 Pantalla / Módulo",
               "price": "Consultar",
               "note": "Seleccioná la calidad deseada o consultá presupuesto"
             },
             {
-              "id": "sam_galaxy_m14_bateria",
+              "id": "samsung_galaxy_m31_prime_bateria",
               "name": "🔋 Batería",
               "price": "Consultar",
               "note": "Condición al 100% de salud"
             },
             {
-              "id": "sam_galaxy_m14_pin",
+              "id": "samsung_galaxy_m31_prime_pin",
               "name": "🔌 Pin de carga",
               "price": "Consultar",
               "note": "Reparación o cambio de conector de carga"
             },
             {
-              "id": "sam_galaxy_m14_selfie",
+              "id": "samsung_galaxy_m31_prime_selfie",
               "name": "📸 Cámara Selfie (Frontal)",
               "price": "Consultar",
               "note": "Módulo de cámara frontal"
             },
             {
-              "id": "sam_galaxy_m14_trasera",
+              "id": "samsung_galaxy_m31_prime_trasera",
               "name": "📷 Cámara Principal (Trasera)",
               "price": "Consultar",
               "note": "Módulo de cámara trasera original"
             },
             {
-              "id": "sam_galaxy_m14_tapa",
+              "id": "samsung_galaxy_m31_prime_tapa",
               "name": "📱 Tapa Trasera / Cristal",
               "price": "Consultar",
               "note": "Cambio de tapa o cristal trasero"
             },
             {
-              "id": "sam_galaxy_m14_desbloqueo",
+              "id": "samsung_galaxy_m31_prime_desbloqueo",
               "name": "🔓 Desbloqueo (Cuenta Google / iCloud / PIN)",
               "price": "NO REALIZAMOS",
               "note": "NO REALIZAMOS ESTE SERVICIO"
             },
             {
-              "id": "sam_galaxy_m14_liberacion",
+              "id": "samsung_galaxy_m31_prime_liberacion",
               "name": "📶 Liberación de Compañía / Banda",
               "price": "NO REALIZAMOS",
               "note": "NO REALIZAMOS ESTE SERVICIO"
@@ -6058,52 +6058,52 @@ var PRECIOS_WIDGET = {
           ]
         },
         {
-          "name": "Galaxy M23 5G",
+          "name": "Samsung Galaxy M31s",
           "repairs": [
             {
-              "id": "sam_galaxy_m23_5g_pantalla",
+              "id": "samsung_galaxy_m31s_pantalla",
               "name": "📱 Pantalla / Módulo",
               "price": "Consultar",
               "note": "Seleccioná la calidad deseada o consultá presupuesto"
             },
             {
-              "id": "sam_galaxy_m23_5g_bateria",
+              "id": "samsung_galaxy_m31s_bateria",
               "name": "🔋 Batería",
               "price": "Consultar",
               "note": "Condición al 100% de salud"
             },
             {
-              "id": "sam_galaxy_m23_5g_pin",
+              "id": "samsung_galaxy_m31s_pin",
               "name": "🔌 Pin de carga",
               "price": "Consultar",
               "note": "Reparación o cambio de conector de carga"
             },
             {
-              "id": "sam_galaxy_m23_5g_selfie",
+              "id": "samsung_galaxy_m31s_selfie",
               "name": "📸 Cámara Selfie (Frontal)",
               "price": "Consultar",
               "note": "Módulo de cámara frontal"
             },
             {
-              "id": "sam_galaxy_m23_5g_trasera",
+              "id": "samsung_galaxy_m31s_trasera",
               "name": "📷 Cámara Principal (Trasera)",
               "price": "Consultar",
               "note": "Módulo de cámara trasera original"
             },
             {
-              "id": "sam_galaxy_m23_5g_tapa",
+              "id": "samsung_galaxy_m31s_tapa",
               "name": "📱 Tapa Trasera / Cristal",
               "price": "Consultar",
               "note": "Cambio de tapa o cristal trasero"
             },
             {
-              "id": "sam_galaxy_m23_5g_desbloqueo",
+              "id": "samsung_galaxy_m31s_desbloqueo",
               "name": "🔓 Desbloqueo (Cuenta Google / iCloud / PIN)",
               "price": "NO REALIZAMOS",
               "note": "NO REALIZAMOS ESTE SERVICIO"
             },
             {
-              "id": "sam_galaxy_m23_5g_liberacion",
+              "id": "samsung_galaxy_m31s_liberacion",
               "name": "📶 Liberación de Compañía / Banda",
               "price": "NO REALIZAMOS",
               "note": "NO REALIZAMOS ESTE SERVICIO"
@@ -6111,52 +6111,52 @@ var PRECIOS_WIDGET = {
           ]
         },
         {
-          "name": "Galaxy M32",
+          "name": "Samsung Galaxy M32",
           "repairs": [
             {
-              "id": "sam_galaxy_m32_pantalla",
+              "id": "samsung_galaxy_m32_pantalla",
               "name": "📱 Pantalla / Módulo",
               "price": "Consultar",
               "note": "Seleccioná la calidad deseada o consultá presupuesto"
             },
             {
-              "id": "sam_galaxy_m32_bateria",
+              "id": "samsung_galaxy_m32_bateria",
               "name": "🔋 Batería",
               "price": "Consultar",
               "note": "Condición al 100% de salud"
             },
             {
-              "id": "sam_galaxy_m32_pin",
+              "id": "samsung_galaxy_m32_pin",
               "name": "🔌 Pin de carga",
               "price": "Consultar",
               "note": "Reparación o cambio de conector de carga"
             },
             {
-              "id": "sam_galaxy_m32_selfie",
+              "id": "samsung_galaxy_m32_selfie",
               "name": "📸 Cámara Selfie (Frontal)",
               "price": "Consultar",
               "note": "Módulo de cámara frontal"
             },
             {
-              "id": "sam_galaxy_m32_trasera",
+              "id": "samsung_galaxy_m32_trasera",
               "name": "📷 Cámara Principal (Trasera)",
               "price": "Consultar",
               "note": "Módulo de cámara trasera original"
             },
             {
-              "id": "sam_galaxy_m32_tapa",
+              "id": "samsung_galaxy_m32_tapa",
               "name": "📱 Tapa Trasera / Cristal",
               "price": "Consultar",
               "note": "Cambio de tapa o cristal trasero"
             },
             {
-              "id": "sam_galaxy_m32_desbloqueo",
+              "id": "samsung_galaxy_m32_desbloqueo",
               "name": "🔓 Desbloqueo (Cuenta Google / iCloud / PIN)",
               "price": "NO REALIZAMOS",
               "note": "NO REALIZAMOS ESTE SERVICIO"
             },
             {
-              "id": "sam_galaxy_m32_liberacion",
+              "id": "samsung_galaxy_m32_liberacion",
               "name": "📶 Liberación de Compañía / Banda",
               "price": "NO REALIZAMOS",
               "note": "NO REALIZAMOS ESTE SERVICIO"
@@ -6164,52 +6164,52 @@ var PRECIOS_WIDGET = {
           ]
         },
         {
-          "name": "Galaxy M52 5G",
+          "name": "Samsung Galaxy M32 5G",
           "repairs": [
             {
-              "id": "sam_galaxy_m52_5g_pantalla",
+              "id": "samsung_galaxy_m32_5g_pantalla",
               "name": "📱 Pantalla / Módulo",
               "price": "Consultar",
               "note": "Seleccioná la calidad deseada o consultá presupuesto"
             },
             {
-              "id": "sam_galaxy_m52_5g_bateria",
+              "id": "samsung_galaxy_m32_5g_bateria",
               "name": "🔋 Batería",
               "price": "Consultar",
               "note": "Condición al 100% de salud"
             },
             {
-              "id": "sam_galaxy_m52_5g_pin",
+              "id": "samsung_galaxy_m32_5g_pin",
               "name": "🔌 Pin de carga",
               "price": "Consultar",
               "note": "Reparación o cambio de conector de carga"
             },
             {
-              "id": "sam_galaxy_m52_5g_selfie",
+              "id": "samsung_galaxy_m32_5g_selfie",
               "name": "📸 Cámara Selfie (Frontal)",
               "price": "Consultar",
               "note": "Módulo de cámara frontal"
             },
             {
-              "id": "sam_galaxy_m52_5g_trasera",
+              "id": "samsung_galaxy_m32_5g_trasera",
               "name": "📷 Cámara Principal (Trasera)",
               "price": "Consultar",
               "note": "Módulo de cámara trasera original"
             },
             {
-              "id": "sam_galaxy_m52_5g_tapa",
+              "id": "samsung_galaxy_m32_5g_tapa",
               "name": "📱 Tapa Trasera / Cristal",
               "price": "Consultar",
               "note": "Cambio de tapa o cristal trasero"
             },
             {
-              "id": "sam_galaxy_m52_5g_desbloqueo",
+              "id": "samsung_galaxy_m32_5g_desbloqueo",
               "name": "🔓 Desbloqueo (Cuenta Google / iCloud / PIN)",
               "price": "NO REALIZAMOS",
               "note": "NO REALIZAMOS ESTE SERVICIO"
             },
             {
-              "id": "sam_galaxy_m52_5g_liberacion",
+              "id": "samsung_galaxy_m32_5g_liberacion",
               "name": "📶 Liberación de Compañía / Banda",
               "price": "NO REALIZAMOS",
               "note": "NO REALIZAMOS ESTE SERVICIO"
@@ -6217,52 +6217,3815 @@ var PRECIOS_WIDGET = {
           ]
         },
         {
-          "name": "Galaxy M54 5G",
+          "name": "Samsung Galaxy M33 5G",
           "repairs": [
             {
-              "id": "sam_galaxy_m54_5g_pantalla",
+              "id": "samsung_galaxy_m33_5g_pantalla",
               "name": "📱 Pantalla / Módulo",
               "price": "Consultar",
               "note": "Seleccioná la calidad deseada o consultá presupuesto"
             },
             {
-              "id": "sam_galaxy_m54_5g_bateria",
+              "id": "samsung_galaxy_m33_5g_bateria",
               "name": "🔋 Batería",
               "price": "Consultar",
               "note": "Condición al 100% de salud"
             },
             {
-              "id": "sam_galaxy_m54_5g_pin",
+              "id": "samsung_galaxy_m33_5g_pin",
               "name": "🔌 Pin de carga",
               "price": "Consultar",
               "note": "Reparación o cambio de conector de carga"
             },
             {
-              "id": "sam_galaxy_m54_5g_selfie",
+              "id": "samsung_galaxy_m33_5g_selfie",
               "name": "📸 Cámara Selfie (Frontal)",
               "price": "Consultar",
               "note": "Módulo de cámara frontal"
             },
             {
-              "id": "sam_galaxy_m54_5g_trasera",
+              "id": "samsung_galaxy_m33_5g_trasera",
               "name": "📷 Cámara Principal (Trasera)",
               "price": "Consultar",
               "note": "Módulo de cámara trasera original"
             },
             {
-              "id": "sam_galaxy_m54_5g_tapa",
+              "id": "samsung_galaxy_m33_5g_tapa",
               "name": "📱 Tapa Trasera / Cristal",
               "price": "Consultar",
               "note": "Cambio de tapa o cristal trasero"
             },
             {
-              "id": "sam_galaxy_m54_5g_desbloqueo",
+              "id": "samsung_galaxy_m33_5g_desbloqueo",
               "name": "🔓 Desbloqueo (Cuenta Google / iCloud / PIN)",
               "price": "NO REALIZAMOS",
               "note": "NO REALIZAMOS ESTE SERVICIO"
             },
             {
-              "id": "sam_galaxy_m54_5g_liberacion",
+              "id": "samsung_galaxy_m33_5g_liberacion",
+              "name": "📶 Liberación de Compañía / Banda",
+              "price": "NO REALIZAMOS",
+              "note": "NO REALIZAMOS ESTE SERVICIO"
+            }
+          ]
+        },
+        {
+          "name": "Samsung Galaxy M34 5G",
+          "repairs": [
+            {
+              "id": "samsung_galaxy_m34_5g_pantalla",
+              "name": "📱 Pantalla / Módulo",
+              "price": "Consultar",
+              "note": "Seleccioná la calidad deseada o consultá presupuesto"
+            },
+            {
+              "id": "samsung_galaxy_m34_5g_bateria",
+              "name": "🔋 Batería",
+              "price": "Consultar",
+              "note": "Condición al 100% de salud"
+            },
+            {
+              "id": "samsung_galaxy_m34_5g_pin",
+              "name": "🔌 Pin de carga",
+              "price": "Consultar",
+              "note": "Reparación o cambio de conector de carga"
+            },
+            {
+              "id": "samsung_galaxy_m34_5g_selfie",
+              "name": "📸 Cámara Selfie (Frontal)",
+              "price": "Consultar",
+              "note": "Módulo de cámara frontal"
+            },
+            {
+              "id": "samsung_galaxy_m34_5g_trasera",
+              "name": "📷 Cámara Principal (Trasera)",
+              "price": "Consultar",
+              "note": "Módulo de cámara trasera original"
+            },
+            {
+              "id": "samsung_galaxy_m34_5g_tapa",
+              "name": "📱 Tapa Trasera / Cristal",
+              "price": "Consultar",
+              "note": "Cambio de tapa o cristal trasero"
+            },
+            {
+              "id": "samsung_galaxy_m34_5g_desbloqueo",
+              "name": "🔓 Desbloqueo (Cuenta Google / iCloud / PIN)",
+              "price": "NO REALIZAMOS",
+              "note": "NO REALIZAMOS ESTE SERVICIO"
+            },
+            {
+              "id": "samsung_galaxy_m34_5g_liberacion",
+              "name": "📶 Liberación de Compañía / Banda",
+              "price": "NO REALIZAMOS",
+              "note": "NO REALIZAMOS ESTE SERVICIO"
+            }
+          ]
+        },
+        {
+          "name": "Samsung Galaxy M35 5G",
+          "repairs": [
+            {
+              "id": "samsung_galaxy_m35_5g_pantalla",
+              "name": "📱 Pantalla / Módulo",
+              "price": "Consultar",
+              "note": "Seleccioná la calidad deseada o consultá presupuesto"
+            },
+            {
+              "id": "samsung_galaxy_m35_5g_bateria",
+              "name": "🔋 Batería",
+              "price": "Consultar",
+              "note": "Condición al 100% de salud"
+            },
+            {
+              "id": "samsung_galaxy_m35_5g_pin",
+              "name": "🔌 Pin de carga",
+              "price": "Consultar",
+              "note": "Reparación o cambio de conector de carga"
+            },
+            {
+              "id": "samsung_galaxy_m35_5g_selfie",
+              "name": "📸 Cámara Selfie (Frontal)",
+              "price": "Consultar",
+              "note": "Módulo de cámara frontal"
+            },
+            {
+              "id": "samsung_galaxy_m35_5g_trasera",
+              "name": "📷 Cámara Principal (Trasera)",
+              "price": "Consultar",
+              "note": "Módulo de cámara trasera original"
+            },
+            {
+              "id": "samsung_galaxy_m35_5g_tapa",
+              "name": "📱 Tapa Trasera / Cristal",
+              "price": "Consultar",
+              "note": "Cambio de tapa o cristal trasero"
+            },
+            {
+              "id": "samsung_galaxy_m35_5g_desbloqueo",
+              "name": "🔓 Desbloqueo (Cuenta Google / iCloud / PIN)",
+              "price": "NO REALIZAMOS",
+              "note": "NO REALIZAMOS ESTE SERVICIO"
+            },
+            {
+              "id": "samsung_galaxy_m35_5g_liberacion",
+              "name": "📶 Liberación de Compañía / Banda",
+              "price": "NO REALIZAMOS",
+              "note": "NO REALIZAMOS ESTE SERVICIO"
+            }
+          ]
+        },
+        {
+          "name": "Samsung Galaxy M36 5G",
+          "repairs": [
+            {
+              "id": "samsung_galaxy_m36_5g_pantalla",
+              "name": "📱 Pantalla / Módulo",
+              "price": "Consultar",
+              "note": "Seleccioná la calidad deseada o consultá presupuesto"
+            },
+            {
+              "id": "samsung_galaxy_m36_5g_bateria",
+              "name": "🔋 Batería",
+              "price": "Consultar",
+              "note": "Condición al 100% de salud"
+            },
+            {
+              "id": "samsung_galaxy_m36_5g_pin",
+              "name": "🔌 Pin de carga",
+              "price": "Consultar",
+              "note": "Reparación o cambio de conector de carga"
+            },
+            {
+              "id": "samsung_galaxy_m36_5g_selfie",
+              "name": "📸 Cámara Selfie (Frontal)",
+              "price": "Consultar",
+              "note": "Módulo de cámara frontal"
+            },
+            {
+              "id": "samsung_galaxy_m36_5g_trasera",
+              "name": "📷 Cámara Principal (Trasera)",
+              "price": "Consultar",
+              "note": "Módulo de cámara trasera original"
+            },
+            {
+              "id": "samsung_galaxy_m36_5g_tapa",
+              "name": "📱 Tapa Trasera / Cristal",
+              "price": "Consultar",
+              "note": "Cambio de tapa o cristal trasero"
+            },
+            {
+              "id": "samsung_galaxy_m36_5g_desbloqueo",
+              "name": "🔓 Desbloqueo (Cuenta Google / iCloud / PIN)",
+              "price": "NO REALIZAMOS",
+              "note": "NO REALIZAMOS ESTE SERVICIO"
+            },
+            {
+              "id": "samsung_galaxy_m36_5g_liberacion",
+              "name": "📶 Liberación de Compañía / Banda",
+              "price": "NO REALIZAMOS",
+              "note": "NO REALIZAMOS ESTE SERVICIO"
+            }
+          ]
+        },
+        {
+          "name": "Samsung Galaxy M40",
+          "repairs": [
+            {
+              "id": "samsung_galaxy_m40_pantalla",
+              "name": "📱 Pantalla / Módulo",
+              "price": "Consultar",
+              "note": "Seleccioná la calidad deseada o consultá presupuesto"
+            },
+            {
+              "id": "samsung_galaxy_m40_bateria",
+              "name": "🔋 Batería",
+              "price": "Consultar",
+              "note": "Condición al 100% de salud"
+            },
+            {
+              "id": "samsung_galaxy_m40_pin",
+              "name": "🔌 Pin de carga",
+              "price": "Consultar",
+              "note": "Reparación o cambio de conector de carga"
+            },
+            {
+              "id": "samsung_galaxy_m40_selfie",
+              "name": "📸 Cámara Selfie (Frontal)",
+              "price": "Consultar",
+              "note": "Módulo de cámara frontal"
+            },
+            {
+              "id": "samsung_galaxy_m40_trasera",
+              "name": "📷 Cámara Principal (Trasera)",
+              "price": "Consultar",
+              "note": "Módulo de cámara trasera original"
+            },
+            {
+              "id": "samsung_galaxy_m40_tapa",
+              "name": "📱 Tapa Trasera / Cristal",
+              "price": "Consultar",
+              "note": "Cambio de tapa o cristal trasero"
+            },
+            {
+              "id": "samsung_galaxy_m40_desbloqueo",
+              "name": "🔓 Desbloqueo (Cuenta Google / iCloud / PIN)",
+              "price": "NO REALIZAMOS",
+              "note": "NO REALIZAMOS ESTE SERVICIO"
+            },
+            {
+              "id": "samsung_galaxy_m40_liberacion",
+              "name": "📶 Liberación de Compañía / Banda",
+              "price": "NO REALIZAMOS",
+              "note": "NO REALIZAMOS ESTE SERVICIO"
+            }
+          ]
+        },
+        {
+          "name": "Samsung Galaxy M51",
+          "repairs": [
+            {
+              "id": "samsung_galaxy_m51_pantalla",
+              "name": "📱 Pantalla / Módulo",
+              "price": "Consultar",
+              "note": "Seleccioná la calidad deseada o consultá presupuesto"
+            },
+            {
+              "id": "samsung_galaxy_m51_bateria",
+              "name": "🔋 Batería",
+              "price": "Consultar",
+              "note": "Condición al 100% de salud"
+            },
+            {
+              "id": "samsung_galaxy_m51_pin",
+              "name": "🔌 Pin de carga",
+              "price": "Consultar",
+              "note": "Reparación o cambio de conector de carga"
+            },
+            {
+              "id": "samsung_galaxy_m51_selfie",
+              "name": "📸 Cámara Selfie (Frontal)",
+              "price": "Consultar",
+              "note": "Módulo de cámara frontal"
+            },
+            {
+              "id": "samsung_galaxy_m51_trasera",
+              "name": "📷 Cámara Principal (Trasera)",
+              "price": "Consultar",
+              "note": "Módulo de cámara trasera original"
+            },
+            {
+              "id": "samsung_galaxy_m51_tapa",
+              "name": "📱 Tapa Trasera / Cristal",
+              "price": "Consultar",
+              "note": "Cambio de tapa o cristal trasero"
+            },
+            {
+              "id": "samsung_galaxy_m51_desbloqueo",
+              "name": "🔓 Desbloqueo (Cuenta Google / iCloud / PIN)",
+              "price": "NO REALIZAMOS",
+              "note": "NO REALIZAMOS ESTE SERVICIO"
+            },
+            {
+              "id": "samsung_galaxy_m51_liberacion",
+              "name": "📶 Liberación de Compañía / Banda",
+              "price": "NO REALIZAMOS",
+              "note": "NO REALIZAMOS ESTE SERVICIO"
+            }
+          ]
+        },
+        {
+          "name": "Samsung Galaxy M52 5G",
+          "repairs": [
+            {
+              "id": "samsung_galaxy_m52_5g_pantalla",
+              "name": "📱 Pantalla / Módulo",
+              "price": "Consultar",
+              "note": "Seleccioná la calidad deseada o consultá presupuesto"
+            },
+            {
+              "id": "samsung_galaxy_m52_5g_bateria",
+              "name": "🔋 Batería",
+              "price": "Consultar",
+              "note": "Condición al 100% de salud"
+            },
+            {
+              "id": "samsung_galaxy_m52_5g_pin",
+              "name": "🔌 Pin de carga",
+              "price": "Consultar",
+              "note": "Reparación o cambio de conector de carga"
+            },
+            {
+              "id": "samsung_galaxy_m52_5g_selfie",
+              "name": "📸 Cámara Selfie (Frontal)",
+              "price": "Consultar",
+              "note": "Módulo de cámara frontal"
+            },
+            {
+              "id": "samsung_galaxy_m52_5g_trasera",
+              "name": "📷 Cámara Principal (Trasera)",
+              "price": "Consultar",
+              "note": "Módulo de cámara trasera original"
+            },
+            {
+              "id": "samsung_galaxy_m52_5g_tapa",
+              "name": "📱 Tapa Trasera / Cristal",
+              "price": "Consultar",
+              "note": "Cambio de tapa o cristal trasero"
+            },
+            {
+              "id": "samsung_galaxy_m52_5g_desbloqueo",
+              "name": "🔓 Desbloqueo (Cuenta Google / iCloud / PIN)",
+              "price": "NO REALIZAMOS",
+              "note": "NO REALIZAMOS ESTE SERVICIO"
+            },
+            {
+              "id": "samsung_galaxy_m52_5g_liberacion",
+              "name": "📶 Liberación de Compañía / Banda",
+              "price": "NO REALIZAMOS",
+              "note": "NO REALIZAMOS ESTE SERVICIO"
+            }
+          ]
+        },
+        {
+          "name": "Samsung Galaxy M53 5G",
+          "repairs": [
+            {
+              "id": "samsung_galaxy_m53_5g_pantalla",
+              "name": "📱 Pantalla / Módulo",
+              "price": "Consultar",
+              "note": "Seleccioná la calidad deseada o consultá presupuesto"
+            },
+            {
+              "id": "samsung_galaxy_m53_5g_bateria",
+              "name": "🔋 Batería",
+              "price": "Consultar",
+              "note": "Condición al 100% de salud"
+            },
+            {
+              "id": "samsung_galaxy_m53_5g_pin",
+              "name": "🔌 Pin de carga",
+              "price": "Consultar",
+              "note": "Reparación o cambio de conector de carga"
+            },
+            {
+              "id": "samsung_galaxy_m53_5g_selfie",
+              "name": "📸 Cámara Selfie (Frontal)",
+              "price": "Consultar",
+              "note": "Módulo de cámara frontal"
+            },
+            {
+              "id": "samsung_galaxy_m53_5g_trasera",
+              "name": "📷 Cámara Principal (Trasera)",
+              "price": "Consultar",
+              "note": "Módulo de cámara trasera original"
+            },
+            {
+              "id": "samsung_galaxy_m53_5g_tapa",
+              "name": "📱 Tapa Trasera / Cristal",
+              "price": "Consultar",
+              "note": "Cambio de tapa o cristal trasero"
+            },
+            {
+              "id": "samsung_galaxy_m53_5g_desbloqueo",
+              "name": "🔓 Desbloqueo (Cuenta Google / iCloud / PIN)",
+              "price": "NO REALIZAMOS",
+              "note": "NO REALIZAMOS ESTE SERVICIO"
+            },
+            {
+              "id": "samsung_galaxy_m53_5g_liberacion",
+              "name": "📶 Liberación de Compañía / Banda",
+              "price": "NO REALIZAMOS",
+              "note": "NO REALIZAMOS ESTE SERVICIO"
+            }
+          ]
+        },
+        {
+          "name": "Samsung Galaxy M54 5G",
+          "repairs": [
+            {
+              "id": "samsung_galaxy_m54_5g_pantalla",
+              "name": "📱 Pantalla / Módulo",
+              "price": "Consultar",
+              "note": "Seleccioná la calidad deseada o consultá presupuesto"
+            },
+            {
+              "id": "samsung_galaxy_m54_5g_bateria",
+              "name": "🔋 Batería",
+              "price": "Consultar",
+              "note": "Condición al 100% de salud"
+            },
+            {
+              "id": "samsung_galaxy_m54_5g_pin",
+              "name": "🔌 Pin de carga",
+              "price": "Consultar",
+              "note": "Reparación o cambio de conector de carga"
+            },
+            {
+              "id": "samsung_galaxy_m54_5g_selfie",
+              "name": "📸 Cámara Selfie (Frontal)",
+              "price": "Consultar",
+              "note": "Módulo de cámara frontal"
+            },
+            {
+              "id": "samsung_galaxy_m54_5g_trasera",
+              "name": "📷 Cámara Principal (Trasera)",
+              "price": "Consultar",
+              "note": "Módulo de cámara trasera original"
+            },
+            {
+              "id": "samsung_galaxy_m54_5g_tapa",
+              "name": "📱 Tapa Trasera / Cristal",
+              "price": "Consultar",
+              "note": "Cambio de tapa o cristal trasero"
+            },
+            {
+              "id": "samsung_galaxy_m54_5g_desbloqueo",
+              "name": "🔓 Desbloqueo (Cuenta Google / iCloud / PIN)",
+              "price": "NO REALIZAMOS",
+              "note": "NO REALIZAMOS ESTE SERVICIO"
+            },
+            {
+              "id": "samsung_galaxy_m54_5g_liberacion",
+              "name": "📶 Liberación de Compañía / Banda",
+              "price": "NO REALIZAMOS",
+              "note": "NO REALIZAMOS ESTE SERVICIO"
+            }
+          ]
+        },
+        {
+          "name": "Samsung Galaxy M55",
+          "repairs": [
+            {
+              "id": "samsung_galaxy_m55_pantalla",
+              "name": "📱 Pantalla / Módulo",
+              "price": "Consultar",
+              "note": "Seleccioná la calidad deseada o consultá presupuesto"
+            },
+            {
+              "id": "samsung_galaxy_m55_bateria",
+              "name": "🔋 Batería",
+              "price": "Consultar",
+              "note": "Condición al 100% de salud"
+            },
+            {
+              "id": "samsung_galaxy_m55_pin",
+              "name": "🔌 Pin de carga",
+              "price": "Consultar",
+              "note": "Reparación o cambio de conector de carga"
+            },
+            {
+              "id": "samsung_galaxy_m55_selfie",
+              "name": "📸 Cámara Selfie (Frontal)",
+              "price": "Consultar",
+              "note": "Módulo de cámara frontal"
+            },
+            {
+              "id": "samsung_galaxy_m55_trasera",
+              "name": "📷 Cámara Principal (Trasera)",
+              "price": "Consultar",
+              "note": "Módulo de cámara trasera original"
+            },
+            {
+              "id": "samsung_galaxy_m55_tapa",
+              "name": "📱 Tapa Trasera / Cristal",
+              "price": "Consultar",
+              "note": "Cambio de tapa o cristal trasero"
+            },
+            {
+              "id": "samsung_galaxy_m55_desbloqueo",
+              "name": "🔓 Desbloqueo (Cuenta Google / iCloud / PIN)",
+              "price": "NO REALIZAMOS",
+              "note": "NO REALIZAMOS ESTE SERVICIO"
+            },
+            {
+              "id": "samsung_galaxy_m55_liberacion",
+              "name": "📶 Liberación de Compañía / Banda",
+              "price": "NO REALIZAMOS",
+              "note": "NO REALIZAMOS ESTE SERVICIO"
+            }
+          ]
+        },
+        {
+          "name": "Samsung Galaxy M55s",
+          "repairs": [
+            {
+              "id": "samsung_galaxy_m55s_pantalla",
+              "name": "📱 Pantalla / Módulo",
+              "price": "Consultar",
+              "note": "Seleccioná la calidad deseada o consultá presupuesto"
+            },
+            {
+              "id": "samsung_galaxy_m55s_bateria",
+              "name": "🔋 Batería",
+              "price": "Consultar",
+              "note": "Condición al 100% de salud"
+            },
+            {
+              "id": "samsung_galaxy_m55s_pin",
+              "name": "🔌 Pin de carga",
+              "price": "Consultar",
+              "note": "Reparación o cambio de conector de carga"
+            },
+            {
+              "id": "samsung_galaxy_m55s_selfie",
+              "name": "📸 Cámara Selfie (Frontal)",
+              "price": "Consultar",
+              "note": "Módulo de cámara frontal"
+            },
+            {
+              "id": "samsung_galaxy_m55s_trasera",
+              "name": "📷 Cámara Principal (Trasera)",
+              "price": "Consultar",
+              "note": "Módulo de cámara trasera original"
+            },
+            {
+              "id": "samsung_galaxy_m55s_tapa",
+              "name": "📱 Tapa Trasera / Cristal",
+              "price": "Consultar",
+              "note": "Cambio de tapa o cristal trasero"
+            },
+            {
+              "id": "samsung_galaxy_m55s_desbloqueo",
+              "name": "🔓 Desbloqueo (Cuenta Google / iCloud / PIN)",
+              "price": "NO REALIZAMOS",
+              "note": "NO REALIZAMOS ESTE SERVICIO"
+            },
+            {
+              "id": "samsung_galaxy_m55s_liberacion",
+              "name": "📶 Liberación de Compañía / Banda",
+              "price": "NO REALIZAMOS",
+              "note": "NO REALIZAMOS ESTE SERVICIO"
+            }
+          ]
+        },
+        {
+          "name": "Samsung Galaxy M56 5G",
+          "repairs": [
+            {
+              "id": "samsung_galaxy_m56_5g_pantalla",
+              "name": "📱 Pantalla / Módulo",
+              "price": "Consultar",
+              "note": "Seleccioná la calidad deseada o consultá presupuesto"
+            },
+            {
+              "id": "samsung_galaxy_m56_5g_bateria",
+              "name": "🔋 Batería",
+              "price": "Consultar",
+              "note": "Condición al 100% de salud"
+            },
+            {
+              "id": "samsung_galaxy_m56_5g_pin",
+              "name": "🔌 Pin de carga",
+              "price": "Consultar",
+              "note": "Reparación o cambio de conector de carga"
+            },
+            {
+              "id": "samsung_galaxy_m56_5g_selfie",
+              "name": "📸 Cámara Selfie (Frontal)",
+              "price": "Consultar",
+              "note": "Módulo de cámara frontal"
+            },
+            {
+              "id": "samsung_galaxy_m56_5g_trasera",
+              "name": "📷 Cámara Principal (Trasera)",
+              "price": "Consultar",
+              "note": "Módulo de cámara trasera original"
+            },
+            {
+              "id": "samsung_galaxy_m56_5g_tapa",
+              "name": "📱 Tapa Trasera / Cristal",
+              "price": "Consultar",
+              "note": "Cambio de tapa o cristal trasero"
+            },
+            {
+              "id": "samsung_galaxy_m56_5g_desbloqueo",
+              "name": "🔓 Desbloqueo (Cuenta Google / iCloud / PIN)",
+              "price": "NO REALIZAMOS",
+              "note": "NO REALIZAMOS ESTE SERVICIO"
+            },
+            {
+              "id": "samsung_galaxy_m56_5g_liberacion",
+              "name": "📶 Liberación de Compañía / Banda",
+              "price": "NO REALIZAMOS",
+              "note": "NO REALIZAMOS ESTE SERVICIO"
+            }
+          ]
+        },
+        {
+          "name": "Samsung Galaxy M62",
+          "repairs": [
+            {
+              "id": "samsung_galaxy_m62_pantalla",
+              "name": "📱 Pantalla / Módulo",
+              "price": "Consultar",
+              "note": "Seleccioná la calidad deseada o consultá presupuesto"
+            },
+            {
+              "id": "samsung_galaxy_m62_bateria",
+              "name": "🔋 Batería",
+              "price": "Consultar",
+              "note": "Condición al 100% de salud"
+            },
+            {
+              "id": "samsung_galaxy_m62_pin",
+              "name": "🔌 Pin de carga",
+              "price": "Consultar",
+              "note": "Reparación o cambio de conector de carga"
+            },
+            {
+              "id": "samsung_galaxy_m62_selfie",
+              "name": "📸 Cámara Selfie (Frontal)",
+              "price": "Consultar",
+              "note": "Módulo de cámara frontal"
+            },
+            {
+              "id": "samsung_galaxy_m62_trasera",
+              "name": "📷 Cámara Principal (Trasera)",
+              "price": "Consultar",
+              "note": "Módulo de cámara trasera original"
+            },
+            {
+              "id": "samsung_galaxy_m62_tapa",
+              "name": "📱 Tapa Trasera / Cristal",
+              "price": "Consultar",
+              "note": "Cambio de tapa o cristal trasero"
+            },
+            {
+              "id": "samsung_galaxy_m62_desbloqueo",
+              "name": "🔓 Desbloqueo (Cuenta Google / iCloud / PIN)",
+              "price": "NO REALIZAMOS",
+              "note": "NO REALIZAMOS ESTE SERVICIO"
+            },
+            {
+              "id": "samsung_galaxy_m62_liberacion",
+              "name": "📶 Liberación de Compañía / Banda",
+              "price": "NO REALIZAMOS",
+              "note": "NO REALIZAMOS ESTE SERVICIO"
+            }
+          ]
+        },
+        {
+          "name": "Samsung Galaxy S8",
+          "repairs": [
+            {
+              "id": "samsung_galaxy_s8_pantalla",
+              "name": "📱 Pantalla / Módulo",
+              "price": "Consultar",
+              "note": "Seleccioná la calidad deseada o consultá presupuesto"
+            },
+            {
+              "id": "samsung_galaxy_s8_bateria",
+              "name": "🔋 Batería",
+              "price": "Consultar",
+              "note": "Condición al 100% de salud"
+            },
+            {
+              "id": "samsung_galaxy_s8_pin",
+              "name": "🔌 Pin de carga",
+              "price": "Consultar",
+              "note": "Reparación o cambio de conector de carga"
+            },
+            {
+              "id": "samsung_galaxy_s8_selfie",
+              "name": "📸 Cámara Selfie (Frontal)",
+              "price": "Consultar",
+              "note": "Módulo de cámara frontal"
+            },
+            {
+              "id": "samsung_galaxy_s8_trasera",
+              "name": "📷 Cámara Principal (Trasera)",
+              "price": "Consultar",
+              "note": "Módulo de cámara trasera original"
+            },
+            {
+              "id": "samsung_galaxy_s8_tapa",
+              "name": "📱 Tapa Trasera / Cristal",
+              "price": "Consultar",
+              "note": "Cambio de tapa o cristal trasero"
+            },
+            {
+              "id": "samsung_galaxy_s8_desbloqueo",
+              "name": "🔓 Desbloqueo (Cuenta Google / iCloud / PIN)",
+              "price": "NO REALIZAMOS",
+              "note": "NO REALIZAMOS ESTE SERVICIO"
+            },
+            {
+              "id": "samsung_galaxy_s8_liberacion",
+              "name": "📶 Liberación de Compañía / Banda",
+              "price": "NO REALIZAMOS",
+              "note": "NO REALIZAMOS ESTE SERVICIO"
+            }
+          ]
+        },
+        {
+          "name": "Samsung Galaxy S8+",
+          "repairs": [
+            {
+              "id": "samsung_galaxy_s8_pantalla",
+              "name": "📱 Pantalla / Módulo",
+              "price": "Consultar",
+              "note": "Seleccioná la calidad deseada o consultá presupuesto"
+            },
+            {
+              "id": "samsung_galaxy_s8_bateria",
+              "name": "🔋 Batería",
+              "price": "Consultar",
+              "note": "Condición al 100% de salud"
+            },
+            {
+              "id": "samsung_galaxy_s8_pin",
+              "name": "🔌 Pin de carga",
+              "price": "Consultar",
+              "note": "Reparación o cambio de conector de carga"
+            },
+            {
+              "id": "samsung_galaxy_s8_selfie",
+              "name": "📸 Cámara Selfie (Frontal)",
+              "price": "Consultar",
+              "note": "Módulo de cámara frontal"
+            },
+            {
+              "id": "samsung_galaxy_s8_trasera",
+              "name": "📷 Cámara Principal (Trasera)",
+              "price": "Consultar",
+              "note": "Módulo de cámara trasera original"
+            },
+            {
+              "id": "samsung_galaxy_s8_tapa",
+              "name": "📱 Tapa Trasera / Cristal",
+              "price": "Consultar",
+              "note": "Cambio de tapa o cristal trasero"
+            },
+            {
+              "id": "samsung_galaxy_s8_desbloqueo",
+              "name": "🔓 Desbloqueo (Cuenta Google / iCloud / PIN)",
+              "price": "NO REALIZAMOS",
+              "note": "NO REALIZAMOS ESTE SERVICIO"
+            },
+            {
+              "id": "samsung_galaxy_s8_liberacion",
+              "name": "📶 Liberación de Compañía / Banda",
+              "price": "NO REALIZAMOS",
+              "note": "NO REALIZAMOS ESTE SERVICIO"
+            }
+          ]
+        },
+        {
+          "name": "Samsung Galaxy S9",
+          "repairs": [
+            {
+              "id": "samsung_galaxy_s9_pantalla",
+              "name": "📱 Pantalla / Módulo",
+              "price": "Consultar",
+              "note": "Seleccioná la calidad deseada o consultá presupuesto"
+            },
+            {
+              "id": "samsung_galaxy_s9_bateria",
+              "name": "🔋 Batería",
+              "price": "Consultar",
+              "note": "Condición al 100% de salud"
+            },
+            {
+              "id": "samsung_galaxy_s9_pin",
+              "name": "🔌 Pin de carga",
+              "price": "Consultar",
+              "note": "Reparación o cambio de conector de carga"
+            },
+            {
+              "id": "samsung_galaxy_s9_selfie",
+              "name": "📸 Cámara Selfie (Frontal)",
+              "price": "Consultar",
+              "note": "Módulo de cámara frontal"
+            },
+            {
+              "id": "samsung_galaxy_s9_trasera",
+              "name": "📷 Cámara Principal (Trasera)",
+              "price": "Consultar",
+              "note": "Módulo de cámara trasera original"
+            },
+            {
+              "id": "samsung_galaxy_s9_tapa",
+              "name": "📱 Tapa Trasera / Cristal",
+              "price": "Consultar",
+              "note": "Cambio de tapa o cristal trasero"
+            },
+            {
+              "id": "samsung_galaxy_s9_desbloqueo",
+              "name": "🔓 Desbloqueo (Cuenta Google / iCloud / PIN)",
+              "price": "NO REALIZAMOS",
+              "note": "NO REALIZAMOS ESTE SERVICIO"
+            },
+            {
+              "id": "samsung_galaxy_s9_liberacion",
+              "name": "📶 Liberación de Compañía / Banda",
+              "price": "NO REALIZAMOS",
+              "note": "NO REALIZAMOS ESTE SERVICIO"
+            }
+          ]
+        },
+        {
+          "name": "Samsung Galaxy S9+",
+          "repairs": [
+            {
+              "id": "samsung_galaxy_s9_pantalla",
+              "name": "📱 Pantalla / Módulo",
+              "price": "Consultar",
+              "note": "Seleccioná la calidad deseada o consultá presupuesto"
+            },
+            {
+              "id": "samsung_galaxy_s9_bateria",
+              "name": "🔋 Batería",
+              "price": "Consultar",
+              "note": "Condición al 100% de salud"
+            },
+            {
+              "id": "samsung_galaxy_s9_pin",
+              "name": "🔌 Pin de carga",
+              "price": "Consultar",
+              "note": "Reparación o cambio de conector de carga"
+            },
+            {
+              "id": "samsung_galaxy_s9_selfie",
+              "name": "📸 Cámara Selfie (Frontal)",
+              "price": "Consultar",
+              "note": "Módulo de cámara frontal"
+            },
+            {
+              "id": "samsung_galaxy_s9_trasera",
+              "name": "📷 Cámara Principal (Trasera)",
+              "price": "Consultar",
+              "note": "Módulo de cámara trasera original"
+            },
+            {
+              "id": "samsung_galaxy_s9_tapa",
+              "name": "📱 Tapa Trasera / Cristal",
+              "price": "Consultar",
+              "note": "Cambio de tapa o cristal trasero"
+            },
+            {
+              "id": "samsung_galaxy_s9_desbloqueo",
+              "name": "🔓 Desbloqueo (Cuenta Google / iCloud / PIN)",
+              "price": "NO REALIZAMOS",
+              "note": "NO REALIZAMOS ESTE SERVICIO"
+            },
+            {
+              "id": "samsung_galaxy_s9_liberacion",
+              "name": "📶 Liberación de Compañía / Banda",
+              "price": "NO REALIZAMOS",
+              "note": "NO REALIZAMOS ESTE SERVICIO"
+            }
+          ]
+        },
+        {
+          "name": "Samsung Galaxy S10",
+          "repairs": [
+            {
+              "id": "samsung_galaxy_s10_pantalla",
+              "name": "📱 Pantalla / Módulo",
+              "price": "Consultar",
+              "note": "Seleccioná la calidad deseada o consultá presupuesto"
+            },
+            {
+              "id": "samsung_galaxy_s10_bateria",
+              "name": "🔋 Batería",
+              "price": "Consultar",
+              "note": "Condición al 100% de salud"
+            },
+            {
+              "id": "samsung_galaxy_s10_pin",
+              "name": "🔌 Pin de carga",
+              "price": "Consultar",
+              "note": "Reparación o cambio de conector de carga"
+            },
+            {
+              "id": "samsung_galaxy_s10_selfie",
+              "name": "📸 Cámara Selfie (Frontal)",
+              "price": "Consultar",
+              "note": "Módulo de cámara frontal"
+            },
+            {
+              "id": "samsung_galaxy_s10_trasera",
+              "name": "📷 Cámara Principal (Trasera)",
+              "price": "Consultar",
+              "note": "Módulo de cámara trasera original"
+            },
+            {
+              "id": "samsung_galaxy_s10_tapa",
+              "name": "📱 Tapa Trasera / Cristal",
+              "price": "Consultar",
+              "note": "Cambio de tapa o cristal trasero"
+            },
+            {
+              "id": "samsung_galaxy_s10_desbloqueo",
+              "name": "🔓 Desbloqueo (Cuenta Google / iCloud / PIN)",
+              "price": "NO REALIZAMOS",
+              "note": "NO REALIZAMOS ESTE SERVICIO"
+            },
+            {
+              "id": "samsung_galaxy_s10_liberacion",
+              "name": "📶 Liberación de Compañía / Banda",
+              "price": "NO REALIZAMOS",
+              "note": "NO REALIZAMOS ESTE SERVICIO"
+            }
+          ]
+        },
+        {
+          "name": "Samsung Galaxy S10+",
+          "repairs": [
+            {
+              "id": "samsung_galaxy_s10_pantalla",
+              "name": "📱 Pantalla / Módulo",
+              "price": "Consultar",
+              "note": "Seleccioná la calidad deseada o consultá presupuesto"
+            },
+            {
+              "id": "samsung_galaxy_s10_bateria",
+              "name": "🔋 Batería",
+              "price": "Consultar",
+              "note": "Condición al 100% de salud"
+            },
+            {
+              "id": "samsung_galaxy_s10_pin",
+              "name": "🔌 Pin de carga",
+              "price": "Consultar",
+              "note": "Reparación o cambio de conector de carga"
+            },
+            {
+              "id": "samsung_galaxy_s10_selfie",
+              "name": "📸 Cámara Selfie (Frontal)",
+              "price": "Consultar",
+              "note": "Módulo de cámara frontal"
+            },
+            {
+              "id": "samsung_galaxy_s10_trasera",
+              "name": "📷 Cámara Principal (Trasera)",
+              "price": "Consultar",
+              "note": "Módulo de cámara trasera original"
+            },
+            {
+              "id": "samsung_galaxy_s10_tapa",
+              "name": "📱 Tapa Trasera / Cristal",
+              "price": "Consultar",
+              "note": "Cambio de tapa o cristal trasero"
+            },
+            {
+              "id": "samsung_galaxy_s10_desbloqueo",
+              "name": "🔓 Desbloqueo (Cuenta Google / iCloud / PIN)",
+              "price": "NO REALIZAMOS",
+              "note": "NO REALIZAMOS ESTE SERVICIO"
+            },
+            {
+              "id": "samsung_galaxy_s10_liberacion",
+              "name": "📶 Liberación de Compañía / Banda",
+              "price": "NO REALIZAMOS",
+              "note": "NO REALIZAMOS ESTE SERVICIO"
+            }
+          ]
+        },
+        {
+          "name": "Samsung Galaxy S10 5G",
+          "repairs": [
+            {
+              "id": "samsung_galaxy_s10_5g_pantalla",
+              "name": "📱 Pantalla / Módulo",
+              "price": "Consultar",
+              "note": "Seleccioná la calidad deseada o consultá presupuesto"
+            },
+            {
+              "id": "samsung_galaxy_s10_5g_bateria",
+              "name": "🔋 Batería",
+              "price": "Consultar",
+              "note": "Condición al 100% de salud"
+            },
+            {
+              "id": "samsung_galaxy_s10_5g_pin",
+              "name": "🔌 Pin de carga",
+              "price": "Consultar",
+              "note": "Reparación o cambio de conector de carga"
+            },
+            {
+              "id": "samsung_galaxy_s10_5g_selfie",
+              "name": "📸 Cámara Selfie (Frontal)",
+              "price": "Consultar",
+              "note": "Módulo de cámara frontal"
+            },
+            {
+              "id": "samsung_galaxy_s10_5g_trasera",
+              "name": "📷 Cámara Principal (Trasera)",
+              "price": "Consultar",
+              "note": "Módulo de cámara trasera original"
+            },
+            {
+              "id": "samsung_galaxy_s10_5g_tapa",
+              "name": "📱 Tapa Trasera / Cristal",
+              "price": "Consultar",
+              "note": "Cambio de tapa o cristal trasero"
+            },
+            {
+              "id": "samsung_galaxy_s10_5g_desbloqueo",
+              "name": "🔓 Desbloqueo (Cuenta Google / iCloud / PIN)",
+              "price": "NO REALIZAMOS",
+              "note": "NO REALIZAMOS ESTE SERVICIO"
+            },
+            {
+              "id": "samsung_galaxy_s10_5g_liberacion",
+              "name": "📶 Liberación de Compañía / Banda",
+              "price": "NO REALIZAMOS",
+              "note": "NO REALIZAMOS ESTE SERVICIO"
+            }
+          ]
+        },
+        {
+          "name": "Samsung Galaxy S10e",
+          "repairs": [
+            {
+              "id": "samsung_galaxy_s10e_pantalla",
+              "name": "📱 Pantalla / Módulo",
+              "price": "Consultar",
+              "note": "Seleccioná la calidad deseada o consultá presupuesto"
+            },
+            {
+              "id": "samsung_galaxy_s10e_bateria",
+              "name": "🔋 Batería",
+              "price": "Consultar",
+              "note": "Condición al 100% de salud"
+            },
+            {
+              "id": "samsung_galaxy_s10e_pin",
+              "name": "🔌 Pin de carga",
+              "price": "Consultar",
+              "note": "Reparación o cambio de conector de carga"
+            },
+            {
+              "id": "samsung_galaxy_s10e_selfie",
+              "name": "📸 Cámara Selfie (Frontal)",
+              "price": "Consultar",
+              "note": "Módulo de cámara frontal"
+            },
+            {
+              "id": "samsung_galaxy_s10e_trasera",
+              "name": "📷 Cámara Principal (Trasera)",
+              "price": "Consultar",
+              "note": "Módulo de cámara trasera original"
+            },
+            {
+              "id": "samsung_galaxy_s10e_tapa",
+              "name": "📱 Tapa Trasera / Cristal",
+              "price": "Consultar",
+              "note": "Cambio de tapa o cristal trasero"
+            },
+            {
+              "id": "samsung_galaxy_s10e_desbloqueo",
+              "name": "🔓 Desbloqueo (Cuenta Google / iCloud / PIN)",
+              "price": "NO REALIZAMOS",
+              "note": "NO REALIZAMOS ESTE SERVICIO"
+            },
+            {
+              "id": "samsung_galaxy_s10e_liberacion",
+              "name": "📶 Liberación de Compañía / Banda",
+              "price": "NO REALIZAMOS",
+              "note": "NO REALIZAMOS ESTE SERVICIO"
+            }
+          ]
+        },
+        {
+          "name": "Samsung Galaxy S10 Lite",
+          "repairs": [
+            {
+              "id": "samsung_galaxy_s10_lite_pantalla",
+              "name": "📱 Pantalla / Módulo",
+              "price": "Consultar",
+              "note": "Seleccioná la calidad deseada o consultá presupuesto"
+            },
+            {
+              "id": "samsung_galaxy_s10_lite_bateria",
+              "name": "🔋 Batería",
+              "price": "Consultar",
+              "note": "Condición al 100% de salud"
+            },
+            {
+              "id": "samsung_galaxy_s10_lite_pin",
+              "name": "🔌 Pin de carga",
+              "price": "Consultar",
+              "note": "Reparación o cambio de conector de carga"
+            },
+            {
+              "id": "samsung_galaxy_s10_lite_selfie",
+              "name": "📸 Cámara Selfie (Frontal)",
+              "price": "Consultar",
+              "note": "Módulo de cámara frontal"
+            },
+            {
+              "id": "samsung_galaxy_s10_lite_trasera",
+              "name": "📷 Cámara Principal (Trasera)",
+              "price": "Consultar",
+              "note": "Módulo de cámara trasera original"
+            },
+            {
+              "id": "samsung_galaxy_s10_lite_tapa",
+              "name": "📱 Tapa Trasera / Cristal",
+              "price": "Consultar",
+              "note": "Cambio de tapa o cristal trasero"
+            },
+            {
+              "id": "samsung_galaxy_s10_lite_desbloqueo",
+              "name": "🔓 Desbloqueo (Cuenta Google / iCloud / PIN)",
+              "price": "NO REALIZAMOS",
+              "note": "NO REALIZAMOS ESTE SERVICIO"
+            },
+            {
+              "id": "samsung_galaxy_s10_lite_liberacion",
+              "name": "📶 Liberación de Compañía / Banda",
+              "price": "NO REALIZAMOS",
+              "note": "NO REALIZAMOS ESTE SERVICIO"
+            }
+          ]
+        },
+        {
+          "name": "Samsung Galaxy S20",
+          "repairs": [
+            {
+              "id": "samsung_galaxy_s20_pantalla",
+              "name": "📱 Pantalla / Módulo",
+              "price": "Consultar",
+              "note": "Seleccioná la calidad deseada o consultá presupuesto"
+            },
+            {
+              "id": "samsung_galaxy_s20_bateria",
+              "name": "🔋 Batería",
+              "price": "Consultar",
+              "note": "Condición al 100% de salud"
+            },
+            {
+              "id": "samsung_galaxy_s20_pin",
+              "name": "🔌 Pin de carga",
+              "price": "Consultar",
+              "note": "Reparación o cambio de conector de carga"
+            },
+            {
+              "id": "samsung_galaxy_s20_selfie",
+              "name": "📸 Cámara Selfie (Frontal)",
+              "price": "Consultar",
+              "note": "Módulo de cámara frontal"
+            },
+            {
+              "id": "samsung_galaxy_s20_trasera",
+              "name": "📷 Cámara Principal (Trasera)",
+              "price": "Consultar",
+              "note": "Módulo de cámara trasera original"
+            },
+            {
+              "id": "samsung_galaxy_s20_tapa",
+              "name": "📱 Tapa Trasera / Cristal",
+              "price": "Consultar",
+              "note": "Cambio de tapa o cristal trasero"
+            },
+            {
+              "id": "samsung_galaxy_s20_desbloqueo",
+              "name": "🔓 Desbloqueo (Cuenta Google / iCloud / PIN)",
+              "price": "NO REALIZAMOS",
+              "note": "NO REALIZAMOS ESTE SERVICIO"
+            },
+            {
+              "id": "samsung_galaxy_s20_liberacion",
+              "name": "📶 Liberación de Compañía / Banda",
+              "price": "NO REALIZAMOS",
+              "note": "NO REALIZAMOS ESTE SERVICIO"
+            }
+          ]
+        },
+        {
+          "name": "Samsung Galaxy S20+",
+          "repairs": [
+            {
+              "id": "samsung_galaxy_s20_pantalla",
+              "name": "📱 Pantalla / Módulo",
+              "price": "Consultar",
+              "note": "Seleccioná la calidad deseada o consultá presupuesto"
+            },
+            {
+              "id": "samsung_galaxy_s20_bateria",
+              "name": "🔋 Batería",
+              "price": "Consultar",
+              "note": "Condición al 100% de salud"
+            },
+            {
+              "id": "samsung_galaxy_s20_pin",
+              "name": "🔌 Pin de carga",
+              "price": "Consultar",
+              "note": "Reparación o cambio de conector de carga"
+            },
+            {
+              "id": "samsung_galaxy_s20_selfie",
+              "name": "📸 Cámara Selfie (Frontal)",
+              "price": "Consultar",
+              "note": "Módulo de cámara frontal"
+            },
+            {
+              "id": "samsung_galaxy_s20_trasera",
+              "name": "📷 Cámara Principal (Trasera)",
+              "price": "Consultar",
+              "note": "Módulo de cámara trasera original"
+            },
+            {
+              "id": "samsung_galaxy_s20_tapa",
+              "name": "📱 Tapa Trasera / Cristal",
+              "price": "Consultar",
+              "note": "Cambio de tapa o cristal trasero"
+            },
+            {
+              "id": "samsung_galaxy_s20_desbloqueo",
+              "name": "🔓 Desbloqueo (Cuenta Google / iCloud / PIN)",
+              "price": "NO REALIZAMOS",
+              "note": "NO REALIZAMOS ESTE SERVICIO"
+            },
+            {
+              "id": "samsung_galaxy_s20_liberacion",
+              "name": "📶 Liberación de Compañía / Banda",
+              "price": "NO REALIZAMOS",
+              "note": "NO REALIZAMOS ESTE SERVICIO"
+            }
+          ]
+        },
+        {
+          "name": "Samsung Galaxy S20 Ultra",
+          "repairs": [
+            {
+              "id": "samsung_galaxy_s20_ultra_pantalla",
+              "name": "📱 Pantalla / Módulo",
+              "price": "Consultar",
+              "note": "Seleccioná la calidad deseada o consultá presupuesto"
+            },
+            {
+              "id": "samsung_galaxy_s20_ultra_bateria",
+              "name": "🔋 Batería",
+              "price": "Consultar",
+              "note": "Condición al 100% de salud"
+            },
+            {
+              "id": "samsung_galaxy_s20_ultra_pin",
+              "name": "🔌 Pin de carga",
+              "price": "Consultar",
+              "note": "Reparación o cambio de conector de carga"
+            },
+            {
+              "id": "samsung_galaxy_s20_ultra_selfie",
+              "name": "📸 Cámara Selfie (Frontal)",
+              "price": "Consultar",
+              "note": "Módulo de cámara frontal"
+            },
+            {
+              "id": "samsung_galaxy_s20_ultra_trasera",
+              "name": "📷 Cámara Principal (Trasera)",
+              "price": "Consultar",
+              "note": "Módulo de cámara trasera original"
+            },
+            {
+              "id": "samsung_galaxy_s20_ultra_tapa",
+              "name": "📱 Tapa Trasera / Cristal",
+              "price": "Consultar",
+              "note": "Cambio de tapa o cristal trasero"
+            },
+            {
+              "id": "samsung_galaxy_s20_ultra_desbloqueo",
+              "name": "🔓 Desbloqueo (Cuenta Google / iCloud / PIN)",
+              "price": "NO REALIZAMOS",
+              "note": "NO REALIZAMOS ESTE SERVICIO"
+            },
+            {
+              "id": "samsung_galaxy_s20_ultra_liberacion",
+              "name": "📶 Liberación de Compañía / Banda",
+              "price": "NO REALIZAMOS",
+              "note": "NO REALIZAMOS ESTE SERVICIO"
+            }
+          ]
+        },
+        {
+          "name": "Samsung Galaxy S20 FE",
+          "repairs": [
+            {
+              "id": "samsung_galaxy_s20_fe_pantalla",
+              "name": "📱 Pantalla / Módulo",
+              "price": "Consultar",
+              "note": "Seleccioná la calidad deseada o consultá presupuesto"
+            },
+            {
+              "id": "samsung_galaxy_s20_fe_bateria",
+              "name": "🔋 Batería",
+              "price": "Consultar",
+              "note": "Condición al 100% de salud"
+            },
+            {
+              "id": "samsung_galaxy_s20_fe_pin",
+              "name": "🔌 Pin de carga",
+              "price": "Consultar",
+              "note": "Reparación o cambio de conector de carga"
+            },
+            {
+              "id": "samsung_galaxy_s20_fe_selfie",
+              "name": "📸 Cámara Selfie (Frontal)",
+              "price": "Consultar",
+              "note": "Módulo de cámara frontal"
+            },
+            {
+              "id": "samsung_galaxy_s20_fe_trasera",
+              "name": "📷 Cámara Principal (Trasera)",
+              "price": "Consultar",
+              "note": "Módulo de cámara trasera original"
+            },
+            {
+              "id": "samsung_galaxy_s20_fe_tapa",
+              "name": "📱 Tapa Trasera / Cristal",
+              "price": "Consultar",
+              "note": "Cambio de tapa o cristal trasero"
+            },
+            {
+              "id": "samsung_galaxy_s20_fe_desbloqueo",
+              "name": "🔓 Desbloqueo (Cuenta Google / iCloud / PIN)",
+              "price": "NO REALIZAMOS",
+              "note": "NO REALIZAMOS ESTE SERVICIO"
+            },
+            {
+              "id": "samsung_galaxy_s20_fe_liberacion",
+              "name": "📶 Liberación de Compañía / Banda",
+              "price": "NO REALIZAMOS",
+              "note": "NO REALIZAMOS ESTE SERVICIO"
+            }
+          ]
+        },
+        {
+          "name": "Samsung Galaxy S20 FE 5G",
+          "repairs": [
+            {
+              "id": "samsung_galaxy_s20_fe_5g_pantalla",
+              "name": "📱 Pantalla / Módulo",
+              "price": "Consultar",
+              "note": "Seleccioná la calidad deseada o consultá presupuesto"
+            },
+            {
+              "id": "samsung_galaxy_s20_fe_5g_bateria",
+              "name": "🔋 Batería",
+              "price": "Consultar",
+              "note": "Condición al 100% de salud"
+            },
+            {
+              "id": "samsung_galaxy_s20_fe_5g_pin",
+              "name": "🔌 Pin de carga",
+              "price": "Consultar",
+              "note": "Reparación o cambio de conector de carga"
+            },
+            {
+              "id": "samsung_galaxy_s20_fe_5g_selfie",
+              "name": "📸 Cámara Selfie (Frontal)",
+              "price": "Consultar",
+              "note": "Módulo de cámara frontal"
+            },
+            {
+              "id": "samsung_galaxy_s20_fe_5g_trasera",
+              "name": "📷 Cámara Principal (Trasera)",
+              "price": "Consultar",
+              "note": "Módulo de cámara trasera original"
+            },
+            {
+              "id": "samsung_galaxy_s20_fe_5g_tapa",
+              "name": "📱 Tapa Trasera / Cristal",
+              "price": "Consultar",
+              "note": "Cambio de tapa o cristal trasero"
+            },
+            {
+              "id": "samsung_galaxy_s20_fe_5g_desbloqueo",
+              "name": "🔓 Desbloqueo (Cuenta Google / iCloud / PIN)",
+              "price": "NO REALIZAMOS",
+              "note": "NO REALIZAMOS ESTE SERVICIO"
+            },
+            {
+              "id": "samsung_galaxy_s20_fe_5g_liberacion",
+              "name": "📶 Liberación de Compañía / Banda",
+              "price": "NO REALIZAMOS",
+              "note": "NO REALIZAMOS ESTE SERVICIO"
+            }
+          ]
+        },
+        {
+          "name": "Samsung Galaxy S21",
+          "repairs": [
+            {
+              "id": "samsung_galaxy_s21_pantalla",
+              "name": "📱 Pantalla / Módulo",
+              "price": "Consultar",
+              "note": "Seleccioná la calidad deseada o consultá presupuesto"
+            },
+            {
+              "id": "samsung_galaxy_s21_bateria",
+              "name": "🔋 Batería",
+              "price": "Consultar",
+              "note": "Condición al 100% de salud"
+            },
+            {
+              "id": "samsung_galaxy_s21_pin",
+              "name": "🔌 Pin de carga",
+              "price": "Consultar",
+              "note": "Reparación o cambio de conector de carga"
+            },
+            {
+              "id": "samsung_galaxy_s21_selfie",
+              "name": "📸 Cámara Selfie (Frontal)",
+              "price": "Consultar",
+              "note": "Módulo de cámara frontal"
+            },
+            {
+              "id": "samsung_galaxy_s21_trasera",
+              "name": "📷 Cámara Principal (Trasera)",
+              "price": "Consultar",
+              "note": "Módulo de cámara trasera original"
+            },
+            {
+              "id": "samsung_galaxy_s21_tapa",
+              "name": "📱 Tapa Trasera / Cristal",
+              "price": "Consultar",
+              "note": "Cambio de tapa o cristal trasero"
+            },
+            {
+              "id": "samsung_galaxy_s21_desbloqueo",
+              "name": "🔓 Desbloqueo (Cuenta Google / iCloud / PIN)",
+              "price": "NO REALIZAMOS",
+              "note": "NO REALIZAMOS ESTE SERVICIO"
+            },
+            {
+              "id": "samsung_galaxy_s21_liberacion",
+              "name": "📶 Liberación de Compañía / Banda",
+              "price": "NO REALIZAMOS",
+              "note": "NO REALIZAMOS ESTE SERVICIO"
+            }
+          ]
+        },
+        {
+          "name": "Samsung Galaxy S21+",
+          "repairs": [
+            {
+              "id": "samsung_galaxy_s21_pantalla",
+              "name": "📱 Pantalla / Módulo",
+              "price": "Consultar",
+              "note": "Seleccioná la calidad deseada o consultá presupuesto"
+            },
+            {
+              "id": "samsung_galaxy_s21_bateria",
+              "name": "🔋 Batería",
+              "price": "Consultar",
+              "note": "Condición al 100% de salud"
+            },
+            {
+              "id": "samsung_galaxy_s21_pin",
+              "name": "🔌 Pin de carga",
+              "price": "Consultar",
+              "note": "Reparación o cambio de conector de carga"
+            },
+            {
+              "id": "samsung_galaxy_s21_selfie",
+              "name": "📸 Cámara Selfie (Frontal)",
+              "price": "Consultar",
+              "note": "Módulo de cámara frontal"
+            },
+            {
+              "id": "samsung_galaxy_s21_trasera",
+              "name": "📷 Cámara Principal (Trasera)",
+              "price": "Consultar",
+              "note": "Módulo de cámara trasera original"
+            },
+            {
+              "id": "samsung_galaxy_s21_tapa",
+              "name": "📱 Tapa Trasera / Cristal",
+              "price": "Consultar",
+              "note": "Cambio de tapa o cristal trasero"
+            },
+            {
+              "id": "samsung_galaxy_s21_desbloqueo",
+              "name": "🔓 Desbloqueo (Cuenta Google / iCloud / PIN)",
+              "price": "NO REALIZAMOS",
+              "note": "NO REALIZAMOS ESTE SERVICIO"
+            },
+            {
+              "id": "samsung_galaxy_s21_liberacion",
+              "name": "📶 Liberación de Compañía / Banda",
+              "price": "NO REALIZAMOS",
+              "note": "NO REALIZAMOS ESTE SERVICIO"
+            }
+          ]
+        },
+        {
+          "name": "Samsung Galaxy S21 Ultra",
+          "repairs": [
+            {
+              "id": "samsung_galaxy_s21_ultra_pantalla",
+              "name": "📱 Pantalla / Módulo",
+              "price": "Consultar",
+              "note": "Seleccioná la calidad deseada o consultá presupuesto"
+            },
+            {
+              "id": "samsung_galaxy_s21_ultra_bateria",
+              "name": "🔋 Batería",
+              "price": "Consultar",
+              "note": "Condición al 100% de salud"
+            },
+            {
+              "id": "samsung_galaxy_s21_ultra_pin",
+              "name": "🔌 Pin de carga",
+              "price": "Consultar",
+              "note": "Reparación o cambio de conector de carga"
+            },
+            {
+              "id": "samsung_galaxy_s21_ultra_selfie",
+              "name": "📸 Cámara Selfie (Frontal)",
+              "price": "Consultar",
+              "note": "Módulo de cámara frontal"
+            },
+            {
+              "id": "samsung_galaxy_s21_ultra_trasera",
+              "name": "📷 Cámara Principal (Trasera)",
+              "price": "Consultar",
+              "note": "Módulo de cámara trasera original"
+            },
+            {
+              "id": "samsung_galaxy_s21_ultra_tapa",
+              "name": "📱 Tapa Trasera / Cristal",
+              "price": "Consultar",
+              "note": "Cambio de tapa o cristal trasero"
+            },
+            {
+              "id": "samsung_galaxy_s21_ultra_desbloqueo",
+              "name": "🔓 Desbloqueo (Cuenta Google / iCloud / PIN)",
+              "price": "NO REALIZAMOS",
+              "note": "NO REALIZAMOS ESTE SERVICIO"
+            },
+            {
+              "id": "samsung_galaxy_s21_ultra_liberacion",
+              "name": "📶 Liberación de Compañía / Banda",
+              "price": "NO REALIZAMOS",
+              "note": "NO REALIZAMOS ESTE SERVICIO"
+            }
+          ]
+        },
+        {
+          "name": "Samsung Galaxy S21 FE 5G",
+          "repairs": [
+            {
+              "id": "samsung_galaxy_s21_fe_5g_pantalla",
+              "name": "📱 Pantalla / Módulo",
+              "price": "Consultar",
+              "note": "Seleccioná la calidad deseada o consultá presupuesto"
+            },
+            {
+              "id": "samsung_galaxy_s21_fe_5g_bateria",
+              "name": "🔋 Batería",
+              "price": "Consultar",
+              "note": "Condición al 100% de salud"
+            },
+            {
+              "id": "samsung_galaxy_s21_fe_5g_pin",
+              "name": "🔌 Pin de carga",
+              "price": "Consultar",
+              "note": "Reparación o cambio de conector de carga"
+            },
+            {
+              "id": "samsung_galaxy_s21_fe_5g_selfie",
+              "name": "📸 Cámara Selfie (Frontal)",
+              "price": "Consultar",
+              "note": "Módulo de cámara frontal"
+            },
+            {
+              "id": "samsung_galaxy_s21_fe_5g_trasera",
+              "name": "📷 Cámara Principal (Trasera)",
+              "price": "Consultar",
+              "note": "Módulo de cámara trasera original"
+            },
+            {
+              "id": "samsung_galaxy_s21_fe_5g_tapa",
+              "name": "📱 Tapa Trasera / Cristal",
+              "price": "Consultar",
+              "note": "Cambio de tapa o cristal trasero"
+            },
+            {
+              "id": "samsung_galaxy_s21_fe_5g_desbloqueo",
+              "name": "🔓 Desbloqueo (Cuenta Google / iCloud / PIN)",
+              "price": "NO REALIZAMOS",
+              "note": "NO REALIZAMOS ESTE SERVICIO"
+            },
+            {
+              "id": "samsung_galaxy_s21_fe_5g_liberacion",
+              "name": "📶 Liberación de Compañía / Banda",
+              "price": "NO REALIZAMOS",
+              "note": "NO REALIZAMOS ESTE SERVICIO"
+            }
+          ]
+        },
+        {
+          "name": "Samsung Galaxy S22",
+          "repairs": [
+            {
+              "id": "samsung_galaxy_s22_pantalla",
+              "name": "📱 Pantalla / Módulo",
+              "price": "Consultar",
+              "note": "Seleccioná la calidad deseada o consultá presupuesto"
+            },
+            {
+              "id": "samsung_galaxy_s22_bateria",
+              "name": "🔋 Batería",
+              "price": "Consultar",
+              "note": "Condición al 100% de salud"
+            },
+            {
+              "id": "samsung_galaxy_s22_pin",
+              "name": "🔌 Pin de carga",
+              "price": "Consultar",
+              "note": "Reparación o cambio de conector de carga"
+            },
+            {
+              "id": "samsung_galaxy_s22_selfie",
+              "name": "📸 Cámara Selfie (Frontal)",
+              "price": "Consultar",
+              "note": "Módulo de cámara frontal"
+            },
+            {
+              "id": "samsung_galaxy_s22_trasera",
+              "name": "📷 Cámara Principal (Trasera)",
+              "price": "Consultar",
+              "note": "Módulo de cámara trasera original"
+            },
+            {
+              "id": "samsung_galaxy_s22_tapa",
+              "name": "📱 Tapa Trasera / Cristal",
+              "price": "Consultar",
+              "note": "Cambio de tapa o cristal trasero"
+            },
+            {
+              "id": "samsung_galaxy_s22_desbloqueo",
+              "name": "🔓 Desbloqueo (Cuenta Google / iCloud / PIN)",
+              "price": "NO REALIZAMOS",
+              "note": "NO REALIZAMOS ESTE SERVICIO"
+            },
+            {
+              "id": "samsung_galaxy_s22_liberacion",
+              "name": "📶 Liberación de Compañía / Banda",
+              "price": "NO REALIZAMOS",
+              "note": "NO REALIZAMOS ESTE SERVICIO"
+            }
+          ]
+        },
+        {
+          "name": "Samsung Galaxy S22+",
+          "repairs": [
+            {
+              "id": "samsung_galaxy_s22_pantalla",
+              "name": "📱 Pantalla / Módulo",
+              "price": "Consultar",
+              "note": "Seleccioná la calidad deseada o consultá presupuesto"
+            },
+            {
+              "id": "samsung_galaxy_s22_bateria",
+              "name": "🔋 Batería",
+              "price": "Consultar",
+              "note": "Condición al 100% de salud"
+            },
+            {
+              "id": "samsung_galaxy_s22_pin",
+              "name": "🔌 Pin de carga",
+              "price": "Consultar",
+              "note": "Reparación o cambio de conector de carga"
+            },
+            {
+              "id": "samsung_galaxy_s22_selfie",
+              "name": "📸 Cámara Selfie (Frontal)",
+              "price": "Consultar",
+              "note": "Módulo de cámara frontal"
+            },
+            {
+              "id": "samsung_galaxy_s22_trasera",
+              "name": "📷 Cámara Principal (Trasera)",
+              "price": "Consultar",
+              "note": "Módulo de cámara trasera original"
+            },
+            {
+              "id": "samsung_galaxy_s22_tapa",
+              "name": "📱 Tapa Trasera / Cristal",
+              "price": "Consultar",
+              "note": "Cambio de tapa o cristal trasero"
+            },
+            {
+              "id": "samsung_galaxy_s22_desbloqueo",
+              "name": "🔓 Desbloqueo (Cuenta Google / iCloud / PIN)",
+              "price": "NO REALIZAMOS",
+              "note": "NO REALIZAMOS ESTE SERVICIO"
+            },
+            {
+              "id": "samsung_galaxy_s22_liberacion",
+              "name": "📶 Liberación de Compañía / Banda",
+              "price": "NO REALIZAMOS",
+              "note": "NO REALIZAMOS ESTE SERVICIO"
+            }
+          ]
+        },
+        {
+          "name": "Samsung Galaxy S22 Ultra",
+          "repairs": [
+            {
+              "id": "samsung_galaxy_s22_ultra_pantalla",
+              "name": "📱 Pantalla / Módulo",
+              "price": "Consultar",
+              "note": "Seleccioná la calidad deseada o consultá presupuesto"
+            },
+            {
+              "id": "samsung_galaxy_s22_ultra_bateria",
+              "name": "🔋 Batería",
+              "price": "Consultar",
+              "note": "Condición al 100% de salud"
+            },
+            {
+              "id": "samsung_galaxy_s22_ultra_pin",
+              "name": "🔌 Pin de carga",
+              "price": "Consultar",
+              "note": "Reparación o cambio de conector de carga"
+            },
+            {
+              "id": "samsung_galaxy_s22_ultra_selfie",
+              "name": "📸 Cámara Selfie (Frontal)",
+              "price": "Consultar",
+              "note": "Módulo de cámara frontal"
+            },
+            {
+              "id": "samsung_galaxy_s22_ultra_trasera",
+              "name": "📷 Cámara Principal (Trasera)",
+              "price": "Consultar",
+              "note": "Módulo de cámara trasera original"
+            },
+            {
+              "id": "samsung_galaxy_s22_ultra_tapa",
+              "name": "📱 Tapa Trasera / Cristal",
+              "price": "Consultar",
+              "note": "Cambio de tapa o cristal trasero"
+            },
+            {
+              "id": "samsung_galaxy_s22_ultra_desbloqueo",
+              "name": "🔓 Desbloqueo (Cuenta Google / iCloud / PIN)",
+              "price": "NO REALIZAMOS",
+              "note": "NO REALIZAMOS ESTE SERVICIO"
+            },
+            {
+              "id": "samsung_galaxy_s22_ultra_liberacion",
+              "name": "📶 Liberación de Compañía / Banda",
+              "price": "NO REALIZAMOS",
+              "note": "NO REALIZAMOS ESTE SERVICIO"
+            }
+          ]
+        },
+        {
+          "name": "Samsung Galaxy S23",
+          "repairs": [
+            {
+              "id": "samsung_galaxy_s23_pantalla",
+              "name": "📱 Pantalla / Módulo",
+              "price": "Consultar",
+              "note": "Seleccioná la calidad deseada o consultá presupuesto"
+            },
+            {
+              "id": "samsung_galaxy_s23_bateria",
+              "name": "🔋 Batería",
+              "price": "Consultar",
+              "note": "Condición al 100% de salud"
+            },
+            {
+              "id": "samsung_galaxy_s23_pin",
+              "name": "🔌 Pin de carga",
+              "price": "Consultar",
+              "note": "Reparación o cambio de conector de carga"
+            },
+            {
+              "id": "samsung_galaxy_s23_selfie",
+              "name": "📸 Cámara Selfie (Frontal)",
+              "price": "Consultar",
+              "note": "Módulo de cámara frontal"
+            },
+            {
+              "id": "samsung_galaxy_s23_trasera",
+              "name": "📷 Cámara Principal (Trasera)",
+              "price": "Consultar",
+              "note": "Módulo de cámara trasera original"
+            },
+            {
+              "id": "samsung_galaxy_s23_tapa",
+              "name": "📱 Tapa Trasera / Cristal",
+              "price": "Consultar",
+              "note": "Cambio de tapa o cristal trasero"
+            },
+            {
+              "id": "samsung_galaxy_s23_desbloqueo",
+              "name": "🔓 Desbloqueo (Cuenta Google / iCloud / PIN)",
+              "price": "NO REALIZAMOS",
+              "note": "NO REALIZAMOS ESTE SERVICIO"
+            },
+            {
+              "id": "samsung_galaxy_s23_liberacion",
+              "name": "📶 Liberación de Compañía / Banda",
+              "price": "NO REALIZAMOS",
+              "note": "NO REALIZAMOS ESTE SERVICIO"
+            }
+          ]
+        },
+        {
+          "name": "Samsung Galaxy S23+",
+          "repairs": [
+            {
+              "id": "samsung_galaxy_s23_pantalla",
+              "name": "📱 Pantalla / Módulo",
+              "price": "Consultar",
+              "note": "Seleccioná la calidad deseada o consultá presupuesto"
+            },
+            {
+              "id": "samsung_galaxy_s23_bateria",
+              "name": "🔋 Batería",
+              "price": "Consultar",
+              "note": "Condición al 100% de salud"
+            },
+            {
+              "id": "samsung_galaxy_s23_pin",
+              "name": "🔌 Pin de carga",
+              "price": "Consultar",
+              "note": "Reparación o cambio de conector de carga"
+            },
+            {
+              "id": "samsung_galaxy_s23_selfie",
+              "name": "📸 Cámara Selfie (Frontal)",
+              "price": "Consultar",
+              "note": "Módulo de cámara frontal"
+            },
+            {
+              "id": "samsung_galaxy_s23_trasera",
+              "name": "📷 Cámara Principal (Trasera)",
+              "price": "Consultar",
+              "note": "Módulo de cámara trasera original"
+            },
+            {
+              "id": "samsung_galaxy_s23_tapa",
+              "name": "📱 Tapa Trasera / Cristal",
+              "price": "Consultar",
+              "note": "Cambio de tapa o cristal trasero"
+            },
+            {
+              "id": "samsung_galaxy_s23_desbloqueo",
+              "name": "🔓 Desbloqueo (Cuenta Google / iCloud / PIN)",
+              "price": "NO REALIZAMOS",
+              "note": "NO REALIZAMOS ESTE SERVICIO"
+            },
+            {
+              "id": "samsung_galaxy_s23_liberacion",
+              "name": "📶 Liberación de Compañía / Banda",
+              "price": "NO REALIZAMOS",
+              "note": "NO REALIZAMOS ESTE SERVICIO"
+            }
+          ]
+        },
+        {
+          "name": "Samsung Galaxy S23 Ultra",
+          "repairs": [
+            {
+              "id": "samsung_galaxy_s23_ultra_pantalla",
+              "name": "📱 Pantalla / Módulo",
+              "price": "Consultar",
+              "note": "Seleccioná la calidad deseada o consultá presupuesto"
+            },
+            {
+              "id": "samsung_galaxy_s23_ultra_bateria",
+              "name": "🔋 Batería",
+              "price": "Consultar",
+              "note": "Condición al 100% de salud"
+            },
+            {
+              "id": "samsung_galaxy_s23_ultra_pin",
+              "name": "🔌 Pin de carga",
+              "price": "Consultar",
+              "note": "Reparación o cambio de conector de carga"
+            },
+            {
+              "id": "samsung_galaxy_s23_ultra_selfie",
+              "name": "📸 Cámara Selfie (Frontal)",
+              "price": "Consultar",
+              "note": "Módulo de cámara frontal"
+            },
+            {
+              "id": "samsung_galaxy_s23_ultra_trasera",
+              "name": "📷 Cámara Principal (Trasera)",
+              "price": "Consultar",
+              "note": "Módulo de cámara trasera original"
+            },
+            {
+              "id": "samsung_galaxy_s23_ultra_tapa",
+              "name": "📱 Tapa Trasera / Cristal",
+              "price": "Consultar",
+              "note": "Cambio de tapa o cristal trasero"
+            },
+            {
+              "id": "samsung_galaxy_s23_ultra_desbloqueo",
+              "name": "🔓 Desbloqueo (Cuenta Google / iCloud / PIN)",
+              "price": "NO REALIZAMOS",
+              "note": "NO REALIZAMOS ESTE SERVICIO"
+            },
+            {
+              "id": "samsung_galaxy_s23_ultra_liberacion",
+              "name": "📶 Liberación de Compañía / Banda",
+              "price": "NO REALIZAMOS",
+              "note": "NO REALIZAMOS ESTE SERVICIO"
+            }
+          ]
+        },
+        {
+          "name": "Samsung Galaxy S23 FE",
+          "repairs": [
+            {
+              "id": "samsung_galaxy_s23_fe_pantalla",
+              "name": "📱 Pantalla / Módulo",
+              "price": "Consultar",
+              "note": "Seleccioná la calidad deseada o consultá presupuesto"
+            },
+            {
+              "id": "samsung_galaxy_s23_fe_bateria",
+              "name": "🔋 Batería",
+              "price": "Consultar",
+              "note": "Condición al 100% de salud"
+            },
+            {
+              "id": "samsung_galaxy_s23_fe_pin",
+              "name": "🔌 Pin de carga",
+              "price": "Consultar",
+              "note": "Reparación o cambio de conector de carga"
+            },
+            {
+              "id": "samsung_galaxy_s23_fe_selfie",
+              "name": "📸 Cámara Selfie (Frontal)",
+              "price": "Consultar",
+              "note": "Módulo de cámara frontal"
+            },
+            {
+              "id": "samsung_galaxy_s23_fe_trasera",
+              "name": "📷 Cámara Principal (Trasera)",
+              "price": "Consultar",
+              "note": "Módulo de cámara trasera original"
+            },
+            {
+              "id": "samsung_galaxy_s23_fe_tapa",
+              "name": "📱 Tapa Trasera / Cristal",
+              "price": "Consultar",
+              "note": "Cambio de tapa o cristal trasero"
+            },
+            {
+              "id": "samsung_galaxy_s23_fe_desbloqueo",
+              "name": "🔓 Desbloqueo (Cuenta Google / iCloud / PIN)",
+              "price": "NO REALIZAMOS",
+              "note": "NO REALIZAMOS ESTE SERVICIO"
+            },
+            {
+              "id": "samsung_galaxy_s23_fe_liberacion",
+              "name": "📶 Liberación de Compañía / Banda",
+              "price": "NO REALIZAMOS",
+              "note": "NO REALIZAMOS ESTE SERVICIO"
+            }
+          ]
+        },
+        {
+          "name": "Samsung Galaxy S24",
+          "repairs": [
+            {
+              "id": "samsung_galaxy_s24_pantalla",
+              "name": "📱 Pantalla / Módulo",
+              "price": "Consultar",
+              "note": "Seleccioná la calidad deseada o consultá presupuesto"
+            },
+            {
+              "id": "samsung_galaxy_s24_bateria",
+              "name": "🔋 Batería",
+              "price": "Consultar",
+              "note": "Condición al 100% de salud"
+            },
+            {
+              "id": "samsung_galaxy_s24_pin",
+              "name": "🔌 Pin de carga",
+              "price": "Consultar",
+              "note": "Reparación o cambio de conector de carga"
+            },
+            {
+              "id": "samsung_galaxy_s24_selfie",
+              "name": "📸 Cámara Selfie (Frontal)",
+              "price": "Consultar",
+              "note": "Módulo de cámara frontal"
+            },
+            {
+              "id": "samsung_galaxy_s24_trasera",
+              "name": "📷 Cámara Principal (Trasera)",
+              "price": "Consultar",
+              "note": "Módulo de cámara trasera original"
+            },
+            {
+              "id": "samsung_galaxy_s24_tapa",
+              "name": "📱 Tapa Trasera / Cristal",
+              "price": "Consultar",
+              "note": "Cambio de tapa o cristal trasero"
+            },
+            {
+              "id": "samsung_galaxy_s24_desbloqueo",
+              "name": "🔓 Desbloqueo (Cuenta Google / iCloud / PIN)",
+              "price": "NO REALIZAMOS",
+              "note": "NO REALIZAMOS ESTE SERVICIO"
+            },
+            {
+              "id": "samsung_galaxy_s24_liberacion",
+              "name": "📶 Liberación de Compañía / Banda",
+              "price": "NO REALIZAMOS",
+              "note": "NO REALIZAMOS ESTE SERVICIO"
+            }
+          ]
+        },
+        {
+          "name": "Samsung Galaxy S24+",
+          "repairs": [
+            {
+              "id": "samsung_galaxy_s24_pantalla",
+              "name": "📱 Pantalla / Módulo",
+              "price": "Consultar",
+              "note": "Seleccioná la calidad deseada o consultá presupuesto"
+            },
+            {
+              "id": "samsung_galaxy_s24_bateria",
+              "name": "🔋 Batería",
+              "price": "Consultar",
+              "note": "Condición al 100% de salud"
+            },
+            {
+              "id": "samsung_galaxy_s24_pin",
+              "name": "🔌 Pin de carga",
+              "price": "Consultar",
+              "note": "Reparación o cambio de conector de carga"
+            },
+            {
+              "id": "samsung_galaxy_s24_selfie",
+              "name": "📸 Cámara Selfie (Frontal)",
+              "price": "Consultar",
+              "note": "Módulo de cámara frontal"
+            },
+            {
+              "id": "samsung_galaxy_s24_trasera",
+              "name": "📷 Cámara Principal (Trasera)",
+              "price": "Consultar",
+              "note": "Módulo de cámara trasera original"
+            },
+            {
+              "id": "samsung_galaxy_s24_tapa",
+              "name": "📱 Tapa Trasera / Cristal",
+              "price": "Consultar",
+              "note": "Cambio de tapa o cristal trasero"
+            },
+            {
+              "id": "samsung_galaxy_s24_desbloqueo",
+              "name": "🔓 Desbloqueo (Cuenta Google / iCloud / PIN)",
+              "price": "NO REALIZAMOS",
+              "note": "NO REALIZAMOS ESTE SERVICIO"
+            },
+            {
+              "id": "samsung_galaxy_s24_liberacion",
+              "name": "📶 Liberación de Compañía / Banda",
+              "price": "NO REALIZAMOS",
+              "note": "NO REALIZAMOS ESTE SERVICIO"
+            }
+          ]
+        },
+        {
+          "name": "Samsung Galaxy S24 Ultra",
+          "repairs": [
+            {
+              "id": "samsung_galaxy_s24_ultra_pantalla",
+              "name": "📱 Pantalla / Módulo",
+              "price": "Consultar",
+              "note": "Seleccioná la calidad deseada o consultá presupuesto"
+            },
+            {
+              "id": "samsung_galaxy_s24_ultra_bateria",
+              "name": "🔋 Batería",
+              "price": "Consultar",
+              "note": "Condición al 100% de salud"
+            },
+            {
+              "id": "samsung_galaxy_s24_ultra_pin",
+              "name": "🔌 Pin de carga",
+              "price": "Consultar",
+              "note": "Reparación o cambio de conector de carga"
+            },
+            {
+              "id": "samsung_galaxy_s24_ultra_selfie",
+              "name": "📸 Cámara Selfie (Frontal)",
+              "price": "Consultar",
+              "note": "Módulo de cámara frontal"
+            },
+            {
+              "id": "samsung_galaxy_s24_ultra_trasera",
+              "name": "📷 Cámara Principal (Trasera)",
+              "price": "Consultar",
+              "note": "Módulo de cámara trasera original"
+            },
+            {
+              "id": "samsung_galaxy_s24_ultra_tapa",
+              "name": "📱 Tapa Trasera / Cristal",
+              "price": "Consultar",
+              "note": "Cambio de tapa o cristal trasero"
+            },
+            {
+              "id": "samsung_galaxy_s24_ultra_desbloqueo",
+              "name": "🔓 Desbloqueo (Cuenta Google / iCloud / PIN)",
+              "price": "NO REALIZAMOS",
+              "note": "NO REALIZAMOS ESTE SERVICIO"
+            },
+            {
+              "id": "samsung_galaxy_s24_ultra_liberacion",
+              "name": "📶 Liberación de Compañía / Banda",
+              "price": "NO REALIZAMOS",
+              "note": "NO REALIZAMOS ESTE SERVICIO"
+            }
+          ]
+        },
+        {
+          "name": "Samsung Galaxy S24 FE",
+          "repairs": [
+            {
+              "id": "samsung_galaxy_s24_fe_pantalla",
+              "name": "📱 Pantalla / Módulo",
+              "price": "Consultar",
+              "note": "Seleccioná la calidad deseada o consultá presupuesto"
+            },
+            {
+              "id": "samsung_galaxy_s24_fe_bateria",
+              "name": "🔋 Batería",
+              "price": "Consultar",
+              "note": "Condición al 100% de salud"
+            },
+            {
+              "id": "samsung_galaxy_s24_fe_pin",
+              "name": "🔌 Pin de carga",
+              "price": "Consultar",
+              "note": "Reparación o cambio de conector de carga"
+            },
+            {
+              "id": "samsung_galaxy_s24_fe_selfie",
+              "name": "📸 Cámara Selfie (Frontal)",
+              "price": "Consultar",
+              "note": "Módulo de cámara frontal"
+            },
+            {
+              "id": "samsung_galaxy_s24_fe_trasera",
+              "name": "📷 Cámara Principal (Trasera)",
+              "price": "Consultar",
+              "note": "Módulo de cámara trasera original"
+            },
+            {
+              "id": "samsung_galaxy_s24_fe_tapa",
+              "name": "📱 Tapa Trasera / Cristal",
+              "price": "Consultar",
+              "note": "Cambio de tapa o cristal trasero"
+            },
+            {
+              "id": "samsung_galaxy_s24_fe_desbloqueo",
+              "name": "🔓 Desbloqueo (Cuenta Google / iCloud / PIN)",
+              "price": "NO REALIZAMOS",
+              "note": "NO REALIZAMOS ESTE SERVICIO"
+            },
+            {
+              "id": "samsung_galaxy_s24_fe_liberacion",
+              "name": "📶 Liberación de Compañía / Banda",
+              "price": "NO REALIZAMOS",
+              "note": "NO REALIZAMOS ESTE SERVICIO"
+            }
+          ]
+        },
+        {
+          "name": "Samsung Galaxy S25",
+          "repairs": [
+            {
+              "id": "samsung_galaxy_s25_pantalla",
+              "name": "📱 Pantalla / Módulo",
+              "price": "Consultar",
+              "note": "Seleccioná la calidad deseada o consultá presupuesto"
+            },
+            {
+              "id": "samsung_galaxy_s25_bateria",
+              "name": "🔋 Batería",
+              "price": "Consultar",
+              "note": "Condición al 100% de salud"
+            },
+            {
+              "id": "samsung_galaxy_s25_pin",
+              "name": "🔌 Pin de carga",
+              "price": "Consultar",
+              "note": "Reparación o cambio de conector de carga"
+            },
+            {
+              "id": "samsung_galaxy_s25_selfie",
+              "name": "📸 Cámara Selfie (Frontal)",
+              "price": "Consultar",
+              "note": "Módulo de cámara frontal"
+            },
+            {
+              "id": "samsung_galaxy_s25_trasera",
+              "name": "📷 Cámara Principal (Trasera)",
+              "price": "Consultar",
+              "note": "Módulo de cámara trasera original"
+            },
+            {
+              "id": "samsung_galaxy_s25_tapa",
+              "name": "📱 Tapa Trasera / Cristal",
+              "price": "Consultar",
+              "note": "Cambio de tapa o cristal trasero"
+            },
+            {
+              "id": "samsung_galaxy_s25_desbloqueo",
+              "name": "🔓 Desbloqueo (Cuenta Google / iCloud / PIN)",
+              "price": "NO REALIZAMOS",
+              "note": "NO REALIZAMOS ESTE SERVICIO"
+            },
+            {
+              "id": "samsung_galaxy_s25_liberacion",
+              "name": "📶 Liberación de Compañía / Banda",
+              "price": "NO REALIZAMOS",
+              "note": "NO REALIZAMOS ESTE SERVICIO"
+            }
+          ]
+        },
+        {
+          "name": "Samsung Galaxy S25+",
+          "repairs": [
+            {
+              "id": "samsung_galaxy_s25_pantalla",
+              "name": "📱 Pantalla / Módulo",
+              "price": "Consultar",
+              "note": "Seleccioná la calidad deseada o consultá presupuesto"
+            },
+            {
+              "id": "samsung_galaxy_s25_bateria",
+              "name": "🔋 Batería",
+              "price": "Consultar",
+              "note": "Condición al 100% de salud"
+            },
+            {
+              "id": "samsung_galaxy_s25_pin",
+              "name": "🔌 Pin de carga",
+              "price": "Consultar",
+              "note": "Reparación o cambio de conector de carga"
+            },
+            {
+              "id": "samsung_galaxy_s25_selfie",
+              "name": "📸 Cámara Selfie (Frontal)",
+              "price": "Consultar",
+              "note": "Módulo de cámara frontal"
+            },
+            {
+              "id": "samsung_galaxy_s25_trasera",
+              "name": "📷 Cámara Principal (Trasera)",
+              "price": "Consultar",
+              "note": "Módulo de cámara trasera original"
+            },
+            {
+              "id": "samsung_galaxy_s25_tapa",
+              "name": "📱 Tapa Trasera / Cristal",
+              "price": "Consultar",
+              "note": "Cambio de tapa o cristal trasero"
+            },
+            {
+              "id": "samsung_galaxy_s25_desbloqueo",
+              "name": "🔓 Desbloqueo (Cuenta Google / iCloud / PIN)",
+              "price": "NO REALIZAMOS",
+              "note": "NO REALIZAMOS ESTE SERVICIO"
+            },
+            {
+              "id": "samsung_galaxy_s25_liberacion",
+              "name": "📶 Liberación de Compañía / Banda",
+              "price": "NO REALIZAMOS",
+              "note": "NO REALIZAMOS ESTE SERVICIO"
+            }
+          ]
+        },
+        {
+          "name": "Samsung Galaxy S25 Ultra",
+          "repairs": [
+            {
+              "id": "samsung_galaxy_s25_ultra_pantalla",
+              "name": "📱 Pantalla / Módulo",
+              "price": "Consultar",
+              "note": "Seleccioná la calidad deseada o consultá presupuesto"
+            },
+            {
+              "id": "samsung_galaxy_s25_ultra_bateria",
+              "name": "🔋 Batería",
+              "price": "Consultar",
+              "note": "Condición al 100% de salud"
+            },
+            {
+              "id": "samsung_galaxy_s25_ultra_pin",
+              "name": "🔌 Pin de carga",
+              "price": "Consultar",
+              "note": "Reparación o cambio de conector de carga"
+            },
+            {
+              "id": "samsung_galaxy_s25_ultra_selfie",
+              "name": "📸 Cámara Selfie (Frontal)",
+              "price": "Consultar",
+              "note": "Módulo de cámara frontal"
+            },
+            {
+              "id": "samsung_galaxy_s25_ultra_trasera",
+              "name": "📷 Cámara Principal (Trasera)",
+              "price": "Consultar",
+              "note": "Módulo de cámara trasera original"
+            },
+            {
+              "id": "samsung_galaxy_s25_ultra_tapa",
+              "name": "📱 Tapa Trasera / Cristal",
+              "price": "Consultar",
+              "note": "Cambio de tapa o cristal trasero"
+            },
+            {
+              "id": "samsung_galaxy_s25_ultra_desbloqueo",
+              "name": "🔓 Desbloqueo (Cuenta Google / iCloud / PIN)",
+              "price": "NO REALIZAMOS",
+              "note": "NO REALIZAMOS ESTE SERVICIO"
+            },
+            {
+              "id": "samsung_galaxy_s25_ultra_liberacion",
+              "name": "📶 Liberación de Compañía / Banda",
+              "price": "NO REALIZAMOS",
+              "note": "NO REALIZAMOS ESTE SERVICIO"
+            }
+          ]
+        },
+        {
+          "name": "Samsung Galaxy S25 Edge",
+          "repairs": [
+            {
+              "id": "samsung_galaxy_s25_edge_pantalla",
+              "name": "📱 Pantalla / Módulo",
+              "price": "Consultar",
+              "note": "Seleccioná la calidad deseada o consultá presupuesto"
+            },
+            {
+              "id": "samsung_galaxy_s25_edge_bateria",
+              "name": "🔋 Batería",
+              "price": "Consultar",
+              "note": "Condición al 100% de salud"
+            },
+            {
+              "id": "samsung_galaxy_s25_edge_pin",
+              "name": "🔌 Pin de carga",
+              "price": "Consultar",
+              "note": "Reparación o cambio de conector de carga"
+            },
+            {
+              "id": "samsung_galaxy_s25_edge_selfie",
+              "name": "📸 Cámara Selfie (Frontal)",
+              "price": "Consultar",
+              "note": "Módulo de cámara frontal"
+            },
+            {
+              "id": "samsung_galaxy_s25_edge_trasera",
+              "name": "📷 Cámara Principal (Trasera)",
+              "price": "Consultar",
+              "note": "Módulo de cámara trasera original"
+            },
+            {
+              "id": "samsung_galaxy_s25_edge_tapa",
+              "name": "📱 Tapa Trasera / Cristal",
+              "price": "Consultar",
+              "note": "Cambio de tapa o cristal trasero"
+            },
+            {
+              "id": "samsung_galaxy_s25_edge_desbloqueo",
+              "name": "🔓 Desbloqueo (Cuenta Google / iCloud / PIN)",
+              "price": "NO REALIZAMOS",
+              "note": "NO REALIZAMOS ESTE SERVICIO"
+            },
+            {
+              "id": "samsung_galaxy_s25_edge_liberacion",
+              "name": "📶 Liberación de Compañía / Banda",
+              "price": "NO REALIZAMOS",
+              "note": "NO REALIZAMOS ESTE SERVICIO"
+            }
+          ]
+        },
+        {
+          "name": "Samsung Galaxy S25 FE",
+          "repairs": [
+            {
+              "id": "samsung_galaxy_s25_fe_pantalla",
+              "name": "📱 Pantalla / Módulo",
+              "price": "Consultar",
+              "note": "Seleccioná la calidad deseada o consultá presupuesto"
+            },
+            {
+              "id": "samsung_galaxy_s25_fe_bateria",
+              "name": "🔋 Batería",
+              "price": "Consultar",
+              "note": "Condición al 100% de salud"
+            },
+            {
+              "id": "samsung_galaxy_s25_fe_pin",
+              "name": "🔌 Pin de carga",
+              "price": "Consultar",
+              "note": "Reparación o cambio de conector de carga"
+            },
+            {
+              "id": "samsung_galaxy_s25_fe_selfie",
+              "name": "📸 Cámara Selfie (Frontal)",
+              "price": "Consultar",
+              "note": "Módulo de cámara frontal"
+            },
+            {
+              "id": "samsung_galaxy_s25_fe_trasera",
+              "name": "📷 Cámara Principal (Trasera)",
+              "price": "Consultar",
+              "note": "Módulo de cámara trasera original"
+            },
+            {
+              "id": "samsung_galaxy_s25_fe_tapa",
+              "name": "📱 Tapa Trasera / Cristal",
+              "price": "Consultar",
+              "note": "Cambio de tapa o cristal trasero"
+            },
+            {
+              "id": "samsung_galaxy_s25_fe_desbloqueo",
+              "name": "🔓 Desbloqueo (Cuenta Google / iCloud / PIN)",
+              "price": "NO REALIZAMOS",
+              "note": "NO REALIZAMOS ESTE SERVICIO"
+            },
+            {
+              "id": "samsung_galaxy_s25_fe_liberacion",
+              "name": "📶 Liberación de Compañía / Banda",
+              "price": "NO REALIZAMOS",
+              "note": "NO REALIZAMOS ESTE SERVICIO"
+            }
+          ]
+        },
+        {
+          "name": "Samsung Galaxy S26",
+          "repairs": [
+            {
+              "id": "samsung_galaxy_s26_pantalla",
+              "name": "📱 Pantalla / Módulo",
+              "price": "Consultar",
+              "note": "Seleccioná la calidad deseada o consultá presupuesto"
+            },
+            {
+              "id": "samsung_galaxy_s26_bateria",
+              "name": "🔋 Batería",
+              "price": "Consultar",
+              "note": "Condición al 100% de salud"
+            },
+            {
+              "id": "samsung_galaxy_s26_pin",
+              "name": "🔌 Pin de carga",
+              "price": "Consultar",
+              "note": "Reparación o cambio de conector de carga"
+            },
+            {
+              "id": "samsung_galaxy_s26_selfie",
+              "name": "📸 Cámara Selfie (Frontal)",
+              "price": "Consultar",
+              "note": "Módulo de cámara frontal"
+            },
+            {
+              "id": "samsung_galaxy_s26_trasera",
+              "name": "📷 Cámara Principal (Trasera)",
+              "price": "Consultar",
+              "note": "Módulo de cámara trasera original"
+            },
+            {
+              "id": "samsung_galaxy_s26_tapa",
+              "name": "📱 Tapa Trasera / Cristal",
+              "price": "Consultar",
+              "note": "Cambio de tapa o cristal trasero"
+            },
+            {
+              "id": "samsung_galaxy_s26_desbloqueo",
+              "name": "🔓 Desbloqueo (Cuenta Google / iCloud / PIN)",
+              "price": "NO REALIZAMOS",
+              "note": "NO REALIZAMOS ESTE SERVICIO"
+            },
+            {
+              "id": "samsung_galaxy_s26_liberacion",
+              "name": "📶 Liberación de Compañía / Banda",
+              "price": "NO REALIZAMOS",
+              "note": "NO REALIZAMOS ESTE SERVICIO"
+            }
+          ]
+        },
+        {
+          "name": "Samsung Galaxy S26+",
+          "repairs": [
+            {
+              "id": "samsung_galaxy_s26_pantalla",
+              "name": "📱 Pantalla / Módulo",
+              "price": "Consultar",
+              "note": "Seleccioná la calidad deseada o consultá presupuesto"
+            },
+            {
+              "id": "samsung_galaxy_s26_bateria",
+              "name": "🔋 Batería",
+              "price": "Consultar",
+              "note": "Condición al 100% de salud"
+            },
+            {
+              "id": "samsung_galaxy_s26_pin",
+              "name": "🔌 Pin de carga",
+              "price": "Consultar",
+              "note": "Reparación o cambio de conector de carga"
+            },
+            {
+              "id": "samsung_galaxy_s26_selfie",
+              "name": "📸 Cámara Selfie (Frontal)",
+              "price": "Consultar",
+              "note": "Módulo de cámara frontal"
+            },
+            {
+              "id": "samsung_galaxy_s26_trasera",
+              "name": "📷 Cámara Principal (Trasera)",
+              "price": "Consultar",
+              "note": "Módulo de cámara trasera original"
+            },
+            {
+              "id": "samsung_galaxy_s26_tapa",
+              "name": "📱 Tapa Trasera / Cristal",
+              "price": "Consultar",
+              "note": "Cambio de tapa o cristal trasero"
+            },
+            {
+              "id": "samsung_galaxy_s26_desbloqueo",
+              "name": "🔓 Desbloqueo (Cuenta Google / iCloud / PIN)",
+              "price": "NO REALIZAMOS",
+              "note": "NO REALIZAMOS ESTE SERVICIO"
+            },
+            {
+              "id": "samsung_galaxy_s26_liberacion",
+              "name": "📶 Liberación de Compañía / Banda",
+              "price": "NO REALIZAMOS",
+              "note": "NO REALIZAMOS ESTE SERVICIO"
+            }
+          ]
+        },
+        {
+          "name": "Samsung Galaxy S26 Ultra",
+          "repairs": [
+            {
+              "id": "samsung_galaxy_s26_ultra_pantalla",
+              "name": "📱 Pantalla / Módulo",
+              "price": "Consultar",
+              "note": "Seleccioná la calidad deseada o consultá presupuesto"
+            },
+            {
+              "id": "samsung_galaxy_s26_ultra_bateria",
+              "name": "🔋 Batería",
+              "price": "Consultar",
+              "note": "Condición al 100% de salud"
+            },
+            {
+              "id": "samsung_galaxy_s26_ultra_pin",
+              "name": "🔌 Pin de carga",
+              "price": "Consultar",
+              "note": "Reparación o cambio de conector de carga"
+            },
+            {
+              "id": "samsung_galaxy_s26_ultra_selfie",
+              "name": "📸 Cámara Selfie (Frontal)",
+              "price": "Consultar",
+              "note": "Módulo de cámara frontal"
+            },
+            {
+              "id": "samsung_galaxy_s26_ultra_trasera",
+              "name": "📷 Cámara Principal (Trasera)",
+              "price": "Consultar",
+              "note": "Módulo de cámara trasera original"
+            },
+            {
+              "id": "samsung_galaxy_s26_ultra_tapa",
+              "name": "📱 Tapa Trasera / Cristal",
+              "price": "Consultar",
+              "note": "Cambio de tapa o cristal trasero"
+            },
+            {
+              "id": "samsung_galaxy_s26_ultra_desbloqueo",
+              "name": "🔓 Desbloqueo (Cuenta Google / iCloud / PIN)",
+              "price": "NO REALIZAMOS",
+              "note": "NO REALIZAMOS ESTE SERVICIO"
+            },
+            {
+              "id": "samsung_galaxy_s26_ultra_liberacion",
+              "name": "📶 Liberación de Compañía / Banda",
+              "price": "NO REALIZAMOS",
+              "note": "NO REALIZAMOS ESTE SERVICIO"
+            }
+          ]
+        },
+        {
+          "name": "Samsung Galaxy S26 FE",
+          "repairs": [
+            {
+              "id": "samsung_galaxy_s26_fe_pantalla",
+              "name": "📱 Pantalla / Módulo",
+              "price": "Consultar",
+              "note": "Seleccioná la calidad deseada o consultá presupuesto"
+            },
+            {
+              "id": "samsung_galaxy_s26_fe_bateria",
+              "name": "🔋 Batería",
+              "price": "Consultar",
+              "note": "Condición al 100% de salud"
+            },
+            {
+              "id": "samsung_galaxy_s26_fe_pin",
+              "name": "🔌 Pin de carga",
+              "price": "Consultar",
+              "note": "Reparación o cambio de conector de carga"
+            },
+            {
+              "id": "samsung_galaxy_s26_fe_selfie",
+              "name": "📸 Cámara Selfie (Frontal)",
+              "price": "Consultar",
+              "note": "Módulo de cámara frontal"
+            },
+            {
+              "id": "samsung_galaxy_s26_fe_trasera",
+              "name": "📷 Cámara Principal (Trasera)",
+              "price": "Consultar",
+              "note": "Módulo de cámara trasera original"
+            },
+            {
+              "id": "samsung_galaxy_s26_fe_tapa",
+              "name": "📱 Tapa Trasera / Cristal",
+              "price": "Consultar",
+              "note": "Cambio de tapa o cristal trasero"
+            },
+            {
+              "id": "samsung_galaxy_s26_fe_desbloqueo",
+              "name": "🔓 Desbloqueo (Cuenta Google / iCloud / PIN)",
+              "price": "NO REALIZAMOS",
+              "note": "NO REALIZAMOS ESTE SERVICIO"
+            },
+            {
+              "id": "samsung_galaxy_s26_fe_liberacion",
+              "name": "📶 Liberación de Compañía / Banda",
+              "price": "NO REALIZAMOS",
+              "note": "NO REALIZAMOS ESTE SERVICIO"
+            }
+          ]
+        },
+        {
+          "name": "Samsung Galaxy Z Flip",
+          "repairs": [
+            {
+              "id": "samsung_galaxy_z_flip_pantalla",
+              "name": "📱 Pantalla / Módulo",
+              "price": "Consultar",
+              "note": "Seleccioná la calidad deseada o consultá presupuesto"
+            },
+            {
+              "id": "samsung_galaxy_z_flip_bateria",
+              "name": "🔋 Batería",
+              "price": "Consultar",
+              "note": "Condición al 100% de salud"
+            },
+            {
+              "id": "samsung_galaxy_z_flip_pin",
+              "name": "🔌 Pin de carga",
+              "price": "Consultar",
+              "note": "Reparación o cambio de conector de carga"
+            },
+            {
+              "id": "samsung_galaxy_z_flip_selfie",
+              "name": "📸 Cámara Selfie (Frontal)",
+              "price": "Consultar",
+              "note": "Módulo de cámara frontal"
+            },
+            {
+              "id": "samsung_galaxy_z_flip_trasera",
+              "name": "📷 Cámara Principal (Trasera)",
+              "price": "Consultar",
+              "note": "Módulo de cámara trasera original"
+            },
+            {
+              "id": "samsung_galaxy_z_flip_tapa",
+              "name": "📱 Tapa Trasera / Cristal",
+              "price": "Consultar",
+              "note": "Cambio de tapa o cristal trasero"
+            },
+            {
+              "id": "samsung_galaxy_z_flip_desbloqueo",
+              "name": "🔓 Desbloqueo (Cuenta Google / iCloud / PIN)",
+              "price": "NO REALIZAMOS",
+              "note": "NO REALIZAMOS ESTE SERVICIO"
+            },
+            {
+              "id": "samsung_galaxy_z_flip_liberacion",
+              "name": "📶 Liberación de Compañía / Banda",
+              "price": "NO REALIZAMOS",
+              "note": "NO REALIZAMOS ESTE SERVICIO"
+            }
+          ]
+        },
+        {
+          "name": "Samsung Galaxy Z Flip 5G",
+          "repairs": [
+            {
+              "id": "samsung_galaxy_z_flip_5g_pantalla",
+              "name": "📱 Pantalla / Módulo",
+              "price": "Consultar",
+              "note": "Seleccioná la calidad deseada o consultá presupuesto"
+            },
+            {
+              "id": "samsung_galaxy_z_flip_5g_bateria",
+              "name": "🔋 Batería",
+              "price": "Consultar",
+              "note": "Condición al 100% de salud"
+            },
+            {
+              "id": "samsung_galaxy_z_flip_5g_pin",
+              "name": "🔌 Pin de carga",
+              "price": "Consultar",
+              "note": "Reparación o cambio de conector de carga"
+            },
+            {
+              "id": "samsung_galaxy_z_flip_5g_selfie",
+              "name": "📸 Cámara Selfie (Frontal)",
+              "price": "Consultar",
+              "note": "Módulo de cámara frontal"
+            },
+            {
+              "id": "samsung_galaxy_z_flip_5g_trasera",
+              "name": "📷 Cámara Principal (Trasera)",
+              "price": "Consultar",
+              "note": "Módulo de cámara trasera original"
+            },
+            {
+              "id": "samsung_galaxy_z_flip_5g_tapa",
+              "name": "📱 Tapa Trasera / Cristal",
+              "price": "Consultar",
+              "note": "Cambio de tapa o cristal trasero"
+            },
+            {
+              "id": "samsung_galaxy_z_flip_5g_desbloqueo",
+              "name": "🔓 Desbloqueo (Cuenta Google / iCloud / PIN)",
+              "price": "NO REALIZAMOS",
+              "note": "NO REALIZAMOS ESTE SERVICIO"
+            },
+            {
+              "id": "samsung_galaxy_z_flip_5g_liberacion",
+              "name": "📶 Liberación de Compañía / Banda",
+              "price": "NO REALIZAMOS",
+              "note": "NO REALIZAMOS ESTE SERVICIO"
+            }
+          ]
+        },
+        {
+          "name": "Samsung Galaxy Z Flip3 5G",
+          "repairs": [
+            {
+              "id": "samsung_galaxy_z_flip3_5g_pantalla",
+              "name": "📱 Pantalla / Módulo",
+              "price": "Consultar",
+              "note": "Seleccioná la calidad deseada o consultá presupuesto"
+            },
+            {
+              "id": "samsung_galaxy_z_flip3_5g_bateria",
+              "name": "🔋 Batería",
+              "price": "Consultar",
+              "note": "Condición al 100% de salud"
+            },
+            {
+              "id": "samsung_galaxy_z_flip3_5g_pin",
+              "name": "🔌 Pin de carga",
+              "price": "Consultar",
+              "note": "Reparación o cambio de conector de carga"
+            },
+            {
+              "id": "samsung_galaxy_z_flip3_5g_selfie",
+              "name": "📸 Cámara Selfie (Frontal)",
+              "price": "Consultar",
+              "note": "Módulo de cámara frontal"
+            },
+            {
+              "id": "samsung_galaxy_z_flip3_5g_trasera",
+              "name": "📷 Cámara Principal (Trasera)",
+              "price": "Consultar",
+              "note": "Módulo de cámara trasera original"
+            },
+            {
+              "id": "samsung_galaxy_z_flip3_5g_tapa",
+              "name": "📱 Tapa Trasera / Cristal",
+              "price": "Consultar",
+              "note": "Cambio de tapa o cristal trasero"
+            },
+            {
+              "id": "samsung_galaxy_z_flip3_5g_desbloqueo",
+              "name": "🔓 Desbloqueo (Cuenta Google / iCloud / PIN)",
+              "price": "NO REALIZAMOS",
+              "note": "NO REALIZAMOS ESTE SERVICIO"
+            },
+            {
+              "id": "samsung_galaxy_z_flip3_5g_liberacion",
+              "name": "📶 Liberación de Compañía / Banda",
+              "price": "NO REALIZAMOS",
+              "note": "NO REALIZAMOS ESTE SERVICIO"
+            }
+          ]
+        },
+        {
+          "name": "Samsung Galaxy Z Flip4",
+          "repairs": [
+            {
+              "id": "samsung_galaxy_z_flip4_pantalla",
+              "name": "📱 Pantalla / Módulo",
+              "price": "Consultar",
+              "note": "Seleccioná la calidad deseada o consultá presupuesto"
+            },
+            {
+              "id": "samsung_galaxy_z_flip4_bateria",
+              "name": "🔋 Batería",
+              "price": "Consultar",
+              "note": "Condición al 100% de salud"
+            },
+            {
+              "id": "samsung_galaxy_z_flip4_pin",
+              "name": "🔌 Pin de carga",
+              "price": "Consultar",
+              "note": "Reparación o cambio de conector de carga"
+            },
+            {
+              "id": "samsung_galaxy_z_flip4_selfie",
+              "name": "📸 Cámara Selfie (Frontal)",
+              "price": "Consultar",
+              "note": "Módulo de cámara frontal"
+            },
+            {
+              "id": "samsung_galaxy_z_flip4_trasera",
+              "name": "📷 Cámara Principal (Trasera)",
+              "price": "Consultar",
+              "note": "Módulo de cámara trasera original"
+            },
+            {
+              "id": "samsung_galaxy_z_flip4_tapa",
+              "name": "📱 Tapa Trasera / Cristal",
+              "price": "Consultar",
+              "note": "Cambio de tapa o cristal trasero"
+            },
+            {
+              "id": "samsung_galaxy_z_flip4_desbloqueo",
+              "name": "🔓 Desbloqueo (Cuenta Google / iCloud / PIN)",
+              "price": "NO REALIZAMOS",
+              "note": "NO REALIZAMOS ESTE SERVICIO"
+            },
+            {
+              "id": "samsung_galaxy_z_flip4_liberacion",
+              "name": "📶 Liberación de Compañía / Banda",
+              "price": "NO REALIZAMOS",
+              "note": "NO REALIZAMOS ESTE SERVICIO"
+            }
+          ]
+        },
+        {
+          "name": "Samsung Galaxy Z Flip4 5G",
+          "repairs": [
+            {
+              "id": "samsung_galaxy_z_flip4_5g_pantalla",
+              "name": "📱 Pantalla / Módulo",
+              "price": "Consultar",
+              "note": "Seleccioná la calidad deseada o consultá presupuesto"
+            },
+            {
+              "id": "samsung_galaxy_z_flip4_5g_bateria",
+              "name": "🔋 Batería",
+              "price": "Consultar",
+              "note": "Condición al 100% de salud"
+            },
+            {
+              "id": "samsung_galaxy_z_flip4_5g_pin",
+              "name": "🔌 Pin de carga",
+              "price": "Consultar",
+              "note": "Reparación o cambio de conector de carga"
+            },
+            {
+              "id": "samsung_galaxy_z_flip4_5g_selfie",
+              "name": "📸 Cámara Selfie (Frontal)",
+              "price": "Consultar",
+              "note": "Módulo de cámara frontal"
+            },
+            {
+              "id": "samsung_galaxy_z_flip4_5g_trasera",
+              "name": "📷 Cámara Principal (Trasera)",
+              "price": "Consultar",
+              "note": "Módulo de cámara trasera original"
+            },
+            {
+              "id": "samsung_galaxy_z_flip4_5g_tapa",
+              "name": "📱 Tapa Trasera / Cristal",
+              "price": "Consultar",
+              "note": "Cambio de tapa o cristal trasero"
+            },
+            {
+              "id": "samsung_galaxy_z_flip4_5g_desbloqueo",
+              "name": "🔓 Desbloqueo (Cuenta Google / iCloud / PIN)",
+              "price": "NO REALIZAMOS",
+              "note": "NO REALIZAMOS ESTE SERVICIO"
+            },
+            {
+              "id": "samsung_galaxy_z_flip4_5g_liberacion",
+              "name": "📶 Liberación de Compañía / Banda",
+              "price": "NO REALIZAMOS",
+              "note": "NO REALIZAMOS ESTE SERVICIO"
+            }
+          ]
+        },
+        {
+          "name": "Samsung Galaxy Z Flip5",
+          "repairs": [
+            {
+              "id": "samsung_galaxy_z_flip5_pantalla",
+              "name": "📱 Pantalla / Módulo",
+              "price": "Consultar",
+              "note": "Seleccioná la calidad deseada o consultá presupuesto"
+            },
+            {
+              "id": "samsung_galaxy_z_flip5_bateria",
+              "name": "🔋 Batería",
+              "price": "Consultar",
+              "note": "Condición al 100% de salud"
+            },
+            {
+              "id": "samsung_galaxy_z_flip5_pin",
+              "name": "🔌 Pin de carga",
+              "price": "Consultar",
+              "note": "Reparación o cambio de conector de carga"
+            },
+            {
+              "id": "samsung_galaxy_z_flip5_selfie",
+              "name": "📸 Cámara Selfie (Frontal)",
+              "price": "Consultar",
+              "note": "Módulo de cámara frontal"
+            },
+            {
+              "id": "samsung_galaxy_z_flip5_trasera",
+              "name": "📷 Cámara Principal (Trasera)",
+              "price": "Consultar",
+              "note": "Módulo de cámara trasera original"
+            },
+            {
+              "id": "samsung_galaxy_z_flip5_tapa",
+              "name": "📱 Tapa Trasera / Cristal",
+              "price": "Consultar",
+              "note": "Cambio de tapa o cristal trasero"
+            },
+            {
+              "id": "samsung_galaxy_z_flip5_desbloqueo",
+              "name": "🔓 Desbloqueo (Cuenta Google / iCloud / PIN)",
+              "price": "NO REALIZAMOS",
+              "note": "NO REALIZAMOS ESTE SERVICIO"
+            },
+            {
+              "id": "samsung_galaxy_z_flip5_liberacion",
+              "name": "📶 Liberación de Compañía / Banda",
+              "price": "NO REALIZAMOS",
+              "note": "NO REALIZAMOS ESTE SERVICIO"
+            }
+          ]
+        },
+        {
+          "name": "Samsung Galaxy Z Flip6",
+          "repairs": [
+            {
+              "id": "samsung_galaxy_z_flip6_pantalla",
+              "name": "📱 Pantalla / Módulo",
+              "price": "Consultar",
+              "note": "Seleccioná la calidad deseada o consultá presupuesto"
+            },
+            {
+              "id": "samsung_galaxy_z_flip6_bateria",
+              "name": "🔋 Batería",
+              "price": "Consultar",
+              "note": "Condición al 100% de salud"
+            },
+            {
+              "id": "samsung_galaxy_z_flip6_pin",
+              "name": "🔌 Pin de carga",
+              "price": "Consultar",
+              "note": "Reparación o cambio de conector de carga"
+            },
+            {
+              "id": "samsung_galaxy_z_flip6_selfie",
+              "name": "📸 Cámara Selfie (Frontal)",
+              "price": "Consultar",
+              "note": "Módulo de cámara frontal"
+            },
+            {
+              "id": "samsung_galaxy_z_flip6_trasera",
+              "name": "📷 Cámara Principal (Trasera)",
+              "price": "Consultar",
+              "note": "Módulo de cámara trasera original"
+            },
+            {
+              "id": "samsung_galaxy_z_flip6_tapa",
+              "name": "📱 Tapa Trasera / Cristal",
+              "price": "Consultar",
+              "note": "Cambio de tapa o cristal trasero"
+            },
+            {
+              "id": "samsung_galaxy_z_flip6_desbloqueo",
+              "name": "🔓 Desbloqueo (Cuenta Google / iCloud / PIN)",
+              "price": "NO REALIZAMOS",
+              "note": "NO REALIZAMOS ESTE SERVICIO"
+            },
+            {
+              "id": "samsung_galaxy_z_flip6_liberacion",
+              "name": "📶 Liberación de Compañía / Banda",
+              "price": "NO REALIZAMOS",
+              "note": "NO REALIZAMOS ESTE SERVICIO"
+            }
+          ]
+        },
+        {
+          "name": "Samsung Galaxy Z Flip7",
+          "repairs": [
+            {
+              "id": "samsung_galaxy_z_flip7_pantalla",
+              "name": "📱 Pantalla / Módulo",
+              "price": "Consultar",
+              "note": "Seleccioná la calidad deseada o consultá presupuesto"
+            },
+            {
+              "id": "samsung_galaxy_z_flip7_bateria",
+              "name": "🔋 Batería",
+              "price": "Consultar",
+              "note": "Condición al 100% de salud"
+            },
+            {
+              "id": "samsung_galaxy_z_flip7_pin",
+              "name": "🔌 Pin de carga",
+              "price": "Consultar",
+              "note": "Reparación o cambio de conector de carga"
+            },
+            {
+              "id": "samsung_galaxy_z_flip7_selfie",
+              "name": "📸 Cámara Selfie (Frontal)",
+              "price": "Consultar",
+              "note": "Módulo de cámara frontal"
+            },
+            {
+              "id": "samsung_galaxy_z_flip7_trasera",
+              "name": "📷 Cámara Principal (Trasera)",
+              "price": "Consultar",
+              "note": "Módulo de cámara trasera original"
+            },
+            {
+              "id": "samsung_galaxy_z_flip7_tapa",
+              "name": "📱 Tapa Trasera / Cristal",
+              "price": "Consultar",
+              "note": "Cambio de tapa o cristal trasero"
+            },
+            {
+              "id": "samsung_galaxy_z_flip7_desbloqueo",
+              "name": "🔓 Desbloqueo (Cuenta Google / iCloud / PIN)",
+              "price": "NO REALIZAMOS",
+              "note": "NO REALIZAMOS ESTE SERVICIO"
+            },
+            {
+              "id": "samsung_galaxy_z_flip7_liberacion",
+              "name": "📶 Liberación de Compañía / Banda",
+              "price": "NO REALIZAMOS",
+              "note": "NO REALIZAMOS ESTE SERVICIO"
+            }
+          ]
+        },
+        {
+          "name": "Samsung Galaxy Z Flip7 FE",
+          "repairs": [
+            {
+              "id": "samsung_galaxy_z_flip7_fe_pantalla",
+              "name": "📱 Pantalla / Módulo",
+              "price": "Consultar",
+              "note": "Seleccioná la calidad deseada o consultá presupuesto"
+            },
+            {
+              "id": "samsung_galaxy_z_flip7_fe_bateria",
+              "name": "🔋 Batería",
+              "price": "Consultar",
+              "note": "Condición al 100% de salud"
+            },
+            {
+              "id": "samsung_galaxy_z_flip7_fe_pin",
+              "name": "🔌 Pin de carga",
+              "price": "Consultar",
+              "note": "Reparación o cambio de conector de carga"
+            },
+            {
+              "id": "samsung_galaxy_z_flip7_fe_selfie",
+              "name": "📸 Cámara Selfie (Frontal)",
+              "price": "Consultar",
+              "note": "Módulo de cámara frontal"
+            },
+            {
+              "id": "samsung_galaxy_z_flip7_fe_trasera",
+              "name": "📷 Cámara Principal (Trasera)",
+              "price": "Consultar",
+              "note": "Módulo de cámara trasera original"
+            },
+            {
+              "id": "samsung_galaxy_z_flip7_fe_tapa",
+              "name": "📱 Tapa Trasera / Cristal",
+              "price": "Consultar",
+              "note": "Cambio de tapa o cristal trasero"
+            },
+            {
+              "id": "samsung_galaxy_z_flip7_fe_desbloqueo",
+              "name": "🔓 Desbloqueo (Cuenta Google / iCloud / PIN)",
+              "price": "NO REALIZAMOS",
+              "note": "NO REALIZAMOS ESTE SERVICIO"
+            },
+            {
+              "id": "samsung_galaxy_z_flip7_fe_liberacion",
+              "name": "📶 Liberación de Compañía / Banda",
+              "price": "NO REALIZAMOS",
+              "note": "NO REALIZAMOS ESTE SERVICIO"
+            }
+          ]
+        },
+        {
+          "name": "Samsung Galaxy Z Flip8",
+          "repairs": [
+            {
+              "id": "samsung_galaxy_z_flip8_pantalla",
+              "name": "📱 Pantalla / Módulo",
+              "price": "Consultar",
+              "note": "Seleccioná la calidad deseada o consultá presupuesto"
+            },
+            {
+              "id": "samsung_galaxy_z_flip8_bateria",
+              "name": "🔋 Batería",
+              "price": "Consultar",
+              "note": "Condición al 100% de salud"
+            },
+            {
+              "id": "samsung_galaxy_z_flip8_pin",
+              "name": "🔌 Pin de carga",
+              "price": "Consultar",
+              "note": "Reparación o cambio de conector de carga"
+            },
+            {
+              "id": "samsung_galaxy_z_flip8_selfie",
+              "name": "📸 Cámara Selfie (Frontal)",
+              "price": "Consultar",
+              "note": "Módulo de cámara frontal"
+            },
+            {
+              "id": "samsung_galaxy_z_flip8_trasera",
+              "name": "📷 Cámara Principal (Trasera)",
+              "price": "Consultar",
+              "note": "Módulo de cámara trasera original"
+            },
+            {
+              "id": "samsung_galaxy_z_flip8_tapa",
+              "name": "📱 Tapa Trasera / Cristal",
+              "price": "Consultar",
+              "note": "Cambio de tapa o cristal trasero"
+            },
+            {
+              "id": "samsung_galaxy_z_flip8_desbloqueo",
+              "name": "🔓 Desbloqueo (Cuenta Google / iCloud / PIN)",
+              "price": "NO REALIZAMOS",
+              "note": "NO REALIZAMOS ESTE SERVICIO"
+            },
+            {
+              "id": "samsung_galaxy_z_flip8_liberacion",
+              "name": "📶 Liberación de Compañía / Banda",
+              "price": "NO REALIZAMOS",
+              "note": "NO REALIZAMOS ESTE SERVICIO"
+            }
+          ]
+        },
+        {
+          "name": "Samsung Galaxy Fold",
+          "repairs": [
+            {
+              "id": "samsung_galaxy_fold_pantalla",
+              "name": "📱 Pantalla / Módulo",
+              "price": "Consultar",
+              "note": "Seleccioná la calidad deseada o consultá presupuesto"
+            },
+            {
+              "id": "samsung_galaxy_fold_bateria",
+              "name": "🔋 Batería",
+              "price": "Consultar",
+              "note": "Condición al 100% de salud"
+            },
+            {
+              "id": "samsung_galaxy_fold_pin",
+              "name": "🔌 Pin de carga",
+              "price": "Consultar",
+              "note": "Reparación o cambio de conector de carga"
+            },
+            {
+              "id": "samsung_galaxy_fold_selfie",
+              "name": "📸 Cámara Selfie (Frontal)",
+              "price": "Consultar",
+              "note": "Módulo de cámara frontal"
+            },
+            {
+              "id": "samsung_galaxy_fold_trasera",
+              "name": "📷 Cámara Principal (Trasera)",
+              "price": "Consultar",
+              "note": "Módulo de cámara trasera original"
+            },
+            {
+              "id": "samsung_galaxy_fold_tapa",
+              "name": "📱 Tapa Trasera / Cristal",
+              "price": "Consultar",
+              "note": "Cambio de tapa o cristal trasero"
+            },
+            {
+              "id": "samsung_galaxy_fold_desbloqueo",
+              "name": "🔓 Desbloqueo (Cuenta Google / iCloud / PIN)",
+              "price": "NO REALIZAMOS",
+              "note": "NO REALIZAMOS ESTE SERVICIO"
+            },
+            {
+              "id": "samsung_galaxy_fold_liberacion",
+              "name": "📶 Liberación de Compañía / Banda",
+              "price": "NO REALIZAMOS",
+              "note": "NO REALIZAMOS ESTE SERVICIO"
+            }
+          ]
+        },
+        {
+          "name": "Samsung Galaxy Fold 5G",
+          "repairs": [
+            {
+              "id": "samsung_galaxy_fold_5g_pantalla",
+              "name": "📱 Pantalla / Módulo",
+              "price": "Consultar",
+              "note": "Seleccioná la calidad deseada o consultá presupuesto"
+            },
+            {
+              "id": "samsung_galaxy_fold_5g_bateria",
+              "name": "🔋 Batería",
+              "price": "Consultar",
+              "note": "Condición al 100% de salud"
+            },
+            {
+              "id": "samsung_galaxy_fold_5g_pin",
+              "name": "🔌 Pin de carga",
+              "price": "Consultar",
+              "note": "Reparación o cambio de conector de carga"
+            },
+            {
+              "id": "samsung_galaxy_fold_5g_selfie",
+              "name": "📸 Cámara Selfie (Frontal)",
+              "price": "Consultar",
+              "note": "Módulo de cámara frontal"
+            },
+            {
+              "id": "samsung_galaxy_fold_5g_trasera",
+              "name": "📷 Cámara Principal (Trasera)",
+              "price": "Consultar",
+              "note": "Módulo de cámara trasera original"
+            },
+            {
+              "id": "samsung_galaxy_fold_5g_tapa",
+              "name": "📱 Tapa Trasera / Cristal",
+              "price": "Consultar",
+              "note": "Cambio de tapa o cristal trasero"
+            },
+            {
+              "id": "samsung_galaxy_fold_5g_desbloqueo",
+              "name": "🔓 Desbloqueo (Cuenta Google / iCloud / PIN)",
+              "price": "NO REALIZAMOS",
+              "note": "NO REALIZAMOS ESTE SERVICIO"
+            },
+            {
+              "id": "samsung_galaxy_fold_5g_liberacion",
+              "name": "📶 Liberación de Compañía / Banda",
+              "price": "NO REALIZAMOS",
+              "note": "NO REALIZAMOS ESTE SERVICIO"
+            }
+          ]
+        },
+        {
+          "name": "Samsung Galaxy Z Fold2 5G",
+          "repairs": [
+            {
+              "id": "samsung_galaxy_z_fold2_5g_pantalla",
+              "name": "📱 Pantalla / Módulo",
+              "price": "Consultar",
+              "note": "Seleccioná la calidad deseada o consultá presupuesto"
+            },
+            {
+              "id": "samsung_galaxy_z_fold2_5g_bateria",
+              "name": "🔋 Batería",
+              "price": "Consultar",
+              "note": "Condición al 100% de salud"
+            },
+            {
+              "id": "samsung_galaxy_z_fold2_5g_pin",
+              "name": "🔌 Pin de carga",
+              "price": "Consultar",
+              "note": "Reparación o cambio de conector de carga"
+            },
+            {
+              "id": "samsung_galaxy_z_fold2_5g_selfie",
+              "name": "📸 Cámara Selfie (Frontal)",
+              "price": "Consultar",
+              "note": "Módulo de cámara frontal"
+            },
+            {
+              "id": "samsung_galaxy_z_fold2_5g_trasera",
+              "name": "📷 Cámara Principal (Trasera)",
+              "price": "Consultar",
+              "note": "Módulo de cámara trasera original"
+            },
+            {
+              "id": "samsung_galaxy_z_fold2_5g_tapa",
+              "name": "📱 Tapa Trasera / Cristal",
+              "price": "Consultar",
+              "note": "Cambio de tapa o cristal trasero"
+            },
+            {
+              "id": "samsung_galaxy_z_fold2_5g_desbloqueo",
+              "name": "🔓 Desbloqueo (Cuenta Google / iCloud / PIN)",
+              "price": "NO REALIZAMOS",
+              "note": "NO REALIZAMOS ESTE SERVICIO"
+            },
+            {
+              "id": "samsung_galaxy_z_fold2_5g_liberacion",
+              "name": "📶 Liberación de Compañía / Banda",
+              "price": "NO REALIZAMOS",
+              "note": "NO REALIZAMOS ESTE SERVICIO"
+            }
+          ]
+        },
+        {
+          "name": "Samsung Galaxy Z Fold3 5G",
+          "repairs": [
+            {
+              "id": "samsung_galaxy_z_fold3_5g_pantalla",
+              "name": "📱 Pantalla / Módulo",
+              "price": "Consultar",
+              "note": "Seleccioná la calidad deseada o consultá presupuesto"
+            },
+            {
+              "id": "samsung_galaxy_z_fold3_5g_bateria",
+              "name": "🔋 Batería",
+              "price": "Consultar",
+              "note": "Condición al 100% de salud"
+            },
+            {
+              "id": "samsung_galaxy_z_fold3_5g_pin",
+              "name": "🔌 Pin de carga",
+              "price": "Consultar",
+              "note": "Reparación o cambio de conector de carga"
+            },
+            {
+              "id": "samsung_galaxy_z_fold3_5g_selfie",
+              "name": "📸 Cámara Selfie (Frontal)",
+              "price": "Consultar",
+              "note": "Módulo de cámara frontal"
+            },
+            {
+              "id": "samsung_galaxy_z_fold3_5g_trasera",
+              "name": "📷 Cámara Principal (Trasera)",
+              "price": "Consultar",
+              "note": "Módulo de cámara trasera original"
+            },
+            {
+              "id": "samsung_galaxy_z_fold3_5g_tapa",
+              "name": "📱 Tapa Trasera / Cristal",
+              "price": "Consultar",
+              "note": "Cambio de tapa o cristal trasero"
+            },
+            {
+              "id": "samsung_galaxy_z_fold3_5g_desbloqueo",
+              "name": "🔓 Desbloqueo (Cuenta Google / iCloud / PIN)",
+              "price": "NO REALIZAMOS",
+              "note": "NO REALIZAMOS ESTE SERVICIO"
+            },
+            {
+              "id": "samsung_galaxy_z_fold3_5g_liberacion",
+              "name": "📶 Liberación de Compañía / Banda",
+              "price": "NO REALIZAMOS",
+              "note": "NO REALIZAMOS ESTE SERVICIO"
+            }
+          ]
+        },
+        {
+          "name": "Samsung Galaxy Z Fold4",
+          "repairs": [
+            {
+              "id": "samsung_galaxy_z_fold4_pantalla",
+              "name": "📱 Pantalla / Módulo",
+              "price": "Consultar",
+              "note": "Seleccioná la calidad deseada o consultá presupuesto"
+            },
+            {
+              "id": "samsung_galaxy_z_fold4_bateria",
+              "name": "🔋 Batería",
+              "price": "Consultar",
+              "note": "Condición al 100% de salud"
+            },
+            {
+              "id": "samsung_galaxy_z_fold4_pin",
+              "name": "🔌 Pin de carga",
+              "price": "Consultar",
+              "note": "Reparación o cambio de conector de carga"
+            },
+            {
+              "id": "samsung_galaxy_z_fold4_selfie",
+              "name": "📸 Cámara Selfie (Frontal)",
+              "price": "Consultar",
+              "note": "Módulo de cámara frontal"
+            },
+            {
+              "id": "samsung_galaxy_z_fold4_trasera",
+              "name": "📷 Cámara Principal (Trasera)",
+              "price": "Consultar",
+              "note": "Módulo de cámara trasera original"
+            },
+            {
+              "id": "samsung_galaxy_z_fold4_tapa",
+              "name": "📱 Tapa Trasera / Cristal",
+              "price": "Consultar",
+              "note": "Cambio de tapa o cristal trasero"
+            },
+            {
+              "id": "samsung_galaxy_z_fold4_desbloqueo",
+              "name": "🔓 Desbloqueo (Cuenta Google / iCloud / PIN)",
+              "price": "NO REALIZAMOS",
+              "note": "NO REALIZAMOS ESTE SERVICIO"
+            },
+            {
+              "id": "samsung_galaxy_z_fold4_liberacion",
+              "name": "📶 Liberación de Compañía / Banda",
+              "price": "NO REALIZAMOS",
+              "note": "NO REALIZAMOS ESTE SERVICIO"
+            }
+          ]
+        },
+        {
+          "name": "Samsung Galaxy Z Fold5",
+          "repairs": [
+            {
+              "id": "samsung_galaxy_z_fold5_pantalla",
+              "name": "📱 Pantalla / Módulo",
+              "price": "Consultar",
+              "note": "Seleccioná la calidad deseada o consultá presupuesto"
+            },
+            {
+              "id": "samsung_galaxy_z_fold5_bateria",
+              "name": "🔋 Batería",
+              "price": "Consultar",
+              "note": "Condición al 100% de salud"
+            },
+            {
+              "id": "samsung_galaxy_z_fold5_pin",
+              "name": "🔌 Pin de carga",
+              "price": "Consultar",
+              "note": "Reparación o cambio de conector de carga"
+            },
+            {
+              "id": "samsung_galaxy_z_fold5_selfie",
+              "name": "📸 Cámara Selfie (Frontal)",
+              "price": "Consultar",
+              "note": "Módulo de cámara frontal"
+            },
+            {
+              "id": "samsung_galaxy_z_fold5_trasera",
+              "name": "📷 Cámara Principal (Trasera)",
+              "price": "Consultar",
+              "note": "Módulo de cámara trasera original"
+            },
+            {
+              "id": "samsung_galaxy_z_fold5_tapa",
+              "name": "📱 Tapa Trasera / Cristal",
+              "price": "Consultar",
+              "note": "Cambio de tapa o cristal trasero"
+            },
+            {
+              "id": "samsung_galaxy_z_fold5_desbloqueo",
+              "name": "🔓 Desbloqueo (Cuenta Google / iCloud / PIN)",
+              "price": "NO REALIZAMOS",
+              "note": "NO REALIZAMOS ESTE SERVICIO"
+            },
+            {
+              "id": "samsung_galaxy_z_fold5_liberacion",
+              "name": "📶 Liberación de Compañía / Banda",
+              "price": "NO REALIZAMOS",
+              "note": "NO REALIZAMOS ESTE SERVICIO"
+            }
+          ]
+        },
+        {
+          "name": "Samsung Galaxy Z Fold6",
+          "repairs": [
+            {
+              "id": "samsung_galaxy_z_fold6_pantalla",
+              "name": "📱 Pantalla / Módulo",
+              "price": "Consultar",
+              "note": "Seleccioná la calidad deseada o consultá presupuesto"
+            },
+            {
+              "id": "samsung_galaxy_z_fold6_bateria",
+              "name": "🔋 Batería",
+              "price": "Consultar",
+              "note": "Condición al 100% de salud"
+            },
+            {
+              "id": "samsung_galaxy_z_fold6_pin",
+              "name": "🔌 Pin de carga",
+              "price": "Consultar",
+              "note": "Reparación o cambio de conector de carga"
+            },
+            {
+              "id": "samsung_galaxy_z_fold6_selfie",
+              "name": "📸 Cámara Selfie (Frontal)",
+              "price": "Consultar",
+              "note": "Módulo de cámara frontal"
+            },
+            {
+              "id": "samsung_galaxy_z_fold6_trasera",
+              "name": "📷 Cámara Principal (Trasera)",
+              "price": "Consultar",
+              "note": "Módulo de cámara trasera original"
+            },
+            {
+              "id": "samsung_galaxy_z_fold6_tapa",
+              "name": "📱 Tapa Trasera / Cristal",
+              "price": "Consultar",
+              "note": "Cambio de tapa o cristal trasero"
+            },
+            {
+              "id": "samsung_galaxy_z_fold6_desbloqueo",
+              "name": "🔓 Desbloqueo (Cuenta Google / iCloud / PIN)",
+              "price": "NO REALIZAMOS",
+              "note": "NO REALIZAMOS ESTE SERVICIO"
+            },
+            {
+              "id": "samsung_galaxy_z_fold6_liberacion",
+              "name": "📶 Liberación de Compañía / Banda",
+              "price": "NO REALIZAMOS",
+              "note": "NO REALIZAMOS ESTE SERVICIO"
+            }
+          ]
+        },
+        {
+          "name": "Samsung Galaxy Z Fold Special Edition",
+          "repairs": [
+            {
+              "id": "samsung_galaxy_z_fold_special_edition_pantalla",
+              "name": "📱 Pantalla / Módulo",
+              "price": "Consultar",
+              "note": "Seleccioná la calidad deseada o consultá presupuesto"
+            },
+            {
+              "id": "samsung_galaxy_z_fold_special_edition_bateria",
+              "name": "🔋 Batería",
+              "price": "Consultar",
+              "note": "Condición al 100% de salud"
+            },
+            {
+              "id": "samsung_galaxy_z_fold_special_edition_pin",
+              "name": "🔌 Pin de carga",
+              "price": "Consultar",
+              "note": "Reparación o cambio de conector de carga"
+            },
+            {
+              "id": "samsung_galaxy_z_fold_special_edition_selfie",
+              "name": "📸 Cámara Selfie (Frontal)",
+              "price": "Consultar",
+              "note": "Módulo de cámara frontal"
+            },
+            {
+              "id": "samsung_galaxy_z_fold_special_edition_trasera",
+              "name": "📷 Cámara Principal (Trasera)",
+              "price": "Consultar",
+              "note": "Módulo de cámara trasera original"
+            },
+            {
+              "id": "samsung_galaxy_z_fold_special_edition_tapa",
+              "name": "📱 Tapa Trasera / Cristal",
+              "price": "Consultar",
+              "note": "Cambio de tapa o cristal trasero"
+            },
+            {
+              "id": "samsung_galaxy_z_fold_special_edition_desbloqueo",
+              "name": "🔓 Desbloqueo (Cuenta Google / iCloud / PIN)",
+              "price": "NO REALIZAMOS",
+              "note": "NO REALIZAMOS ESTE SERVICIO"
+            },
+            {
+              "id": "samsung_galaxy_z_fold_special_edition_liberacion",
+              "name": "📶 Liberación de Compañía / Banda",
+              "price": "NO REALIZAMOS",
+              "note": "NO REALIZAMOS ESTE SERVICIO"
+            }
+          ]
+        },
+        {
+          "name": "Samsung Galaxy Z Fold7",
+          "repairs": [
+            {
+              "id": "samsung_galaxy_z_fold7_pantalla",
+              "name": "📱 Pantalla / Módulo",
+              "price": "Consultar",
+              "note": "Seleccioná la calidad deseada o consultá presupuesto"
+            },
+            {
+              "id": "samsung_galaxy_z_fold7_bateria",
+              "name": "🔋 Batería",
+              "price": "Consultar",
+              "note": "Condición al 100% de salud"
+            },
+            {
+              "id": "samsung_galaxy_z_fold7_pin",
+              "name": "🔌 Pin de carga",
+              "price": "Consultar",
+              "note": "Reparación o cambio de conector de carga"
+            },
+            {
+              "id": "samsung_galaxy_z_fold7_selfie",
+              "name": "📸 Cámara Selfie (Frontal)",
+              "price": "Consultar",
+              "note": "Módulo de cámara frontal"
+            },
+            {
+              "id": "samsung_galaxy_z_fold7_trasera",
+              "name": "📷 Cámara Principal (Trasera)",
+              "price": "Consultar",
+              "note": "Módulo de cámara trasera original"
+            },
+            {
+              "id": "samsung_galaxy_z_fold7_tapa",
+              "name": "📱 Tapa Trasera / Cristal",
+              "price": "Consultar",
+              "note": "Cambio de tapa o cristal trasero"
+            },
+            {
+              "id": "samsung_galaxy_z_fold7_desbloqueo",
+              "name": "🔓 Desbloqueo (Cuenta Google / iCloud / PIN)",
+              "price": "NO REALIZAMOS",
+              "note": "NO REALIZAMOS ESTE SERVICIO"
+            },
+            {
+              "id": "samsung_galaxy_z_fold7_liberacion",
+              "name": "📶 Liberación de Compañía / Banda",
+              "price": "NO REALIZAMOS",
+              "note": "NO REALIZAMOS ESTE SERVICIO"
+            }
+          ]
+        },
+        {
+          "name": "Samsung Galaxy Z Fold8",
+          "repairs": [
+            {
+              "id": "samsung_galaxy_z_fold8_pantalla",
+              "name": "📱 Pantalla / Módulo",
+              "price": "Consultar",
+              "note": "Seleccioná la calidad deseada o consultá presupuesto"
+            },
+            {
+              "id": "samsung_galaxy_z_fold8_bateria",
+              "name": "🔋 Batería",
+              "price": "Consultar",
+              "note": "Condición al 100% de salud"
+            },
+            {
+              "id": "samsung_galaxy_z_fold8_pin",
+              "name": "🔌 Pin de carga",
+              "price": "Consultar",
+              "note": "Reparación o cambio de conector de carga"
+            },
+            {
+              "id": "samsung_galaxy_z_fold8_selfie",
+              "name": "📸 Cámara Selfie (Frontal)",
+              "price": "Consultar",
+              "note": "Módulo de cámara frontal"
+            },
+            {
+              "id": "samsung_galaxy_z_fold8_trasera",
+              "name": "📷 Cámara Principal (Trasera)",
+              "price": "Consultar",
+              "note": "Módulo de cámara trasera original"
+            },
+            {
+              "id": "samsung_galaxy_z_fold8_tapa",
+              "name": "📱 Tapa Trasera / Cristal",
+              "price": "Consultar",
+              "note": "Cambio de tapa o cristal trasero"
+            },
+            {
+              "id": "samsung_galaxy_z_fold8_desbloqueo",
+              "name": "🔓 Desbloqueo (Cuenta Google / iCloud / PIN)",
+              "price": "NO REALIZAMOS",
+              "note": "NO REALIZAMOS ESTE SERVICIO"
+            },
+            {
+              "id": "samsung_galaxy_z_fold8_liberacion",
+              "name": "📶 Liberación de Compañía / Banda",
+              "price": "NO REALIZAMOS",
+              "note": "NO REALIZAMOS ESTE SERVICIO"
+            }
+          ]
+        },
+        {
+          "name": "Samsung Galaxy Z Fold8 Ultra",
+          "repairs": [
+            {
+              "id": "samsung_galaxy_z_fold8_ultra_pantalla",
+              "name": "📱 Pantalla / Módulo",
+              "price": "Consultar",
+              "note": "Seleccioná la calidad deseada o consultá presupuesto"
+            },
+            {
+              "id": "samsung_galaxy_z_fold8_ultra_bateria",
+              "name": "🔋 Batería",
+              "price": "Consultar",
+              "note": "Condición al 100% de salud"
+            },
+            {
+              "id": "samsung_galaxy_z_fold8_ultra_pin",
+              "name": "🔌 Pin de carga",
+              "price": "Consultar",
+              "note": "Reparación o cambio de conector de carga"
+            },
+            {
+              "id": "samsung_galaxy_z_fold8_ultra_selfie",
+              "name": "📸 Cámara Selfie (Frontal)",
+              "price": "Consultar",
+              "note": "Módulo de cámara frontal"
+            },
+            {
+              "id": "samsung_galaxy_z_fold8_ultra_trasera",
+              "name": "📷 Cámara Principal (Trasera)",
+              "price": "Consultar",
+              "note": "Módulo de cámara trasera original"
+            },
+            {
+              "id": "samsung_galaxy_z_fold8_ultra_tapa",
+              "name": "📱 Tapa Trasera / Cristal",
+              "price": "Consultar",
+              "note": "Cambio de tapa o cristal trasero"
+            },
+            {
+              "id": "samsung_galaxy_z_fold8_ultra_desbloqueo",
+              "name": "🔓 Desbloqueo (Cuenta Google / iCloud / PIN)",
+              "price": "NO REALIZAMOS",
+              "note": "NO REALIZAMOS ESTE SERVICIO"
+            },
+            {
+              "id": "samsung_galaxy_z_fold8_ultra_liberacion",
               "name": "📶 Liberación de Compañía / Banda",
               "price": "NO REALIZAMOS",
               "note": "NO REALIZAMOS ESTE SERVICIO"
@@ -10679,22 +14442,9 @@ var PRECIOS_WIDGET = {
 };
 
 if (typeof window !== "undefined") {
-  const localCotizadorDraft = localStorage.getItem("nissa_cotizador_draft");
-  if (localCotizadorDraft) {
-    try {
-      const parsed = JSON.parse(localCotizadorDraft);
-      // Si el borrador previo contenía modelos agrupados con barra, descartarlo para usar la nueva lista individualizada
-      const hasOldSharedModels = Array.isArray(parsed?.celulares) && parsed.celulares.some(b => 
-        (b.brand === "Samsung" || b.brand === "Motorola") && (b.models || []).some(m => m.name && m.name.includes(" / "))
-      );
-      if (hasOldSharedModels) {
-        localStorage.removeItem("nissa_cotizador_draft");
-      } else if (parsed && typeof parsed === "object" && Array.isArray(parsed.celulares) && parsed.celulares.length > 0 && parsed.celulares.some(b => b.models && b.models.length > 0)) {
-        PRECIOS_WIDGET = parsed;
-      }
-    } catch (e) {
-      console.error("Error al cargar borrador de cotizador:", e);
-    }
-  }
+  // Limpiar cualquier borrador antiguo para forzar la nueva lista oficial completa
+  try {
+    localStorage.removeItem("nissa_cotizador_draft");
+  } catch (e) {}
   window.PRECIOS_WIDGET = PRECIOS_WIDGET;
 }

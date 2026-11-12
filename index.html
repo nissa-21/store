@@ -113,10 +113,31 @@
 
             <div class="re-sub-section" id="wrapper-dropdown-modelo" style="display: none;">
               <div class="re-section-label">Modelo de celular</div>
-              <div class="re-relative">
-                <input type="text" id="widget-model-search" placeholder="Buscá tu modelo (ej: iPhone 13, A54, Moto G54)..." onfocus="showModelDropdown(true)" oninput="filterModels()">
-                <span class="re-search-icon">🔍</span>
-                <button type="button" class="re-dropdown-toggle" onclick="toggleModelDropdown()">▼</button>
+              <div class="re-relative" id="re-model-selector-container">
+                <!-- BARRA DUAL: 7/10 LISTA DESPLEGABLE / 3/10 TECLADO PARA ESCRIBIR -->
+                <div class="re-model-bar-dual" id="re-model-bar-normal">
+                  <button type="button" class="re-model-dropdown-trigger" id="re-model-dropdown-btn" onclick="toggleModelDropdown()" title="Tocar para desplegar la lista de modelos sin abrir el teclado">
+                    <span class="re-trigger-text" id="re-model-trigger-text">
+                      <span>📱</span>
+                      <span id="re-model-trigger-label">Elegir modelo de la lista...</span>
+                    </span>
+                    <span class="re-trigger-arrow" id="re-model-trigger-arrow">▼</span>
+                  </button>
+                  <div class="re-model-bar-divider" aria-hidden="true"></div>
+                  <button type="button" class="re-model-keyboard-btn" id="re-model-keyboard-btn" onclick="activateModelSearchMode()" title="Tocar para escribir el modelo con el teclado">
+                    <span class="re-keyboard-icon">⌨️</span>
+                    <span class="re-keyboard-text">Escribir</span>
+                  </button>
+                </div>
+
+                <!-- MODO BUSCADOR CON TECLADO ACTIVO (CUANDO EL USUARIO TOCA 'ESCRIBIR') -->
+                <div class="re-model-search-active" id="re-model-bar-search" style="display: none;">
+                  <span class="re-search-input-icon">🔍</span>
+                  <input type="text" id="widget-model-search" placeholder="Escribí tu modelo (ej: A54, S23, iPhone 13)..." oninput="filterModels()" autocomplete="off">
+                  <button type="button" class="re-btn-close-search" onclick="deactivateModelSearchMode()" title="Volver a la lista desplegable">✕ Cerrar</button>
+                </div>
+
+                <!-- LISTA DESPLEGABLE DE MODELOS -->
                 <div id="widget-model-dropdown" class="re-dropdown" style="display: none;"></div>
               </div>
             </div>
@@ -353,8 +374,8 @@
         <article class="info-card" id="info-compras">
           <span class="info-icon">🛒</span>
           <div>
-            <h3>Precios por Volumen</h3>
-            <p>Los precios publicados corresponden a las cantidades seleccionadas. Al aumentar las unidades en el carrito, se aplica automáticamente la tarifa mayorista correspondiente.</p>
+            <h3>Precios por Cantidad</h3>
+            <p>Los precios publicados corresponden a la tarifa por unidad y con descuento especial a partir de 3 unidades. Al agregar 3 o más unidades al carrito, se aplica automáticamente el valor con descuento.</p>
           </div>
         </article>
         <article class="info-card" id="info-consultas">
