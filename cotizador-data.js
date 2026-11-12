@@ -1,7 +1,11 @@
+// ========================================================
 // Tarifas y modelos exactos del presupuestador NISSA
-// Actualizado: 170 modelos exactos de Samsung individuales (Galaxy A, M, S, Z Flip, Z Fold).
-// Modelos de Samsung y Motorola configurados como "Consultar" presupuesto.
-var PRECIOS_WIDGET = {
+// Generado automáticamente desde el Panel de Administración NISSA
+// Fecha de actualización: 12/11/2026, 09:42:55
+// 100% Compatible con GitHub Pages (Costo $0)
+// ========================================================
+
+let PRECIOS_WIDGET = {
   "whatsapp": "5491136620653",
   "businessName": "NISSA",
   "showTerms": true,
@@ -1028,19 +1032,19 @@ var PRECIOS_WIDGET = {
             {
               "id": "samsung_galaxy_a01_pantalla",
               "name": "📱 Pantalla / Módulo",
-              "price": "Consultar",
+              "price": 40000,
               "note": "Seleccioná la calidad deseada o consultá presupuesto"
             },
             {
               "id": "samsung_galaxy_a01_bateria",
               "name": "🔋 Batería",
-              "price": "Consultar",
+              "price": 35000,
               "note": "Condición al 100% de salud"
             },
             {
               "id": "samsung_galaxy_a01_pin",
               "name": "🔌 Pin de carga",
-              "price": "Consultar",
+              "price": 25000,
               "note": "Reparación o cambio de conector de carga"
             },
             {
@@ -1081,19 +1085,19 @@ var PRECIOS_WIDGET = {
             {
               "id": "samsung_galaxy_a01_core_pantalla",
               "name": "📱 Pantalla / Módulo",
-              "price": "Consultar",
+              "price": 40000,
               "note": "Seleccioná la calidad deseada o consultá presupuesto"
             },
             {
               "id": "samsung_galaxy_a01_core_bateria",
               "name": "🔋 Batería",
-              "price": "Consultar",
+              "price": 35000,
               "note": "Condición al 100% de salud"
             },
             {
               "id": "samsung_galaxy_a01_core_pin",
               "name": "🔌 Pin de carga",
-              "price": "Consultar",
+              "price": 25000,
               "note": "Reparación o cambio de conector de carga"
             },
             {
@@ -1134,19 +1138,19 @@ var PRECIOS_WIDGET = {
             {
               "id": "samsung_galaxy_a02_pantalla",
               "name": "📱 Pantalla / Módulo",
-              "price": "Consultar",
+              "price": 45000,
               "note": "Seleccioná la calidad deseada o consultá presupuesto"
             },
             {
               "id": "samsung_galaxy_a02_bateria",
               "name": "🔋 Batería",
-              "price": "Consultar",
+              "price": 35000,
               "note": "Condición al 100% de salud"
             },
             {
               "id": "samsung_galaxy_a02_pin",
               "name": "🔌 Pin de carga",
-              "price": "Consultar",
+              "price": 25000,
               "note": "Reparación o cambio de conector de carga"
             },
             {
@@ -14441,10 +14445,18 @@ var PRECIOS_WIDGET = {
   ]
 };
 
+// Soporte para borrador local en navegador:
 if (typeof window !== "undefined") {
-  // Limpiar cualquier borrador antiguo para forzar la nueva lista oficial completa
-  try {
-    localStorage.removeItem("nissa_cotizador_draft");
-  } catch (e) {}
+  const localCotizadorDraft = localStorage.getItem("nissa_cotizador_draft");
+  if (localCotizadorDraft) {
+    try {
+      const parsed = JSON.parse(localCotizadorDraft);
+      if (parsed && typeof parsed === "object") {
+        PRECIOS_WIDGET = parsed;
+      }
+    } catch (e) {
+      console.error("Error al cargar borrador de cotizador:", e);
+    }
+  }
   window.PRECIOS_WIDGET = PRECIOS_WIDGET;
 }
