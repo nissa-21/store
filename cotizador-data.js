@@ -1,7 +1,7 @@
 // ========================================================
 // Tarifas y modelos exactos del presupuestador NISSA
 // Generado automáticamente desde el Panel de Administración NISSA
-// Fecha de actualización: 12/11/2026, 09:42:55
+// Fecha de actualización: 14/11/2026, 08:55:56
 // 100% Compatible con GitHub Pages (Costo $0)
 // ========================================================
 
@@ -20,7 +20,7 @@ let PRECIOS_WIDGET = {
             {
               "id": "cel_ap_11_1",
               "name": "📱 Pantalla / Módulo",
-              "price": "70 USD",
+              "price": "50 USD",
               "note": "Seleccioná la calidad deseada debajo"
             },
             {
@@ -786,7 +786,7 @@ let PRECIOS_WIDGET = {
             {
               "id": "cel_ap_14pm_5",
               "name": "📷 Cámara Principal (Trasera)",
-              "price": "Consultar",
+              "price": 260000,
               "note": "Módulo de cámara trasera original"
             },
             {
