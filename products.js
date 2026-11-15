@@ -1,6 +1,6 @@
 // Catálogo oficial de productos NISSA
 // Generado automáticamente desde el Panel de Administración NISSA
-// Actualizado: 15/11/2026, 08:30:55
+// Actualizado: 15/11/2026, 08:30:57
 // 100% Compatible con GitHub Pages (Costo $0)
 
 let products = [
@@ -33,36 +33,6 @@ let products = [
       "Potencia de salida": "20W Power Delivery (USB-C)",
       "Conector incluido": "USB-C a Lightning (1 metro)",
       "Compatibilidad": "iPhone 8 hasta iPhone 14 Pro Max / iPad / AirPods"
-    }
-  },
-  {
-    "id": 7,
-    "name": "Funda Case Magnética Silicona Suave MagSafe",
-    "category": "accesorios",
-    "tag": "MagSafe Integrado",
-    "price": 22000,
-    "price3": 20000,
-    "price5": 18500,
-    "price20": 16500,
-    "image": "funda-case-magnetica-silicona-suave-magsafe.jpg",
-    "images": [
-      "funda-case-magnetica-silicona-suave-magsafe.jpg",
-      "funda-magsafe-interior.jpg"
-    ],
-    "description": "Funda de silicona líquida premium con anillo magnético MagSafe de 38 imanes de neodimio integrados. Su interior de microfibra aterciopelada previene ralladuras en la tapa trasera del celular.",
-    "features": [
-      "Alineación magnética fuerte para cargadores inalámbricos, soportes y billeteras MagSafe",
-      "Interior forrado en suave terciopelo para máxima protección del cristal trasero",
-      "Bordes biselados sobre la pantalla y la cámara para amortiguar caídas frontales",
-      "Acabado Soft-Touch antideslizante, agradable al tacto y fácil de limpiar",
-      "Botones independientes que brindan un clic táctil firme y preciso"
-    ],
-    "specs": {
-      "Material": "Silicona líquida exterior + microfibra interior aterciopelada",
-      "Tecnología": "Anillo magnético MagSafe de alta adherencia",
-      "Protección": "Absorción contra impactos en esquinas y bisel de cámara",
-      "Compatibilidad": "Línea iPhone y modelos Samsung compatibles",
-      "Garantía": "90 días oficial escrita NISSA"
     }
   },
   {
