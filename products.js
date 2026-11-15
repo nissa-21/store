@@ -1,6 +1,6 @@
 // Catálogo oficial de productos NISSA
 // Generado automáticamente desde el Panel de Administración NISSA
-// Actualizado: 15/11/2026, 08:30:58
+// Actualizado: 15/11/2026, 08:32:29
 // 100% Compatible con GitHub Pages (Costo $0)
 
 let products = [
@@ -15,9 +15,7 @@ let products = [
     "price20": 24000,
     "image": "85825.png",
     "images": [
-      "85825.png",
-      "pack-apple-caja.jpg",
-      "pack-apple-cable-detalle.jpg"
+      "85825.png"
     ],
     "description": "Combo completo de cargador de pared 20W Power Delivery + Cable USB-C a Lightning reforzado. Diseñado bajo estándares certificados para cuidar la salud de la batería de tu iPhone, proporcionando una recarga rápida y segura.",
     "features": [
