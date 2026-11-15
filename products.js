@@ -1,6 +1,6 @@
 // Catálogo oficial de productos NISSA
 // Generado automáticamente desde el Panel de Administración NISSA
-// Actualizado: 15/11/2026, 08:30:52
+// Actualizado: 15/11/2026, 08:30:54
 // 100% Compatible con GitHub Pages (Costo $0)
 
 let products = [
@@ -33,36 +33,6 @@ let products = [
       "Potencia de salida": "20W Power Delivery (USB-C)",
       "Conector incluido": "USB-C a Lightning (1 metro)",
       "Compatibilidad": "iPhone 8 hasta iPhone 14 Pro Max / iPad / AirPods"
-    }
-  },
-  {
-    "id": 5,
-    "name": "Auriculares Bluetooth In-Ear True Wireless HiFi",
-    "category": "audio",
-    "tag": "Sonido Hi-Fi TWS",
-    "price": 45000,
-    "price3": 42000,
-    "price5": 39000,
-    "price20": 36000,
-    "image": "auriculares-bluetooth-in-ear-true-wireless-hifi.jpg",
-    "images": [
-      "auriculares-bluetooth-in-ear-true-wireless-hifi.jpg",
-      "auriculares-bluetooth-detalle.jpg"
-    ],
-    "description": "Auriculares inalámbricos True Wireless con diafragma de 13mm para una acústica nítida y graves profundos. Cuentan con estuche de carga magnético con conector USB-C y autonomía total de hasta 24 horas.",
-    "features": [
-      "Bluetooth 5.3 con sincronización instantánea y latencia ultrabaja para gaming",
-      "Cancelación de ruido pasiva ergonómica para aislar el sonido exterior",
-      "Controles táctiles inteligentes para pausar, cambiar canciones y atender llamadas",
-      "Micrófono HD de alta sensibilidad para llamadas claras y notas de voz",
-      "Diseño ultraliviano y resistente a salpicaduras (IPX4), ideal para entrenar"
-    ],
-    "specs": {
-      "Conectividad": "Bluetooth 5.3 (hasta 10 metros de cobertura)",
-      "Autonomía": "5 a 6 hs continuas por carga (+18 hs adicionales con el estuche)",
-      "Carga": "Puerto USB-C rápido (carga completa en 60 minutos)",
-      "Compatibilidad": "Android, iOS, Windows, Mac y cualquier dispositivo con Bluetooth",
-      "Garantía": "90 días oficial escrita NISSA"
     }
   },
   {
