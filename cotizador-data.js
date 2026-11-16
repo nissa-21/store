@@ -7,7 +7,7 @@ var PRECIOS_WIDGET = {
   "showTerms": true,
   "termsText": "Los valores informados son de referencia y están sujetos a revisión técnica final en el local.",
   "warrantyAdjustments": {
-    "basic": -20,
+    "basic": -15,
     "estandar": 0,
     "ultra": 30
   },
