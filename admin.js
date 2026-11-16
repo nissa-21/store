@@ -39,6 +39,12 @@ let activeCelularBrand = "todos"; // Por defecto mostrar todos los modelos
 let cotizadorSearchTerm = "";
 let autoSaveCotizadorTimeout = null;
 
+// Estado de Estética y Diseño de la Tienda
+let currentSiteConfig = null;
+let originalSiteConfigBackup = null;
+let activeEsteticaSubtab = "orden";
+let pendingBannerFileState = { dataUrl: "", filename: "" };
+
 // ========================================================
 // Runtime authentication state (in-memory only).
 // Resets to false on every page visit, reload, or link navigation.
@@ -170,6 +176,7 @@ function showAdminApp() {
   loadInitialProducts();
   loadAllCachedImages();
   loadInitialCotizador();
+  loadInitialSiteConfig();
   renderCategoryFilter();
   renderProductsList();
   renderCotizadorDynamicActions();
@@ -204,17 +211,12 @@ function loadInitialProducts() {
 function checkDraftStatus() {
   const catDraft = localStorage.getItem("nissa_catalog_draft");
   const cotDraft = localStorage.getItem("nissa_cotizador_draft");
+  const siteDraft = localStorage.getItem("nissa_site_config_draft");
   const badge = document.getElementById("draft-indicator");
   if (badge) {
-    if (catDraft && cotDraft) {
+    if (catDraft || cotDraft || siteDraft) {
       badge.style.display = "inline-block";
-      badge.textContent = "Borradores activos (Catálogo y Cotizador)";
-    } else if (catDraft) {
-      badge.style.display = "inline-block";
-      badge.textContent = "Borrador de productos activo";
-    } else if (cotDraft) {
-      badge.style.display = "inline-block";
-      badge.textContent = "Borrador de cotizador activo";
+      badge.textContent = "Cambios sin guardar";
     } else {
       badge.style.display = "none";
     }
@@ -250,12 +252,12 @@ function applyAndSaveCatalogChanges() {
 
   const cfg = getGithubConfig();
   if (!cfg.token) {
-    alert("⚠️ ATENCIÓN: Tus cambios se guardaron únicamente en este navegador local.\n\nPara que cualquier persona del mundo que ingrese a la tienda vea los cambios, precios y fotos nuevas en GitHub Pages, necesitás ingresar tu Token de GitHub.\n\nPresioná Aceptar para configurar tu Token ahora.");
+    alert("⚠️ Para guardar y publicar los cambios en la tienda en línea, necesitás configurar tu clave de conexión.\n\nPresioná Aceptar para ingresarla ahora.");
     openGithubModal();
     return;
   }
 
-  // Publicar inmediatamente en GitHub para que se aplique a todo el mundo
+  // Guardar y publicar inmediatamente en la tienda en línea
   publishDirectlyToGithub();
 }
 
@@ -927,7 +929,7 @@ function updateMainImagePreviewUI(overrideSrc = null) {
       quickBadge.textContent = "✨ Imagen importada (nueva)";
     }
     if (quickName) quickName.textContent = currentMainImageState.filename || "nueva-imagen.jpg";
-    if (quickHint) quickHint.textContent = "✓ Foto importada y optimizada. Al presionar '🚀 Guardar y Publicar en GitHub', se subirá automáticamente a GitHub.";
+    if (quickHint) quickHint.textContent = "✓ Foto importada y optimizada. Al presionar '💾 Guardar cambios', se subirá y publicará en la tienda.";
   } else if (currentMainImageState.mode === "fotos") {
     if (badge) {
       badge.className = "img-type-badge fotos-badge";
@@ -1877,10 +1879,10 @@ async function saveAndPublishProductToGithub(e) {
     return;
   }
 
-  // Verificar si el usuario configuró GitHub y tiene Token
+  // Verificar si el usuario configuró conexión y Token
   const cfg = getGithubConfig();
   if (!cfg.owner || !cfg.repo || !cfg.token) {
-    alert("⚠️ Para publicar y que tus cambios se vean en todo el mundo en GitHub Pages, necesitás ingresar tu Token de GitHub.\n\nPresioná Aceptar para abrir la configuración.");
+    alert("⚠️ Para guardar y publicar tus cambios en la tienda en línea, necesitás ingresar tu clave de conexión.\n\nPresioná Aceptar para configurarla.");
     openGithubModal();
     return;
   }
@@ -1889,7 +1891,7 @@ async function saveAndPublishProductToGithub(e) {
   const originalBtnHtml = publishBtn ? publishBtn.innerHTML : "";
   if (publishBtn) {
     publishBtn.disabled = true;
-    publishBtn.innerHTML = "⏳ Conectando con GitHub...";
+    publishBtn.innerHTML = "⏳ Guardando cambios...";
   }
 
   try {
@@ -1918,19 +1920,19 @@ async function saveAndPublishProductToGithub(e) {
       }
 
       if (publishBtn) {
-        publishBtn.innerHTML = `⏳ Subiendo foto (${cleanFilename}) al repositorio...`;
+        publishBtn.innerHTML = `⏳ Subiendo foto (${cleanFilename})...`;
       }
 
-      // Subir archivo a la raíz del repositorio de GitHub
+      // Subir archivo a la carpeta fotos/
       const photoRes = await uploadSinglePhotoToGithub(cleanFilename, dataUrlToUpload, cfg);
       if (!photoRes.ok) {
         const errMsg = photoRes.data?.message || photoRes.statusText || photoRes.error || "";
         if (photoRes.status === 401 || errMsg.includes("Bad credentials")) {
-          alert(`⚠️ GitHub rechazó la subida de la imagen (401 Bad credentials).\n\nTu Personal Access Token expiró o no tiene permiso 'repo'. Por favor actualizalo en la configuración de GitHub.`);
+          alert("⚠️ La clave de conexión expiró o no es válida. Por favor actualizala en ⚙️ Conexión.");
           openGithubModal();
           return;
         } else {
-          console.warn("Aviso al subir imagen a GitHub:", errMsg);
+          console.warn("Aviso al subir imagen:", errMsg);
         }
       }
 
@@ -2025,9 +2027,9 @@ async function saveAndPublishProductToGithub(e) {
       window.products = currentProducts;
     }
 
-    // Publicar catálogo products.js en GitHub
+    // Publicar catálogo products.js
     if (publishBtn) {
-      publishBtn.innerHTML = "⏳ Publicando catálogo en GitHub...";
+      publishBtn.innerHTML = "⏳ Guardando cambios...";
     }
     const productsJsCode = generateProductsJsCode();
     saveProductsFileToServer(productsJsCode);
@@ -2068,27 +2070,26 @@ async function saveAndPublishProductToGithub(e) {
     }
 
     if (putRes.ok) {
-      const commitSha = putRes.data?.commit?.sha ? putRes.data.commit.sha.substring(0, 7) : "confirmado";
-      // Limpiar borrador local para mantener sincronía pura con el repositorio remoto
+      // Limpiar borrador local para mantener sincronía pura con la tienda pública
       localStorage.removeItem("nissa_catalog_draft");
       checkDraftStatus();
       closeProductModal();
       renderCategoryFilter();
       renderProductsList();
-      showAlert(`🎉 ¡Confirmado por GitHub! Producto "${escapeHtml(name)}" publicado con éxito (Commit: <code>${commitSha}</code>).<br><strong>⏳ Estado: Publicación enviada a GitHub Pages.</strong> El despliegue mundial se encuentra en proceso (tarda ~60 a 90 segundos en estar visible en vivo para todos los visitantes en <a href="https://${cfg.owner}.github.io/${cfg.repo}" target="_blank" style="color:#38bdf8; text-decoration:underline;">https://${cfg.owner}.github.io/${cfg.repo}</a>).`, true);
+      showAlert(`✓ ¡Cambios guardados! El producto "${escapeHtml(name)}" ya se publicó y se actualizará en la tienda en unos instantes.`, true);
     } else {
       const ghMsg = putRes.data?.message || putRes.statusText || "";
       if (putRes.status === 401 || ghMsg.includes("Bad credentials")) {
-        alert(`⚠️ GitHub rechazó la publicación (401 Bad credentials).\n\nTu Personal Access Token no es válido o expiró. Por favor actualizalo en la configuración de GitHub.`);
+        alert("⚠️ La clave de conexión expiró o no es válida. Por favor actualizala en ⚙️ Conexión.");
         openGithubModal();
       } else {
-        alert(`GitHub respondió: ${ghMsg}\n\nPodés usar el botón "Descargar products.js" para actualizar tu repositorio manualmente.`);
+        alert(`No se pudieron guardar los cambios (${putRes.status}): ${ghMsg}`);
       }
     }
 
   } catch (err) {
-    console.error("Error en saveAndPublishProductToGithub:", err);
-    alert("Error de conexión con GitHub: " + (err.message || err));
+    console.error("Error al guardar producto:", err);
+    alert("Error de conexión al guardar cambios: " + (err.message || err));
   } finally {
     if (publishBtn) {
       publishBtn.disabled = false;
@@ -2113,7 +2114,7 @@ function duplicateProduct(id) {
   currentProducts.push(cloned);
   saveDraft();
   renderProductsList();
-  showAlert(`<span>✓ Producto duplicado como #${cloned.id}.</span> <button type="button" class="btn btn-sm btn-primary" style="margin-left:10px;" onclick="downloadProductsJs()">📥 Descargar archivo</button>`, true);
+  showAlert(`<span>✓ Producto duplicado (#${cloned.id}).</span> <button type="button" class="btn btn-sm btn-save-action" style="margin-left:10px;" onclick="applyAndSaveCatalogChanges()">💾 Guardar cambios</button>`, true);
 }
 
 function moveProductOrder(id, direction) {
@@ -2129,14 +2130,14 @@ function moveProductOrder(id, direction) {
 
   saveDraft();
   renderProductsList();
-  showAlert(`<span>✓ Orden actualizado.</span> <button type="button" class="btn btn-sm btn-primary" style="margin-left:10px;" onclick="downloadProductsJs()">📥 Descargar archivo</button>`, true);
+  showAlert(`<span>✓ Orden actualizado.</span> <button type="button" class="btn btn-sm btn-save-action" style="margin-left:10px;" onclick="applyAndSaveCatalogChanges()">💾 Guardar cambios</button>`, true);
 }
 
 function deleteProduct(id) {
   const p = currentProducts.find(item => Number(item.id) === Number(id));
   if (!p) return;
 
-  if (confirm(`¿Estás seguro de que deseás eliminar el producto "${p.name}" (#${p.id}) y publicar la actualización en la tienda de GitHub?`)) {
+  if (confirm(`¿Estás seguro de que deseás eliminar el producto "${p.name}" (#${p.id}) de la tienda?`)) {
     currentProducts = currentProducts.filter(item => Number(item.id) !== Number(id));
     renderCategoryFilter();
     renderProductsList();
@@ -2145,7 +2146,7 @@ function deleteProduct(id) {
       publishDirectlyToGithub();
     } else {
       saveDraft();
-      showAlert(`✓ Producto #${id} eliminado en panel. Ingresá tu Token de GitHub para publicarlo en la tienda pública.`);
+      showAlert(`✓ Producto #${id} eliminado. Configurá la conexión para publicar el cambio en la tienda.`);
       openGithubModal();
     }
   }
@@ -2446,7 +2447,7 @@ function utf8ToBase64(str) {
 async function publishDirectlyToGithub() {
   const cfg = getGithubConfig();
   if (!cfg.owner || !cfg.repo || !cfg.token) {
-    alert("⚠️ Para publicar y que tus cambios se vean en todo el mundo en GitHub Pages, primero ingresá tu Token de GitHub.\n\nPresioná Aceptar para abrir la configuración.");
+    alert("⚠️ Para guardar y publicar los cambios en la tienda en línea, primero ingresá tu clave de conexión.\n\nPresioná Aceptar para configurarla.");
     openGithubModal();
     return;
   }
@@ -2455,22 +2456,21 @@ async function publishDirectlyToGithub() {
   const originalBtnText = publishBtn ? publishBtn.innerHTML : "";
   if (publishBtn) {
     publishBtn.disabled = true;
-    publishBtn.innerHTML = "⏳ Verificando fotos y catálogo...";
+    publishBtn.innerHTML = "⏳ Guardando cambios...";
   }
 
   try {
-    // 1. Revisar si hay imágenes pendientes de subir a fotos/ en GitHub
+    // 1. Revisar si hay imágenes pendientes de subir a fotos/
     let photosUploaded = 0;
     for (let i = 0; i < currentProducts.length; i++) {
       const p = currentProducts[i];
       let img = p.image ? String(p.image).trim() : "";
 
-      // Si la imagen en el producto es un dataURL (Base64)
       if (img.startsWith("data:")) {
         const slug = (p.name || `producto-${p.id}`).toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "");
         const cleanFilename = `${slug || `producto-${p.id}`}.jpg`;
         if (publishBtn) {
-          publishBtn.innerHTML = `⏳ Subiendo foto (${cleanFilename}) al repositorio...`;
+          publishBtn.innerHTML = `⏳ Subiendo foto (${cleanFilename})...`;
         }
         const upRes = await uploadSinglePhotoToGithub(cleanFilename, img, cfg);
         if (upRes.ok) {
@@ -2481,11 +2481,10 @@ async function publishDirectlyToGithub() {
           photosUploaded++;
         }
       } else if (img && window.NISSA_IMAGE_CACHE && window.NISSA_IMAGE_CACHE[img] && window.NISSA_IMAGE_CACHE[img].startsWith("data:")) {
-        // La imagen tiene un nombre de archivo y está en caché local, asegurar que esté subida a la raíz del repositorio
         const dataUrl = window.NISSA_IMAGE_CACHE[img];
         const cleanFilename = img.replace(/^(\.\/|\/)+/, "").replace(/^fotos\//, "");
         if (publishBtn) {
-          publishBtn.innerHTML = `⏳ Sincronizando foto (${cleanFilename}) al repositorio...`;
+          publishBtn.innerHTML = `⏳ Guardando foto (${cleanFilename})...`;
         }
         const upRes = await uploadSinglePhotoToGithub(cleanFilename, dataUrl, cfg);
         if (upRes.ok) {
@@ -2499,10 +2498,10 @@ async function publishDirectlyToGithub() {
     saveProductsFileToServer(newContent);
 
     if (publishBtn) {
-      publishBtn.innerHTML = "⏳ Conectando con GitHub...";
+      publishBtn.innerHTML = "⏳ Guardando cambios...";
     }
 
-    // 3. Obtener el SHA actual del archivo en GitHub (si existe)
+    // 3. Obtener el SHA actual del archivo (si existe)
     const getUrl = `https://api.github.com/repos/${cfg.owner}/${cfg.repo}/contents/${cfg.path}?ref=${cfg.branch}&t=${Date.now()}`;
     let currentSha = null;
     const getRes = await callGithubApi(getUrl, { token: cfg.token });
@@ -2510,11 +2509,7 @@ async function publishDirectlyToGithub() {
       currentSha = getRes.data.sha;
     }
 
-    if (publishBtn) {
-      publishBtn.innerHTML = "⏳ Subiendo catálogo a GitHub...";
-    }
-
-    // 4. Hacer el commit mediante PUT
+    // 4. Guardar actualización mediante PUT
     const base64Content = utf8ToBase64(newContent);
     const putUrl = `https://api.github.com/repos/${cfg.owner}/${cfg.repo}/contents/${cfg.path}`;
     const payload = {
@@ -2545,26 +2540,24 @@ async function publishDirectlyToGithub() {
     }
 
     if (putRes.ok) {
-      const commitSha = putRes.data?.commit?.sha ? putRes.data.commit.sha.substring(0, 7) : "confirmado";
-      // Limpiar borrador local para mantener sincronía pura con el repositorio remoto
       localStorage.removeItem("nissa_catalog_draft");
       checkDraftStatus();
       renderProductsList();
 
-      const photoMsg = photosUploaded > 0 ? ` (${photosUploaded} foto(s) subida(s) a la carpeta fotos/)` : "";
-      showAlert(`🎉 ¡Confirmado por GitHub! Catálogo publicado con éxito (Commit: <code>${commitSha}</code>)${photoMsg}.<br><strong>⏳ Estado: Publicación enviada a GitHub Pages.</strong> El despliegue mundial se encuentra en proceso (tarda ~60 a 90 segundos en estar visible en vivo para todos los visitantes en <a href="https://${cfg.owner}.github.io/${cfg.repo}" target="_blank" style="color:#38bdf8; text-decoration:underline;">https://${cfg.owner}.github.io/${cfg.repo}</a>).`, true);
+      const photoMsg = photosUploaded > 0 ? ` (${photosUploaded} foto(s) actualizada(s))` : "";
+      showAlert(`✓ ¡Cambios guardados y publicados correctamente${photoMsg}! La tienda se actualizará en línea en unos instantes.`, true);
     } else {
       const msg = putRes.data?.message || putRes.statusText || "";
       if (putRes.status === 401 || msg.includes("Bad credentials")) {
-        alert(`⚠️ Error de GitHub: Bad credentials (Token no aceptado).\n\nTu Personal Access Token expiró o no tiene permiso 'repo'. Por favor ingresá un nuevo Token en la configuración de GitHub.`);
+        alert("⚠️ La clave de conexión expiró o no es válida. Por favor ingresala nuevamente en ⚙️ Conexión.");
         openGithubModal();
       } else {
-        alert(`No se pudo publicar en GitHub (${putRes.status}): ${msg}\n\nPodés descargar el archivo products.js manualmente con el botón "Descargar products.js".`);
+        alert(`No se pudieron guardar los cambios (${putRes.status}): ${msg}`);
       }
     }
 
   } catch (err) {
-    alert("Error de conexión al publicar en GitHub: " + (err.message || err));
+    alert("Error de conexión al guardar cambios: " + (err.message || err));
   } finally {
     if (publishBtn) {
       publishBtn.disabled = false;
@@ -2677,14 +2670,7 @@ function applyAndSaveCotizadorChanges() {
     window.PRECIOS_WIDGET = currentCotizador;
   }
   renderCotizador();
-  showAlert(`
-    <div style="display: flex; align-items: center; justify-content: space-between; gap: 14px; flex-wrap: wrap;">
-      <span>✓ ¡Todos los cambios del presupuestador fueron cargados y aplicados con éxito!</span>
-      <div style="display: flex; gap: 8px;">
-        <button type="button" class="btn btn-sm btn-primary" onclick="downloadCotizadorJs()">📥 Descargar cotizador-data.js</button>
-      </div>
-    </div>
-  `, true);
+  publishCotizadorDirectlyToGithub();
 }
 
 function debouncedAutoSaveCotizador() {
@@ -2726,21 +2712,25 @@ function switchAdminSection(section) {
   activeAdminSection = section;
   const btnProducts = document.getElementById("btn-nav-products");
   const btnCotizador = document.getElementById("btn-nav-cotizador");
+  const btnEstetica = document.getElementById("btn-nav-estetica");
   const secProducts = document.getElementById("section-products");
   const secCotizador = document.getElementById("section-cotizador");
+  const secEstetica = document.getElementById("section-estetica");
+
+  if (btnProducts) btnProducts.classList.toggle("active", section === "products");
+  if (btnCotizador) btnCotizador.classList.toggle("active", section === "cotizador");
+  if (btnEstetica) btnEstetica.classList.toggle("active", section === "estetica");
+
+  if (secProducts) secProducts.style.display = section === "products" ? "block" : "none";
+  if (secCotizador) secCotizador.style.display = section === "cotizador" ? "block" : "none";
+  if (secEstetica) secEstetica.style.display = section === "estetica" ? "block" : "none";
 
   if (section === "products") {
-    if (btnProducts) btnProducts.classList.add("active");
-    if (btnCotizador) btnCotizador.classList.remove("active");
-    if (secProducts) secProducts.style.display = "block";
-    if (secCotizador) secCotizador.style.display = "none";
     renderProductsList();
-  } else {
-    if (btnProducts) btnProducts.classList.remove("active");
-    if (btnCotizador) btnCotizador.classList.add("active");
-    if (secProducts) secProducts.style.display = "none";
-    if (secCotizador) secCotizador.style.display = "block";
+  } else if (section === "cotizador") {
     renderCotizador();
+  } else if (section === "estetica") {
+    renderEstetica();
   }
 }
 
@@ -2884,6 +2874,49 @@ function selectCelularBrand(brandName) {
   renderCelularesSection();
 }
 
+function formatAdminWarrantyBreakdown(rawPrice) {
+  if (rawPrice === undefined || rawPrice === null) {
+    return '<span class="w-pill w-muted">Sin precio numérico</span>';
+  }
+  const str = String(rawPrice).trim();
+  const lower = str.toLowerCase();
+  if (!str || lower.includes("consultar") || lower.includes("no realizamos") || lower === "no") {
+    return '<span class="w-pill w-muted">Sin cálculo automático</span>';
+  }
+
+  let isUsd = false;
+  let num = 0;
+  if (lower.includes("usd")) {
+    isUsd = true;
+    num = parseFloat(str.replace(/[^0-9.,]/g, "").replace(",", "."));
+  } else {
+    num = Number(str.replace(/\$/g, "").replace(/\./g, "").replace(/,/g, "").trim());
+  }
+
+  if (isNaN(num) || num <= 0) {
+    return '<span class="w-pill w-muted">Sin cálculo automático</span>';
+  }
+
+  const pSin = Math.round(num * 0.75);
+  const p30 = Math.round(num);
+  const p90 = Math.round(num * 1.30);
+
+  const fmt = (val) => isUsd ? `${val} USD` : `$${val.toLocaleString("es-AR")}`;
+  return `
+    <span class="w-pill w-none" title="Sin garantía (-25%)">⚡ Sin gar.: <strong>${fmt(pSin)}</strong></span>
+    <span class="w-pill w-std" title="Garantía estándar 30 días">🛡️ 30d: <strong>${fmt(p30)}</strong></span>
+    <span class="w-pill w-ext" title="Garantía extendida 90 días (+30%)">👑 90d: <strong>${fmt(p90)}</strong></span>
+  `;
+}
+
+function updateWarrantyPreviewCell(inputEl) {
+  if (!inputEl || !inputEl.parentElement) return;
+  const previewEl = inputEl.parentElement.querySelector(".warranty-preview-line");
+  if (previewEl) {
+    previewEl.innerHTML = formatAdminWarrantyBreakdown(inputEl.value);
+  }
+}
+
 function renderCelularesSection() {
   const container = document.getElementById("cotizador-content-area");
   if (!container || !currentCotizador || !currentCotizador.celulares) return;
@@ -2941,19 +2974,20 @@ function renderCelularesSection() {
     const rowsHtml = repairs.map((r, rIdx) => {
       return `
         <tr>
-          <td style="width: 32%;">
+          <td style="width: 30%;">
             <input type="text" class="repair-inline-input" value="${escapeHtml(r.name)}" 
               placeholder="Nombre del servicio"
               onchange="updateCelularRepairName(${bIdx}, ${mIdx}, ${rIdx}, this.value)"
               oninput="debouncedAutoSaveCotizador()">
           </td>
-          <td style="width: 20%;">
+          <td style="width: 30%;">
             <input type="text" class="repair-inline-input repair-price-input" value="${escapeHtml(r.price)}" 
               placeholder="Precio ej: 80000 o 70 USD"
-              onchange="updateCelularRepairPrice(${bIdx}, ${mIdx}, ${rIdx}, this.value)"
-              oninput="debouncedAutoSaveCotizador()">
+              onchange="updateCelularRepairPrice(${bIdx}, ${mIdx}, ${rIdx}, this.value); updateWarrantyPreviewCell(this)"
+              oninput="debouncedAutoSaveCotizador(); updateWarrantyPreviewCell(this)">
+            <div class="warranty-preview-line">${formatAdminWarrantyBreakdown(r.price)}</div>
           </td>
-          <td style="width: 40%;">
+          <td style="width: 32%;">
             <input type="text" class="repair-inline-input" value="${escapeHtml(r.note || '')}" 
               placeholder="Aclaración, garantía o detalle..."
               onchange="updateCelularRepairNote(${bIdx}, ${mIdx}, ${rIdx}, this.value)"
@@ -3154,19 +3188,20 @@ function renderConsolasSection() {
     const rowsHtml = repairs.map((r, rIdx) => {
       return `
         <tr>
-          <td style="width: 32%;">
+          <td style="width: 30%;">
             <input type="text" class="repair-inline-input" value="${escapeHtml(r.name)}" 
               placeholder="Servicio / Reparación"
               onchange="updateDeviceRepairName('consolas', ${devIdx}, ${rIdx}, this.value)"
               oninput="debouncedAutoSaveCotizador()">
           </td>
-          <td style="width: 20%;">
+          <td style="width: 30%;">
             <input type="text" class="repair-inline-input repair-price-input" value="${escapeHtml(r.price)}" 
               placeholder="Precio ej: 45000"
-              onchange="updateDeviceRepairPrice('consolas', ${devIdx}, ${rIdx}, this.value)"
-              oninput="debouncedAutoSaveCotizador()">
+              onchange="updateDeviceRepairPrice('consolas', ${devIdx}, ${rIdx}, this.value); updateWarrantyPreviewCell(this)"
+              oninput="debouncedAutoSaveCotizador(); updateWarrantyPreviewCell(this)">
+            <div class="warranty-preview-line">${formatAdminWarrantyBreakdown(r.price)}</div>
           </td>
-          <td style="width: 40%;">
+          <td style="width: 32%;">
             <input type="text" class="repair-inline-input" value="${escapeHtml(r.note || '')}" 
               placeholder="Aclaración, garantía o descripción..."
               onchange="updateDeviceRepairNote('consolas', ${devIdx}, ${rIdx}, this.value)"
@@ -3266,19 +3301,20 @@ function renderJoysticksSection() {
     const rowsHtml = repairs.map((r, rIdx) => {
       return `
         <tr>
-          <td style="width: 32%;">
+          <td style="width: 30%;">
             <input type="text" class="repair-inline-input" value="${escapeHtml(r.name)}" 
               placeholder="Servicio de Mando"
               onchange="updateDeviceRepairName('joysticks', ${devIdx}, ${rIdx}, this.value)"
               oninput="debouncedAutoSaveCotizador()">
           </td>
-          <td style="width: 20%;">
+          <td style="width: 30%;">
             <input type="text" class="repair-inline-input repair-price-input" value="${escapeHtml(r.price)}" 
               placeholder="Precio ej: 25000"
-              onchange="updateDeviceRepairPrice('joysticks', ${devIdx}, ${rIdx}, this.value)"
-              oninput="debouncedAutoSaveCotizador()">
+              onchange="updateDeviceRepairPrice('joysticks', ${devIdx}, ${rIdx}, this.value); updateWarrantyPreviewCell(this)"
+              oninput="debouncedAutoSaveCotizador(); updateWarrantyPreviewCell(this)">
+            <div class="warranty-preview-line">${formatAdminWarrantyBreakdown(r.price)}</div>
           </td>
-          <td style="width: 40%;">
+          <td style="width: 32%;">
             <input type="text" class="repair-inline-input" value="${escapeHtml(r.note || '')}" 
               placeholder="Garantía, repuesto o nota..."
               onchange="updateDeviceRepairNote('joysticks', ${devIdx}, ${rIdx}, this.value)"
@@ -3360,19 +3396,20 @@ function renderComputadorasSection() {
   const rowsHtml = servicios.map((s, idx) => {
     return `
       <tr>
-        <td style="width: 34%;">
+        <td style="width: 30%;">
           <input type="text" class="repair-inline-input" value="${escapeHtml(s.name)}" 
             placeholder="Nombre del servicio"
             onchange="updatePcRepairName(${idx}, this.value)"
             oninput="debouncedAutoSaveCotizador()">
         </td>
-        <td style="width: 20%;">
+        <td style="width: 30%;">
           <input type="text" class="repair-inline-input repair-price-input" value="${escapeHtml(s.price)}" 
             placeholder="Consultar o precio"
-            onchange="updatePcRepairPrice(${idx}, this.value)"
-            oninput="debouncedAutoSaveCotizador()">
+            onchange="updatePcRepairPrice(${idx}, this.value); updateWarrantyPreviewCell(this)"
+            oninput="debouncedAutoSaveCotizador(); updateWarrantyPreviewCell(this)">
+          <div class="warranty-preview-line">${formatAdminWarrantyBreakdown(s.price)}</div>
         </td>
-        <td style="width: 38%;">
+        <td style="width: 32%;">
           <input type="text" class="repair-inline-input" value="${escapeHtml(s.note || '')}" 
             placeholder="Descripción del servicio..."
             onchange="updatePcRepairNote(${idx}, this.value)"
@@ -3999,19 +4036,7 @@ function generateCotizadorJsCode() {
 
 let PRECIOS_WIDGET = ${jsonStr};
 
-// Soporte para borrador local en navegador:
 if (typeof window !== "undefined") {
-  const localCotizadorDraft = localStorage.getItem("nissa_cotizador_draft");
-  if (localCotizadorDraft) {
-    try {
-      const parsed = JSON.parse(localCotizadorDraft);
-      if (parsed && typeof parsed === "object") {
-        PRECIOS_WIDGET = parsed;
-      }
-    } catch (e) {
-      console.error("Error al cargar borrador de cotizador:", e);
-    }
-  }
   window.PRECIOS_WIDGET = PRECIOS_WIDGET;
 }
 `;
@@ -4029,7 +4054,7 @@ function downloadCotizadorJs() {
   document.body.removeChild(a);
   URL.revokeObjectURL(url);
 
-  showAlert("✓ Archivo cotizador-data.js descargado. Ya podés reemplazarlo en tu repositorio de GitHub para que GitHub Pages se actualice gratis a costo $0.");
+  showAlert("✓ Archivo cotizador-data.js descargado.");
 }
 
 function openCotizadorCodeModal() {
@@ -4050,7 +4075,7 @@ function copyCotizadorGeneratedCode() {
   const code = generateCotizadorJsCode();
   if (navigator.clipboard && window.isSecureContext) {
     navigator.clipboard.writeText(code).then(() => {
-      showAlert("✓ Código de cotizador-data.js copiado al portapapeles.");
+      showAlert("✓ Código copiado al portapapeles.");
       closeCotizadorCodeModal();
     });
   } else {
@@ -4067,7 +4092,7 @@ function copyCotizadorGeneratedCode() {
 async function publishCotizadorDirectlyToGithub() {
   const cfg = getGithubConfig();
   if (!cfg.owner || !cfg.repo || !cfg.token) {
-    alert("Para publicar con 1 clic en GitHub, primero completá tus datos del repositorio y el Token de acceso gratuito.");
+    alert("⚠️ Para guardar y publicar los cambios en la tienda en línea, primero ingresá tu clave de conexión.\n\nPresioná Aceptar para configurarla.");
     openGithubModal();
     return;
   }
@@ -4076,10 +4101,10 @@ async function publishCotizadorDirectlyToGithub() {
   const originalText = publishBtn ? publishBtn.innerHTML : "";
   if (publishBtn) {
     publishBtn.disabled = true;
-    publishBtn.innerHTML = "⏳ Publicando cotizador en GitHub...";
+    publishBtn.innerHTML = "⏳ Guardando cambios...";
   }
 
-  // Guardar archivo cotizador-data.js en el disco del servidor
+  // Guardar archivo cotizador-data.js en el disco del servidor local si está disponible
   const newCode = generateCotizadorJsCode();
   saveCotizadorFileToServer(newCode);
 
@@ -4100,25 +4125,39 @@ async function publishCotizadorDirectlyToGithub() {
     if (sha) payload.sha = sha;
 
     const putUrl = `https://api.github.com/repos/${cfg.owner}/${cfg.repo}/contents/${path}`;
-    const putRes = await callGithubApi(putUrl, {
+    let putRes = await callGithubApi(putUrl, {
       method: "PUT",
       token: cfg.token,
       body: payload
     });
 
+    if (putRes.status === 409) {
+      const freshGet = await callGithubApi(getUrl, { token: cfg.token });
+      if (freshGet.ok && freshGet.data && freshGet.data.sha) {
+        payload.sha = freshGet.data.sha;
+        putRes = await callGithubApi(putUrl, {
+          method: "PUT",
+          token: cfg.token,
+          body: payload
+        });
+      }
+    }
+
     if (putRes.ok) {
-      showAlert("🎉 ¡Presupuestador publicado con éxito en GitHub! GitHub Pages actualizará las tarifas en ~30 segundos.");
+      localStorage.removeItem("nissa_cotizador_draft");
+      checkDraftStatus();
+      showAlert("✓ ¡Tarifas del presupuestador guardadas y publicadas! La tienda se actualizará en línea en unos instantes.");
     } else {
       const msg = putRes.data?.message || putRes.statusText || "";
       if (putRes.status === 401 || msg.includes("Bad credentials")) {
-        alert("✓ Las tarifas se guardaron en la aplicación local.\n\n⚠️ Error de GitHub: Bad credentials (Token inválido o expirado).\n\nPor favor actualizá tu Personal Access Token en la configuración de GitHub.");
+        alert("⚠️ La clave de conexión expiró o no es válida. Por favor ingresala nuevamente en ⚙️ Conexión.");
         openGithubModal();
       } else {
-        alert(`No se pudo publicar en GitHub: ${msg}\n\nPodés descargar el archivo cotizador-data.js con el botón "Descargar cotizador-data.js".`);
+        alert(`No se pudieron guardar los cambios (${putRes.status}): ${msg}`);
       }
     }
   } catch (err) {
-    alert("✓ Las tarifas se guardaron localmente.\n\nError de conexión al publicar en GitHub: " + (err.message || err));
+    alert("Error de conexión al guardar cambios: " + (err.message || err));
   } finally {
     if (publishBtn) {
       publishBtn.disabled = false;
@@ -4142,6 +4181,941 @@ function resetToOriginalCotizador() {
   updateCountsBadge();
   renderCotizador();
   showAlert("✓ Se restauraron las tarifas originales del presupuestador.");
+}
+
+// ========================================================
+// 10. GESTOR COMPLETO DE ESTÉTICA Y DISEÑO DE LA TIENDA
+// ========================================================
+function getDefaultSiteConfig() {
+  return {
+    brand: {
+      pageTitle: "NISSA - Tienda Online y Servicio Técnico",
+      metaDescription: "Tienda online de accesorios y tecnología NISSA con cotizador de reparaciones y calificaciones de Google.",
+      headerLogo: "NISSA",
+      footerBrand: "NISSA",
+      footerSubtitle: "Tu tecnología en buenas manos. Servicio técnico y accesorios oficiales.",
+      footerCopyright: "NISSA. Todos los derechos reservados.",
+      whatsappNumber: "541136620653"
+    },
+    theme: {
+      primaryColor: "#2563eb",
+      accentColor: "#0ea5e9",
+      bgColor: "#f8fafc",
+      headerBg: "#ffffff",
+      footerBg: "#0f172a",
+      textColor: "#0f172a",
+      bannerOverlayOpacity: "0.72"
+    },
+    sectionOrder: [
+      { id: "inicio", label: "Banner de Bienvenida", visible: true },
+      { id: "cotizador", label: "Presupuestador", visible: true },
+      { id: "productos", label: "Tienda Online", visible: true },
+      { id: "informacion", label: "Información y Garantía", visible: true },
+      { id: "resenas", label: "Reseñas de Google", visible: true }
+    ],
+    navTabs: [
+      { id: "nav-inicio", href: "#inicio", label: "Inicio", visible: true, isTerms: false },
+      { id: "nav-cotizador", href: "#cotizador", label: "Presupuestar", visible: true, isTerms: false },
+      { id: "nav-productos", href: "#productos", label: "Tienda", visible: true, isTerms: false },
+      { id: "nav-informacion", href: "#informacion", label: "Información", visible: true, isTerms: false },
+      { id: "nav-resenas", href: "#resenas", label: "Opiniones Google", visible: true, isTerms: false },
+      { id: "nav-terminos", href: "/terminos-y-condiciones", label: "Términos y condiciones", visible: true, isTerms: true }
+    ],
+    banner: {
+      image: "./banner-nissa.jpg",
+      badge: "✦ BIENVENIDO A NISSA",
+      title: "REPARAMOS TU EQUIPO",
+      subtitle: "Servicio técnico profesional de celulares, consolas, mandos y notebooks con hasta 90 días de garantía de laboratorio.",
+      primaryBtnText: "Cotizar reparación ahora ➔",
+      primaryBtnHref: "#cotizador",
+      primaryBtnVisible: true,
+      secondaryBtnText: "Explorar tienda online",
+      secondaryBtnHref: "#productos",
+      secondaryBtnVisible: true
+    },
+    cotizadorSection: {
+      badge: "⚡ SERVICIO TÉCNICO DE CONFIANZA",
+      title: "COTIZÁ TU REPARACIÓN",
+      subtitle: "Conocé el precio estimado de tu reparación en segundos y pedí tu turno.",
+      step1Label: "1. ¿Qué equipo querés reparar?"
+    },
+    tiendaSection: {
+      title: "Tienda Online",
+      subtitle: "Precios por unidad y con descuento especial a partir de 3 unidades.",
+      dividerTag: "CATÁLOGO",
+      dividerTitle: "Explorá por categoría",
+      searchPlaceholder: "Buscar productos en la tienda..."
+    },
+    infoSection: {
+      tag: "INFORMACIÓN",
+      title: "Todo lo que necesitás saber",
+      cards: []
+    },
+    reviewsSection: {
+      headerTag: "Calificaciones de NISSA.COM.AR",
+      title: "Nuestros clientes nos recomiendan",
+      subtitle: "Opiniones 100% verídicas que garantizan nuestro compromiso y servicio.",
+      score: "5.0",
+      scoreLabel: "Excelente",
+      basedOnText: "reseñas de Google",
+      items: []
+    }
+  };
+}
+
+function loadInitialSiteConfig() {
+  const base = (typeof window.NISSA_SITE_CONFIG !== "undefined" && window.NISSA_SITE_CONFIG)
+    ? JSON.parse(JSON.stringify(window.NISSA_SITE_CONFIG))
+    : getDefaultSiteConfig();
+
+  originalSiteConfigBackup = JSON.parse(JSON.stringify(base));
+
+  const draft = localStorage.getItem("nissa_site_config_draft");
+  if (draft) {
+    try {
+      const parsed = JSON.parse(draft);
+      if (parsed && typeof parsed === "object" && parsed.brand && parsed.banner) {
+        currentSiteConfig = parsed;
+        return;
+      }
+    } catch (e) {
+      console.warn("Error al leer borrador de estética:", e);
+    }
+  }
+  currentSiteConfig = base;
+}
+
+function saveEsteticaDraft() {
+  if (!currentSiteConfig) return;
+  try {
+    localStorage.setItem("nissa_site_config_draft", JSON.stringify(currentSiteConfig));
+  } catch (e) {
+    console.warn("No se pudo guardar borrador estético:", e);
+  }
+  if (typeof window !== "undefined") {
+    window.NISSA_SITE_CONFIG = currentSiteConfig;
+  }
+  checkDraftStatus();
+}
+
+function switchEsteticaSubtab(subtab) {
+  activeEsteticaSubtab = subtab;
+  const tabs = ["orden", "banner", "textos", "info", "resenas", "colores"];
+  tabs.forEach(t => {
+    const btn = document.getElementById(`est-tab-${t}`);
+    if (btn) btn.classList.toggle("active", t === subtab);
+  });
+  renderEstetica();
+}
+
+function setEsteticaField(path, value) {
+  if (!currentSiteConfig) loadInitialSiteConfig();
+  const keys = path.split(".");
+  let target = currentSiteConfig;
+  for (let i = 0; i < keys.length - 1; i++) {
+    if (!target[keys[i]] || typeof target[keys[i]] !== "object") {
+      target[keys[i]] = {};
+    }
+    target = target[keys[i]];
+  }
+  target[keys[keys.length - 1]] = value;
+  saveEsteticaDraft();
+}
+
+function moveSectionOrder(index, dir) {
+  if (!currentSiteConfig || !Array.isArray(currentSiteConfig.sectionOrder)) return;
+  const target = index + dir;
+  if (target < 0 || target >= currentSiteConfig.sectionOrder.length) return;
+  const arr = currentSiteConfig.sectionOrder;
+  const tmp = arr[index];
+  arr[index] = arr[target];
+  arr[target] = tmp;
+  saveEsteticaDraft();
+  renderEstetica();
+}
+
+function toggleSectionVisible(index, checked) {
+  if (!currentSiteConfig || !currentSiteConfig.sectionOrder[index]) return;
+  currentSiteConfig.sectionOrder[index].visible = Boolean(checked);
+  saveEsteticaDraft();
+}
+
+function updateNavTabField(index, field, val) {
+  if (!currentSiteConfig || !currentSiteConfig.navTabs[index]) return;
+  currentSiteConfig.navTabs[index][field] = val;
+  saveEsteticaDraft();
+}
+
+function moveNavTabOrder(index, dir) {
+  if (!currentSiteConfig || !Array.isArray(currentSiteConfig.navTabs)) return;
+  const target = index + dir;
+  if (target < 0 || target >= currentSiteConfig.navTabs.length) return;
+  const arr = currentSiteConfig.navTabs;
+  const tmp = arr[index];
+  arr[index] = arr[target];
+  arr[target] = tmp;
+  saveEsteticaDraft();
+  renderEstetica();
+}
+
+function addCustomNavTab() {
+  if (!currentSiteConfig) loadInitialSiteConfig();
+  currentSiteConfig.navTabs = currentSiteConfig.navTabs || [];
+  currentSiteConfig.navTabs.push({
+    id: `nav-custom-${Date.now()}`,
+    href: "#productos",
+    label: "Nueva Pestaña",
+    visible: true,
+    isTerms: false
+  });
+  saveEsteticaDraft();
+  renderEstetica();
+}
+
+function removeNavTab(index) {
+  if (!currentSiteConfig || !Array.isArray(currentSiteConfig.navTabs)) return;
+  if (currentSiteConfig.navTabs.length <= 1) {
+    alert("Debe quedar al menos una pestaña en el menú.");
+    return;
+  }
+  if (confirm(`¿Eliminar la pestaña "${currentSiteConfig.navTabs[index].label}" del menú?`)) {
+    currentSiteConfig.navTabs.splice(index, 1);
+    saveEsteticaDraft();
+    renderEstetica();
+  }
+}
+
+async function handleBannerImageUpload(input) {
+  if (!input || !input.files || input.files.length === 0) return;
+  const file = input.files[0];
+  try {
+    const processed = await processImageFile(file, 1400, 0.82);
+    pendingBannerFileState = {
+      dataUrl: processed.dataUrl,
+      filename: `banner-${Date.now()}.jpg`
+    };
+    currentSiteConfig.banner.image = processed.dataUrl;
+    saveEsteticaDraft();
+    renderEstetica();
+    showAlert(`✓ Imagen de banner cargada (${processed.width}×${processed.height}px, ${processed.sizeKb} KB). Presioná "💾 Guardar cambios" para aplicarla en la tienda.`);
+  } catch (err) {
+    alert("Error al cargar imagen de banner: " + (err.message || err));
+  }
+}
+
+function updateBannerPreviewLive() {
+  const b = currentSiteConfig?.banner || {};
+  const badgeEl = document.getElementById("est-preview-badge");
+  const titleEl = document.getElementById("est-preview-title");
+  const subEl = document.getElementById("est-preview-subtitle");
+  if (badgeEl) badgeEl.textContent = b.badge || "";
+  if (titleEl) titleEl.textContent = b.title || "";
+  if (subEl) subEl.textContent = b.subtitle || "";
+}
+
+function updateInfoCardField(index, field, val) {
+  if (!currentSiteConfig?.infoSection?.cards?.[index]) return;
+  currentSiteConfig.infoSection.cards[index][field] = val;
+  saveEsteticaDraft();
+}
+
+function moveInfoCardOrder(index, dir) {
+  const cards = currentSiteConfig?.infoSection?.cards;
+  if (!Array.isArray(cards)) return;
+  const target = index + dir;
+  if (target < 0 || target >= cards.length) return;
+  const tmp = cards[index];
+  cards[index] = cards[target];
+  cards[target] = tmp;
+  saveEsteticaDraft();
+  renderEstetica();
+}
+
+function addInfoCard() {
+  if (!currentSiteConfig) loadInitialSiteConfig();
+  currentSiteConfig.infoSection = currentSiteConfig.infoSection || { tag: "INFORMACIÓN", title: "Todo lo que necesitás saber", cards: [] };
+  currentSiteConfig.infoSection.cards.push({
+    icon: "✨",
+    title: "Nuevo bloque informativo",
+    text: "Escribí aquí la información que querés mostrar a tus clientes."
+  });
+  saveEsteticaDraft();
+  renderEstetica();
+}
+
+function removeInfoCard(index) {
+  const cards = currentSiteConfig?.infoSection?.cards;
+  if (!Array.isArray(cards)) return;
+  if (confirm(`¿Eliminar la tarjeta "${cards[index]?.title || ""}"?`)) {
+    cards.splice(index, 1);
+    saveEsteticaDraft();
+    renderEstetica();
+  }
+}
+
+function updateReviewField(index, field, val) {
+  const rev = currentSiteConfig?.reviewsSection?.items?.[index];
+  if (!rev) return;
+  rev[field] = field === "stars" ? Number(val) || 5 : val;
+  if (field === "author") {
+    const parts = String(val || "").trim().split(/\s+/).filter(Boolean);
+    if (parts.length >= 2) {
+      rev.initials = (parts[0][0] + parts[1][0]).toUpperCase();
+    } else if (parts.length === 1) {
+      rev.initials = parts[0].substring(0, 2).toUpperCase();
+    }
+  }
+  saveEsteticaDraft();
+}
+
+function moveReviewOrder(index, dir) {
+  const items = currentSiteConfig?.reviewsSection?.items;
+  if (!Array.isArray(items)) return;
+  const target = index + dir;
+  if (target < 0 || target >= items.length) return;
+  const tmp = items[index];
+  items[index] = items[target];
+  items[target] = tmp;
+  saveEsteticaDraft();
+  renderEstetica();
+}
+
+function addReviewItem() {
+  if (!currentSiteConfig) loadInitialSiteConfig();
+  currentSiteConfig.reviewsSection = currentSiteConfig.reviewsSection || { items: [] };
+  currentSiteConfig.reviewsSection.items = currentSiteConfig.reviewsSection.items || [];
+  currentSiteConfig.reviewsSection.items.push({
+    author: "Nuevo Cliente",
+    initials: "NC",
+    avatarBg: "#e0f2fe",
+    avatarColor: "#0369a1",
+    badge: "Cliente",
+    date: "Hace unos días",
+    stars: 5,
+    text: "Excelente atención y servicio técnico."
+  });
+  saveEsteticaDraft();
+  renderEstetica();
+}
+
+function removeReviewItem(index) {
+  const items = currentSiteConfig?.reviewsSection?.items;
+  if (!Array.isArray(items)) return;
+  if (confirm(`¿Eliminar la reseña de "${items[index]?.author || "este cliente"}"?`)) {
+    items.splice(index, 1);
+    saveEsteticaDraft();
+    renderEstetica();
+  }
+}
+
+function updateThemeColorField(key, val, syncInputId) {
+  setEsteticaField(`theme.${key}`, val);
+  if (syncInputId) {
+    const el = document.getElementById(syncInputId);
+    if (el && el.value !== val) el.value = val;
+  }
+}
+
+function resetDefaultThemeColors() {
+  if (!currentSiteConfig) loadInitialSiteConfig();
+  currentSiteConfig.theme = JSON.parse(JSON.stringify(getDefaultSiteConfig().theme));
+  saveEsteticaDraft();
+  renderEstetica();
+  showAlert("✓ Colores restaurados a la paleta original.");
+}
+
+function renderEstetica() {
+  const container = document.getElementById("estetica-content-area");
+  if (!container) return;
+  if (!currentSiteConfig) loadInitialSiteConfig();
+  const cfg = currentSiteConfig;
+
+  if (activeEsteticaSubtab === "orden") {
+    const sections = Array.isArray(cfg.sectionOrder) ? cfg.sectionOrder : [];
+    const navTabs = Array.isArray(cfg.navTabs) ? cfg.navTabs : [];
+    const brand = cfg.brand || {};
+
+    container.innerHTML = `
+      <div class="estetica-card">
+        <div class="estetica-card-header">
+          <div>
+            <h3>🏷️ Identidad, Título de Página y Contacto</h3>
+            <p>Configurá el título de la pestaña del navegador, logo, pie de página y número de WhatsApp.</p>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group flex-2">
+            <label>Título de la página (pestaña del navegador):</label>
+            <input type="text" value="${escapeHtml(brand.pageTitle || '')}" oninput="setEsteticaField('brand.pageTitle', this.value)">
+          </div>
+          <div class="form-group flex-1">
+            <label>Logo / Nombre en cabecera:</label>
+            <input type="text" value="${escapeHtml(brand.headerLogo || '')}" oninput="setEsteticaField('brand.headerLogo', this.value)">
+          </div>
+          <div class="form-group flex-1">
+            <label>WhatsApp de la tienda (botón flotante y pedidos):</label>
+            <input type="text" value="${escapeHtml(brand.whatsappNumber || '')}" placeholder="541136620653" oninput="setEsteticaField('brand.whatsappNumber', this.value)">
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Descripción general (SEO):</label>
+          <input type="text" value="${escapeHtml(brand.metaDescription || '')}" oninput="setEsteticaField('brand.metaDescription', this.value)">
+        </div>
+        <div class="form-row">
+          <div class="form-group flex-1">
+            <label>Nombre en pie de página:</label>
+            <input type="text" value="${escapeHtml(brand.footerBrand || '')}" oninput="setEsteticaField('brand.footerBrand', this.value)">
+          </div>
+          <div class="form-group flex-2">
+            <label>Texto descriptivo del pie de página:</label>
+            <input type="text" value="${escapeHtml(brand.footerSubtitle || '')}" oninput="setEsteticaField('brand.footerSubtitle', this.value)">
+          </div>
+          <div class="form-group flex-1">
+            <label>Copyright:</label>
+            <input type="text" value="${escapeHtml(brand.footerCopyright || '')}" oninput="setEsteticaField('brand.footerCopyright', this.value)">
+          </div>
+        </div>
+      </div>
+
+      <div class="estetica-grid-2">
+        <div class="estetica-card">
+          <div class="estetica-card-header">
+            <div>
+              <h3>📐 Orden de Secciones de la Tienda</h3>
+              <p>Elegí el orden vertical en que aparecen los bloques y si querés mostrar u ocultar alguno.</p>
+            </div>
+          </div>
+          <div class="estetica-order-list">
+            ${sections.map((s, idx) => `
+              <div class="estetica-order-row">
+                <div class="estetica-order-info">
+                  <span class="estetica-order-num">${idx + 1}</span>
+                  <strong>${escapeHtml(s.label || s.id)}</strong>
+                </div>
+                <div class="estetica-order-actions">
+                  <label class="checkbox-label" style="font-size:12px;">
+                    <input type="checkbox" ${s.visible !== false ? "checked" : ""} onchange="toggleSectionVisible(${idx}, this.checked)">
+                    <span>Visible</span>
+                  </label>
+                  <button type="button" class="btn-icon-action" onclick="moveSectionOrder(${idx}, -1)" ${idx === 0 ? "disabled" : ""} title="Subir">⬆️</button>
+                  <button type="button" class="btn-icon-action" onclick="moveSectionOrder(${idx}, 1)" ${idx === sections.length - 1 ? "disabled" : ""} title="Bajar">⬇️</button>
+                </div>
+              </div>
+            `).join("")}
+          </div>
+        </div>
+
+        <div class="estetica-card">
+          <div class="estetica-card-header">
+            <div>
+              <h3>🧭 Pestañas del Menú Superior</h3>
+              <p>Renombrá, reordená, ocultá o agregá pestañas de navegación.</p>
+            </div>
+            <button type="button" class="btn btn-sm btn-outline" onclick="addCustomNavTab()">➕ Agregar Pestaña</button>
+          </div>
+          <div class="estetica-order-list">
+            ${navTabs.map((t, idx) => `
+              <div class="estetica-order-row">
+                <div style="display:flex; gap:8px; flex:1; flex-wrap:wrap; min-width:200px;">
+                  <input type="text" value="${escapeHtml(t.label || '')}" placeholder="Texto de pestaña" style="flex:1; min-width:120px; padding:6px 10px; font-size:13px;" oninput="updateNavTabField(${idx}, 'label', this.value)">
+                  <input type="text" value="${escapeHtml(t.href || '')}" placeholder="#seccion" style="width:120px; padding:6px 10px; font-size:12px; color:#64748b;" ${t.isTerms ? "readonly" : ""} oninput="updateNavTabField(${idx}, 'href', this.value)">
+                </div>
+                <div class="estetica-order-actions">
+                  <label class="checkbox-label" style="font-size:12px;">
+                    <input type="checkbox" ${t.visible !== false ? "checked" : ""} onchange="updateNavTabField(${idx}, 'visible', this.checked)">
+                    <span>Visible</span>
+                  </label>
+                  <button type="button" class="btn-icon-action" onclick="moveNavTabOrder(${idx}, -1)" ${idx === 0 ? "disabled" : ""} title="Subir">⬆️</button>
+                  <button type="button" class="btn-icon-action" onclick="moveNavTabOrder(${idx}, 1)" ${idx === navTabs.length - 1 ? "disabled" : ""} title="Bajar">⬇️</button>
+                  ${!t.isTerms ? `<button type="button" class="btn-icon-action danger" onclick="removeNavTab(${idx})" title="Eliminar pestaña">✕</button>` : ""}
+                </div>
+              </div>
+            `).join("")}
+          </div>
+        </div>
+      </div>
+    `;
+  } else if (activeEsteticaSubtab === "banner") {
+    const b = cfg.banner || {};
+    const imgRaw = b.image || "./banner-nissa.jpg";
+    const imgSrc = imgRaw.startsWith("data:") || imgRaw.startsWith("http") || imgRaw.startsWith("./") || imgRaw.startsWith("/") ? imgRaw : `./fotos/${imgRaw}`;
+
+    container.innerHTML = `
+      <div class="estetica-card">
+        <div class="estetica-card-header">
+          <div>
+            <h3>🖼️ Banner Principal de Bienvenida</h3>
+            <p>Editá la fotografía de portada, los títulos y los botones principales.</p>
+          </div>
+          <label for="estetica-banner-file" class="btn btn-primary btn-sm" style="cursor:pointer;">
+            📁 Cambiar Imagen del Banner
+          </label>
+          <input type="file" id="estetica-banner-file" accept="image/*" class="sr-only-input" onchange="handleBannerImageUpload(this)">
+        </div>
+
+        <div class="estetica-banner-preview">
+          <img src="${escapeHtml(imgSrc)}" alt="Vista previa del banner">
+          <div class="estetica-banner-preview-overlay">
+            <div id="est-preview-badge" style="font-size:11px; font-weight:800; color:#38bdf8; margin-bottom:6px;">${escapeHtml(b.badge || '')}</div>
+            <div id="est-preview-title" style="font-size:24px; font-weight:900; letter-spacing:-0.02em; margin-bottom:6px;">${escapeHtml(b.title || '')}</div>
+            <div id="est-preview-subtitle" style="font-size:13px; color:#e2e8f0; max-width:560px;">${escapeHtml(b.subtitle || '')}</div>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group flex-1">
+            <label>Insignia superior:</label>
+            <input type="text" value="${escapeHtml(b.badge || '')}" oninput="setEsteticaField('banner.badge', this.value); updateBannerPreviewLive()">
+          </div>
+          <div class="form-group flex-2">
+            <label>Título principal:</label>
+            <input type="text" value="${escapeHtml(b.title || '')}" oninput="setEsteticaField('banner.title', this.value); updateBannerPreviewLive()">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Subtítulo descriptivo:</label>
+          <textarea rows="2" oninput="setEsteticaField('banner.subtitle', this.value); updateBannerPreviewLive()">${escapeHtml(b.subtitle || '')}</textarea>
+        </div>
+
+        <div class="form-group">
+          <label>Ruta o enlace de imagen actual:</label>
+          <input type="text" value="${escapeHtml(b.image && b.image.startsWith('data:') ? 'Nueva imagen cargada lista para guardar' : (b.image || './banner-nissa.jpg'))}" ${b.image && b.image.startsWith('data:') ? 'readonly' : ''} oninput="setEsteticaField('banner.image', this.value)">
+          <span class="form-hint">Podés subir cualquier foto con el botón "📁 Cambiar Imagen del Banner" o escribir una ruta (ej: ./banner-nissa.jpg).</span>
+        </div>
+
+        <div class="estetica-grid-2" style="margin-top:16px;">
+          <div class="estetica-item-card">
+            <div class="estetica-item-top">
+              <strong>Botón Principal</strong>
+              <label class="checkbox-label" style="font-size:12px;">
+                <input type="checkbox" ${b.primaryBtnVisible !== false ? "checked" : ""} onchange="setEsteticaField('banner.primaryBtnVisible', this.checked)">
+                <span>Mostrar botón</span>
+              </label>
+            </div>
+            <div class="form-group">
+              <label>Texto del botón:</label>
+              <input type="text" value="${escapeHtml(b.primaryBtnText || '')}" oninput="setEsteticaField('banner.primaryBtnText', this.value)">
+            </div>
+            <div class="form-group" style="margin-bottom:0;">
+              <label>Destino (sección o enlace):</label>
+              <input type="text" value="${escapeHtml(b.primaryBtnHref || '#cotizador')}" oninput="setEsteticaField('banner.primaryBtnHref', this.value)">
+            </div>
+          </div>
+
+          <div class="estetica-item-card">
+            <div class="estetica-item-top">
+              <strong>Botón Secundario</strong>
+              <label class="checkbox-label" style="font-size:12px;">
+                <input type="checkbox" ${b.secondaryBtnVisible !== false ? "checked" : ""} onchange="setEsteticaField('banner.secondaryBtnVisible', this.checked)">
+                <span>Mostrar botón</span>
+              </label>
+            </div>
+            <div class="form-group">
+              <label>Texto del botón:</label>
+              <input type="text" value="${escapeHtml(b.secondaryBtnText || '')}" oninput="setEsteticaField('banner.secondaryBtnText', this.value)">
+            </div>
+            <div class="form-group" style="margin-bottom:0;">
+              <label>Destino (sección o enlace):</label>
+              <input type="text" value="${escapeHtml(b.secondaryBtnHref || '#productos')}" oninput="setEsteticaField('banner.secondaryBtnHref', this.value)">
+            </div>
+          </div>
+        </div>
+      </div>
+    `;
+  } else if (activeEsteticaSubtab === "textos") {
+    const cot = cfg.cotizadorSection || {};
+    const tnd = cfg.tiendaSection || {};
+
+    container.innerHTML = `
+      <div class="estetica-grid-2">
+        <div class="estetica-card">
+          <div class="estetica-card-header">
+            <div>
+              <h3>🛠️ Encabezado del Presupuestador</h3>
+              <p>Textos visibles arriba del cotizador de reparaciones.</p>
+            </div>
+          </div>
+          <div class="form-group">
+            <label>Insignia superior:</label>
+            <input type="text" value="${escapeHtml(cot.badge || '')}" oninput="setEsteticaField('cotizadorSection.badge', this.value)">
+          </div>
+          <div class="form-group">
+            <label>Título principal:</label>
+            <input type="text" value="${escapeHtml(cot.title || '')}" oninput="setEsteticaField('cotizadorSection.title', this.value)">
+          </div>
+          <div class="form-group">
+            <label>Subtítulo:</label>
+            <textarea rows="2" oninput="setEsteticaField('cotizadorSection.subtitle', this.value)">${escapeHtml(cot.subtitle || '')}</textarea>
+          </div>
+          <div class="form-group" style="margin-bottom:0;">
+            <label>Pregunta Paso 1:</label>
+            <input type="text" value="${escapeHtml(cot.step1Label || '')}" oninput="setEsteticaField('cotizadorSection.step1Label', this.value)">
+          </div>
+        </div>
+
+        <div class="estetica-card">
+          <div class="estetica-card-header">
+            <div>
+              <h3>🛍️ Encabezado de la Tienda Online</h3>
+              <p>Títulos y textos de búsqueda del catálogo de productos.</p>
+            </div>
+          </div>
+          <div class="form-group">
+            <label>Título de la tienda:</label>
+            <input type="text" value="${escapeHtml(tnd.title || '')}" oninput="setEsteticaField('tiendaSection.title', this.value)">
+          </div>
+          <div class="form-group">
+            <label>Subtítulo:</label>
+            <textarea rows="2" oninput="setEsteticaField('tiendaSection.subtitle', this.value)">${escapeHtml(tnd.subtitle || '')}</textarea>
+          </div>
+          <div class="form-row">
+            <div class="form-group flex-1">
+              <label>Etiqueta divisora:</label>
+              <input type="text" value="${escapeHtml(tnd.dividerTag || '')}" oninput="setEsteticaField('tiendaSection.dividerTag', this.value)">
+            </div>
+            <div class="form-group flex-2">
+              <label>Título del divisor:</label>
+              <input type="text" value="${escapeHtml(tnd.dividerTitle || '')}" oninput="setEsteticaField('tiendaSection.dividerTitle', this.value)">
+            </div>
+          </div>
+          <div class="form-group" style="margin-bottom:0;">
+            <label>Texto del buscador:</label>
+            <input type="text" value="${escapeHtml(tnd.searchPlaceholder || '')}" oninput="setEsteticaField('tiendaSection.searchPlaceholder', this.value)">
+          </div>
+        </div>
+      </div>
+    `;
+  } else if (activeEsteticaSubtab === "info") {
+    const info = cfg.infoSection || {};
+    const cards = Array.isArray(info.cards) ? info.cards : [];
+
+    container.innerHTML = `
+      <div class="estetica-card">
+        <div class="estetica-card-header">
+          <div>
+            <h3>ℹ️ Sección de Información y Garantía</h3>
+            <p>Editá el encabezado y cada tarjeta informativa de la tienda.</p>
+          </div>
+          <button type="button" class="btn btn-success btn-sm" onclick="addInfoCard()">➕ Agregar Tarjeta</button>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group flex-1">
+            <label>Etiqueta superior:</label>
+            <input type="text" value="${escapeHtml(info.tag || '')}" oninput="setEsteticaField('infoSection.tag', this.value)">
+          </div>
+          <div class="form-group flex-2">
+            <label>Título de la sección:</label>
+            <input type="text" value="${escapeHtml(info.title || '')}" oninput="setEsteticaField('infoSection.title', this.value)">
+          </div>
+        </div>
+
+        <div style="margin-top:12px;">
+          ${cards.map((c, idx) => `
+            <div class="estetica-item-card">
+              <div class="estetica-item-top">
+                <strong>Tarjeta #${idx + 1}</strong>
+                <div class="estetica-order-actions">
+                  <button type="button" class="btn-icon-action" onclick="moveInfoCardOrder(${idx}, -1)" ${idx === 0 ? "disabled" : ""} title="Subir">⬆️</button>
+                  <button type="button" class="btn-icon-action" onclick="moveInfoCardOrder(${idx}, 1)" ${idx === cards.length - 1 ? "disabled" : ""} title="Bajar">⬇️</button>
+                  <button type="button" class="btn-icon-action danger" onclick="removeInfoCard(${idx})" title="Eliminar tarjeta">✕</button>
+                </div>
+              </div>
+              <div class="form-row">
+                <div class="form-group" style="width:90px;">
+                  <label>Ícono:</label>
+                  <input type="text" value="${escapeHtml(c.icon || '')}" style="text-align:center; font-size:18px;" oninput="updateInfoCardField(${idx}, 'icon', this.value)">
+                </div>
+                <div class="form-group flex-2">
+                  <label>Título:</label>
+                  <input type="text" value="${escapeHtml(c.title || '')}" oninput="updateInfoCardField(${idx}, 'title', this.value)">
+                </div>
+              </div>
+              <div class="form-group" style="margin-bottom:0;">
+                <label>Descripción:</label>
+                <textarea rows="2" oninput="updateInfoCardField(${idx}, 'text', this.value)">${escapeHtml(c.text || '')}</textarea>
+              </div>
+            </div>
+          `).join("")}
+        </div>
+      </div>
+    `;
+  } else if (activeEsteticaSubtab === "resenas") {
+    const revSec = cfg.reviewsSection || {};
+    const items = Array.isArray(revSec.items) ? revSec.items : [];
+
+    container.innerHTML = `
+      <div class="estetica-card">
+        <div class="estetica-card-header">
+          <div>
+            <h3>⭐ Sección de Reseñas y Calificaciones</h3>
+            <p>Personalizá el puntaje mostrado, los textos y las opiniones individuales de clientes.</p>
+          </div>
+          <button type="button" class="btn btn-success btn-sm" onclick="addReviewItem()">➕ Agregar Reseña</button>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group flex-1">
+            <label>Etiqueta superior:</label>
+            <input type="text" value="${escapeHtml(revSec.headerTag || '')}" oninput="setEsteticaField('reviewsSection.headerTag', this.value)">
+          </div>
+          <div class="form-group flex-2">
+            <label>Título principal:</label>
+            <input type="text" value="${escapeHtml(revSec.title || '')}" oninput="setEsteticaField('reviewsSection.title', this.value)">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Subtítulo:</label>
+          <input type="text" value="${escapeHtml(revSec.subtitle || '')}" oninput="setEsteticaField('reviewsSection.subtitle', this.value)">
+        </div>
+
+        <div class="form-row" style="margin-bottom:16px;">
+          <div class="form-group flex-1">
+            <label>Puntaje (ej: 5.0):</label>
+            <input type="text" value="${escapeHtml(revSec.score || '5.0')}" oninput="setEsteticaField('reviewsSection.score', this.value)">
+          </div>
+          <div class="form-group flex-1">
+            <label>Calificación (ej: Excelente):</label>
+            <input type="text" value="${escapeHtml(revSec.scoreLabel || 'Excelente')}" oninput="setEsteticaField('reviewsSection.scoreLabel', this.value)">
+          </div>
+          <div class="form-group flex-2">
+            <label>Texto inferior (ej: reseñas de Google):</label>
+            <input type="text" value="${escapeHtml(revSec.basedOnText || 'reseñas de Google')}" oninput="setEsteticaField('reviewsSection.basedOnText', this.value)">
+          </div>
+        </div>
+
+        <div>
+          ${items.map((rev, idx) => `
+            <div class="estetica-item-card">
+              <div class="estetica-item-top">
+                <strong>Reseña #${idx + 1} · ${escapeHtml(rev.author || 'Cliente')}</strong>
+                <div class="estetica-order-actions">
+                  <button type="button" class="btn-icon-action" onclick="moveReviewOrder(${idx}, -1)" ${idx === 0 ? "disabled" : ""} title="Subir">⬆️</button>
+                  <button type="button" class="btn-icon-action" onclick="moveReviewOrder(${idx}, 1)" ${idx === items.length - 1 ? "disabled" : ""} title="Bajar">⬇️</button>
+                  <button type="button" class="btn-icon-action danger" onclick="removeReviewItem(${idx})" title="Eliminar reseña">✕</button>
+                </div>
+              </div>
+              <div class="form-row">
+                <div class="form-group flex-2">
+                  <label>Nombre del cliente:</label>
+                  <input type="text" value="${escapeHtml(rev.author || '')}" oninput="updateReviewField(${idx}, 'author', this.value)">
+                </div>
+                <div class="form-group flex-1">
+                  <label>Etiqueta (ej: Cliente / Local Guide):</label>
+                  <input type="text" value="${escapeHtml(rev.badge || 'Cliente')}" oninput="updateReviewField(${idx}, 'badge', this.value)">
+                </div>
+                <div class="form-group flex-1">
+                  <label>Fecha:</label>
+                  <input type="text" value="${escapeHtml(rev.date || '')}" oninput="updateReviewField(${idx}, 'date', this.value)">
+                </div>
+                <div class="form-group" style="width:110px;">
+                  <label>Estrellas:</label>
+                  <select onchange="updateReviewField(${idx}, 'stars', this.value)">
+                    <option value="5" ${Number(rev.stars) === 5 ? "selected" : ""}>5 ★★★★★</option>
+                    <option value="4" ${Number(rev.stars) === 4 ? "selected" : ""}>4 ★★★★</option>
+                    <option value="3" ${Number(rev.stars) === 3 ? "selected" : ""}>3 ★★★</option>
+                    <option value="2" ${Number(rev.stars) === 2 ? "selected" : ""}>2 ★★</option>
+                    <option value="1" ${Number(rev.stars) === 1 ? "selected" : ""}>1 ★</option>
+                  </select>
+                </div>
+              </div>
+              <div class="form-group" style="margin-bottom:0;">
+                <label>Lo que dice la reseña:</label>
+                <textarea rows="2" oninput="updateReviewField(${idx}, 'text', this.value)">${escapeHtml(rev.text || '')}</textarea>
+              </div>
+            </div>
+          `).join("")}
+        </div>
+      </div>
+    `;
+  } else if (activeEsteticaSubtab === "colores") {
+    const th = cfg.theme || {};
+    const colorDefs = [
+      { key: "primaryColor", label: "Color Principal (Botones y detalles)", def: "#2563eb" },
+      { key: "accentColor", label: "Color Acento (Etiquetas e insignias)", def: "#0ea5e9" },
+      { key: "bgColor", label: "Fondo General de la Página", def: "#f8fafc" },
+      { key: "headerBg", label: "Fondo de la Barra Superior", def: "#ffffff" },
+      { key: "footerBg", label: "Fondo del Pie de Página", def: "#0f172a" },
+      { key: "textColor", label: "Color Principal de Textos", def: "#0f172a" }
+    ];
+
+    container.innerHTML = `
+      <div class="estetica-card">
+        <div class="estetica-card-header">
+          <div>
+            <h3>🎨 Paleta de Colores y Estilo Visual</h3>
+            <p>Personalizá los colores de la tienda o volvé a la paleta original cuando quieras.</p>
+          </div>
+          <button type="button" class="btn btn-outline btn-sm" onclick="resetDefaultThemeColors()">↺ Restaurar colores originales</button>
+        </div>
+
+        <div class="estetica-color-grid">
+          ${colorDefs.map(c => {
+            const val = th[c.key] || c.def;
+            return `
+              <div class="estetica-color-box">
+                <label style="font-size:12.5px; font-weight:800;">${c.label}</label>
+                <div class="estetica-color-row">
+                  <input type="color" id="est-cp-${c.key}" value="${escapeHtml(val)}" oninput="updateThemeColorField('${c.key}', this.value, 'est-tx-${c.key}')">
+                  <input type="text" id="est-tx-${c.key}" value="${escapeHtml(val)}" oninput="updateThemeColorField('${c.key}', this.value, 'est-cp-${c.key}')">
+                </div>
+              </div>
+            `;
+          }).join("")}
+        </div>
+
+        <div class="estetica-color-box" style="margin-top:16px; max-width:420px;">
+          <label style="font-size:12.5px; font-weight:800;">Oscuridad del filtro sobre la imagen del banner (${Math.round((parseFloat(th.bannerOverlayOpacity || "0.72")) * 100)}%)</label>
+          <input type="range" min="0.2" max="0.9" step="0.05" value="${escapeHtml(th.bannerOverlayOpacity || "0.72")}" oninput="setEsteticaField('theme.bannerOverlayOpacity', this.value); this.previousElementSibling.textContent = 'Oscuridad del filtro sobre la imagen del banner (' + Math.round(parseFloat(this.value) * 100) + '%)';">
+        </div>
+      </div>
+    `;
+  }
+}
+
+async function saveSiteConfigFileToServer(code) {
+  if (!code) return;
+  try {
+    await fetch("/api/save-site-config", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ code })
+    });
+  } catch (err) {
+    console.warn("Servidor no disponible para /api/save-site-config:", err);
+  }
+}
+
+function generateSiteConfigJsCode() {
+  const cfgJson = JSON.stringify(currentSiteConfig || getDefaultSiteConfig(), null, 2);
+  const applierSource = typeof window.applyNissaSiteConfig === "function"
+    ? window.applyNissaSiteConfig.toString()
+    : `function applyNissaSiteConfig() {}`;
+
+  return `// Configuración estética y de contenido oficial de la tienda NISSA
+// Generado y gestionado desde el Panel de Administración NISSA
+// Actualizado: ${new Date().toLocaleString("es-AR")}
+
+var NISSA_SITE_CONFIG = ${cfgJson};
+
+${applierSource}
+
+if (typeof window !== "undefined") {
+  window.NISSA_SITE_CONFIG = NISSA_SITE_CONFIG;
+  window.applyNissaSiteConfig = applyNissaSiteConfig;
+  if (document.readyState !== "loading") {
+    applyNissaSiteConfig();
+  } else {
+    document.addEventListener("DOMContentLoaded", applyNissaSiteConfig);
+  }
+}
+`;
+}
+
+async function saveAndPublishEstetica() {
+  if (!currentSiteConfig) loadInitialSiteConfig();
+  saveEsteticaDraft();
+
+  const cfg = getGithubConfig();
+  if (!cfg.owner || !cfg.repo || !cfg.token) {
+    alert("⚠️ Para guardar y publicar los cambios en la tienda en línea, primero ingresá tu clave de conexión.\n\nPresioná Aceptar para configurarla.");
+    openGithubModal();
+    return;
+  }
+
+  const btn = document.getElementById("btn-publish-estetica");
+  const originalText = btn ? btn.innerHTML : "";
+  if (btn) {
+    btn.disabled = true;
+    btn.innerHTML = "⏳ Guardando cambios...";
+  }
+
+  try {
+    // 1. Si se cargó una imagen nueva para el banner (dataURL), subirla primero a fotos/
+    if (currentSiteConfig.banner && typeof currentSiteConfig.banner.image === "string" && currentSiteConfig.banner.image.startsWith("data:")) {
+      const filename = (pendingBannerFileState && pendingBannerFileState.filename)
+        ? pendingBannerFileState.filename
+        : `banner-nissa-${Date.now()}.jpg`;
+
+      if (btn) btn.innerHTML = "⏳ Subiendo imagen del banner...";
+      saveImageFileToServer(filename, currentSiteConfig.banner.image);
+
+      const upRes = await uploadSinglePhotoToGithub(filename, currentSiteConfig.banner.image, cfg);
+      if (!upRes.ok) {
+        const errMsg = upRes.data?.message || upRes.statusText || "";
+        if (upRes.status === 401 || errMsg.includes("Bad credentials")) {
+          alert("⚠️ La clave de conexión expiró o no es válida. Por favor ingresala nuevamente en ⚙️ Conexión.");
+          openGithubModal();
+          return;
+        }
+      }
+      currentSiteConfig.banner.image = `./fotos/${filename}`;
+      pendingBannerFileState = { dataUrl: "", filename: "" };
+    }
+
+    if (btn) btn.innerHTML = "⏳ Guardando cambios...";
+
+    const newCode = generateSiteConfigJsCode();
+    saveSiteConfigFileToServer(newCode);
+
+    const path = "site-config.js";
+    const getUrl = `https://api.github.com/repos/${cfg.owner}/${cfg.repo}/contents/${path}?ref=${cfg.branch}&t=${Date.now()}`;
+    let sha = null;
+    const getRes = await callGithubApi(getUrl, { token: cfg.token });
+    if (getRes.ok && getRes.data && getRes.data.sha) {
+      sha = getRes.data.sha;
+    }
+
+    const payload = {
+      message: `Actualización de estética y diseño NISSA [Admin Panel]`,
+      content: utf8ToBase64(newCode),
+      branch: cfg.branch
+    };
+    if (sha) payload.sha = sha;
+
+    const putUrl = `https://api.github.com/repos/${cfg.owner}/${cfg.repo}/contents/${path}`;
+    let putRes = await callGithubApi(putUrl, {
+      method: "PUT",
+      token: cfg.token,
+      body: payload
+    });
+
+    if (putRes.status === 409) {
+      const freshGet = await callGithubApi(getUrl, { token: cfg.token });
+      if (freshGet.ok && freshGet.data && freshGet.data.sha) {
+        payload.sha = freshGet.data.sha;
+        putRes = await callGithubApi(putUrl, {
+          method: "PUT",
+          token: cfg.token,
+          body: payload
+        });
+      }
+    }
+
+    if (putRes.ok) {
+      localStorage.removeItem("nissa_site_config_draft");
+      checkDraftStatus();
+      renderEstetica();
+      showAlert("✓ ¡Estética y diseño guardados y publicados! La tienda se actualizará en línea en unos instantes.");
+    } else {
+      const msg = putRes.data?.message || putRes.statusText || "";
+      if (putRes.status === 401 || msg.includes("Bad credentials")) {
+        alert("⚠️ La clave de conexión expiró o no es válida. Por favor ingresala nuevamente en ⚙️ Conexión.");
+        openGithubModal();
+      } else {
+        alert(`No se pudieron guardar los cambios (${putRes.status}): ${msg}`);
+      }
+    }
+  } catch (err) {
+    alert("Error de conexión al guardar cambios: " + (err.message || err));
+  } finally {
+    if (btn) {
+      btn.disabled = false;
+      btn.innerHTML = originalText;
+    }
+  }
 }
 
 // ========================================================
@@ -4262,5 +5236,32 @@ window.resetToOriginalCotizador = resetToOriginalCotizador;
 window.debouncedAutoSaveCotizador = debouncedAutoSaveCotizador;
 window.duplicateCelularModel = duplicateCelularModel;
 window.toggleCustomBrandInput = toggleCustomBrandInput;
+window.updateWarrantyPreviewCell = updateWarrantyPreviewCell;
 
+// Estética y Diseño de la Tienda
+window.switchEsteticaSubtab = switchEsteticaSubtab;
+window.renderEstetica = renderEstetica;
+window.setEsteticaField = setEsteticaField;
+window.moveSectionOrder = moveSectionOrder;
+window.toggleSectionVisible = toggleSectionVisible;
+window.updateNavTabField = updateNavTabField;
+window.moveNavTabOrder = moveNavTabOrder;
+window.addCustomNavTab = addCustomNavTab;
+window.removeNavTab = removeNavTab;
+window.handleBannerImageUpload = handleBannerImageUpload;
+window.updateBannerPreviewLive = updateBannerPreviewLive;
+window.updateInfoCardField = updateInfoCardField;
+window.moveInfoCardOrder = moveInfoCardOrder;
+window.addInfoCard = addInfoCard;
+window.removeInfoCard = removeInfoCard;
+window.updateReviewField = updateReviewField;
+window.moveReviewOrder = moveReviewOrder;
+window.addReviewItem = addReviewItem;
+window.removeReviewItem = removeReviewItem;
+window.updateThemeColorField = updateThemeColorField;
+window.resetDefaultThemeColors = resetDefaultThemeColors;
+window.saveAndPublishEstetica = saveAndPublishEstetica;
+window.syncDescToTab3 = syncDescToTab3;
+window.syncDescFromTab3 = syncDescFromTab3;
+window.clearStoredToken = clearStoredToken;
 

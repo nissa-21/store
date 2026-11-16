@@ -13,13 +13,13 @@ let selectedWarrantyId = 'estandar';
 const WIDGET_WARRANTIES = [
   {
     id: 'basic',
-    name: 'Básica',
-    dias: 3,
-    icon: '🛡️',
+    name: 'Sin garantía',
+    dias: 0,
+    icon: '⚡',
     badgeClass: 'basic',
-    badgeText: '-15%',
-    extraLabel: 'Opción económica (-15%)',
-    duracionText: '3 días de garantía'
+    badgeText: '-25%',
+    extraLabel: 'Sin garantía (-25%)',
+    duracionText: 'Sin cobertura de garantía'
   },
   {
     id: 'estandar',
@@ -123,10 +123,10 @@ function computeWarrantyPrice(rawPrice, warrantyId) {
 
   const calculateNumeric = (num) => {
     if (warrantyId === 'basic') {
-      // Basic es la opción económica de 3 días: el precio base de Estándar es +15% de Basic
-      return Math.round(num / 1.15);
+      // Sin garantía: 25% de descuento sobre el valor estándar de 30 días
+      return Math.round(num * 0.75);
     } else if (warrantyId === 'ultra') {
-      // ULTRA es 90 días con +30% adicional
+      // Extendida 90 días: +30% adicional
       return Math.round(num * 1.30);
     }
     // Estándar (30 días): precio oficial de la reparación (base del cotizador)
@@ -377,9 +377,10 @@ function updateSelectionTracker() {
 
   if (hasRepairSelected) {
     const wObj = getSelectedWarrantyObj();
+    const warrantyPillLabel = wObj.dias === 0 ? '⚡ Sin garantía' : `🛡️ ${wObj.name} (${wObj.dias} días)`;
     pillsHtml += arrow;
     pillsHtml += `<button type="button" onclick="focusWarrantySection()" title="Cambiar garantía" style="display:inline-flex;align-items:center;gap:6px;background:#fef3c7;color:#92400e;border:1px solid #fde68a;padding:4px 10px;border-radius:20px;font-size:11px;font-weight:700;cursor:pointer;box-shadow:0 1px 2px rgba(0,0,0,0.05);transition:all 0.15s;">
-      <span>🛡️ ${wObj.name} (${wObj.dias} días)</span>
+      <span>${warrantyPillLabel}</span>
       <span style="font-size:10px;color:#d97706;font-weight:900;">✎</span>
     </button>`;
   }
@@ -1152,11 +1153,11 @@ function calculateAndShowWidgetBudget() {
     safeSetText('summary-desc', sDesc);
     safeSetText('summary-badge', sBadge);
     safeSetText('summary-price', sPrice);
-    safeSetText('summary-warranty-badge', `${wObj.icon} Garantía ${wObj.name}: ${wObj.dias} días`);
+    safeSetText('summary-warranty-badge', wObj.dias === 0 ? '⚡ Sin garantía (-25%)' : `${wObj.icon} Garantía ${wObj.name}: ${wObj.dias} días`);
 
     let subWarrantyText = '✓ Garantía oficial Estándar (30 días) incluida';
     if (wObj.id === 'basic') {
-      subWarrantyText = '✓ Garantía Básica de verificación (3 días)';
+      subWarrantyText = '✓ Opción económica sin garantía (-25% de descuento)';
     } else if (wObj.id === 'ultra') {
       subWarrantyText = '✓ Cobertura total Extendida (90 días)';
     }
@@ -1180,12 +1181,15 @@ function sendWidgetWhatsApp() {
   const badge = document.getElementById('summary-badge')?.innerText || '';
   const price = document.getElementById('summary-price')?.innerText || '';
   const wObj = getSelectedWarrantyObj();
+  const warrantyWaText = wObj.dias === 0
+    ? 'Sin garantía (-25% de descuento)'
+    : `${wObj.name} (${wObj.dias} días - ${wObj.extraLabel || wObj.badgeText})`;
 
   let text = `¡Hola NISSA! 👋 Armé este presupuesto desde el cotizador de la tienda:\n\n`;
   text += `⚙️ *Categoría:* ${widgetCategory}\n`;
   text += `📦 *Servicio:* ${title}\n`;
   text += `📋 *Detalle:* ${badge}\n`;
-  text += `🛡️ *Garantía elegida:* ${wObj.name} (${wObj.dias} días - ${wObj.extraLabel || wObj.badgeText})\n`;
+  text += `🛡️ *Garantía elegida:* ${warrantyWaText}\n`;
   text += `💰 *Presupuesto Estimado:* *${price}*\n\n`;
   text += `✓ He leído y acepto los términos y condiciones de servicio técnico.\n\n`;
   text += `¿Tienen disponibilidad de turnos para llevarlo? ¡Muchas gracias!`;

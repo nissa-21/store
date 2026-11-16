@@ -1,5 +1,7 @@
 // NISSA - Tienda Online
-const WHATSAPP_NUMBER = "541136620653";
+const WHATSAPP_NUMBER = (typeof window !== "undefined" && window.NISSA_SITE_CONFIG && window.NISSA_SITE_CONFIG.brand && window.NISSA_SITE_CONFIG.brand.whatsappNumber)
+  ? String(window.NISSA_SITE_CONFIG.brand.whatsappNumber).replace(/\D/g, "") || "541136620653"
+  : "541136620653";
 
 const productsGrid = document.getElementById("products-grid");
 const searchInput = document.getElementById("search-input");
@@ -380,10 +382,8 @@ function getUnitPrice(item) {
 }
 
 function getTierLabel(quantity) {
-  if (quantity >= 20) return "Precio +20 u.";
-  if (quantity >= 5) return "Precio x5 u.";
-  if (quantity >= 3) return "Precio x3 u.";
-  return "Precio x1 u.";
+  if (quantity >= 3) return "A partir de 3 u.";
+  return "Por unidad";
 }
 
 function renderCart() {

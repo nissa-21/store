@@ -23,7 +23,7 @@
         <span class="login-badge">ADMIN</span>
       </div>
       <h2>Panel de Control de Tienda</h2>
-      <p class="login-sub">Gestión visual de productos, fotos, precios escalonados y stock para GitHub Pages.</p>
+      <p class="login-sub">Gestión de productos, precios, presupuestador y estética de tu tienda.</p>
 
       <div style="background: #f1f5f9; border: 1px solid #cbd5e1; border-radius: 8px; padding: 10px 14px; font-size: 12.5px; color: #475569; margin-bottom: 20px; text-align: left; display: flex; align-items: center; gap: 8px;">
         <span style="font-size: 16px;">🔒</span>
@@ -72,19 +72,22 @@
             <button type="button" id="btn-nav-cotizador" class="tab-btn" onclick="switchAdminSection('cotizador')">
               🛠️ Presupuestador
             </button>
+            <button type="button" id="btn-nav-estetica" class="tab-btn" onclick="switchAdminSection('estetica')">
+              🎨 Estética y Tienda
+            </button>
           </nav>
           <div class="admin-meta-info">
             <span id="product-count-badge" class="count-badge">Cargando...</span>
-            <span id="draft-indicator" class="draft-badge" style="display: none;">Borrador local activo</span>
+            <span id="draft-indicator" class="draft-badge" style="display: none;">Cambios pendientes</span>
           </div>
         </div>
 
         <div class="admin-header-right">
           <a href="/" target="_blank" class="btn btn-outline" title="Ver cómo se ve la tienda">
-            👁️ Ver Tienda Pública
+            👁️ Ver Tienda
           </a>
-          <button type="button" class="btn btn-secondary" onclick="openGithubModal()" title="Configurar conexión directa con tu GitHub">
-            ⚙️ Conexión GitHub
+          <button type="button" class="btn btn-secondary" onclick="openGithubModal()" title="Configurar acceso y token de publicación">
+            ⚙️ Conexión
           </button>
           <button type="button" class="btn btn-ghost" onclick="openPassChangeModal()" title="Cambiar clave de acceso">
             🔑 Clave
@@ -114,30 +117,15 @@
           <section class="admin-action-hero">
             <div class="action-hero-text">
               <h1>Gestión de Productos y Precios</h1>
-              <p>Modificá cualquier información de la tienda. Al terminar, podés descargar <code>products.js</code> o publicarlo directamente a tu GitHub con un clic a costo $0.</p>
+              <p>Modificá cualquier producto, precio o foto de la tienda y presioná Guardar cambios.</p>
             </div>
 
             <div class="action-hero-buttons">
-              <button type="button" class="btn btn-save-action" onclick="applyAndSaveCatalogChanges()" id="btn-apply-catalog">
-                💾 Cargar Cambios a la Tienda
-              </button>
               <button type="button" class="btn btn-success" onclick="openProductModal()">
                 ➕ Nuevo Producto
               </button>
-              <button type="button" class="btn btn-primary" onclick="downloadProductsJs()">
-                📥 Descargar products.js
-              </button>
-              <a href="./nissa-tienda-completa.zip" download="nissa-tienda-completa.zip" class="btn btn-outline" style="text-decoration:none; display:inline-flex; align-items:center; gap:6px;" title="Descargar paquete ZIP con todos los archivos corregidos listos para tu repositorio">
-                📦 Descargar Proyecto Completo (ZIP)
-              </a>
-              <button type="button" class="btn btn-github" onclick="publishDirectlyToGithub()" id="btn-publish-github">
-                🚀 Publicar en GitHub
-              </button>
-              <button type="button" class="btn btn-secondary" onclick="openCodePreviewModal()">
-                📋 Ver Código
-              </button>
-              <button type="button" class="btn btn-outline" onclick="resetToOriginalCatalog()" title="Vuelve a los productos originales descartando borradores locales">
-                🔄 Restaurar
+              <button type="button" class="btn btn-save-action" onclick="applyAndSaveCatalogChanges()" id="btn-publish-github">
+                💾 Guardar cambios
               </button>
             </div>
           </section>
@@ -186,25 +174,13 @@
           <!-- HERO DEL PRESUPUESTADOR -->
           <section class="admin-action-hero">
             <div class="action-hero-text">
-              <h1>Presupuestador de Reparaciones NISSA</h1>
-              <p>Modificá absolutamente todo el cotizador: modelos de celulares, precios de reparaciones (pantallas, baterías, pines, cámaras), consolas, mandos, computadoras, WhatsApp y textos legales.</p>
+              <h1>Presupuestador de Reparaciones</h1>
+              <p>Modificá modelos, precios de reparaciones, servicios, WhatsApp y textos legales. Los precios muestran el cálculo automático sin garantía (-25%), 30 días y 90 días (+30%).</p>
             </div>
 
             <div class="action-hero-buttons">
-              <button type="button" class="btn btn-save-action" onclick="applyAndSaveCotizadorChanges()" id="btn-apply-cotizador">
-                💾 Cargar Cambios al Presupuestador
-              </button>
-              <button type="button" class="btn btn-primary" onclick="downloadCotizadorJs()">
-                📥 Descargar cotizador-data.js
-              </button>
-              <button type="button" class="btn btn-github" onclick="publishCotizadorDirectlyToGithub()" id="btn-publish-cotizador-github">
-                🚀 Publicar en GitHub
-              </button>
-              <button type="button" class="btn btn-secondary" onclick="openCotizadorCodeModal()">
-                📋 Ver Código
-              </button>
-              <button type="button" class="btn btn-outline" onclick="resetToOriginalCotizador()" title="Descartar borrador local y volver a tarifas originales">
-                🔄 Restaurar
+              <button type="button" class="btn btn-save-action" onclick="publishCotizadorDirectlyToGithub()" id="btn-publish-cotizador-github">
+                💾 Guardar cambios
               </button>
             </div>
           </section>
@@ -251,13 +227,56 @@
             <!-- Inyectado dinámicamente por admin.js -->
           </div>
         </div>
+
+        <!-- ========================================================
+             SECCIÓN 3: ESTÉTICA Y CONTENIDO GENERAL DE LA TIENDA
+             ======================================================== -->
+        <div id="section-estetica" style="display: none;">
+          <section class="admin-action-hero">
+            <div class="action-hero-text">
+              <h1>Estética y Diseño de la Tienda</h1>
+              <p>Editá el banner, orden de secciones, pestañas del menú, título, textos, tarjetas de información, reseñas de clientes y colores.</p>
+            </div>
+
+            <div class="action-hero-buttons">
+              <button type="button" class="btn btn-save-action" onclick="saveAndPublishEstetica()" id="btn-publish-estetica">
+                💾 Guardar cambios
+              </button>
+            </div>
+          </section>
+
+          <div class="cotizador-subtabs" id="estetica-subtabs">
+            <button type="button" class="cotizador-subtab-btn active" id="est-tab-orden" onclick="switchEsteticaSubtab('orden')">
+              🧭 Orden y Pestañas
+            </button>
+            <button type="button" class="cotizador-subtab-btn" id="est-tab-banner" onclick="switchEsteticaSubtab('banner')">
+              🖼️ Banner Principal
+            </button>
+            <button type="button" class="cotizador-subtab-btn" id="est-tab-textos" onclick="switchEsteticaSubtab('textos')">
+              ✏️ Textos y Títulos
+            </button>
+            <button type="button" class="cotizador-subtab-btn" id="est-tab-info" onclick="switchEsteticaSubtab('info')">
+              ℹ️ Información
+            </button>
+            <button type="button" class="cotizador-subtab-btn" id="est-tab-resenas" onclick="switchEsteticaSubtab('resenas')">
+              ⭐ Reseñas
+            </button>
+            <button type="button" class="cotizador-subtab-btn" id="est-tab-colores" onclick="switchEsteticaSubtab('colores')">
+              🎨 Colores y Estilo
+            </button>
+          </div>
+
+          <div id="estetica-content-area" class="cotizador-content-area">
+            <!-- Inyectado dinámicamente por admin.js -->
+          </div>
+        </div>
+      </div>
     </main>
 
     <!-- FOOTER DEL ADMIN -->
     <footer class="admin-footer">
       <div class="admin-footer-container">
-        <span>NISSA Admin Suite · 100% Compatible con GitHub Pages ($0 costo)</span>
-        <span>Archivo destino: <code>products.js</code></span>
+        <span>NISSA · Panel de Administración</span>
       </div>
     </footer>
 
@@ -336,9 +355,9 @@
               <div class="image-quick-header">
                 <div class="image-quick-title-wrap">
                   <div class="image-quick-title">
-                    <span>🖼️ Imagen Principal del Producto (Para Tienda y Repositorio GitHub)</span>
+                    <span>🖼️ Imagen Principal del Producto</span>
                   </div>
-                  <span class="image-quick-subtitle">Cargá o cambiá la foto del producto. Podés elegirla de tu equipo, arrastrarla o pegarla con Ctrl+V</span>
+                  <span class="image-quick-subtitle">Cargá o cambiá la foto del producto desde tu equipo, arrastrándola o con Ctrl+V</span>
                 </div>
                 
                 <div class="image-quick-actions">
@@ -383,8 +402,8 @@
                   </div>
 
                   <div class="github-image-notice">
-                    <span>🚀</span>
-                    <span>Al presionar <strong>"Guardar y Publicar en GitHub"</strong>, esta foto se guarda directamente dentro de tu catálogo <code>products.js</code>. <strong>No necesitás crear ni gestionar ninguna carpeta "fotos/"</strong>.</span>
+                    <span>✓</span>
+                    <span>Al presionar <strong>"Guardar cambios"</strong>, esta foto se guarda y publica automáticamente en la tienda.</span>
                   </div>
                 </div>
               </div>
@@ -504,10 +523,10 @@
                     
                     <div class="preview-title" id="main-image-display-name">producto.jpg</div>
                     
-                    <!-- INDICADOR DE SUBIDA DIRECTA AL REPOSITORIO -->
+                    <!-- INDICADOR DE SUBIDA -->
                     <div class="storage-mode-box" style="background: rgba(16, 185, 129, 0.08); border: 1px solid rgba(16, 185, 129, 0.25); border-radius: 8px; padding: 10px 14px; margin: 12px 0;">
                       <span style="font-size: 12px; color: #10b981; font-weight: 600; display: flex; align-items: center; gap: 6px;">
-                        ✓ La foto se optimizará y subirá directamente a la raíz de tu repositorio en GitHub al guardar.
+                        ✓ La foto se optimizará y guardará automáticamente en tu tienda.
                       </span>
                     </div>
 
@@ -614,7 +633,7 @@
             Cancelar
           </button>
           <button type="submit" class="btn btn-modal-github" id="btn-save-and-publish-github">
-            🚀 Guardar y Publicar en Tienda (GitHub)
+            💾 Guardar cambios
           </button>
         </div>
       </form>
@@ -623,69 +642,49 @@
   </div>
 
   <!-- ========================================================
-       MODAL 2: CONFIGURACIÓN DE GITHUB (API GRATUITA)
+       MODAL 2: CONFIGURACIÓN DE CONEXIÓN PARA PUBLICAR
        ======================================================== -->
   <div id="github-modal" class="modal-backdrop" style="display: none;">
     <div class="modal-container">
       <div class="modal-header">
         <div>
-          <h2>Conexión Directa con GitHub (1 Clic)</h2>
-          <span class="modal-subtitle">Permite publicar cambios sin salir del navegador y sin tocar código</span>
+          <h2>Configuración de Conexión</h2>
+          <span class="modal-subtitle">Credenciales para que tus cambios se publiquen directamente en la tienda</span>
         </div>
         <button type="button" class="modal-close-btn" onclick="closeGithubModal()">✕</button>
       </div>
 
       <div class="modal-body">
-        <div class="github-guide-box">
-          <div class="guide-step">
-            <span class="step-num">1</span>
-            <div>
-              <span>Entrá a GitHub para generar tu token gratuito con permiso <strong>repo</strong>:</span><br>
-              <a href="https://github.com/settings/tokens/new?scopes=repo&description=NISSA+Admin+Panel" target="_blank" rel="noopener" class="btn btn-sm btn-secondary" style="margin-top: 6px; display: inline-flex; align-items: center; gap: 6px; text-decoration: none; font-weight: 600;">
-                🔑 Abrir GitHub y Generar Token (Preconfigurado) ➔
-              </a>
-            </div>
-          </div>
-          <div class="guide-step">
-            <span class="step-num">2</span>
-            <span>En GitHub hacé clic en el botón verde <strong>"Generate token"</strong> al final de la página y copialo. (Asegurate de que tenga tildado <strong>repo</strong>).</span>
-          </div>
-          <div class="guide-step">
-            <span class="step-num">3</span>
-            <span>Pegalo en el campo <strong>Personal Access Token</strong> abajo y presioná <strong>"🔌 Probar Conexión"</strong>. Si ves <em>"Bad credentials"</em>, significa que el token anterior venció o fue revocado; generar uno nuevo con el botón del Paso 1 lo soluciona de inmediato.</span>
-          </div>
-        </div>
-
         <form id="github-config-form" onsubmit="saveGithubConfig(event)">
           <div class="form-group">
-            <label for="gh-owner">Usuario u Organización de GitHub: <span class="req">*</span></label>
-            <input type="text" id="gh-owner" placeholder="Ej: tu-usuario" required>
+            <label for="gh-owner">Usuario: <span class="req">*</span></label>
+            <input type="text" id="gh-owner" placeholder="Ej: nissa-21" required>
           </div>
 
           <div class="form-group">
-            <label for="gh-repo">Nombre del Repositorio: <span class="req">*</span></label>
-            <input type="text" id="gh-repo" placeholder="Ej: nissa-tienda o tu-repo" required>
+            <label for="gh-repo">Repositorio: <span class="req">*</span></label>
+            <input type="text" id="gh-repo" placeholder="Ej: store" required>
           </div>
 
           <div class="form-group">
-            <label for="gh-branch">Rama (Branch):</label>
-            <input type="text" id="gh-branch" placeholder="main o master o gh-pages" value="main" required>
+            <label for="gh-branch">Rama:</label>
+            <input type="text" id="gh-branch" placeholder="main" value="main" required>
           </div>
 
           <div class="form-group">
-            <label for="gh-path">Ruta del archivo:</label>
+            <label for="gh-path">Archivo de catálogo:</label>
             <input type="text" id="gh-path" value="products.js" required>
           </div>
 
           <div class="form-group">
-            <label for="gh-token">Personal Access Token (PAT): <span class="req">*</span></label>
+            <label for="gh-token">Token de acceso: <span class="req">*</span></label>
             <div class="input-with-action">
-              <input type="password" id="gh-token" placeholder="Pegá tu nuevo token (ghp_... o github_pat_...)" autocomplete="new-password">
+              <input type="password" id="gh-token" placeholder="Pegá tu token de acceso..." autocomplete="new-password">
               <button type="button" class="btn-toggle-pass" onclick="togglePassVisibility('gh-token')" title="Ver / Ocultar token">👁️</button>
               <button type="button" class="btn btn-xs btn-outline" onclick="clearStoredToken()" title="Borrar token guardado en este navegador" style="margin-left: 6px; padding: 6px 10px; font-size: 11.5px; white-space: nowrap;">🗑️ Borrar</button>
             </div>
             <div id="gh-token-stored-status" style="margin-top: 6px; font-size: 12px; font-weight: 600; color: #475569;"></div>
-            <span class="form-hint" style="color: #0369a1; font-weight: 500;">🔒 <strong>100% Privado:</strong> Tu token se almacena únicamente en el almacenamiento local de este navegador (LocalStorage). Jamás se sube a GitHub ni se incluye en el código fuente, por lo que GitHub no lo revoca.</span>
+            <span class="form-hint" style="color: #0369a1; font-weight: 500;">🔒 Se guarda únicamente en este navegador de forma privada.</span>
           </div>
 
           <div id="gh-test-status" class="status-msg" style="display: none;"></div>
@@ -695,13 +694,8 @@
               🔌 Probar Conexión
             </button>
             <button type="submit" class="btn btn-primary">
-              💾 Guardar Configuración
+              💾 Guardar cambios
             </button>
-          </div>
-
-          <div style="margin-top: 20px; padding: 12px 14px; background: #f8fafc; border: 1px dashed #cbd5e1; border-radius: 8px; font-size: 12.5px; color: #475569;">
-            💡 <strong>¿Preferís no usar ningún Token?</strong><br>
-            Podés guardar tus cambios de productos y fotos con el botón <em>"Guardar solo local"</em> y luego hacer clic en <strong>"📥 Descargar products.js"</strong> en el panel. Subís ese archivo a tu repositorio de GitHub reemplazando el anterior y tu tienda se actualizará en 30 segundos sin necesidad de tokens ni permisos.
           </div>
         </form>
       </div>
@@ -1024,6 +1018,7 @@
         </button>
       </div>
     </div>
+  </div>
   <!-- ========================================================
        MODAL 11: BIBLIOTECA VISUAL DE FOTOS (fotos/ Y CATÁLOGO)
        ======================================================== -->
@@ -1077,10 +1072,14 @@
     </div>
   </div>
 
-  <!-- CARGA DE ARCHIVOS ORIGINALES DE PRODUCTOS Y COTIZADOR CON ANTI-CACHE -->
+  <!-- CARGA DE ARCHIVOS ORIGINALES CON ANTI-CACHE -->
   <script>
-    document.write('<script src="./products.js?t=' + Date.now() + '"><\/script>');
-    document.write('<script src="./cotizador-data.js?t=' + Date.now() + '"><\/script>');
+    (function() {
+      var ts = Date.now();
+      document.write('<script src="./site-config.js?t=' + ts + '"><\/script>');
+      document.write('<script src="./products.js?t=' + ts + '"><\/script>');
+      document.write('<script src="./cotizador-data.js?t=' + ts + '"><\/script>');
+    })();
   </script>
   <!-- LÓGICA COMPLETA DEL ADMINISTRADOR -->
   <script type="module" src="./admin.js"></script>

@@ -140,6 +140,33 @@ export default defineConfig(() => {
               }
             }
 
+            // 3b. Guardar configuración estética site-config.js en el disco local
+            if (url === '/api/save-site-config' && req.method === 'POST') {
+              try {
+                const fs = await import('fs');
+                const pathMod = await import('path');
+                const data = await parseBody(req);
+                const { code } = data;
+                if (!code || typeof code !== 'string') {
+                  res.statusCode = 400;
+                  res.setHeader('Content-Type', 'application/json');
+                  res.end(JSON.stringify({ ok: false, error: 'Código de site-config.js no proporcionado' }));
+                  return;
+                }
+                const cfgPath = pathMod.resolve(__dirname, 'site-config.js');
+                fs.writeFileSync(cfgPath, code, 'utf-8');
+                res.statusCode = 200;
+                res.setHeader('Content-Type', 'application/json');
+                res.end(JSON.stringify({ ok: true }));
+                return;
+              } catch (err: any) {
+                res.statusCode = 500;
+                res.setHeader('Content-Type', 'application/json');
+                res.end(JSON.stringify({ ok: false, error: err.message }));
+                return;
+              }
+            }
+
             // 4. Proxy seguro a GitHub API (evita CORS, bloqueos de navegador, extensiones e iframes)
             if (url === '/api/github-proxy' && req.method === 'POST') {
               try {
