@@ -2740,7 +2740,7 @@ function switchAdminSection(section) {
 
 function switchCotizadorSubtab(subtab) {
   activeCotizadorCategory = subtab;
-  const subtabs = ["celulares", "consolas", "joysticks", "computadoras", "general"];
+  const subtabs = ["celulares", "consolas", "joysticks", "computadoras", "garantias", "general"];
   subtabs.forEach(s => {
     const btn = document.getElementById(`subtab-${s}`);
     if (btn) {
@@ -2801,6 +2801,12 @@ function renderCotizadorDynamicActions() {
         ➕ Nuevo Servicio PC
       </button>
     `;
+  } else if (activeCotizadorCategory === "garantias") {
+    container.innerHTML = `
+      <button type="button" class="btn btn-primary btn-sm" onclick="saveWarrantyAdjustmentsSettings()">
+        💾 Aplicar Porcentajes
+      </button>
+    `;
   } else if (activeCotizadorCategory === "general") {
     container.innerHTML = `
       <button type="button" class="btn btn-primary btn-sm" onclick="saveGeneralSettings()">
@@ -2821,6 +2827,8 @@ function renderCotizador() {
     renderJoysticksSection();
   } else if (activeCotizadorCategory === "computadoras") {
     renderComputadorasSection();
+  } else if (activeCotizadorCategory === "garantias") {
+    renderGarantiasSettingsSection();
   } else if (activeCotizadorCategory === "general") {
     renderGeneralSettingsSection();
   }
@@ -3606,8 +3614,80 @@ function updateWarrantyPercentInput(key, val, previewId) {
     currentCotizador.warrantyAdjustments[key] = n;
     const prev = document.getElementById(previewId);
     if (prev) prev.textContent = describeWarrantyPctLabel(n);
+    const exEl = document.getElementById("garantias-live-example");
+    if (exEl) {
+      const adj = currentCotizador.warrantyAdjustments;
+      const calcEx = (p) => `$${Math.round(100000 * Math.max(0, 1 + p / 100)).toLocaleString("es-AR")}`;
+      exEl.innerHTML = `Ejemplo sobre un arreglo de <strong>$100.000</strong>: ⚡ Sin garantía: <strong>${calcEx(adj.basic)}</strong> · 🛡️ 30 días: <strong>${calcEx(adj.estandar)}</strong> · 👑 90 días: <strong>${calcEx(adj.ultra)}</strong>`;
+    }
     saveCotizadorDraft();
   }
+}
+
+function renderGarantiasSettingsSection() {
+  const container = document.getElementById("cotizador-content-area");
+  if (!container || !currentCotizador) return;
+  const adj = getAdminWarrantyAdjustments();
+  const calcEx = (p) => `$${Math.round(100000 * Math.max(0, 1 + p / 100)).toLocaleString("es-AR")}`;
+
+  container.innerHTML = `
+    <div class="cotizador-settings-card">
+      <h2 style="font-size:20px; font-weight:800; margin-bottom:8px;">🛡️ Porcentajes de Descuento o Incremento por Garantía</h2>
+      <p class="settings-help" style="margin-bottom:18px;">Elegí cuánto porcentaje se <strong>resta</strong> (con signo menos, ej: <code>-20</code>) o se <strong>suma</strong> (ej: <code>30</code>) sobre el precio base en cada una de las 3 opciones del presupuestador. Poné <code>0</code> para mantener el precio base sin cambios.</p>
+
+      <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(210px, 1fr)); gap:14px; margin-bottom:18px;">
+        <div style="background:#f8fafc; border:1px solid #cbd5e1; border-radius:12px; padding:14px;">
+          <label for="gar-warranty-basic" style="font-size:13px; font-weight:800; display:block; margin-bottom:8px;">⚡ Sin garantía (0 días)</label>
+          <div style="display:flex; align-items:center; gap:8px;">
+            <input type="number" id="gar-warranty-basic" step="1" min="-95" max="500" class="repair-inline-input" style="max-width:120px; font-weight:800; font-size:15px;" value="${adj.basic}" oninput="updateWarrantyPercentInput('basic', this.value, 'gar-preview-basic')">
+            <span style="font-weight:800; color:#475569;">%</span>
+          </div>
+          <small id="gar-preview-basic" style="display:block; margin-top:8px; font-size:12px; font-weight:700; color:#0284c7;">${describeWarrantyPctLabel(adj.basic)}</small>
+        </div>
+
+        <div style="background:#f8fafc; border:1px solid #cbd5e1; border-radius:12px; padding:14px;">
+          <label for="gar-warranty-estandar" style="font-size:13px; font-weight:800; display:block; margin-bottom:8px;">🛡️ Garantía 30 días</label>
+          <div style="display:flex; align-items:center; gap:8px;">
+            <input type="number" id="gar-warranty-estandar" step="1" min="-95" max="500" class="repair-inline-input" style="max-width:120px; font-weight:800; font-size:15px;" value="${adj.estandar}" oninput="updateWarrantyPercentInput('estandar', this.value, 'gar-preview-estandar')">
+            <span style="font-weight:800; color:#475569;">%</span>
+          </div>
+          <small id="gar-preview-estandar" style="display:block; margin-top:8px; font-size:12px; font-weight:700; color:#0284c7;">${describeWarrantyPctLabel(adj.estandar)}</small>
+        </div>
+
+        <div style="background:#f8fafc; border:1px solid #cbd5e1; border-radius:12px; padding:14px;">
+          <label for="gar-warranty-ultra" style="font-size:13px; font-weight:800; display:block; margin-bottom:8px;">👑 Garantía 90 días</label>
+          <div style="display:flex; align-items:center; gap:8px;">
+            <input type="number" id="gar-warranty-ultra" step="1" min="-95" max="500" class="repair-inline-input" style="max-width:120px; font-weight:800; font-size:15px;" value="${adj.ultra}" oninput="updateWarrantyPercentInput('ultra', this.value, 'gar-preview-ultra')">
+            <span style="font-weight:800; color:#475569;">%</span>
+          </div>
+          <small id="gar-preview-ultra" style="display:block; margin-top:8px; font-size:12px; font-weight:700; color:#0284c7;">${describeWarrantyPctLabel(adj.ultra)}</small>
+        </div>
+      </div>
+
+      <div id="garantias-live-example" style="background:#eff6ff; border:1px solid #bfdbfe; color:#1e3a8a; border-radius:10px; padding:12px 14px; font-size:13px; margin-bottom:18px;">
+        Ejemplo sobre un arreglo de <strong>$100.000</strong>: ⚡ Sin garantía: <strong>${calcEx(adj.basic)}</strong> · 🛡️ 30 días: <strong>${calcEx(adj.estandar)}</strong> · 👑 90 días: <strong>${calcEx(adj.ultra)}</strong>
+      </div>
+
+      <div style="display:flex; gap:12px; flex-wrap:wrap;">
+        <button type="button" class="btn btn-primary" onclick="saveWarrantyAdjustmentsSettings()">
+          💾 Aplicar y Publicar Porcentajes
+        </button>
+      </div>
+    </div>
+  `;
+}
+
+function saveWarrantyAdjustmentsSettings() {
+  const wb = document.getElementById("gar-warranty-basic");
+  const we = document.getElementById("gar-warranty-estandar");
+  const wu = document.getElementById("gar-warranty-ultra");
+  const adj = getAdminWarrantyAdjustments();
+  if (wb && !isNaN(Number(wb.value))) adj.basic = Number(wb.value);
+  if (we && !isNaN(Number(we.value))) adj.estandar = Number(we.value);
+  if (wu && !isNaN(Number(wu.value))) adj.ultra = Number(wu.value);
+  currentCotizador.warrantyAdjustments = adj;
+  saveCotizadorDraft();
+  publishCotizadorDirectlyToGithub();
 }
 
 function renderGeneralSettingsSection() {
@@ -5352,4 +5432,5 @@ window.syncDescToTab3 = syncDescToTab3;
 window.syncDescFromTab3 = syncDescFromTab3;
 window.clearStoredToken = clearStoredToken;
 window.updateWarrantyPercentInput = updateWarrantyPercentInput;
+window.saveWarrantyAdjustmentsSettings = saveWarrantyAdjustmentsSettings;
 
