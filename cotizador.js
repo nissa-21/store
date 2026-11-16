@@ -10,6 +10,34 @@ let selectedMandoServiceId = '';
 let selectedCompServiceId = '';
 let selectedWarrantyId = 'estandar';
 
+function getWarrantyAdjustments() {
+  const custom = (typeof PRECIOS_WIDGET !== 'undefined' && PRECIOS_WIDGET && PRECIOS_WIDGET.warrantyAdjustments) || {};
+  const toNum = (v, def) => {
+    const n = Number(v);
+    return isNaN(n) ? def : n;
+  };
+  return {
+    basic: toNum(custom.basic, -20),
+    estandar: toNum(custom.estandar, 0),
+    ultra: toNum(custom.ultra, 30)
+  };
+}
+
+function formatWarrantyPercentTag(pct, isStandard = false) {
+  if (pct === 0) return isStandard ? 'OFICIAL' : '0%';
+  return pct > 0 ? `+${pct}%` : `${pct}%`;
+}
+
+function formatWarrantyExtraLabel(wId, pct) {
+  if (wId === 'basic') {
+    if (pct < 0) return `Sin garantía (${pct}%)`;
+    if (pct > 0) return `Sin garantía (+${pct}%)`;
+    return 'Sin garantía (precio base)';
+  }
+  if (pct === 0) return 'Precio oficial estándar';
+  return pct > 0 ? `+${pct}% adicional` : `${pct}% de descuento`;
+}
+
 const WIDGET_WARRANTIES = [
   {
     id: 'basic',
@@ -17,8 +45,8 @@ const WIDGET_WARRANTIES = [
     dias: 0,
     icon: '⚡',
     badgeClass: 'basic',
-    badgeText: '-25%',
-    extraLabel: 'Sin garantía (-25%)',
+    badgeText: '-20%',
+    extraLabel: 'Sin garantía (-20%)',
     duracionText: 'Sin cobertura de garantía'
   },
   {
@@ -42,6 +70,19 @@ const WIDGET_WARRANTIES = [
     duracionText: '90 días de garantía'
   }
 ];
+
+function getDynamicWarranties() {
+  const adj = getWarrantyAdjustments();
+  return WIDGET_WARRANTIES.map(w => {
+    const pct = adj[w.id] ?? 0;
+    return {
+      ...w,
+      percent: pct,
+      badgeText: formatWarrantyPercentTag(pct, w.id === 'estandar'),
+      extraLabel: formatWarrantyExtraLabel(w.id, pct)
+    };
+  });
+}
 
 function safeSetStyle(id, prop, value) {
   const el = document.getElementById(id);
@@ -88,7 +129,8 @@ function reFormatPrice(val) {
 }
 
 function getSelectedWarrantyObj() {
-  return WIDGET_WARRANTIES.find(w => w.id === selectedWarrantyId) || WIDGET_WARRANTIES[1];
+  const list = getDynamicWarranties();
+  return list.find(w => w.id === selectedWarrantyId) || list[1];
 }
 
 function getBaseRepairPrice() {
@@ -121,16 +163,12 @@ function computeWarrantyPrice(rawPrice, warrantyId) {
     return s || 'Consultar';
   }
 
+  const adj = getWarrantyAdjustments();
+  const pct = Number(adj[warrantyId] ?? (warrantyId === 'basic' ? -20 : warrantyId === 'ultra' ? 30 : 0));
+
   const calculateNumeric = (num) => {
-    if (warrantyId === 'basic') {
-      // Sin garantía: 25% de descuento sobre el valor estándar de 30 días
-      return Math.round(num * 0.75);
-    } else if (warrantyId === 'ultra') {
-      // Extendida 90 días: +30% adicional
-      return Math.round(num * 1.30);
-    }
-    // Estándar (30 días): precio oficial de la reparación (base del cotizador)
-    return Math.round(num);
+    const multiplier = Math.max(0, 1 + (pct / 100));
+    return Math.round(num * multiplier);
   };
 
   if (typeof rawPrice === 'number' && !isNaN(rawPrice)) {
@@ -161,7 +199,7 @@ function renderWarrantyCards() {
   if (rawBase === null) return;
 
   container.innerHTML = '';
-  WIDGET_WARRANTIES.forEach(w => {
+  getDynamicWarranties().forEach(w => {
     const isAct = w.id === selectedWarrantyId;
     const finalPriceStr = computeWarrantyPrice(rawBase, w.id);
     const card = document.createElement('button');
@@ -1153,13 +1191,20 @@ function calculateAndShowWidgetBudget() {
     safeSetText('summary-desc', sDesc);
     safeSetText('summary-badge', sBadge);
     safeSetText('summary-price', sPrice);
-    safeSetText('summary-warranty-badge', wObj.dias === 0 ? '⚡ Sin garantía (-25%)' : `${wObj.icon} Garantía ${wObj.name}: ${wObj.dias} días`);
+    const pctBadge = wObj.percent === 0 ? '' : ` (${wObj.percent > 0 ? '+' : ''}${wObj.percent}%)`;
+    safeSetText('summary-warranty-badge', wObj.dias === 0 ? `⚡ Sin garantía${pctBadge}` : `${wObj.icon} Garantía ${wObj.name}: ${wObj.dias} días${pctBadge}`);
 
-    let subWarrantyText = '✓ Garantía oficial Estándar (30 días) incluida';
+    let subWarrantyText = wObj.percent === 0
+      ? '✓ Garantía oficial Estándar (30 días) incluida'
+      : `✓ Garantía Estándar (30 días) (${wObj.percent > 0 ? '+' : ''}${wObj.percent}%)`;
     if (wObj.id === 'basic') {
-      subWarrantyText = '✓ Opción económica sin garantía (-25% de descuento)';
+      if (wObj.percent < 0) subWarrantyText = `✓ Opción económica sin garantía (${wObj.percent}% de descuento)`;
+      else if (wObj.percent > 0) subWarrantyText = `✓ Opción sin garantía (+${wObj.percent}%)`;
+      else subWarrantyText = '✓ Opción sin cobertura de garantía';
     } else if (wObj.id === 'ultra') {
-      subWarrantyText = '✓ Cobertura total Extendida (90 días)';
+      subWarrantyText = wObj.percent === 0
+        ? '✓ Cobertura total Extendida (90 días)'
+        : `✓ Cobertura total Extendida (90 días) (${wObj.percent > 0 ? '+' : ''}${wObj.percent}%)`;
     }
     safeSetText('summary-warranty-sub', subWarrantyText);
 
@@ -1182,7 +1227,7 @@ function sendWidgetWhatsApp() {
   const price = document.getElementById('summary-price')?.innerText || '';
   const wObj = getSelectedWarrantyObj();
   const warrantyWaText = wObj.dias === 0
-    ? 'Sin garantía (-25% de descuento)'
+    ? (wObj.percent < 0 ? `Sin garantía (${wObj.percent}% de descuento)` : (wObj.percent > 0 ? `Sin garantía (+${wObj.percent}%)` : 'Sin garantía'))
     : `${wObj.name} (${wObj.dias} días - ${wObj.extraLabel || wObj.badgeText})`;
 
   let text = `¡Hola NISSA! 👋 Armé este presupuesto desde el cotizador de la tienda:\n\n`;

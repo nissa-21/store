@@ -2642,11 +2642,15 @@ function loadInitialCotizador() {
       businessName: "NISSA",
       showTerms: true,
       termsText: "Los valores informados son de referencia y están sujetos a revisión técnica final en el local.",
+      warrantyAdjustments: { basic: -20, estandar: 0, ultra: 30 },
       celulares: [],
       consolas: [],
       joysticks: [],
       computadoras: []
     };
+  }
+  if (!currentCotizador.warrantyAdjustments) {
+    currentCotizador.warrantyAdjustments = { basic: -20, estandar: 0, ultra: 30 };
   }
 }
 
@@ -2874,6 +2878,24 @@ function selectCelularBrand(brandName) {
   renderCelularesSection();
 }
 
+function getAdminWarrantyAdjustments() {
+  const custom = (currentCotizador && currentCotizador.warrantyAdjustments) || {};
+  const toNum = (v, def) => {
+    const n = Number(v);
+    return isNaN(n) ? def : n;
+  };
+  return {
+    basic: toNum(custom.basic, -20),
+    estandar: toNum(custom.estandar, 0),
+    ultra: toNum(custom.ultra, 30)
+  };
+}
+
+function formatAdminPctTag(pct) {
+  if (pct === 0) return "0%";
+  return pct > 0 ? `+${pct}%` : `${pct}%`;
+}
+
 function formatAdminWarrantyBreakdown(rawPrice) {
   if (rawPrice === undefined || rawPrice === null) {
     return '<span class="w-pill w-muted">Sin precio numérico</span>';
@@ -2897,15 +2919,16 @@ function formatAdminWarrantyBreakdown(rawPrice) {
     return '<span class="w-pill w-muted">Sin cálculo automático</span>';
   }
 
-  const pSin = Math.round(num * 0.75);
-  const p30 = Math.round(num);
-  const p90 = Math.round(num * 1.30);
+  const adj = getAdminWarrantyAdjustments();
+  const pSin = Math.round(num * Math.max(0, 1 + adj.basic / 100));
+  const p30 = Math.round(num * Math.max(0, 1 + adj.estandar / 100));
+  const p90 = Math.round(num * Math.max(0, 1 + adj.ultra / 100));
 
   const fmt = (val) => isUsd ? `${val} USD` : `$${val.toLocaleString("es-AR")}`;
   return `
-    <span class="w-pill w-none" title="Sin garantía (-25%)">⚡ Sin gar.: <strong>${fmt(pSin)}</strong></span>
-    <span class="w-pill w-std" title="Garantía estándar 30 días">🛡️ 30d: <strong>${fmt(p30)}</strong></span>
-    <span class="w-pill w-ext" title="Garantía extendida 90 días (+30%)">👑 90d: <strong>${fmt(p90)}</strong></span>
+    <span class="w-pill w-none" title="Sin garantía (${formatAdminPctTag(adj.basic)})">⚡ Sin gar. (${formatAdminPctTag(adj.basic)}): <strong>${fmt(pSin)}</strong></span>
+    <span class="w-pill w-std" title="Garantía 30 días (${formatAdminPctTag(adj.estandar)})">🛡️ 30d${adj.estandar !== 0 ? ` (${formatAdminPctTag(adj.estandar)})` : ""}: <strong>${fmt(p30)}</strong></span>
+    <span class="w-pill w-ext" title="Garantía 90 días (${formatAdminPctTag(adj.ultra)})">👑 90d (${formatAdminPctTag(adj.ultra)}): <strong>${fmt(p90)}</strong></span>
   `;
 }
 
@@ -3568,14 +3591,67 @@ function deleteDevice(type, devIdx) {
 // --------------------------------------------------------
 // 9.5 CONFIGURACIÓN GENERAL Y TÉRMINOS
 // --------------------------------------------------------
+function describeWarrantyPctLabel(pct) {
+  const n = Number(pct);
+  if (isNaN(n) || n === 0) return "Precio base oficial (0%)";
+  if (n < 0) return `Descuento del ${Math.abs(n)}%`;
+  return `Recargo del +${n}%`;
+}
+
+function updateWarrantyPercentInput(key, val, previewId) {
+  if (!currentCotizador) return;
+  currentCotizador.warrantyAdjustments = getAdminWarrantyAdjustments();
+  const n = Number(val);
+  if (!isNaN(n)) {
+    currentCotizador.warrantyAdjustments[key] = n;
+    const prev = document.getElementById(previewId);
+    if (prev) prev.textContent = describeWarrantyPctLabel(n);
+    saveCotizadorDraft();
+  }
+}
+
 function renderGeneralSettingsSection() {
   const container = document.getElementById("cotizador-content-area");
   if (!container || !currentCotizador) return;
+  const adj = getAdminWarrantyAdjustments();
 
   container.innerHTML = `
     <div class="cotizador-settings-card">
       <h2 style="font-size:20px; font-weight:800; margin-bottom:18px;">⚙️ Ajustes Generales del Presupuestador</h2>
       
+      <div class="settings-group" style="background:#f8fafc; border:1px solid #e2e8f0; border-radius:14px; padding:16px; margin-bottom:20px;">
+        <label style="display:block; font-size:14px; font-weight:800; margin-bottom:6px;">📊 Porcentajes de Garantía (Sumar o Restar %)</label>
+        <p class="settings-help" style="margin-bottom:14px;">Usá valores <strong>negativos</strong> para hacer descuento (ej: <code>-20</code> resta 20%) o <strong>positivos</strong> para sumar recargo (ej: <code>30</code> suma 30%). Poné <code>0</code> para mantener el precio base.</p>
+        <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(200px, 1fr)); gap:12px;">
+          <div style="background:#fff; border:1px solid #cbd5e1; border-radius:10px; padding:12px;">
+            <label for="set-warranty-basic" style="font-size:12.5px; font-weight:800; display:block; margin-bottom:6px;">⚡ Sin garantía (0 días)</label>
+            <div style="display:flex; align-items:center; gap:6px;">
+              <input type="number" id="set-warranty-basic" step="1" min="-95" max="500" class="repair-inline-input" style="max-width:110px;" value="${adj.basic}" oninput="updateWarrantyPercentInput('basic', this.value, 'preview-w-basic')">
+              <span style="font-weight:800; color:#475569;">%</span>
+            </div>
+            <small id="preview-w-basic" style="display:block; margin-top:6px; font-size:11.5px; font-weight:700; color:#0284c7;">${describeWarrantyPctLabel(adj.basic)}</small>
+          </div>
+
+          <div style="background:#fff; border:1px solid #cbd5e1; border-radius:10px; padding:12px;">
+            <label for="set-warranty-estandar" style="font-size:12.5px; font-weight:800; display:block; margin-bottom:6px;">🛡️ Garantía 30 días</label>
+            <div style="display:flex; align-items:center; gap:6px;">
+              <input type="number" id="set-warranty-estandar" step="1" min="-95" max="500" class="repair-inline-input" style="max-width:110px;" value="${adj.estandar}" oninput="updateWarrantyPercentInput('estandar', this.value, 'preview-w-estandar')">
+              <span style="font-weight:800; color:#475569;">%</span>
+            </div>
+            <small id="preview-w-estandar" style="display:block; margin-top:6px; font-size:11.5px; font-weight:700; color:#0284c7;">${describeWarrantyPctLabel(adj.estandar)}</small>
+          </div>
+
+          <div style="background:#fff; border:1px solid #cbd5e1; border-radius:10px; padding:12px;">
+            <label for="set-warranty-ultra" style="font-size:12.5px; font-weight:800; display:block; margin-bottom:6px;">👑 Garantía 90 días</label>
+            <div style="display:flex; align-items:center; gap:6px;">
+              <input type="number" id="set-warranty-ultra" step="1" min="-95" max="500" class="repair-inline-input" style="max-width:110px;" value="${adj.ultra}" oninput="updateWarrantyPercentInput('ultra', this.value, 'preview-w-ultra')">
+              <span style="font-weight:800; color:#475569;">%</span>
+            </div>
+            <small id="preview-w-ultra" style="display:block; margin-top:6px; font-size:11.5px; font-weight:700; color:#0284c7;">${describeWarrantyPctLabel(adj.ultra)}</small>
+          </div>
+        </div>
+      </div>
+
       <div class="settings-group">
         <label for="set-cot-whatsapp">Número de WhatsApp receptor:</label>
         <input type="text" id="set-cot-whatsapp" class="repair-inline-input" value="${escapeHtml(currentCotizador.whatsapp || '5491136620653')}">
@@ -3615,6 +3691,15 @@ function saveGeneralSettings() {
   const bn = document.getElementById("set-cot-business");
   const st = document.getElementById("set-cot-showterms");
   const tt = document.getElementById("set-cot-terms");
+  const wb = document.getElementById("set-warranty-basic");
+  const we = document.getElementById("set-warranty-estandar");
+  const wu = document.getElementById("set-warranty-ultra");
+
+  const adj = getAdminWarrantyAdjustments();
+  if (wb && !isNaN(Number(wb.value))) adj.basic = Number(wb.value);
+  if (we && !isNaN(Number(we.value))) adj.estandar = Number(we.value);
+  if (wu && !isNaN(Number(wu.value))) adj.ultra = Number(wu.value);
+  currentCotizador.warrantyAdjustments = adj;
 
   if (wa) currentCotizador.whatsapp = wa.value.trim();
   if (bn) currentCotizador.businessName = bn.value.trim();
@@ -3622,7 +3707,7 @@ function saveGeneralSettings() {
   if (tt) currentCotizador.termsText = tt.value.trim();
 
   saveCotizadorDraft();
-  showAlert("✓ Configuración general del presupuestador guardada.");
+  showAlert("✓ Configuración general y porcentajes de garantía guardados. Recordá pulsar 'Guardar cambios' arriba para publicar en la tienda.");
 }
 
 // --------------------------------------------------------
@@ -4204,7 +4289,7 @@ function getDefaultSiteConfig() {
       headerBg: "#ffffff",
       footerBg: "#0f172a",
       textColor: "#0f172a",
-      bannerOverlayOpacity: "0.72"
+      bannerOverlayOpacity: ""
     },
     sectionOrder: [
       { id: "inicio", label: "Banner de Bienvenida", visible: true },
@@ -4214,7 +4299,6 @@ function getDefaultSiteConfig() {
       { id: "resenas", label: "Reseñas de Google", visible: true }
     ],
     navTabs: [
-      { id: "nav-inicio", href: "#inicio", label: "Inicio", visible: true, isTerms: false },
       { id: "nav-cotizador", href: "#cotizador", label: "Presupuestar", visible: true, isTerms: false },
       { id: "nav-productos", href: "#productos", label: "Tienda", visible: true, isTerms: false },
       { id: "nav-informacion", href: "#informacion", label: "Información", visible: true, isTerms: false },
@@ -4966,9 +5050,12 @@ function renderEstetica() {
           }).join("")}
         </div>
 
-        <div class="estetica-color-box" style="margin-top:16px; max-width:420px;">
-          <label style="font-size:12.5px; font-weight:800;">Oscuridad del filtro sobre la imagen del banner (${Math.round((parseFloat(th.bannerOverlayOpacity || "0.72")) * 100)}%)</label>
-          <input type="range" min="0.2" max="0.9" step="0.05" value="${escapeHtml(th.bannerOverlayOpacity || "0.72")}" oninput="setEsteticaField('theme.bannerOverlayOpacity', this.value); this.previousElementSibling.textContent = 'Oscuridad del filtro sobre la imagen del banner (' + Math.round(parseFloat(this.value) * 100) + '%)';">
+        <div class="estetica-color-box" style="margin-top:16px; max-width:460px;">
+          <div style="display:flex; justify-content:space-between; align-items:center; gap:10px; margin-bottom:6px;">
+            <label style="font-size:12.5px; font-weight:800;">Degradé sobre la imagen del banner (${th.bannerOverlayOpacity && th.bannerOverlayOpacity !== "0.72" ? Math.round(parseFloat(th.bannerOverlayOpacity) * 100) + "%" : "Original"})</label>
+            <button type="button" class="btn btn-xs btn-outline" onclick="setEsteticaField('theme.bannerOverlayOpacity', ''); renderEstetica();">↺ Degradé original</button>
+          </div>
+          <input type="range" min="0.2" max="0.96" step="0.04" value="${escapeHtml(th.bannerOverlayOpacity && th.bannerOverlayOpacity !== "0.72" ? th.bannerOverlayOpacity : "0.96")}" oninput="setEsteticaField('theme.bannerOverlayOpacity', this.value); this.previousElementSibling.querySelector('label').textContent = 'Degradé sobre la imagen del banner (' + Math.round(parseFloat(this.value) * 100) + '%)';">
         </div>
       </div>
     `;
@@ -5264,4 +5351,5 @@ window.saveAndPublishEstetica = saveAndPublishEstetica;
 window.syncDescToTab3 = syncDescToTab3;
 window.syncDescFromTab3 = syncDescFromTab3;
 window.clearStoredToken = clearStoredToken;
+window.updateWarrantyPercentInput = updateWarrantyPercentInput;
 

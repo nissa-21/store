@@ -1,210 +1,152 @@
 // Configuración estética y de contenido oficial de la tienda NISSA
 // Generado y gestionado desde el Panel de Administración NISSA
-// Actualizado: 15/11/2026, 09:21:08
 
 var NISSA_SITE_CONFIG = {
-  "brand": {
-    "pageTitle": "NISSA - Tienda Online y Servicio Técnico",
-    "metaDescription": "Tienda online de accesorios y tecnología NISSA con cotizador de reparaciones y calificaciones de Google.",
-    "headerLogo": "NISSA",
-    "footerBrand": "NISSA",
-    "footerSubtitle": "Tu tecnología en buenas manos. Servicio técnico y accesorios oficiales.",
-    "footerCopyright": "NISSA. Todos los derechos reservados.",
-    "whatsappNumber": "541136620653"
+  brand: {
+    pageTitle: "NISSA - Tienda Online y Servicio Técnico",
+    metaDescription: "Tienda online de accesorios y tecnología NISSA con cotizador de reparaciones y calificaciones de Google.",
+    headerLogo: "NISSA",
+    footerBrand: "NISSA",
+    footerSubtitle: "Tu tecnología en buenas manos. Servicio técnico y accesorios oficiales.",
+    footerCopyright: "NISSA. Todos los derechos reservados.",
+    whatsappNumber: "541136620653"
   },
-  "theme": {
-    "primaryColor": "#2563eb",
-    "accentColor": "#0ea5e9",
-    "bgColor": "#f8fafc",
-    "headerBg": "#ffffff",
-    "footerBg": "#0f172a",
-    "textColor": "#0f172a",
-    "bannerOverlayOpacity": "0.72"
+  theme: {
+    primaryColor: "#2563eb",
+    accentColor: "#0ea5e9",
+    bgColor: "#f8fafc",
+    headerBg: "#ffffff",
+    footerBg: "#0f172a",
+    textColor: "#0f172a",
+    bannerOverlayOpacity: ""
   },
-  "sectionOrder": [
-    {
-      "id": "inicio",
-      "label": "Banner de Bienvenida",
-      "visible": true
-    },
-    {
-      "id": "cotizador",
-      "label": "Presupuestador",
-      "visible": true
-    },
-    {
-      "id": "productos",
-      "label": "Tienda Online",
-      "visible": true
-    },
-    {
-      "id": "informacion",
-      "label": "Información y Garantía",
-      "visible": true
-    },
-    {
-      "id": "resenas",
-      "label": "Reseñas de Google",
-      "visible": true
-    }
+  sectionOrder: [
+    { id: "inicio", label: "Banner de Bienvenida", visible: true },
+    { id: "cotizador", label: "Presupuestador", visible: true },
+    { id: "productos", label: "Tienda Online", visible: true },
+    { id: "informacion", label: "Información y Garantía", visible: true },
+    { id: "resenas", label: "Reseñas de Google", visible: true }
   ],
-  "navTabs": [
-    {
-      "id": "nav-inicio",
-      "href": "",
-      "label": "Inicio",
-      "visible": true,
-      "isTerms": false
-    },
-    {
-      "id": "nav-cotizador",
-      "href": "#cotizador",
-      "label": "Presupuestar",
-      "visible": true,
-      "isTerms": false
-    },
-    {
-      "id": "nav-productos",
-      "href": "#productos",
-      "label": "Tienda",
-      "visible": true,
-      "isTerms": false
-    },
-    {
-      "id": "nav-informacion",
-      "href": "#informacion",
-      "label": "Información",
-      "visible": true,
-      "isTerms": false
-    },
-    {
-      "id": "nav-resenas",
-      "href": "#resenas",
-      "label": "Opiniones Google",
-      "visible": true,
-      "isTerms": false
-    },
-    {
-      "id": "nav-terminos",
-      "href": "/terminos-y-condiciones",
-      "label": "Términos y condiciones",
-      "visible": true,
-      "isTerms": true
-    }
+  navTabs: [
+    { id: "nav-cotizador", href: "#cotizador", label: "Presupuestar", visible: true, isTerms: false },
+    { id: "nav-productos", href: "#productos", label: "Tienda", visible: true, isTerms: false },
+    { id: "nav-informacion", href: "#informacion", label: "Información", visible: true, isTerms: false },
+    { id: "nav-resenas", href: "#resenas", label: "Opiniones Google", visible: true, isTerms: false },
+    { id: "nav-terminos", href: "/terminos-y-condiciones", label: "Términos y condiciones", visible: true, isTerms: true }
   ],
-  "banner": {
-    "image": "./fotos/banner-1794788455188.jpg",
-    "badge": "✦ BIENVENIDO A NISSA",
-    "title": "REPARAMOS TU EQUIPO",
-    "subtitle": "Servicio técnico profesional de celulares, consolas, mandos y notebooks con hasta 90 días de garantía de laboratorio.",
-    "primaryBtnText": "Cotizar reparación ahora ➔",
-    "primaryBtnHref": "#cotizador",
-    "primaryBtnVisible": true,
-    "secondaryBtnText": "Explorar tienda online",
-    "secondaryBtnHref": "#productos",
-    "secondaryBtnVisible": true
+  banner: {
+    image: "./banner-nissa.jpg",
+    badge: "✦ BIENVENIDO A NISSA",
+    title: "REPARAMOS TU EQUIPO",
+    subtitle: "Servicio técnico profesional de celulares, consolas, mandos y notebooks con hasta 90 días de garantía de laboratorio.",
+    primaryBtnText: "Cotizar reparación ahora ➔",
+    primaryBtnHref: "#cotizador",
+    primaryBtnVisible: true,
+    secondaryBtnText: "Explorar tienda online",
+    secondaryBtnHref: "#productos",
+    secondaryBtnVisible: true
   },
-  "cotizadorSection": {
-    "badge": "⚡ SERVICIO TÉCNICO DE CONFIANZA",
-    "title": "COTIZÁ TU REPARACIÓN",
-    "subtitle": "Conocé el precio estimado de tu reparación en segundos y pedí tu turno.",
-    "step1Label": "1. ¿Qué equipo querés reparar?"
+  cotizadorSection: {
+    badge: "⚡ SERVICIO TÉCNICO DE CONFIANZA",
+    title: "COTIZÁ TU REPARACIÓN",
+    subtitle: "Conocé el precio estimado de tu reparación en segundos y pedí tu turno.",
+    step1Label: "1. ¿Qué equipo querés reparar?"
   },
-  "tiendaSection": {
-    "title": "Tienda Online",
-    "subtitle": "Precios por unidad y con descuento especial a partir de 3 unidades.",
-    "dividerTag": "CATÁLOGO",
-    "dividerTitle": "Explorá por categoría",
-    "searchPlaceholder": "Buscar productos en la tienda..."
+  tiendaSection: {
+    title: "Tienda Online",
+    subtitle: "Precios por unidad y con descuento especial a partir de 3 unidades.",
+    dividerTag: "CATÁLOGO",
+    dividerTitle: "Explorá por categoría",
+    searchPlaceholder: "Buscar productos en la tienda..."
   },
-  "infoSection": {
-    "tag": "INFORMACIÓN",
-    "title": "Todo lo que necesitás saber",
-    "cards": [
+  infoSection: {
+    tag: "INFORMACIÓN",
+    title: "Todo lo que necesitás saber",
+    cards: [
       {
-        "icon": "🛡️",
-        "title": "Garantía Oficial de Reparaciones y Productos",
-        "text": "Reparaciones con 30 días de garantía estándar (opción sin garantía con 25% de descuento o extensible a 90 días). Productos con 15 días corridos de garantía oficial escrita."
+        icon: "🛡️",
+        title: "Garantía Oficial de Reparaciones y Productos",
+        text: "Reparaciones con 30 días de garantía estándar (opción sin garantía con 20% de descuento o extensible a 90 días). Productos con 15 días corridos de garantía oficial escrita."
       },
       {
-        "icon": "🛒",
-        "title": "Precios por Cantidad",
-        "text": "Los precios publicados corresponden a la tarifa por unidad y con descuento especial a partir de 3 unidades. Al agregar 3 o más unidades al carrito, se aplica automáticamente el valor con descuento."
+        icon: "🛒",
+        title: "Precios por Cantidad",
+        text: "Los precios publicados corresponden a la tarifa por unidad y con descuento especial a partir de 3 unidades. Al agregar 3 o más unidades al carrito, se aplica automáticamente el valor con descuento."
       },
       {
-        "icon": "💬",
-        "title": "¿Tenés una consulta?",
-        "text": "Escribinos directamente por WhatsApp para consultar stock inmediato, compatibilidad con tu modelo o coordinar la entrega en el día."
+        icon: "💬",
+        title: "¿Tenés una consulta?",
+        text: "Escribinos directamente por WhatsApp para consultar stock inmediato, compatibilidad con tu modelo o coordinar la entrega en el día."
       }
     ]
   },
-  "reviewsSection": {
-    "headerTag": "Calificaciones de NISSA.COM.AR",
-    "title": "Nuestros clientes nos recomiendan",
-    "subtitle": "Opiniones 100% verídicas que garantizan nuestro compromiso y servicio.",
-    "score": "5.0",
-    "scoreLabel": "Excelente",
-    "basedOnText": "reseñas de Google",
-    "items": [
+  reviewsSection: {
+    headerTag: "Calificaciones de NISSA.COM.AR",
+    title: "Nuestros clientes nos recomiendan",
+    subtitle: "Opiniones 100% verídicas que garantizan nuestro compromiso y servicio.",
+    score: "5.0",
+    scoreLabel: "Excelente",
+    basedOnText: "reseñas de Google",
+    items: [
       {
-        "author": "Carlos Mendoza",
-        "initials": "CM",
-        "avatarBg": "#e0f2fe",
-        "avatarColor": "#0369a1",
-        "badge": "Local Guide",
-        "date": "Hace 1 semana",
-        "stars": 5,
-        "text": "Increíble servicio. Me cambiaron el módulo de mi Samsung en menos de una hora y el celular quedó como nuevo. Lo mejor de todo es que el presupuesto en la web fue exactamente lo que me cobraron. ¡Súper profesionales!"
+        author: "Carlos Mendoza",
+        initials: "CM",
+        avatarBg: "#e0f2fe",
+        avatarColor: "#0369a1",
+        badge: "Local Guide",
+        date: "Hace 1 semana",
+        stars: 5,
+        text: "Increíble servicio. Me cambiaron el módulo de mi Samsung en menos de una hora y el celular quedó como nuevo. Lo mejor de todo es que el presupuesto en la web fue exactamente lo que me cobraron. ¡Súper profesionales!"
       },
       {
-        "author": "Valeria Gómez",
-        "initials": "VG",
-        "avatarBg": "#d1fae5",
-        "avatarColor": "#065f46",
-        "badge": "Cliente",
-        "date": "Hace 3 días",
-        "stars": 5,
-        "text": "Llevé mi iPhone porque no cargaba y en otros lados me cobraban una fortuna. Aquí lo revisaron frente a mí, era suciedad en el pin de carga y me cobraron súper barato. Honestidad al 100%."
+        author: "Valeria Gómez",
+        initials: "VG",
+        avatarBg: "#d1fae5",
+        avatarColor: "#065f46",
+        badge: "Cliente",
+        date: "Hace 3 días",
+        stars: 5,
+        text: "Llevé mi iPhone porque no cargaba y en otros lados me cobraban una fortuna. Aquí lo revisaron frente a mí, era suciedad en el pin de carga y me cobraron súper barato. Honestidad al 100%."
       },
       {
-        "author": "Santiago Peralta",
-        "initials": "SP",
-        "avatarBg": "#ede9fe",
-        "avatarColor": "#6d28d9",
-        "badge": "Local Guide",
-        "date": "Hace 2 semanas",
-        "stars": 5,
-        "text": "Excelente atención de los técnicos. Repararon el mantenimiento y cambio de metal líquido de mi PS5. Quedó silenciosa y perfecta. Sin dudas mi taller de confianza."
+        author: "Santiago Peralta",
+        initials: "SP",
+        avatarBg: "#ede9fe",
+        avatarColor: "#6d28d9",
+        badge: "Local Guide",
+        date: "Hace 2 semanas",
+        stars: 5,
+        text: "Excelente atención de los técnicos. Repararon el mantenimiento y cambio de metal líquido de mi PS5. Quedó silenciosa y perfecta. Sin dudas mi taller de confianza."
       },
       {
-        "author": "Mariana Silva",
-        "initials": "MS",
-        "avatarBg": "#ffe4e6",
-        "avatarColor": "#9f1239",
-        "badge": "Cliente",
-        "date": "Hace 1 mes",
-        "stars": 5,
-        "text": "Recomiendo totalmente al equipo de NISSA STORE. Compré el pack de cargador 20W y me repararon la pantalla de un Moto G54 en el día. Servicio de primer nivel."
+        author: "Mariana Silva",
+        initials: "MS",
+        avatarBg: "#ffe4e6",
+        avatarColor: "#9f1239",
+        badge: "Cliente",
+        date: "Hace 1 mes",
+        stars: 5,
+        text: "Recomiendo totalmente al equipo de NISSA STORE. Compré el pack de cargador 20W y me repararon la pantalla de un Moto G54 en el día. Servicio de primer nivel."
       },
       {
-        "author": "Esteban Rinaldi",
-        "initials": "ER",
-        "avatarBg": "#e0e7ff",
-        "avatarColor": "#3730a3",
-        "badge": "Cliente",
-        "date": "Hace 5 días",
-        "stars": 5,
-        "text": "La mejor experiencia en reparación de tecnología. Me instalaron analógicos magnéticos Hall Effect en el joystick de PS5 y nunca más drift. Impecable."
+        author: "Esteban Rinaldi",
+        initials: "ER",
+        avatarBg: "#e0e7ff",
+        avatarColor: "#3730a3",
+        badge: "Cliente",
+        date: "Hace 5 días",
+        stars: 5,
+        text: "La mejor experiencia en reparación de tecnología. Me instalaron analógicos magnéticos Hall Effect en el joystick de PS5 y nunca más drift. Impecable."
       },
       {
-        "author": "Camila Ortiz",
-        "initials": "CO",
-        "avatarBg": "#fef3c7",
-        "avatarColor": "#92400e",
-        "badge": "Cliente",
-        "date": "Hace 4 días",
-        "stars": 5,
-        "text": "Súper rápidos y eficientes. Repararon el pin de carga y el parlante de mi teléfono el mismo día. Me encantó la prolijidad del taller y la calidez del trato."
+        author: "Camila Ortiz",
+        initials: "CO",
+        avatarBg: "#fef3c7",
+        avatarColor: "#92400e",
+        badge: "Cliente",
+        date: "Hace 4 días",
+        stars: 5,
+        text: "Súper rápidos y eficientes. Repararon el pin de carga y el parlante de mi teléfono el mismo día. Me encantó la prolijidad del taller y la calidez del trato."
       }
     ]
   }
@@ -274,10 +216,10 @@ function applyNissaSiteConfig() {
       cssRules += ".welcome-badge, .re-badge { color: " + cfg.theme.accentColor + " !important; }\n";
       cssRules += "#reviews-header-tag { color: " + cfg.theme.accentColor + " !important; }\n";
     }
-    if (cfg.theme.bannerOverlayOpacity) {
+    if (cfg.theme.bannerOverlayOpacity && cfg.theme.bannerOverlayOpacity !== "default" && cfg.theme.bannerOverlayOpacity !== "0.72") {
       var op = parseFloat(cfg.theme.bannerOverlayOpacity);
       if (!isNaN(op)) {
-        cssRules += ".welcome-banner-overlay { background: linear-gradient(100deg, rgba(15, 23, 42, " + op + ") 0%, rgba(15, 23, 42, " + Math.max(0.25, op - 0.2).toFixed(2) + ") 55%, rgba(15, 23, 42, 0.25) 100%) !important; }\n";
+        cssRules += ".welcome-banner-overlay { background: linear-gradient(90deg, rgba(11,18,32," + op.toFixed(2) + ") 0%, rgba(11,18,32," + (op * 0.92).toFixed(2) + ") 38%, rgba(11,18,32," + (op * 0.52).toFixed(2) + ") 66%, rgba(11,18,32," + (op * 0.19).toFixed(2) + ") 100%) !important; }\n";
       }
     }
     if (cssRules) {

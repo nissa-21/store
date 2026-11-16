@@ -6,6 +6,11 @@ var PRECIOS_WIDGET = {
   "businessName": "NISSA",
   "showTerms": true,
   "termsText": "Los valores informados son de referencia y están sujetos a revisión técnica final en el local.",
+  "warrantyAdjustments": {
+    "basic": -20,
+    "estandar": 0,
+    "ultra": 30
+  },
   "celulares": [
     {
       "brand": "Apple",
