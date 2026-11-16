@@ -1,7 +1,7 @@
 // ========================================================
 // Tarifas y modelos exactos del presupuestador NISSA
 // Generado automáticamente desde el Panel de Administración NISSA
-// Fecha de actualización: 15/11/2026, 10:19:29
+// Fecha de actualización: 15/11/2026, 10:21:36
 // 100% Compatible con GitHub Pages (Costo $0)
 // ========================================================
 
