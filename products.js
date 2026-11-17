@@ -1,6 +1,6 @@
 // Catálogo oficial de productos NISSA
 // Generado automáticamente desde el Panel de Administración NISSA
-// Actualizado: 17/11/2026, 10:35:34
+// Actualizado: 17/11/2026, 10:39:11
 // 100% Compatible con GitHub Pages (Costo $0)
 
 let products = [
@@ -13,9 +13,9 @@ let products = [
     "price3": 29600,
     "price5": 28000,
     "price20": 24000,
-    "image": "pack-apple-original-certificado-20w.jpg",
+    "image": "combo-20w.png",
     "images": [
-      "pack-apple-original-certificado-20w.jpg",
+      "combo-20w.png",
       "pack-apple-caja.jpg",
       "pack-apple-cable-detalle.jpg"
     ],
