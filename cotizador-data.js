@@ -1,7 +1,7 @@
 // ========================================================
 // Tarifas y modelos exactos del presupuestador NISSA
 // Generado automáticamente desde el Panel de Administración NISSA
-// Fecha de actualización: 17/11/2026, 12:41:39
+// Fecha de actualización: 17/11/2026, 03:40:21
 // 100% Compatible con GitHub Pages (Costo $0)
 // ========================================================
 
@@ -20,13 +20,13 @@ let PRECIOS_WIDGET = {
             {
               "id": "cel_ap_11_1",
               "name": "📱 Pantalla / Módulo",
-              "price": "70 USD",
+              "price": "50 USD",
               "note": "Seleccioná la calidad deseada debajo"
             },
             {
               "id": "cel_ap_11_2",
               "name": "🔋 Batería",
-              "price": 90000,
+              "price": 80000,
               "note": "Condición al 100% sin mensaje de \"Pieza desconocida\""
             },
             {
@@ -786,7 +786,7 @@ let PRECIOS_WIDGET = {
             {
               "id": "cel_ap_14pm_5",
               "name": "📷 Cámara Principal (Trasera)",
-              "price": 230000,
+              "price": 260000,
               "note": "Módulo de cámara trasera original"
             },
             {
@@ -1032,19 +1032,19 @@ let PRECIOS_WIDGET = {
             {
               "id": "samsung_galaxy_a01_pantalla",
               "name": "📱 Pantalla / Módulo",
-              "price": "Consultar",
+              "price": 40000,
               "note": "Seleccioná la calidad deseada o consultá presupuesto"
             },
             {
               "id": "samsung_galaxy_a01_bateria",
               "name": "🔋 Batería",
-              "price": "Consultar",
+              "price": 35000,
               "note": "Condición al 100% de salud"
             },
             {
               "id": "samsung_galaxy_a01_pin",
               "name": "🔌 Pin de carga",
-              "price": "Consultar",
+              "price": 25000,
               "note": "Reparación o cambio de conector de carga"
             },
             {
@@ -1085,19 +1085,19 @@ let PRECIOS_WIDGET = {
             {
               "id": "samsung_galaxy_a01_core_pantalla",
               "name": "📱 Pantalla / Módulo",
-              "price": "Consultar",
+              "price": 40000,
               "note": "Seleccioná la calidad deseada o consultá presupuesto"
             },
             {
               "id": "samsung_galaxy_a01_core_bateria",
               "name": "🔋 Batería",
-              "price": "Consultar",
+              "price": 35000,
               "note": "Condición al 100% de salud"
             },
             {
               "id": "samsung_galaxy_a01_core_pin",
               "name": "🔌 Pin de carga",
-              "price": "Consultar",
+              "price": 25000,
               "note": "Reparación o cambio de conector de carga"
             },
             {
@@ -1138,19 +1138,19 @@ let PRECIOS_WIDGET = {
             {
               "id": "samsung_galaxy_a02_pantalla",
               "name": "📱 Pantalla / Módulo",
-              "price": "Consultar",
+              "price": 45000,
               "note": "Seleccioná la calidad deseada o consultá presupuesto"
             },
             {
               "id": "samsung_galaxy_a02_bateria",
               "name": "🔋 Batería",
-              "price": "Consultar",
+              "price": 35000,
               "note": "Condición al 100% de salud"
             },
             {
               "id": "samsung_galaxy_a02_pin",
               "name": "🔌 Pin de carga",
-              "price": "Consultar",
+              "price": 25000,
               "note": "Reparación o cambio de conector de carga"
             },
             {
