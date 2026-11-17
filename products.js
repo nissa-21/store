@@ -1,6 +1,6 @@
 // Catálogo oficial de productos NISSA
 // Generado automáticamente desde el Panel de Administración NISSA
-// Actualizado: 17/11/2026, 10:39:11
+// Actualizado: 17/11/2026, 10:43:30
 // 100% Compatible con GitHub Pages (Costo $0)
 
 let products = [
@@ -33,6 +33,26 @@ let products = [
       "Potencia de salida": "20W Power Delivery (USB-C)",
       "Conector incluido": "USB-C a Lightning (1 metro)",
       "Compatibilidad": "iPhone 8 hasta iPhone 14 Pro Max / iPad / AirPods"
+    }
+  },
+  {
+    "id": 2,
+    "name": "AirPods Pro (2Gen) USB-C",
+    "category": "audio",
+    "tag": "Más Vendido",
+    "price": 38000,
+    "price3": 31100,
+    "price5": 38000,
+    "price20": 38000,
+    "image": "",
+    "images": [
+      ""
+    ],
+    "description": "Disfrutá de una experiencia auditiva inmersiva con estos auriculares In-ear de segunda generación. Con un diseño compacto y ergonómico, ofrecen un sonido más claro y envolvente, ideales para música, llamadas y contenido multimedia. Su tecnología avanzada optimiza el audio en tiempo real y se adapta a tu entorno, brindándote un nivel de detalle y comodidad excepcional.",
+    "features": [],
+    "specs": {
+      "Garantía": "90 días oficial escrita NISSA",
+      "Disponibilidad": "Stock inmediato para entrega o retiro"
     }
   }
 ];
