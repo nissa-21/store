@@ -1,6 +1,6 @@
 // Catálogo oficial de productos NISSA
 // Generado automáticamente desde el Panel de Administración NISSA
-// Actualizado: 17/11/2026, 10:32:40
+// Actualizado: 17/11/2026, 10:32:46
 // 100% Compatible con GitHub Pages (Costo $0)
 
 let products = [
@@ -33,66 +33,6 @@ let products = [
       "Compatibilidad": "iPhone 8 hasta iPhone 14 Pro Max / iPad / AirPods",
       "Garantía": "90 días oficial escrita NISSA",
       "Disponibilidad": "Stock inmediato para entrega o retiro"
-    }
-  },
-  {
-    "id": 4,
-    "name": "Mando DualSense PS5 Inalámbrico Original",
-    "category": "gaming",
-    "tag": "PlayStation Original",
-    "price": 95000,
-    "price3": 90000,
-    "price5": 86000,
-    "price20": 82000,
-    "image": "mando-dualsense-ps5-inalambrico-original.jpg",
-    "images": [
-      "mando-dualsense-ps5-inalambrico-original.jpg",
-      "mando-ps5-gatillos.jpg"
-    ],
-    "description": "El joystick oficial de PlayStation 5 que redefine la experiencia de juego. Cuenta con gatillos adaptativos dinámicos, retroalimentación háptica inmersiva de doble motor y micrófono integrado con botón mute directo.",
-    "features": [
-      "Gatillos adaptativos con resistencia táctil progresiva según el juego",
-      "Retroalimentación háptica de vanguardia para sentir el entorno en tus manos",
-      "Micrófono incorporado y conector de 3.5mm para headsets gamer",
-      "Batería recargable interna de larga autonomía con puerto USB-C de recarga rápida",
-      "Compatible con PS5, PC Windows (Steam), Mac, iPhone, iPad y celulares Android"
-    ],
-    "specs": {
-      "Conectividad": "Bluetooth 5.1 inalámbrico de baja latencia y USB-C cableado",
-      "Compatibilidad": "PlayStation 5, PC Windows, macOS, Android, iOS",
-      "Batería": "Interna recargable de 1560 mAh Li-ion",
-      "Audio": "Altavoz y micrófono integrados + jack 3.5mm estéreo",
-      "Garantía": "90 días oficial escrita NISSA"
-    }
-  },
-  {
-    "id": 5,
-    "name": "Auriculares Bluetooth In-Ear True Wireless HiFi",
-    "category": "audio",
-    "tag": "Sonido Hi-Fi TWS",
-    "price": 45000,
-    "price3": 42000,
-    "price5": 39000,
-    "price20": 36000,
-    "image": "auriculares-bluetooth-in-ear-true-wireless-hifi.jpg",
-    "images": [
-      "auriculares-bluetooth-in-ear-true-wireless-hifi.jpg",
-      "auriculares-bluetooth-detalle.jpg"
-    ],
-    "description": "Auriculares inalámbricos True Wireless con diafragma de 13mm para una acústica nítida y graves profundos. Cuentan con estuche de carga magnético con conector USB-C y autonomía total de hasta 24 horas.",
-    "features": [
-      "Bluetooth 5.3 con sincronización instantánea y latencia ultrabaja para gaming",
-      "Cancelación de ruido pasiva ergonómica para aislar el sonido exterior",
-      "Controles táctiles inteligentes para pausar, cambiar canciones y atender llamadas",
-      "Micrófono HD de alta sensibilidad para llamadas claras y notas de voz",
-      "Diseño ultraliviano y resistente a salpicaduras (IPX4), ideal para entrenar"
-    ],
-    "specs": {
-      "Conectividad": "Bluetooth 5.3 (hasta 10 metros de cobertura)",
-      "Autonomía": "5 a 6 hs continuas por carga (+18 hs adicionales con el estuche)",
-      "Carga": "Puerto USB-C rápido (carga completa en 60 minutos)",
-      "Compatibilidad": "Android, iOS, Windows, Mac y cualquier dispositivo con Bluetooth",
-      "Garantía": "90 días oficial escrita NISSA"
     }
   },
   {
