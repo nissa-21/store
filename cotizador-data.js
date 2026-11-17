@@ -1,7 +1,7 @@
 // ========================================================
 // Tarifas y modelos exactos del presupuestador NISSA
 // Generado automáticamente desde el Panel de Administración NISSA
-// Fecha de actualización: 17/11/2026, 11:36:01
+// Fecha de actualización: 17/11/2026, 12:41:39
 // 100% Compatible con GitHub Pages (Costo $0)
 // ========================================================
 
@@ -786,7 +786,7 @@ let PRECIOS_WIDGET = {
             {
               "id": "cel_ap_14pm_5",
               "name": "📷 Cámara Principal (Trasera)",
-              "price": "Consultar",
+              "price": 230000,
               "note": "Módulo de cámara trasera original"
             },
             {
