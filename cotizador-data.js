@@ -1,7 +1,7 @@
 // ========================================================
 // Tarifas y modelos exactos del presupuestador NISSA
 // Generado automáticamente desde el Panel de Administración NISSA
-// Fecha de actualización: 15/11/2026, 10:30:40
+// Fecha de actualización: 17/11/2026, 11:36:01
 // 100% Compatible con GitHub Pages (Costo $0)
 // ========================================================
 
@@ -10,11 +10,6 @@ let PRECIOS_WIDGET = {
   "businessName": "NISSA",
   "showTerms": true,
   "termsText": "Los valores informados son de referencia y están sujetos a revisión técnica final en el local.",
-  "warrantyAdjustments": {
-    "basic": -15,
-    "estandar": 0,
-    "ultra": 25
-  },
   "celulares": [
     {
       "brand": "Apple",
@@ -31,7 +26,7 @@ let PRECIOS_WIDGET = {
             {
               "id": "cel_ap_11_2",
               "name": "🔋 Batería",
-              "price": 65000,
+              "price": 90000,
               "note": "Condición al 100% sin mensaje de \"Pieza desconocida\""
             },
             {
@@ -84,7 +79,7 @@ let PRECIOS_WIDGET = {
             {
               "id": "cel_ap_11p_2",
               "name": "🔋 Batería",
-              "price": 75000,
+              "price": 80000,
               "note": "Condición al 100% sin mensaje de \"Pieza desconocida\""
             },
             {
@@ -137,7 +132,7 @@ let PRECIOS_WIDGET = {
             {
               "id": "cel_ap_11pm_2",
               "name": "🔋 Batería",
-              "price": 75000,
+              "price": 85000,
               "note": "Condición al 100% sin mensaje de \"Pieza desconocida\""
             },
             {
@@ -190,7 +185,7 @@ let PRECIOS_WIDGET = {
             {
               "id": "cel_ap_12m_2",
               "name": "🔋 Batería",
-              "price": 75000,
+              "price": 80000,
               "note": "Condición al 100% sin mensaje de \"Pieza desconocida\""
             },
             {
@@ -243,7 +238,7 @@ let PRECIOS_WIDGET = {
             {
               "id": "cel_ap_12_2",
               "name": "🔋 Batería",
-              "price": 75000,
+              "price": 90000,
               "note": "Condición al 100% sin mensaje de \"Pieza desconocida\""
             },
             {
@@ -296,7 +291,7 @@ let PRECIOS_WIDGET = {
             {
               "id": "cel_ap_12p_2",
               "name": "🔋 Batería",
-              "price": 75000,
+              "price": 90000,
               "note": "Condición al 100% sin mensaje de \"Pieza desconocida\""
             },
             {
@@ -349,7 +344,7 @@ let PRECIOS_WIDGET = {
             {
               "id": "cel_ap_12pm_2",
               "name": "🔋 Batería",
-              "price": 85000,
+              "price": 95000,
               "note": "Condición al 100% sin mensaje de \"Pieza desconocida\""
             },
             {
@@ -402,7 +397,7 @@ let PRECIOS_WIDGET = {
             {
               "id": "cel_ap_13m_2",
               "name": "🔋 Batería",
-              "price": 85000,
+              "price": 90000,
               "note": "Condición al 100% sin mensaje de \"Pieza desconocida\""
             },
             {
@@ -455,7 +450,7 @@ let PRECIOS_WIDGET = {
             {
               "id": "cel_ap_13_2",
               "name": "🔋 Batería",
-              "price": 90000,
+              "price": 95000,
               "note": "Condición al 100% sin mensaje de \"Pieza desconocida\""
             },
             {
@@ -561,7 +556,7 @@ let PRECIOS_WIDGET = {
             {
               "id": "cel_ap_13pm_2",
               "name": "🔋 Batería",
-              "price": 103000,
+              "price": 105000,
               "note": "Condición al 100% sin mensaje de \"Pieza desconocida\""
             },
             {
@@ -614,7 +609,7 @@ let PRECIOS_WIDGET = {
             {
               "id": "cel_ap_14_2",
               "name": "🔋 Batería",
-              "price": 90000,
+              "price": 100000,
               "note": "Condición al 100% sin mensaje de \"Pieza desconocida\""
             },
             {
@@ -667,7 +662,7 @@ let PRECIOS_WIDGET = {
             {
               "id": "cel_ap_14pl_2",
               "name": "🔋 Batería",
-              "price": 103000,
+              "price": 105000,
               "note": "Condición al 100% sin mensaje de \"Pieza desconocida\""
             },
             {
@@ -720,7 +715,7 @@ let PRECIOS_WIDGET = {
             {
               "id": "cel_ap_14p_2",
               "name": "🔋 Batería",
-              "price": 105000,
+              "price": 111500,
               "note": "Condición al 100% sin mensaje de \"Pieza desconocida\""
             },
             {
@@ -773,7 +768,7 @@ let PRECIOS_WIDGET = {
             {
               "id": "cel_ap_14pm_2",
               "name": "🔋 Batería",
-              "price": 109000,
+              "price": 119500,
               "note": "Condición al 100% sin mensaje de \"Pieza desconocida\""
             },
             {
@@ -826,7 +821,7 @@ let PRECIOS_WIDGET = {
             {
               "id": "cel_ap_15_2",
               "name": "🔋 Batería",
-              "price": 110000,
+              "price": 108000,
               "note": "Condición al 100% sin mensaje de \"Pieza desconocida\""
             },
             {
@@ -879,7 +874,7 @@ let PRECIOS_WIDGET = {
             {
               "id": "cel_ap_15pl_2",
               "name": "🔋 Batería",
-              "price": 114000,
+              "price": 111000,
               "note": "Condición al 100% sin mensaje de \"Pieza desconocida\""
             },
             {
@@ -932,7 +927,7 @@ let PRECIOS_WIDGET = {
             {
               "id": "cel_ap_15p_2",
               "name": "🔋 Batería",
-              "price": 125000,
+              "price": 115000,
               "note": "Condición al 100% sin mensaje de \"Pieza desconocida\""
             },
             {
@@ -985,7 +980,7 @@ let PRECIOS_WIDGET = {
             {
               "id": "cel_ap_15pm_2",
               "name": "🔋 Batería",
-              "price": 135000,
+              "price": 128000,
               "note": "Condición al 100% sin mensaje de \"Pieza desconocida\""
             },
             {
