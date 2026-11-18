@@ -1,7 +1,7 @@
 // ========================================================
 // Tarifas y modelos exactos del presupuestador NISSA
 // Generado automáticamente desde el Panel de Administración NISSA
-// Fecha de actualización: 17/11/2026, 03:40:21
+// Fecha de actualización: 18/11/2026, 12:47:53
 // 100% Compatible con GitHub Pages (Costo $0)
 // ========================================================
 
@@ -20,13 +20,13 @@ let PRECIOS_WIDGET = {
             {
               "id": "cel_ap_11_1",
               "name": "📱 Pantalla / Módulo",
-              "price": "50 USD",
+              "price": "70 USD",
               "note": "Seleccioná la calidad deseada debajo"
             },
             {
               "id": "cel_ap_11_2",
               "name": "🔋 Batería",
-              "price": 80000,
+              "price": 76000,
               "note": "Condición al 100% sin mensaje de \"Pieza desconocida\""
             },
             {
@@ -79,7 +79,7 @@ let PRECIOS_WIDGET = {
             {
               "id": "cel_ap_11p_2",
               "name": "🔋 Batería",
-              "price": 80000,
+              "price": 78000,
               "note": "Condición al 100% sin mensaje de \"Pieza desconocida\""
             },
             {
@@ -132,7 +132,7 @@ let PRECIOS_WIDGET = {
             {
               "id": "cel_ap_11pm_2",
               "name": "🔋 Batería",
-              "price": 85000,
+              "price": 80000,
               "note": "Condición al 100% sin mensaje de \"Pieza desconocida\""
             },
             {
@@ -185,7 +185,7 @@ let PRECIOS_WIDGET = {
             {
               "id": "cel_ap_12m_2",
               "name": "🔋 Batería",
-              "price": 80000,
+              "price": 78000,
               "note": "Condición al 100% sin mensaje de \"Pieza desconocida\""
             },
             {
@@ -238,7 +238,7 @@ let PRECIOS_WIDGET = {
             {
               "id": "cel_ap_12_2",
               "name": "🔋 Batería",
-              "price": 90000,
+              "price": 76000,
               "note": "Condición al 100% sin mensaje de \"Pieza desconocida\""
             },
             {
@@ -291,7 +291,7 @@ let PRECIOS_WIDGET = {
             {
               "id": "cel_ap_12p_2",
               "name": "🔋 Batería",
-              "price": 90000,
+              "price": 76000,
               "note": "Condición al 100% sin mensaje de \"Pieza desconocida\""
             },
             {
@@ -344,7 +344,7 @@ let PRECIOS_WIDGET = {
             {
               "id": "cel_ap_12pm_2",
               "name": "🔋 Batería",
-              "price": 95000,
+              "price": 85000,
               "note": "Condición al 100% sin mensaje de \"Pieza desconocida\""
             },
             {
@@ -397,7 +397,7 @@ let PRECIOS_WIDGET = {
             {
               "id": "cel_ap_13m_2",
               "name": "🔋 Batería",
-              "price": 90000,
+              "price": 78000,
               "note": "Condición al 100% sin mensaje de \"Pieza desconocida\""
             },
             {
@@ -450,7 +450,7 @@ let PRECIOS_WIDGET = {
             {
               "id": "cel_ap_13_2",
               "name": "🔋 Batería",
-              "price": 95000,
+              "price": 80000,
               "note": "Condición al 100% sin mensaje de \"Pieza desconocida\""
             },
             {
@@ -503,7 +503,7 @@ let PRECIOS_WIDGET = {
             {
               "id": "cel_ap_13p_2",
               "name": "🔋 Batería",
-              "price": 100000,
+              "price": 86000,
               "note": "Condición al 100% sin mensaje de \"Pieza desconocida\""
             },
             {
@@ -556,7 +556,7 @@ let PRECIOS_WIDGET = {
             {
               "id": "cel_ap_13pm_2",
               "name": "🔋 Batería",
-              "price": 105000,
+              "price": 102000,
               "note": "Condición al 100% sin mensaje de \"Pieza desconocida\""
             },
             {
@@ -609,7 +609,7 @@ let PRECIOS_WIDGET = {
             {
               "id": "cel_ap_14_2",
               "name": "🔋 Batería",
-              "price": 100000,
+              "price": 90000,
               "note": "Condición al 100% sin mensaje de \"Pieza desconocida\""
             },
             {
@@ -662,7 +662,7 @@ let PRECIOS_WIDGET = {
             {
               "id": "cel_ap_14pl_2",
               "name": "🔋 Batería",
-              "price": 105000,
+              "price": 93000,
               "note": "Condición al 100% sin mensaje de \"Pieza desconocida\""
             },
             {
@@ -715,7 +715,7 @@ let PRECIOS_WIDGET = {
             {
               "id": "cel_ap_14p_2",
               "name": "🔋 Batería",
-              "price": 111500,
+              "price": 96000,
               "note": "Condición al 100% sin mensaje de \"Pieza desconocida\""
             },
             {
@@ -768,7 +768,7 @@ let PRECIOS_WIDGET = {
             {
               "id": "cel_ap_14pm_2",
               "name": "🔋 Batería",
-              "price": 119500,
+              "price": 105000,
               "note": "Condición al 100% sin mensaje de \"Pieza desconocida\""
             },
             {
@@ -786,7 +786,7 @@ let PRECIOS_WIDGET = {
             {
               "id": "cel_ap_14pm_5",
               "name": "📷 Cámara Principal (Trasera)",
-              "price": 260000,
+              "price": 230000,
               "note": "Módulo de cámara trasera original"
             },
             {
@@ -821,7 +821,7 @@ let PRECIOS_WIDGET = {
             {
               "id": "cel_ap_15_2",
               "name": "🔋 Batería",
-              "price": 108000,
+              "price": 95000,
               "note": "Condición al 100% sin mensaje de \"Pieza desconocida\""
             },
             {
@@ -874,7 +874,7 @@ let PRECIOS_WIDGET = {
             {
               "id": "cel_ap_15pl_2",
               "name": "🔋 Batería",
-              "price": 111000,
+              "price": 98000,
               "note": "Condición al 100% sin mensaje de \"Pieza desconocida\""
             },
             {
@@ -927,7 +927,7 @@ let PRECIOS_WIDGET = {
             {
               "id": "cel_ap_15p_2",
               "name": "🔋 Batería",
-              "price": 115000,
+              "price": 105000,
               "note": "Condición al 100% sin mensaje de \"Pieza desconocida\""
             },
             {
@@ -980,7 +980,7 @@ let PRECIOS_WIDGET = {
             {
               "id": "cel_ap_15pm_2",
               "name": "🔋 Batería",
-              "price": 128000,
+              "price": 118000,
               "note": "Condición al 100% sin mensaje de \"Pieza desconocida\""
             },
             {
@@ -1032,19 +1032,19 @@ let PRECIOS_WIDGET = {
             {
               "id": "samsung_galaxy_a01_pantalla",
               "name": "📱 Pantalla / Módulo",
-              "price": 40000,
+              "price": "Consultar",
               "note": "Seleccioná la calidad deseada o consultá presupuesto"
             },
             {
               "id": "samsung_galaxy_a01_bateria",
               "name": "🔋 Batería",
-              "price": 35000,
+              "price": "Consultar",
               "note": "Condición al 100% de salud"
             },
             {
               "id": "samsung_galaxy_a01_pin",
               "name": "🔌 Pin de carga",
-              "price": 25000,
+              "price": "Consultar",
               "note": "Reparación o cambio de conector de carga"
             },
             {
@@ -1085,19 +1085,19 @@ let PRECIOS_WIDGET = {
             {
               "id": "samsung_galaxy_a01_core_pantalla",
               "name": "📱 Pantalla / Módulo",
-              "price": 40000,
+              "price": "Consultar",
               "note": "Seleccioná la calidad deseada o consultá presupuesto"
             },
             {
               "id": "samsung_galaxy_a01_core_bateria",
               "name": "🔋 Batería",
-              "price": 35000,
+              "price": "Consultar",
               "note": "Condición al 100% de salud"
             },
             {
               "id": "samsung_galaxy_a01_core_pin",
               "name": "🔌 Pin de carga",
-              "price": 25000,
+              "price": "Consultar",
               "note": "Reparación o cambio de conector de carga"
             },
             {
@@ -1138,19 +1138,19 @@ let PRECIOS_WIDGET = {
             {
               "id": "samsung_galaxy_a02_pantalla",
               "name": "📱 Pantalla / Módulo",
-              "price": 45000,
+              "price": "Consultar",
               "note": "Seleccioná la calidad deseada o consultá presupuesto"
             },
             {
               "id": "samsung_galaxy_a02_bateria",
               "name": "🔋 Batería",
-              "price": 35000,
+              "price": "Consultar",
               "note": "Condición al 100% de salud"
             },
             {
               "id": "samsung_galaxy_a02_pin",
               "name": "🔌 Pin de carga",
-              "price": 25000,
+              "price": "Consultar",
               "note": "Reparación o cambio de conector de carga"
             },
             {
