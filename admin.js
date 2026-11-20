@@ -2899,50 +2899,215 @@ function getAdminWarrantyAdjustments() {
   };
 }
 
-function formatAdminPctTag(pct) {
-  if (pct === 0) return "0%";
-  return pct > 0 ? `+${pct}%` : `${pct}%`;
-}
-
-function formatAdminWarrantyBreakdown(rawPrice) {
-  if (rawPrice === undefined || rawPrice === null) {
-    return '<span class="w-pill w-muted">Sin precio numérico</span>';
-  }
+function parseAdminPriceMeta(rawPrice) {
+  if (rawPrice === undefined || rawPrice === null) return { valid: false, isUsd: false, num: NaN, str: "" };
   const str = String(rawPrice).trim();
   const lower = str.toLowerCase();
   if (!str || lower.includes("consultar") || lower.includes("no realizamos") || lower === "no") {
-    return '<span class="w-pill w-muted">Sin cálculo automático</span>';
+    return { valid: false, isUsd: false, num: NaN, str };
   }
-
-  let isUsd = false;
-  let num = 0;
   if (lower.includes("usd")) {
-    isUsd = true;
-    num = parseFloat(str.replace(/[^0-9.,]/g, "").replace(",", "."));
+    const num = parseFloat(str.replace(/[^0-9.,]/g, "").replace(",", "."));
+    return { valid: !isNaN(num) && num > 0, isUsd: true, num, str };
+  }
+  const num = Number(str.replace(/\$/g, "").replace(/\./g, "").replace(/,/g, "").trim());
+  return { valid: !isNaN(num) && num > 0, isUsd: false, num, str };
+}
+
+function normalizeAdminPriceInput(val) {
+  const trimmed = String(val ?? "").trim();
+  if (!trimmed) return "";
+  const lower = trimmed.toLowerCase();
+  const num = Number(trimmed.replace(/\$/g, "").replace(/\./g, "").trim());
+  if (!isNaN(num) && !lower.includes("usd") && !lower.includes("consultar") && !lower.includes("no")) {
+    return num;
+  }
+  return trimmed;
+}
+
+function computeAdminDisplayPrice(rep, warrantyKey) {
+  const adj = getAdminWarrantyAdjustments();
+  let baseRaw = rep?.price;
+  let pct = 0;
+
+  if (warrantyKey === "basic") {
+    if (rep?.priceBasic !== undefined && rep?.priceBasic !== null && String(rep.priceBasic).trim() !== "") {
+      baseRaw = rep.priceBasic;
+    } else {
+      pct = adj.basic;
+    }
+  } else if (warrantyKey === "ultra") {
+    if (rep?.priceUltra !== undefined && rep?.priceUltra !== null && String(rep.priceUltra).trim() !== "") {
+      baseRaw = rep.priceUltra;
+    } else {
+      pct = adj.ultra;
+    }
   } else {
-    num = Number(str.replace(/\$/g, "").replace(/\./g, "").replace(/,/g, "").trim());
+    pct = adj.estandar;
   }
 
-  if (isNaN(num) || num <= 0) {
+  const meta = parseAdminPriceMeta(baseRaw);
+  if (!meta.valid) {
+    return { text: meta.str || "Consultar", numeric: NaN, isUsd: false };
+  }
+
+  let val = Math.round(meta.num * Math.max(0, 1 + pct / 100));
+  const disc = Number(rep?.discountPercent);
+  if (!isNaN(disc) && disc > 0) {
+    val = Math.round(val * Math.max(0, 1 - Math.min(95, disc) / 100));
+  }
+
+  return {
+    text: meta.isUsd ? `${val} USD` : `$${val.toLocaleString("es-AR")}`,
+    numeric: val,
+    isUsd: meta.isUsd
+  };
+}
+
+function formatAdminWarrantyBreakdown(repairOrRaw) {
+  const rep = (repairOrRaw && typeof repairOrRaw === "object") ? repairOrRaw : { price: repairOrRaw };
+  const baseMeta = parseAdminPriceMeta(rep.price);
+  const hasAnyManual = (rep.priceBasic !== undefined && String(rep.priceBasic).trim() !== "") ||
+                       (rep.priceUltra !== undefined && String(rep.priceUltra).trim() !== "");
+
+  if (!baseMeta.valid && !hasAnyManual) {
     return '<span class="w-pill w-muted">Sin cálculo automático</span>';
   }
 
-  const adj = getAdminWarrantyAdjustments();
-  const pSin = Math.round(num * Math.max(0, 1 + adj.basic / 100));
-  const p30 = Math.round(num * Math.max(0, 1 + adj.estandar / 100));
-  const p90 = Math.round(num * Math.max(0, 1 + adj.ultra / 100));
+  const dSin = computeAdminDisplayPrice(rep, "basic");
+  const d30 = computeAdminDisplayPrice(rep, "estandar");
+  const d90 = computeAdminDisplayPrice(rep, "ultra");
+  const disc = Number(rep.discountPercent);
+  const discTag = (!isNaN(disc) && disc > 0) ? `<span class="w-pill w-ext" title="Descuento individual aplicado">🏷️ -${disc}%</span>` : "";
 
-  const fmt = (val) => isUsd ? `${val} USD` : `$${val.toLocaleString("es-AR")}`;
   return `
-    <span class="w-pill w-none" title="Sin garantía (${formatAdminPctTag(adj.basic)})">⚡ Sin gar. (${formatAdminPctTag(adj.basic)}): <strong>${fmt(pSin)}</strong></span>
-    <span class="w-pill w-std" title="Garantía 30 días (${formatAdminPctTag(adj.estandar)})">🛡️ 30d${adj.estandar !== 0 ? ` (${formatAdminPctTag(adj.estandar)})` : ""}: <strong>${fmt(p30)}</strong></span>
-    <span class="w-pill w-ext" title="Garantía 90 días (${formatAdminPctTag(adj.ultra)})">👑 90d (${formatAdminPctTag(adj.ultra)}): <strong>${fmt(p90)}</strong></span>
+    <span class="w-pill w-none" title="Precio final Sin garantía">⚡ Sin gar.: <strong>${escapeHtml(dSin.text)}</strong></span>
+    <span class="w-pill w-std" title="Precio final 30 días">🛡️ 30d: <strong>${escapeHtml(d30.text)}</strong></span>
+    <span class="w-pill w-ext" title="Precio final 90 días">👑 90d: <strong>${escapeHtml(d90.text)}</strong></span>
+    ${discTag}
   `;
 }
 
+function getRepairTargetObject(targetType, idx1, idx2, idx3) {
+  if (!currentCotizador) return null;
+  if (targetType === "celulares") {
+    return currentCotizador.celulares?.[idx1]?.models?.[idx2]?.repairs?.[idx3] || null;
+  } else if (targetType === "consolas") {
+    return currentCotizador.consolas?.[idx1]?.repairs?.[idx3] || null;
+  } else if (targetType === "joysticks") {
+    return currentCotizador.joysticks?.[idx1]?.repairs?.[idx3] || null;
+  } else if (targetType === "computadoras") {
+    return currentCotizador.computadoras?.[idx1] || null;
+  }
+  return null;
+}
+
+function renderRepairPriceEditorHtml(targetType, idx1, idx2, idx3, r) {
+  const adj = getAdminWarrantyAdjustments();
+  const baseMeta = parseAdminPriceMeta(r.price);
+  const autoBasicPh = baseMeta.valid
+    ? (baseMeta.isUsd ? `Auto: ${Math.round(baseMeta.num * Math.max(0, 1 + adj.basic / 100))} USD` : `Auto: $${Math.round(baseMeta.num * Math.max(0, 1 + adj.basic / 100)).toLocaleString("es-AR")}`)
+    : "Auto / Opcional";
+  const autoUltraPh = baseMeta.valid
+    ? (baseMeta.isUsd ? `Auto: ${Math.round(baseMeta.num * Math.max(0, 1 + adj.ultra / 100))} USD` : `Auto: $${Math.round(baseMeta.num * Math.max(0, 1 + adj.ultra / 100)).toLocaleString("es-AR")}`)
+    : "Auto / Opcional";
+
+  const valBasic = r.priceBasic !== undefined && r.priceBasic !== null ? r.priceBasic : "";
+  const valStd = r.price !== undefined && r.price !== null ? r.price : "";
+  const valUltra = r.priceUltra !== undefined && r.priceUltra !== null ? r.priceUltra : "";
+  const valDisc = r.discountPercent !== undefined && r.discountPercent !== null && Number(r.discountPercent) > 0 ? r.discountPercent : "";
+
+  return `
+    <div class="repair-prices-grid">
+      <div class="repair-price-field">
+        <label>⚡ Sin gar.</label>
+        <input type="text" class="repair-inline-input" data-field="priceBasic" value="${escapeHtml(valBasic)}"
+          placeholder="${escapeHtml(autoBasicPh)}"
+          onchange="updateRepairPriceAndDiscount('${targetType}', ${idx1}, ${idx2}, ${idx3}, 'priceBasic', this.value, this)"
+          oninput="updateRepairPriceAndDiscount('${targetType}', ${idx1}, ${idx2}, ${idx3}, 'priceBasic', this.value, this)">
+      </div>
+      <div class="repair-price-field">
+        <label>🛡️ 30 días</label>
+        <input type="text" class="repair-inline-input repair-price-input" data-field="price" value="${escapeHtml(valStd)}"
+          placeholder="Ej: 80000"
+          onchange="updateRepairPriceAndDiscount('${targetType}', ${idx1}, ${idx2}, ${idx3}, 'price', this.value, this)"
+          oninput="updateRepairPriceAndDiscount('${targetType}', ${idx1}, ${idx2}, ${idx3}, 'price', this.value, this)">
+      </div>
+      <div class="repair-price-field">
+        <label>👑 90 días</label>
+        <input type="text" class="repair-inline-input" data-field="priceUltra" value="${escapeHtml(valUltra)}"
+          placeholder="${escapeHtml(autoUltraPh)}"
+          onchange="updateRepairPriceAndDiscount('${targetType}', ${idx1}, ${idx2}, ${idx3}, 'priceUltra', this.value, this)"
+          oninput="updateRepairPriceAndDiscount('${targetType}', ${idx1}, ${idx2}, ${idx3}, 'priceUltra', this.value, this)">
+      </div>
+    </div>
+    <div class="repair-discount-row">
+      <span class="repair-discount-label">🏷️ Desc. %:</span>
+      <input type="number" min="0" max="95" step="1" class="repair-inline-input repair-discount-input" data-field="discountPercent"
+        value="${escapeHtml(valDisc)}" placeholder="0"
+        title="Porcentaje de descuento aplicado a esta reparación"
+        onchange="updateRepairPriceAndDiscount('${targetType}', ${idx1}, ${idx2}, ${idx3}, 'discountPercent', this.value, this)"
+        oninput="updateRepairPriceAndDiscount('${targetType}', ${idx1}, ${idx2}, ${idx3}, 'discountPercent', this.value, this)">
+    </div>
+    <div class="warranty-preview-line">${formatAdminWarrantyBreakdown(r)}</div>
+  `;
+}
+
+function updateRepairPriceAndDiscount(targetType, idx1, idx2, idx3, field, val, inputEl) {
+  const rep = getRepairTargetObject(targetType, idx1, idx2, idx3);
+  if (!rep) return;
+
+  if (field === "discountPercent") {
+    const n = Number(val);
+    if (!val || isNaN(n) || n <= 0) {
+      delete rep.discountPercent;
+    } else {
+      rep.discountPercent = Math.min(95, Math.max(0, n));
+    }
+  } else if (field === "priceBasic" || field === "priceUltra") {
+    const normalized = normalizeAdminPriceInput(val);
+    if (normalized === "") {
+      delete rep[field];
+    } else {
+      rep[field] = normalized;
+    }
+  } else {
+    rep.price = normalizeAdminPriceInput(val);
+  }
+
+  debouncedAutoSaveCotizador();
+
+  if (inputEl) {
+    const td = inputEl.closest("td");
+    if (td) {
+      const previewEl = td.querySelector(".warranty-preview-line");
+      if (previewEl) {
+        previewEl.innerHTML = formatAdminWarrantyBreakdown(rep);
+      }
+      if (field === "price") {
+        const adj = getAdminWarrantyAdjustments();
+        const baseMeta = parseAdminPriceMeta(rep.price);
+        const basicInp = td.querySelector('input[data-field="priceBasic"]');
+        const ultraInp = td.querySelector('input[data-field="priceUltra"]');
+        if (basicInp) {
+          basicInp.placeholder = baseMeta.valid
+            ? (baseMeta.isUsd ? `Auto: ${Math.round(baseMeta.num * Math.max(0, 1 + adj.basic / 100))} USD` : `Auto: $${Math.round(baseMeta.num * Math.max(0, 1 + adj.basic / 100)).toLocaleString("es-AR")}`)
+            : "Auto / Opcional";
+        }
+        if (ultraInp) {
+          ultraInp.placeholder = baseMeta.valid
+            ? (baseMeta.isUsd ? `Auto: ${Math.round(baseMeta.num * Math.max(0, 1 + adj.ultra / 100))} USD` : `Auto: $${Math.round(baseMeta.num * Math.max(0, 1 + adj.ultra / 100)).toLocaleString("es-AR")}`)
+            : "Auto / Opcional";
+        }
+      }
+    }
+  }
+}
+
 function updateWarrantyPreviewCell(inputEl) {
-  if (!inputEl || !inputEl.parentElement) return;
-  const previewEl = inputEl.parentElement.querySelector(".warranty-preview-line");
+  if (!inputEl) return;
+  const td = inputEl.closest("td") || inputEl.parentElement;
+  const previewEl = td ? td.querySelector(".warranty-preview-line") : null;
   if (previewEl) {
     previewEl.innerHTML = formatAdminWarrantyBreakdown(inputEl.value);
   }
@@ -3005,26 +3170,22 @@ function renderCelularesSection() {
     const rowsHtml = repairs.map((r, rIdx) => {
       return `
         <tr>
-          <td style="width: 30%;">
+          <td style="width: 25%;">
             <input type="text" class="repair-inline-input" value="${escapeHtml(r.name)}" 
               placeholder="Nombre del servicio"
               onchange="updateCelularRepairName(${bIdx}, ${mIdx}, ${rIdx}, this.value)"
               oninput="debouncedAutoSaveCotizador()">
           </td>
-          <td style="width: 30%;">
-            <input type="text" class="repair-inline-input repair-price-input" value="${escapeHtml(r.price)}" 
-              placeholder="Precio ej: 80000 o 70 USD"
-              onchange="updateCelularRepairPrice(${bIdx}, ${mIdx}, ${rIdx}, this.value); updateWarrantyPreviewCell(this)"
-              oninput="debouncedAutoSaveCotizador(); updateWarrantyPreviewCell(this)">
-            <div class="warranty-preview-line">${formatAdminWarrantyBreakdown(r.price)}</div>
+          <td style="width: 43%;">
+            ${renderRepairPriceEditorHtml('celulares', bIdx, mIdx, rIdx, r)}
           </td>
-          <td style="width: 32%;">
+          <td style="width: 25%;">
             <input type="text" class="repair-inline-input" value="${escapeHtml(r.note || '')}" 
               placeholder="Aclaración, garantía o detalle..."
               onchange="updateCelularRepairNote(${bIdx}, ${mIdx}, ${rIdx}, this.value)"
               oninput="debouncedAutoSaveCotizador()">
           </td>
-          <td style="width: 8%; text-align: center;">
+          <td style="width: 7%; text-align: center;">
             <button type="button" class="repair-del-btn" onclick="deleteCelularRepair(${bIdx}, ${mIdx}, ${rIdx})" title="Eliminar tarifa">
               ✕
             </button>
@@ -3219,26 +3380,22 @@ function renderConsolasSection() {
     const rowsHtml = repairs.map((r, rIdx) => {
       return `
         <tr>
-          <td style="width: 30%;">
+          <td style="width: 25%;">
             <input type="text" class="repair-inline-input" value="${escapeHtml(r.name)}" 
               placeholder="Servicio / Reparación"
               onchange="updateDeviceRepairName('consolas', ${devIdx}, ${rIdx}, this.value)"
               oninput="debouncedAutoSaveCotizador()">
           </td>
-          <td style="width: 30%;">
-            <input type="text" class="repair-inline-input repair-price-input" value="${escapeHtml(r.price)}" 
-              placeholder="Precio ej: 45000"
-              onchange="updateDeviceRepairPrice('consolas', ${devIdx}, ${rIdx}, this.value); updateWarrantyPreviewCell(this)"
-              oninput="debouncedAutoSaveCotizador(); updateWarrantyPreviewCell(this)">
-            <div class="warranty-preview-line">${formatAdminWarrantyBreakdown(r.price)}</div>
+          <td style="width: 43%;">
+            ${renderRepairPriceEditorHtml('consolas', devIdx, 0, rIdx, r)}
           </td>
-          <td style="width: 32%;">
+          <td style="width: 25%;">
             <input type="text" class="repair-inline-input" value="${escapeHtml(r.note || '')}" 
               placeholder="Aclaración, garantía o descripción..."
               onchange="updateDeviceRepairNote('consolas', ${devIdx}, ${rIdx}, this.value)"
               oninput="debouncedAutoSaveCotizador()">
           </td>
-          <td style="width: 8%; text-align: center;">
+          <td style="width: 7%; text-align: center;">
             <button type="button" class="repair-del-btn" onclick="deleteDeviceRepair('consolas', ${devIdx}, ${rIdx})" title="Eliminar servicio">
               ✕
             </button>
@@ -3332,26 +3489,22 @@ function renderJoysticksSection() {
     const rowsHtml = repairs.map((r, rIdx) => {
       return `
         <tr>
-          <td style="width: 30%;">
+          <td style="width: 25%;">
             <input type="text" class="repair-inline-input" value="${escapeHtml(r.name)}" 
               placeholder="Servicio de Mando"
               onchange="updateDeviceRepairName('joysticks', ${devIdx}, ${rIdx}, this.value)"
               oninput="debouncedAutoSaveCotizador()">
           </td>
-          <td style="width: 30%;">
-            <input type="text" class="repair-inline-input repair-price-input" value="${escapeHtml(r.price)}" 
-              placeholder="Precio ej: 25000"
-              onchange="updateDeviceRepairPrice('joysticks', ${devIdx}, ${rIdx}, this.value); updateWarrantyPreviewCell(this)"
-              oninput="debouncedAutoSaveCotizador(); updateWarrantyPreviewCell(this)">
-            <div class="warranty-preview-line">${formatAdminWarrantyBreakdown(r.price)}</div>
+          <td style="width: 43%;">
+            ${renderRepairPriceEditorHtml('joysticks', devIdx, 0, rIdx, r)}
           </td>
-          <td style="width: 32%;">
+          <td style="width: 25%;">
             <input type="text" class="repair-inline-input" value="${escapeHtml(r.note || '')}" 
               placeholder="Garantía, repuesto o nota..."
               onchange="updateDeviceRepairNote('joysticks', ${devIdx}, ${rIdx}, this.value)"
               oninput="debouncedAutoSaveCotizador()">
           </td>
-          <td style="width: 8%; text-align: center;">
+          <td style="width: 7%; text-align: center;">
             <button type="button" class="repair-del-btn" onclick="deleteDeviceRepair('joysticks', ${devIdx}, ${rIdx})" title="Eliminar servicio">
               ✕
             </button>
@@ -3424,30 +3577,27 @@ function renderComputadorasSection() {
     });
   }
 
-  const rowsHtml = servicios.map((s, idx) => {
+  const rowsHtml = servicios.map((s) => {
+    const realIdx = currentCotizador.computadoras.indexOf(s);
     return `
       <tr>
-        <td style="width: 30%;">
+        <td style="width: 25%;">
           <input type="text" class="repair-inline-input" value="${escapeHtml(s.name)}" 
             placeholder="Nombre del servicio"
-            onchange="updatePcRepairName(${idx}, this.value)"
+            onchange="updatePcRepairName(${realIdx}, this.value)"
             oninput="debouncedAutoSaveCotizador()">
         </td>
-        <td style="width: 30%;">
-          <input type="text" class="repair-inline-input repair-price-input" value="${escapeHtml(s.price)}" 
-            placeholder="Consultar o precio"
-            onchange="updatePcRepairPrice(${idx}, this.value); updateWarrantyPreviewCell(this)"
-            oninput="debouncedAutoSaveCotizador(); updateWarrantyPreviewCell(this)">
-          <div class="warranty-preview-line">${formatAdminWarrantyBreakdown(s.price)}</div>
+        <td style="width: 43%;">
+          ${renderRepairPriceEditorHtml('computadoras', realIdx, 0, 0, s)}
         </td>
-        <td style="width: 32%;">
+        <td style="width: 25%;">
           <input type="text" class="repair-inline-input" value="${escapeHtml(s.note || '')}" 
             placeholder="Descripción del servicio..."
-            onchange="updatePcRepairNote(${idx}, this.value)"
+            onchange="updatePcRepairNote(${realIdx}, this.value)"
             oninput="debouncedAutoSaveCotizador()">
         </td>
-        <td style="width: 8%; text-align: center;">
-          <button type="button" class="repair-del-btn" onclick="deletePcRepair(${idx})" title="Eliminar servicio">
+        <td style="width: 7%; text-align: center;">
+          <button type="button" class="repair-del-btn" onclick="deletePcRepair(${realIdx})" title="Eliminar servicio">
             ✕
           </button>
         </td>
@@ -3632,8 +3782,8 @@ function renderGarantiasSettingsSection() {
 
   container.innerHTML = `
     <div class="cotizador-settings-card">
-      <h2 style="font-size:20px; font-weight:800; margin-bottom:8px;">🛡️ Porcentajes de Descuento o Incremento por Garantía</h2>
-      <p class="settings-help" style="margin-bottom:18px;">Elegí cuánto porcentaje se <strong>resta</strong> (con signo menos, ej: <code>-20</code>) o se <strong>suma</strong> (ej: <code>30</code>) sobre el precio base en cada una de las 3 opciones del presupuestador. Poné <code>0</code> para mantener el precio base sin cambios.</p>
+      <h2 style="font-size:20px; font-weight:800; margin-bottom:8px;">🛡️ Porcentajes Generales de Garantía y Descuento</h2>
+      <p class="settings-help" style="margin-bottom:18px;">Elegí cuánto porcentaje se <strong>resta</strong> (con signo menos, ej: <code>-20</code>) o se <strong>suma</strong> (ej: <code>30</code>) por defecto en las reparaciones que no tengan precio individual cargado manualmente. Si cargás el precio individual en una reparación, ese precio tiene prioridad y no se muestran porcentajes al cliente.</p>
 
       <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(210px, 1fr)); gap:14px; margin-bottom:18px;">
         <div style="background:#f8fafc; border:1px solid #cbd5e1; border-radius:12px; padding:14px;">
@@ -3966,6 +4116,12 @@ function openAddRepairModal(targetType, brandName = null, modelIdx = null, devic
 
   document.getElementById("new-repair-name").value = "";
   document.getElementById("new-repair-price").value = "";
+  const pbEl = document.getElementById("new-repair-price-basic");
+  const puEl = document.getElementById("new-repair-price-ultra");
+  const pdEl = document.getElementById("new-repair-discount");
+  if (pbEl) pbEl.value = "";
+  if (puEl) puEl.value = "";
+  if (pdEl) pdEl.value = "";
   document.getElementById("new-repair-note").value = "";
 
   if (targetType === "celulares") {
@@ -4003,16 +4159,14 @@ function handleSaveNewRepair(e) {
 
   const name = document.getElementById("new-repair-name").value.trim();
   const rawPrice = document.getElementById("new-repair-price").value.trim();
+  const rawBasic = (document.getElementById("new-repair-price-basic")?.value || "").trim();
+  const rawUltra = (document.getElementById("new-repair-price-ultra")?.value || "").trim();
+  const rawDisc = Number(document.getElementById("new-repair-discount")?.value || 0);
   const note = document.getElementById("new-repair-note").value.trim();
 
   if (!name || !rawPrice) return;
 
-  // Determinar precio numérico o string
-  let finalPrice = rawPrice;
-  const num = Number(rawPrice.replace(/\$/g, "").replace(/\./g, "").trim());
-  if (!isNaN(num) && !rawPrice.toLowerCase().includes("usd") && !rawPrice.toLowerCase().includes("consultar")) {
-    finalPrice = num;
-  }
+  const finalPrice = normalizeAdminPriceInput(rawPrice);
 
   const newId = `rep_${Date.now()}`;
   const repairObj = {
@@ -4021,6 +4175,9 @@ function handleSaveNewRepair(e) {
     price: finalPrice,
     note: note
   };
+  if (rawBasic !== "") repairObj.priceBasic = normalizeAdminPriceInput(rawBasic);
+  if (rawUltra !== "") repairObj.priceUltra = normalizeAdminPriceInput(rawUltra);
+  if (!isNaN(rawDisc) && rawDisc > 0) repairObj.discountPercent = Math.min(95, rawDisc);
 
   if (type === "celulares") {
     const brandObj = currentCotizador.celulares.find(b => b.brand.toLowerCase() === brandName.toLowerCase());
@@ -4122,32 +4279,75 @@ function handleApplyMassAdjust(e) {
   if (e) e.preventDefault();
   const scope = document.getElementById("mass-scope").value;
   const filter = document.getElementById("mass-repair-filter").value;
+  const target = document.getElementById("mass-price-target")?.value || "estandar";
   const op = document.getElementById("mass-operation").value;
   const val = Number(document.getElementById("mass-value").value);
 
-  if (isNaN(val) || val <= 0) {
-    alert("Por favor ingresá un valor mayor a cero.");
+  if (isNaN(val) || (target !== "discount_field" && val <= 0) || (target === "discount_field" && val < 0)) {
+    alert(target === "discount_field" ? "Ingresá un porcentaje de descuento válido (0 o mayor)." : "Por favor ingresá un valor mayor a cero.");
     return;
   }
 
+  const applyOperation = (num) => {
+    if (op === "percent_increase") return Math.round(num * (1 + val / 100));
+    if (op === "percent_decrease") return Math.max(0, Math.round(num * (1 - val / 100)));
+    if (op === "fixed_increase") return Math.round(num + val);
+    if (op === "fixed_decrease") return Math.max(0, Math.round(num - val));
+    return num;
+  };
+
   let count = 0;
+  const adj = getAdminWarrantyAdjustments();
+
   const applyToRepair = (r) => {
-    if (typeof r.price !== "number" || isNaN(r.price)) return; // Proteger strings
     if (filter !== "all") {
       const n = (r.name || "").toLowerCase();
       if (!n.includes(filter)) return;
     }
 
-    if (op === "percent_increase") {
-      r.price = Math.round(r.price * (1 + val / 100));
-    } else if (op === "percent_decrease") {
-      r.price = Math.round(r.price * (1 - val / 100));
-    } else if (op === "fixed_increase") {
-      r.price = Math.round(r.price + val);
-    } else if (op === "fixed_decrease") {
-      r.price = Math.max(0, Math.round(r.price - val));
+    if (target === "discount_field") {
+      if (val <= 0) delete r.discountPercent;
+      else r.discountPercent = Math.min(95, val);
+      count++;
+      return;
     }
-    count++;
+
+    const stdNumeric = (typeof r.price === "number" && !isNaN(r.price)) ? r.price : NaN;
+
+    if (target === "estandar") {
+      if (isNaN(stdNumeric)) return;
+      r.price = applyOperation(stdNumeric);
+      count++;
+    } else if (target === "basic") {
+      const curBasic = (typeof r.priceBasic === "number" && !isNaN(r.priceBasic))
+        ? r.priceBasic
+        : (!isNaN(stdNumeric) ? Math.round(stdNumeric * Math.max(0, 1 + adj.basic / 100)) : NaN);
+      if (isNaN(curBasic)) return;
+      r.priceBasic = applyOperation(curBasic);
+      count++;
+    } else if (target === "ultra") {
+      const curUltra = (typeof r.priceUltra === "number" && !isNaN(r.priceUltra))
+        ? r.priceUltra
+        : (!isNaN(stdNumeric) ? Math.round(stdNumeric * Math.max(0, 1 + adj.ultra / 100)) : NaN);
+      if (isNaN(curUltra)) return;
+      r.priceUltra = applyOperation(curUltra);
+      count++;
+    } else if (target === "all_warranties") {
+      let touched = false;
+      if (!isNaN(stdNumeric)) {
+        r.price = applyOperation(stdNumeric);
+        touched = true;
+      }
+      if (typeof r.priceBasic === "number" && !isNaN(r.priceBasic)) {
+        r.priceBasic = applyOperation(r.priceBasic);
+        touched = true;
+      }
+      if (typeof r.priceUltra === "number" && !isNaN(r.priceUltra)) {
+        r.priceUltra = applyOperation(r.priceUltra);
+        touched = true;
+      }
+      if (touched) count++;
+    }
   };
 
   if (scope === "current_brand") {
@@ -4168,7 +4368,7 @@ function handleApplyMassAdjust(e) {
   saveCotizadorDraft();
   closeMassAdjustModal();
   renderCotizador();
-  showAlert(`🎉 Ajuste masivo aplicado: se actualizaron ${count} precios numéricos.`);
+  showAlert(`🎉 Ajuste masivo aplicado: se actualizaron ${count} tarifas.`);
 }
 
 // Búsqueda del Cotizador
@@ -5433,4 +5633,5 @@ window.syncDescFromTab3 = syncDescFromTab3;
 window.clearStoredToken = clearStoredToken;
 window.updateWarrantyPercentInput = updateWarrantyPercentInput;
 window.saveWarrantyAdjustmentsSettings = saveWarrantyAdjustmentsSettings;
+window.updateRepairPriceAndDiscount = updateRepairPriceAndDiscount;
 

@@ -847,9 +847,24 @@
           </div>
 
           <div class="form-group">
-            <label for="new-repair-price">Precio: <span class="req">*</span></label>
+            <label for="new-repair-price">Precio 30 días (Estándar): <span class="req">*</span></label>
             <input type="text" id="new-repair-price" placeholder="Ej: 85000 (o '75 USD' o 'Consultar')" required>
             <span class="form-hint">Podés ingresar un número en pesos (ej: 45000), en dólares (ej: 70 USD), o "Consultar".</span>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group flex-1">
+              <label for="new-repair-price-basic">⚡ Precio Sin garantía (opcional):</label>
+              <input type="text" id="new-repair-price-basic" placeholder="Vacío = automático">
+            </div>
+            <div class="form-group flex-1">
+              <label for="new-repair-price-ultra">👑 Precio 90 días (opcional):</label>
+              <input type="text" id="new-repair-price-ultra" placeholder="Vacío = automático">
+            </div>
+            <div class="form-group" style="max-width: 130px;">
+              <label for="new-repair-discount">🏷️ Desc. %:</label>
+              <input type="number" id="new-repair-discount" min="0" max="95" step="1" placeholder="0">
+            </div>
           </div>
 
           <div class="form-group">
@@ -903,12 +918,23 @@
             </select>
           </div>
 
+          <div class="form-group">
+            <label for="mass-price-target">¿Qué precios querés modificar?:</label>
+            <select id="mass-price-target" required>
+              <option value="estandar">Precio 30 días (Estándar / Base)</option>
+              <option value="all_warranties">Todas las opciones (Sin gar., 30 días y 90 días)</option>
+              <option value="basic">Solo Sin garantía (guarda precio individual)</option>
+              <option value="ultra">Solo 90 días (guarda precio individual)</option>
+              <option value="discount_field">Aplicar / cambiar Descuento % individual</option>
+            </select>
+          </div>
+
           <div class="form-row">
             <div class="form-group flex-1">
               <label for="mass-operation">Operación:</label>
               <select id="mass-operation" required>
                 <option value="percent_increase">Aumentar porcentaje (+%)</option>
-                <option value="percent_decrease">Disminuir porcentaje (-%)</option>
+                <option value="percent_decrease">Aplicar descuento (%)</option>
                 <option value="fixed_increase">Sumar monto fijo (+$)</option>
                 <option value="fixed_decrease">Restar monto fijo (-$)</option>
               </select>

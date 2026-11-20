@@ -23,19 +23,10 @@ function getWarrantyAdjustments() {
   };
 }
 
-function formatWarrantyPercentTag(pct, isStandard = false) {
-  if (pct === 0) return isStandard ? 'OFICIAL' : '0%';
-  return pct > 0 ? `+${pct}%` : `${pct}%`;
-}
-
-function formatWarrantyExtraLabel(wId, pct) {
-  if (wId === 'basic') {
-    if (pct < 0) return `Sin garantía (${pct}%)`;
-    if (pct > 0) return `Sin garantía (+${pct}%)`;
-    return 'Sin garantía (precio base)';
-  }
-  if (pct === 0) return 'Precio oficial estándar';
-  return pct > 0 ? `+${pct}% adicional` : `${pct}% de descuento`;
+function formatWarrantyExtraLabel(wId) {
+  if (wId === 'basic') return 'Sin cobertura de garantía';
+  if (wId === 'ultra') return '90 días de garantía';
+  return '30 días de garantía';
 }
 
 const WIDGET_WARRANTIES = [
@@ -45,8 +36,6 @@ const WIDGET_WARRANTIES = [
     dias: 0,
     icon: '⚡',
     badgeClass: 'basic',
-    badgeText: '-20%',
-    extraLabel: 'Sin garantía (-20%)',
     duracionText: 'Sin cobertura de garantía'
   },
   {
@@ -55,8 +44,6 @@ const WIDGET_WARRANTIES = [
     dias: 30,
     icon: '⭐',
     badgeClass: 'estandar',
-    badgeText: 'OFICIAL',
-    extraLabel: 'Precio oficial estándar',
     duracionText: '30 días de garantía'
   },
   {
@@ -65,8 +52,6 @@ const WIDGET_WARRANTIES = [
     dias: 90,
     icon: '🚀',
     badgeClass: 'ultra',
-    badgeText: '+30%',
-    extraLabel: '+30% adicional',
     duracionText: '90 días de garantía'
   }
 ];
@@ -78,8 +63,7 @@ function getDynamicWarranties() {
     return {
       ...w,
       percent: pct,
-      badgeText: formatWarrantyPercentTag(pct, w.id === 'estandar'),
-      extraLabel: formatWarrantyExtraLabel(w.id, pct)
+      extraLabel: formatWarrantyExtraLabel(w.id)
     };
   });
 }
@@ -133,69 +117,113 @@ function getSelectedWarrantyObj() {
   return list.find(w => w.id === selectedWarrantyId) || list[1];
 }
 
-function getBaseRepairPrice() {
+function getSelectedRepairObj() {
   if (widgetCategory === 'Celular') {
     const allReps = getFullRepairsForModel(selectedModelObj);
-    const matched = allReps.find(r => r.id === selectedRepairId);
-    return matched ? matched.price : null;
+    return allReps.find(r => r.id === selectedRepairId) || null;
   } else if (widgetCategory === 'Consola') {
     const cObj = PRECIOS_WIDGET.consolas.find(c => c.id === selectedConsoleId);
     if (cObj && selectedConsoleServiceId) {
-      const serv = cObj.repairs.find(r => r.id === selectedConsoleServiceId);
-      return serv ? serv.price : null;
+      return cObj.repairs.find(r => r.id === selectedConsoleServiceId) || null;
     }
   } else if (widgetCategory === 'Mando') {
     const mObj = PRECIOS_WIDGET.joysticks.find(j => j.id === selectedMandoId);
     if (mObj && selectedMandoServiceId) {
-      const serv = mObj.repairs.find(r => r.id === selectedMandoServiceId);
-      return serv ? serv.price : null;
+      return mObj.repairs.find(r => r.id === selectedMandoServiceId) || null;
     }
   } else if (widgetCategory === 'Computadora') {
-    return 'Consultar';
+    return (PRECIOS_WIDGET.computadoras || []).find(c => c.id === selectedCompServiceId) || null;
   }
   return null;
 }
 
-function computeWarrantyPrice(rawPrice, warrantyId) {
+function getBaseRepairPrice() {
+  const rep = getSelectedRepairObj();
+  if (!rep) return null;
+  return rep.price !== undefined && rep.price !== null && String(rep.price).trim() !== ''
+    ? rep.price
+    : (widgetCategory === 'Computadora' ? 'Consultar' : null);
+}
+
+function applyPercentToRawPrice(rawPrice, pct) {
   if (rawPrice === undefined || rawPrice === null) return '';
-  let s = String(rawPrice).trim();
-  if (s.toLowerCase().includes('consultar') || s === '' || s.toLowerCase().includes('no realizamos')) {
+  const s = String(rawPrice).trim();
+  const lower = s.toLowerCase();
+  if (lower.includes('consultar') || s === '' || lower.includes('no realizamos')) {
     return s || 'Consultar';
   }
 
-  const adj = getWarrantyAdjustments();
-  const pct = Number(adj[warrantyId] ?? (warrantyId === 'basic' ? -20 : warrantyId === 'ultra' ? 30 : 0));
-
-  const calculateNumeric = (num) => {
-    const multiplier = Math.max(0, 1 + (pct / 100));
-    return Math.round(num * multiplier);
-  };
+  const multiplier = Math.max(0, 1 + (Number(pct || 0) / 100));
 
   if (typeof rawPrice === 'number' && !isNaN(rawPrice)) {
-    const adjusted = calculateNumeric(rawPrice);
-    return reFormatPrice(adjusted);
+    return reFormatPrice(Math.round(rawPrice * multiplier));
   }
 
-  if (s.toLowerCase().includes('usd')) {
-    const numPart = parseFloat(s.replace(/[^0-9.]/g, ''));
+  if (lower.includes('usd')) {
+    const numPart = parseFloat(s.replace(/[^0-9.,]/g, '').replace(',', '.'));
     if (!isNaN(numPart)) {
-      const adjusted = calculateNumeric(numPart);
-      return `${adjusted} USD`;
+      return `${Math.round(numPart * multiplier)} USD`;
     }
   }
 
   const cleanNum = parseRepairNumeric(s);
   if (!isNaN(cleanNum) && cleanNum > 0) {
-    const adjusted = calculateNumeric(cleanNum);
-    return reFormatPrice(adjusted);
+    return reFormatPrice(Math.round(cleanNum * multiplier));
   }
   return s;
+}
+
+function computeWarrantyPrice(rawPriceOrRepair, warrantyId) {
+  if (rawPriceOrRepair === undefined || rawPriceOrRepair === null) return '';
+
+  let rawPrice = rawPriceOrRepair;
+  let hasManualOverride = false;
+  let itemDiscountPct = 0;
+
+  if (typeof rawPriceOrRepair === 'object') {
+    const rep = rawPriceOrRepair;
+    const disc = Number(rep.discountPercent);
+    if (!isNaN(disc) && disc > 0) {
+      itemDiscountPct = Math.min(95, disc);
+    }
+
+    if (warrantyId === 'basic' && rep.priceBasic !== undefined && rep.priceBasic !== null && String(rep.priceBasic).trim() !== '') {
+      rawPrice = rep.priceBasic;
+      hasManualOverride = true;
+    } else if (warrantyId === 'ultra' && rep.priceUltra !== undefined && rep.priceUltra !== null && String(rep.priceUltra).trim() !== '') {
+      rawPrice = rep.priceUltra;
+      hasManualOverride = true;
+    } else {
+      rawPrice = rep.price;
+    }
+  }
+
+  if (rawPrice === undefined || rawPrice === null) return '';
+  const s = String(rawPrice).trim();
+  const lower = s.toLowerCase();
+  if (lower.includes('consultar') || s === '' || lower.includes('no realizamos')) {
+    return s || 'Consultar';
+  }
+
+  let effectivePct = 0;
+  if (!hasManualOverride) {
+    const adj = getWarrantyAdjustments();
+    effectivePct = Number(adj[warrantyId] ?? (warrantyId === 'basic' ? -20 : warrantyId === 'ultra' ? 30 : 0));
+  }
+
+  // Combinar porcentaje global (si no hay precio individual manual) con el descuento % propio del ítem
+  let baseAfterWarranty = applyPercentToRawPrice(rawPrice, effectivePct);
+  if (itemDiscountPct > 0) {
+    baseAfterWarranty = applyPercentToRawPrice(baseAfterWarranty, -itemDiscountPct);
+  }
+  return baseAfterWarranty;
 }
 
 function renderWarrantyCards() {
   const container = document.getElementById('widget-garantias-grid');
   if (!container) return;
-  const rawBase = getBaseRepairPrice();
+  const repairObj = getSelectedRepairObj();
+  const rawBase = repairObj || getBaseRepairPrice();
   if (rawBase === null) return;
 
   container.innerHTML = '';
@@ -225,7 +253,6 @@ function renderWarrantyCards() {
           <span class="re-garantia-title">${w.name}</span>
           <span class="re-garantia-sub">${w.duracionText}</span>
         </div>
-        <span class="re-garantia-badge ${w.badgeClass}">${w.badgeText}</span>
       </div>
       ${priceTagHtml}
     `;
@@ -862,7 +889,8 @@ function selectPhoneRepair(repairId) {
   const rep = allReps.find(r => r.id === repairId);
   if (rep) {
     safeSetText('re-selected-phone-repair-name', rep.name);
-    const pText = (rep.price && rep.price !== 'Consultar') ? reFormatPrice(rep.price) : 'Precio a confirmar';
+    const effPrice = computeWarrantyPrice(rep, 'estandar');
+    const pText = (effPrice && effPrice !== 'Consultar') ? effPrice : 'Precio a confirmar';
     safeSetText('re-selected-phone-repair-note', `${pText} • ${rep.note || 'Reparación testeada con repuestos de calidad'}`);
   }
 
@@ -938,11 +966,12 @@ function populateConsoleServices() {
     const btn = document.createElement('button');
     btn.type = 'button';
     btn.className = serv.id === selectedConsoleServiceId ? 're-service-btn active' : 're-service-btn';
+    const effPrice = computeWarrantyPrice(serv, 'estandar');
     btn.innerHTML = `<div style="display:flex;flex-direction:column;text-align:left;gap:2px;">
       <span class="re-service-title">${serv.name}</span>
       ${serv.note ? `<span style="font-size:9px;color:#64748b;">${serv.note}</span>` : ''}
     </div>
-    <span class="re-service-price">${reFormatPrice(serv.price)}</span>`;
+    <span class="re-service-price">${effPrice}</span>`;
     btn.onclick = () => selectConsoleService(serv.id);
     grid.appendChild(btn);
   });
@@ -953,8 +982,9 @@ function selectConsoleService(sId) {
   const cObj = PRECIOS_WIDGET.consolas.find(c => c.id === selectedConsoleId);
   const serv = cObj ? cObj.repairs.find(r => r.id === sId) : null;
   if (serv) {
+    const effPrice = computeWarrantyPrice(serv, 'estandar');
     safeSetText('re-selected-console-service-name', serv.name);
-    safeSetText('re-selected-console-service-note', `${reFormatPrice(serv.price)} • ${serv.note || 'Mantenimiento con pasta térmica de alto rendimiento'}`);
+    safeSetText('re-selected-console-service-note', `${effPrice} • ${serv.note || 'Mantenimiento con pasta térmica de alto rendimiento'}`);
   }
   // Ocultar lista completa para ahorrar espacio y mostrar tarjeta compacta seleccionada
   safeSetStyle('console-services-list', 'display', 'none');
@@ -1028,10 +1058,11 @@ function populateMandoServices() {
     const btn = document.createElement('button');
     btn.type = 'button';
     btn.className = serv.id === selectedMandoServiceId ? 're-service-btn active' : 're-service-btn';
+    const effPrice = computeWarrantyPrice(serv, 'estandar');
     btn.innerHTML = `<div style="display:flex;flex-direction:column;text-align:left;gap:2px;">
       <span class="re-service-title">${serv.name}</span>
     </div>
-    <span class="re-service-price">${reFormatPrice(serv.price)}</span>`;
+    <span class="re-service-price">${effPrice}</span>`;
     btn.onclick = () => selectMandoService(serv.id);
     grid.appendChild(btn);
   });
@@ -1042,8 +1073,9 @@ function selectMandoService(sId) {
   const mObj = PRECIOS_WIDGET.joysticks.find(j => j.id === selectedMandoId);
   const serv = mObj ? mObj.repairs.find(r => r.id === sId) : null;
   if (serv) {
+    const effPrice = computeWarrantyPrice(serv, 'estandar');
     safeSetText('re-selected-mando-service-name', serv.name);
-    safeSetText('re-selected-mando-service-note', `${reFormatPrice(serv.price)} • Calibración y repuestos testeados`);
+    safeSetText('re-selected-mando-service-note', `${effPrice} • Calibración y repuestos testeados`);
   }
   // Ocultar lista completa para ahorrar espacio y mostrar tarjeta compacta seleccionada
   safeSetStyle('controller-services-list', 'display', 'none');
@@ -1076,11 +1108,12 @@ function populateComputadoras() {
     const btn = document.createElement('button');
     btn.type = 'button';
     btn.className = serv.id === selectedCompServiceId ? 're-service-btn active' : 're-service-btn';
+    const effPcPrice = computeWarrantyPrice(serv, 'estandar') || 'Consultar';
     btn.innerHTML = `<div style="display:flex;flex-direction:column;text-align:left;gap:2px;">
       <span class="re-service-title">${serv.name}</span>
       ${serv.note ? `<span style="font-size:9px;color:#64748b;">${serv.note}</span>` : ''}
     </div>
-    <span class="re-service-price">Consultar</span>`;
+    <span class="re-service-price">${effPcPrice}</span>`;
     btn.onclick = () => selectCompService(serv.id);
     grid.appendChild(btn);
   });
@@ -1090,8 +1123,9 @@ function selectCompService(sId) {
   selectedCompServiceId = sId;
   const serv = (PRECIOS_WIDGET.computadoras || []).find(c => c.id === sId);
   if (serv) {
+    const effPcPrice = computeWarrantyPrice(serv, 'estandar') || 'Consultar';
     safeSetText('re-selected-comp-service-name', serv.name);
-    safeSetText('re-selected-comp-service-note', `Consultar • ${serv.note || 'Optimización y laboratorio'}`);
+    safeSetText('re-selected-comp-service-note', `${effPcPrice} • ${serv.note || 'Optimización y laboratorio'}`);
   }
   // Ocultar lista completa para ahorrar espacio y mostrar tarjeta compacta seleccionada
   safeSetStyle('pc-services-grid', 'display', 'none');
@@ -1174,7 +1208,7 @@ function calculateAndShowWidgetBudget() {
     const serv = (PRECIOS_WIDGET.computadoras || []).find(c => c.id === selectedCompServiceId);
     if (serv) {
       isValid = true;
-      rawPrice = 'Consultar';
+      rawPrice = serv.price || 'Consultar';
       sTitle = serv.name;
       sBadge = 'PC / Notebook';
       sDesc = serv.note || 'Servicio técnico profesional y ampliación de componentes para notebooks y computadoras.';
@@ -1184,27 +1218,21 @@ function calculateAndShowWidgetBudget() {
   const box = document.getElementById('budget-summary-box');
   if (isValid && box) {
     const wObj = getSelectedWarrantyObj();
-    sPrice = computeWarrantyPrice(rawPrice, wObj.id);
-    if (sPrice === 'Consultar' || !rawPrice || rawPrice === 'Consultar' || sPrice === 'A consultar') isQuote = true;
+    const repairObj = getSelectedRepairObj();
+    sPrice = computeWarrantyPrice(repairObj || rawPrice, wObj.id);
+    if (sPrice === 'Consultar' || !sPrice || sPrice === 'A consultar') isQuote = true;
 
     safeSetText('summary-title', sTitle);
     safeSetText('summary-desc', sDesc);
     safeSetText('summary-badge', sBadge);
     safeSetText('summary-price', sPrice);
-    const pctBadge = wObj.percent === 0 ? '' : ` (${wObj.percent > 0 ? '+' : ''}${wObj.percent}%)`;
-    safeSetText('summary-warranty-badge', wObj.dias === 0 ? `⚡ Sin garantía${pctBadge}` : `${wObj.icon} Garantía ${wObj.name}: ${wObj.dias} días${pctBadge}`);
+    safeSetText('summary-warranty-badge', wObj.dias === 0 ? '⚡ Sin garantía' : `${wObj.icon} Garantía ${wObj.name}: ${wObj.dias} días`);
 
-    let subWarrantyText = wObj.percent === 0
-      ? '✓ Garantía oficial Estándar (30 días) incluida'
-      : `✓ Garantía Estándar (30 días) (${wObj.percent > 0 ? '+' : ''}${wObj.percent}%)`;
+    let subWarrantyText = '✓ Garantía oficial Estándar (30 días) incluida';
     if (wObj.id === 'basic') {
-      if (wObj.percent < 0) subWarrantyText = `✓ Opción económica sin garantía (${wObj.percent}% de descuento)`;
-      else if (wObj.percent > 0) subWarrantyText = `✓ Opción sin garantía (+${wObj.percent}%)`;
-      else subWarrantyText = '✓ Opción sin cobertura de garantía';
+      subWarrantyText = '✓ Opción económica sin cobertura de garantía';
     } else if (wObj.id === 'ultra') {
-      subWarrantyText = wObj.percent === 0
-        ? '✓ Cobertura total Extendida (90 días)'
-        : `✓ Cobertura total Extendida (90 días) (${wObj.percent > 0 ? '+' : ''}${wObj.percent}%)`;
+      subWarrantyText = '✓ Cobertura total Extendida (90 días)';
     }
     safeSetText('summary-warranty-sub', subWarrantyText);
 
@@ -1227,8 +1255,8 @@ function sendWidgetWhatsApp() {
   const price = document.getElementById('summary-price')?.innerText || '';
   const wObj = getSelectedWarrantyObj();
   const warrantyWaText = wObj.dias === 0
-    ? (wObj.percent < 0 ? `Sin garantía (${wObj.percent}% de descuento)` : (wObj.percent > 0 ? `Sin garantía (+${wObj.percent}%)` : 'Sin garantía'))
-    : `${wObj.name} (${wObj.dias} días - ${wObj.extraLabel || wObj.badgeText})`;
+    ? 'Sin garantía'
+    : `${wObj.name} (${wObj.dias} días)`;
 
   let text = `¡Hola NISSA! 👋 Armé este presupuesto desde el cotizador de la tienda:\n\n`;
   text += `⚙️ *Categoría:* ${widgetCategory}\n`;
