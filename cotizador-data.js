@@ -1,7 +1,7 @@
 // ========================================================
 // Tarifas y modelos exactos del presupuestador NISSA
 // Generado automáticamente desde el Panel de Administración NISSA
-// Fecha de actualización: 18/11/2026, 12:47:53
+// Fecha de actualización: 20/11/2026, 12:50:42
 // 100% Compatible con GitHub Pages (Costo $0)
 // ========================================================
 
@@ -14442,7 +14442,12 @@ let PRECIOS_WIDGET = {
       "price": "Consultar",
       "note": "Disco sólido de 1TB NVMe de máxima velocidad."
     }
-  ]
+  ],
+  "warrantyAdjustments": {
+    "basic": -20,
+    "estandar": 0,
+    "ultra": 30
+  }
 };
 
 if (typeof window !== "undefined") {
