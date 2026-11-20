@@ -846,30 +846,36 @@
             <input type="text" id="new-repair-name" placeholder="Ej: 📱 Pantalla / Módulo OLED, 🔋 Batería, 🔌 Pin de carga..." required>
           </div>
 
-          <div class="form-group">
-            <label for="new-repair-price">Precio 30 días (Estándar): <span class="req">*</span></label>
-            <input type="text" id="new-repair-price" placeholder="Ej: 85000 (o '75 USD' o 'Consultar')" required>
-            <span class="form-hint">Podés ingresar un número en pesos (ej: 45000), en dólares (ej: 70 USD), o "Consultar".</span>
-          </div>
-
           <div class="form-row">
             <div class="form-group flex-1">
-              <label for="new-repair-price-basic">⚡ Precio Sin garantía (opcional):</label>
+              <label for="new-repair-price-basic">⚡ Sin garantía - Precio:</label>
               <input type="text" id="new-repair-price-basic" placeholder="Vacío = automático">
+              <input type="text" id="new-repair-time-basic" placeholder="Tiempo (ej: Sin garantía)" style="margin-top:6px;">
+              <input type="number" id="new-repair-discount-basic" min="0" max="95" step="1" placeholder="Desc. % (ej: 10)" style="margin-top:6px;">
             </div>
             <div class="form-group flex-1">
-              <label for="new-repair-price-ultra">👑 Precio 90 días (opcional):</label>
+              <label for="new-repair-price">🛡️ 30 días (Estándar) - Precio: <span class="req">*</span></label>
+              <input type="text" id="new-repair-price" placeholder="Ej: 85000 o Consultar" required>
+              <input type="text" id="new-repair-time-estandar" placeholder="Tiempo (ej: 30 días)" style="margin-top:6px;">
+              <input type="number" id="new-repair-discount-estandar" min="0" max="95" step="1" placeholder="Desc. % (ej: 10)" style="margin-top:6px;">
+            </div>
+            <div class="form-group flex-1">
+              <label for="new-repair-price-ultra">👑 90 días (3 meses) - Precio:</label>
               <input type="text" id="new-repair-price-ultra" placeholder="Vacío = automático">
+              <input type="text" id="new-repair-time-ultra" placeholder="Tiempo (ej: 90 días / 3 meses)" style="margin-top:6px;">
+              <input type="number" id="new-repair-discount-ultra" min="0" max="95" step="1" placeholder="Desc. % (ej: 15)" style="margin-top:6px;">
             </div>
-            <div class="form-group" style="max-width: 130px;">
-              <label for="new-repair-discount">🏷️ Desc. %:</label>
-              <input type="number" id="new-repair-discount" min="0" max="95" step="1" placeholder="0">
-            </div>
+          </div>
+          <span class="form-hint" style="display:block; margin-top:-6px; margin-bottom:12px;">Podés ingresar pesos (ej: 85000), dólares (ej: 70 USD) o "Consultar". Dejá el tiempo vacío para usar el texto general.</span>
+
+          <div class="form-group">
+            <label for="new-repair-gift-ultra">🎁 Texto de regalo / beneficio para garantía 3 meses (opcional):</label>
+            <input type="text" id="new-repair-gift-ultra" placeholder="Ej: ¡Incluye templado de regalo! o ¡Funda de regalo!">
           </div>
 
           <div class="form-group">
-            <label for="new-repair-note">Aclaración / Nota de Garantía:</label>
-            <input type="text" id="new-repair-note" placeholder="Ej: Condición 100%, Garantía escrita de 30 días...">
+            <label for="new-repair-note">Aclaración / Nota técnica:</label>
+            <input type="text" id="new-repair-note" placeholder="Ej: Condición 100%, repuesto original...">
           </div>
         </div>
 
@@ -925,7 +931,10 @@
               <option value="all_warranties">Todas las opciones (Sin gar., 30 días y 90 días)</option>
               <option value="basic">Solo Sin garantía (guarda precio individual)</option>
               <option value="ultra">Solo 90 días (guarda precio individual)</option>
-              <option value="discount_field">Aplicar / cambiar Descuento % individual</option>
+              <option value="discount_field">Aplicar Descuento % a las 3 opciones</option>
+              <option value="discount_basic">Aplicar Descuento % solo a Sin garantía</option>
+              <option value="discount_estandar">Aplicar Descuento % solo a 30 días</option>
+              <option value="discount_ultra">Aplicar Descuento % solo a 90 días</option>
             </select>
           </div>
 

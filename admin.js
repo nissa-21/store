@@ -2624,6 +2624,7 @@ function loadInitialCotizador() {
         localStorage.removeItem("nissa_cotizador_draft");
       } else if (parsed && typeof parsed === "object" && Array.isArray(parsed?.celulares) && parsed.celulares.length > 0) {
         currentCotizador = parsed;
+        ensureWarrantyDefaults(currentCotizador);
         return;
       }
     } catch (e) {
@@ -2649,9 +2650,30 @@ function loadInitialCotizador() {
       computadoras: []
     };
   }
-  if (!currentCotizador.warrantyAdjustments) {
-    currentCotizador.warrantyAdjustments = { basic: -20, estandar: 0, ultra: 30 };
+  ensureWarrantyDefaults(currentCotizador);
+}
+
+function ensureWarrantyDefaults(cot) {
+  if (!cot || typeof cot !== "object") return;
+  if (!cot.warrantyAdjustments || typeof cot.warrantyAdjustments !== "object") {
+    cot.warrantyAdjustments = { basic: -20, estandar: 0, ultra: 30 };
   }
+  if (!cot.warrantyLabels || typeof cot.warrantyLabels !== "object") {
+    cot.warrantyLabels = {};
+  }
+  const defaults = {
+    basic: { name: "Sin garantía", duracionText: "Sin cobertura de garantía" },
+    estandar: { name: "Estándar", duracionText: "30 días de garantía" },
+    ultra: { name: "Extendida", duracionText: "90 días de garantía" }
+  };
+  ["basic", "estandar", "ultra"].forEach(k => {
+    if (!cot.warrantyLabels[k] || typeof cot.warrantyLabels[k] !== "object") {
+      cot.warrantyLabels[k] = { ...defaults[k] };
+    } else {
+      if (!cot.warrantyLabels[k].name) cot.warrantyLabels[k].name = defaults[k].name;
+      if (!cot.warrantyLabels[k].duracionText) cot.warrantyLabels[k].duracionText = defaults[k].duracionText;
+    }
+  });
 }
 
 function saveCotizadorDraft() {
@@ -2899,6 +2921,37 @@ function getAdminWarrantyAdjustments() {
   };
 }
 
+function getAdminWarrantyLabels() {
+  const custom = (currentCotizador && currentCotizador.warrantyLabels) || {};
+  return {
+    basic: {
+      name: (custom.basic && custom.basic.name) ? custom.basic.name : "Sin garantía",
+      duracionText: (custom.basic && custom.basic.duracionText) ? custom.basic.duracionText : "Sin cobertura de garantía"
+    },
+    estandar: {
+      name: (custom.estandar && custom.estandar.name) ? custom.estandar.name : "Estándar",
+      duracionText: (custom.estandar && custom.estandar.duracionText) ? custom.estandar.duracionText : "30 días de garantía"
+    },
+    ultra: {
+      name: (custom.ultra && custom.ultra.name) ? custom.ultra.name : "Extendida",
+      duracionText: (custom.ultra && custom.ultra.duracionText) ? custom.ultra.duracionText : "90 días de garantía",
+      giftText: (custom.ultra && custom.ultra.giftText) ? custom.ultra.giftText : ""
+    }
+  };
+}
+
+function getAdminTierDiscount(rep, warrantyKey) {
+  if (!rep || typeof rep !== "object") return 0;
+  const field = warrantyKey === "basic" ? "discountBasic" : (warrantyKey === "ultra" ? "discountUltra" : "discountEstandar");
+  const specific = rep[field];
+  if (specific !== undefined && specific !== null && String(specific).trim() !== "") {
+    const n = Number(specific);
+    return (!isNaN(n) && n > 0) ? Math.min(95, n) : 0;
+  }
+  const fallback = Number(rep.discountPercent);
+  return (!isNaN(fallback) && fallback > 0) ? Math.min(95, fallback) : 0;
+}
+
 function parseAdminPriceMeta(rawPrice) {
   if (rawPrice === undefined || rawPrice === null) return { valid: false, isUsd: false, num: NaN, str: "" };
   const str = String(rawPrice).trim();
@@ -2952,9 +3005,9 @@ function computeAdminDisplayPrice(rep, warrantyKey) {
   }
 
   let val = Math.round(meta.num * Math.max(0, 1 + pct / 100));
-  const disc = Number(rep?.discountPercent);
-  if (!isNaN(disc) && disc > 0) {
-    val = Math.round(val * Math.max(0, 1 - Math.min(95, disc) / 100));
+  const disc = getAdminTierDiscount(rep, warrantyKey);
+  if (disc > 0) {
+    val = Math.round(val * Math.max(0, 1 - disc / 100));
   }
 
   return {
@@ -2974,17 +3027,23 @@ function formatAdminWarrantyBreakdown(repairOrRaw) {
     return '<span class="w-pill w-muted">Sin cálculo automático</span>';
   }
 
+  const lbls = getAdminWarrantyLabels();
   const dSin = computeAdminDisplayPrice(rep, "basic");
   const d30 = computeAdminDisplayPrice(rep, "estandar");
   const d90 = computeAdminDisplayPrice(rep, "ultra");
-  const disc = Number(rep.discountPercent);
-  const discTag = (!isNaN(disc) && disc > 0) ? `<span class="w-pill w-ext" title="Descuento individual aplicado">🏷️ -${disc}%</span>` : "";
+  const db = getAdminTierDiscount(rep, "basic");
+  const de = getAdminTierDiscount(rep, "estandar");
+  const du = getAdminTierDiscount(rep, "ultra");
+  const tSin = (rep.timeBasic && String(rep.timeBasic).trim()) || lbls.basic.name;
+  const t30 = (rep.timeEstandar && String(rep.timeEstandar).trim()) || lbls.estandar.duracionText;
+  const t90 = (rep.timeUltra && String(rep.timeUltra).trim()) || lbls.ultra.duracionText;
+  const gift = (rep.giftTextUltra && String(rep.giftTextUltra).trim()) || "";
 
   return `
-    <span class="w-pill w-none" title="Precio final Sin garantía">⚡ Sin gar.: <strong>${escapeHtml(dSin.text)}</strong></span>
-    <span class="w-pill w-std" title="Precio final 30 días">🛡️ 30d: <strong>${escapeHtml(d30.text)}</strong></span>
-    <span class="w-pill w-ext" title="Precio final 90 días">👑 90d: <strong>${escapeHtml(d90.text)}</strong></span>
-    ${discTag}
+    <span class="w-pill w-none" title="${escapeHtml(tSin)}">⚡ ${escapeHtml(tSin)}: <strong>${escapeHtml(dSin.text)}</strong>${db > 0 ? ` (-${db}%)` : ""}</span>
+    <span class="w-pill w-std" title="${escapeHtml(t30)}">🛡️ ${escapeHtml(t30)}: <strong>${escapeHtml(d30.text)}</strong>${de > 0 ? ` (-${de}%)` : ""}</span>
+    <span class="w-pill w-ext" title="${escapeHtml(t90)}">👑 ${escapeHtml(t90)}: <strong>${escapeHtml(d90.text)}</strong>${du > 0 ? ` (-${du}%)` : ""}</span>
+    ${gift ? `<span class="w-pill w-none" title="Regalo garantía 3 meses">🎁 ${escapeHtml(gift)}</span>` : ""}
   `;
 }
 
@@ -3004,6 +3063,7 @@ function getRepairTargetObject(targetType, idx1, idx2, idx3) {
 
 function renderRepairPriceEditorHtml(targetType, idx1, idx2, idx3, r) {
   const adj = getAdminWarrantyAdjustments();
+  const lbls = getAdminWarrantyLabels();
   const baseMeta = parseAdminPriceMeta(r.price);
   const autoBasicPh = baseMeta.valid
     ? (baseMeta.isUsd ? `Auto: ${Math.round(baseMeta.num * Math.max(0, 1 + adj.basic / 100))} USD` : `Auto: $${Math.round(baseMeta.num * Math.max(0, 1 + adj.basic / 100)).toLocaleString("es-AR")}`)
@@ -3015,39 +3075,84 @@ function renderRepairPriceEditorHtml(targetType, idx1, idx2, idx3, r) {
   const valBasic = r.priceBasic !== undefined && r.priceBasic !== null ? r.priceBasic : "";
   const valStd = r.price !== undefined && r.price !== null ? r.price : "";
   const valUltra = r.priceUltra !== undefined && r.priceUltra !== null ? r.priceUltra : "";
-  const valDisc = r.discountPercent !== undefined && r.discountPercent !== null && Number(r.discountPercent) > 0 ? r.discountPercent : "";
+
+  const valTimeBasic = r.timeBasic !== undefined && r.timeBasic !== null ? r.timeBasic : "";
+  const valTimeStd = r.timeEstandar !== undefined && r.timeEstandar !== null ? r.timeEstandar : "";
+  const valTimeUltra = r.timeUltra !== undefined && r.timeUltra !== null ? r.timeUltra : "";
+
+  const dBasic = getAdminTierDiscount(r, "basic");
+  const dStd = getAdminTierDiscount(r, "estandar");
+  const dUltra = getAdminTierDiscount(r, "ultra");
+  const valGiftUltra = r.giftTextUltra !== undefined && r.giftTextUltra !== null ? r.giftTextUltra : "";
 
   return `
     <div class="repair-prices-grid">
       <div class="repair-price-field">
-        <label>⚡ Sin gar.</label>
+        <label>⚡ ${escapeHtml(lbls.basic.name)}</label>
         <input type="text" class="repair-inline-input" data-field="priceBasic" value="${escapeHtml(valBasic)}"
           placeholder="${escapeHtml(autoBasicPh)}"
           onchange="updateRepairPriceAndDiscount('${targetType}', ${idx1}, ${idx2}, ${idx3}, 'priceBasic', this.value, this)"
           oninput="updateRepairPriceAndDiscount('${targetType}', ${idx1}, ${idx2}, ${idx3}, 'priceBasic', this.value, this)">
+        <span class="repair-subinput-label">Tiempo:</span>
+        <input type="text" class="repair-inline-input repair-time-input" data-field="timeBasic" value="${escapeHtml(valTimeBasic)}"
+          placeholder="${escapeHtml(lbls.basic.duracionText)}"
+          onchange="updateRepairPriceAndDiscount('${targetType}', ${idx1}, ${idx2}, ${idx3}, 'timeBasic', this.value, this)"
+          oninput="updateRepairPriceAndDiscount('${targetType}', ${idx1}, ${idx2}, ${idx3}, 'timeBasic', this.value, this)">
+        <div class="repair-tier-disc-wrap">
+          <span class="repair-subinput-label" style="margin-top:0;">Desc. %</span>
+          <input type="number" min="0" max="95" step="1" class="repair-inline-input repair-tier-disc-input" data-field="discountBasic"
+            value="${dBasic > 0 ? dBasic : ""}" placeholder="0"
+            onchange="updateRepairPriceAndDiscount('${targetType}', ${idx1}, ${idx2}, ${idx3}, 'discountBasic', this.value, this)"
+            oninput="updateRepairPriceAndDiscount('${targetType}', ${idx1}, ${idx2}, ${idx3}, 'discountBasic', this.value, this)">
+        </div>
       </div>
+
       <div class="repair-price-field">
-        <label>🛡️ 30 días</label>
+        <label>🛡️ ${escapeHtml(lbls.estandar.name)}</label>
         <input type="text" class="repair-inline-input repair-price-input" data-field="price" value="${escapeHtml(valStd)}"
           placeholder="Ej: 80000"
           onchange="updateRepairPriceAndDiscount('${targetType}', ${idx1}, ${idx2}, ${idx3}, 'price', this.value, this)"
           oninput="updateRepairPriceAndDiscount('${targetType}', ${idx1}, ${idx2}, ${idx3}, 'price', this.value, this)">
+        <span class="repair-subinput-label">Tiempo:</span>
+        <input type="text" class="repair-inline-input repair-time-input" data-field="timeEstandar" value="${escapeHtml(valTimeStd)}"
+          placeholder="${escapeHtml(lbls.estandar.duracionText)}"
+          onchange="updateRepairPriceAndDiscount('${targetType}', ${idx1}, ${idx2}, ${idx3}, 'timeEstandar', this.value, this)"
+          oninput="updateRepairPriceAndDiscount('${targetType}', ${idx1}, ${idx2}, ${idx3}, 'timeEstandar', this.value, this)">
+        <div class="repair-tier-disc-wrap">
+          <span class="repair-subinput-label" style="margin-top:0;">Desc. %</span>
+          <input type="number" min="0" max="95" step="1" class="repair-inline-input repair-tier-disc-input" data-field="discountEstandar"
+            value="${dStd > 0 ? dStd : ""}" placeholder="0"
+            onchange="updateRepairPriceAndDiscount('${targetType}', ${idx1}, ${idx2}, ${idx3}, 'discountEstandar', this.value, this)"
+            oninput="updateRepairPriceAndDiscount('${targetType}', ${idx1}, ${idx2}, ${idx3}, 'discountEstandar', this.value, this)">
+        </div>
       </div>
+
       <div class="repair-price-field">
-        <label>👑 90 días</label>
+        <label>👑 ${escapeHtml(lbls.ultra.name)}</label>
         <input type="text" class="repair-inline-input" data-field="priceUltra" value="${escapeHtml(valUltra)}"
           placeholder="${escapeHtml(autoUltraPh)}"
           onchange="updateRepairPriceAndDiscount('${targetType}', ${idx1}, ${idx2}, ${idx3}, 'priceUltra', this.value, this)"
           oninput="updateRepairPriceAndDiscount('${targetType}', ${idx1}, ${idx2}, ${idx3}, 'priceUltra', this.value, this)">
+        <span class="repair-subinput-label">Tiempo:</span>
+        <input type="text" class="repair-inline-input repair-time-input" data-field="timeUltra" value="${escapeHtml(valTimeUltra)}"
+          placeholder="${escapeHtml(lbls.ultra.duracionText)}"
+          onchange="updateRepairPriceAndDiscount('${targetType}', ${idx1}, ${idx2}, ${idx3}, 'timeUltra', this.value, this)"
+          oninput="updateRepairPriceAndDiscount('${targetType}', ${idx1}, ${idx2}, ${idx3}, 'timeUltra', this.value, this)">
+        <div class="repair-tier-disc-wrap">
+          <span class="repair-subinput-label" style="margin-top:0;">Desc. %</span>
+          <input type="number" min="0" max="95" step="1" class="repair-inline-input repair-tier-disc-input" data-field="discountUltra"
+            value="${dUltra > 0 ? dUltra : ""}" placeholder="0"
+            onchange="updateRepairPriceAndDiscount('${targetType}', ${idx1}, ${idx2}, ${idx3}, 'discountUltra', this.value, this)"
+            oninput="updateRepairPriceAndDiscount('${targetType}', ${idx1}, ${idx2}, ${idx3}, 'discountUltra', this.value, this)">
+        </div>
       </div>
     </div>
-    <div class="repair-discount-row">
-      <span class="repair-discount-label">🏷️ Desc. %:</span>
-      <input type="number" min="0" max="95" step="1" class="repair-inline-input repair-discount-input" data-field="discountPercent"
-        value="${escapeHtml(valDisc)}" placeholder="0"
-        title="Porcentaje de descuento aplicado a esta reparación"
-        onchange="updateRepairPriceAndDiscount('${targetType}', ${idx1}, ${idx2}, ${idx3}, 'discountPercent', this.value, this)"
-        oninput="updateRepairPriceAndDiscount('${targetType}', ${idx1}, ${idx2}, ${idx3}, 'discountPercent', this.value, this)">
+    <div class="repair-gift-row">
+      <span class="repair-gift-label">🎁 Regalo 3 meses:</span>
+      <input type="text" class="repair-inline-input repair-gift-input" data-field="giftTextUltra"
+        value="${escapeHtml(valGiftUltra)}" placeholder="Ej: ¡Incluye templado de regalo! (opcional)"
+        onchange="updateRepairPriceAndDiscount('${targetType}', ${idx1}, ${idx2}, ${idx3}, 'giftTextUltra', this.value, this)"
+        oninput="updateRepairPriceAndDiscount('${targetType}', ${idx1}, ${idx2}, ${idx3}, 'giftTextUltra', this.value, this)">
     </div>
     <div class="warranty-preview-line">${formatAdminWarrantyBreakdown(r)}</div>
   `;
@@ -3057,12 +3162,35 @@ function updateRepairPriceAndDiscount(targetType, idx1, idx2, idx3, field, val, 
   const rep = getRepairTargetObject(targetType, idx1, idx2, idx3);
   if (!rep) return;
 
-  if (field === "discountPercent") {
+  if (field === "discountBasic" || field === "discountEstandar" || field === "discountUltra") {
+    if (rep.discountPercent !== undefined) {
+      const legacy = Number(rep.discountPercent);
+      if (!isNaN(legacy) && legacy > 0) {
+        ["discountBasic", "discountEstandar", "discountUltra"].forEach(k => {
+          if (k !== field && rep[k] === undefined) rep[k] = Math.min(95, legacy);
+        });
+      }
+      delete rep.discountPercent;
+    }
+    const n = Number(val);
+    if (!val || isNaN(n) || n <= 0) {
+      delete rep[field];
+    } else {
+      rep[field] = Math.min(95, Math.max(0, n));
+    }
+  } else if (field === "discountPercent") {
     const n = Number(val);
     if (!val || isNaN(n) || n <= 0) {
       delete rep.discountPercent;
     } else {
       rep.discountPercent = Math.min(95, Math.max(0, n));
+    }
+  } else if (field === "timeBasic" || field === "timeEstandar" || field === "timeUltra" || field === "giftTextUltra") {
+    const rawStr = String(val ?? "");
+    if (rawStr.trim() === "") {
+      delete rep[field];
+    } else {
+      rep[field] = rawStr;
     }
   } else if (field === "priceBasic" || field === "priceUltra") {
     const normalized = normalizeAdminPriceInput(val);
@@ -3774,43 +3902,97 @@ function updateWarrantyPercentInput(key, val, previewId) {
   }
 }
 
+function updateWarrantyLabelInput(tierKey, prop, val) {
+  if (!currentCotizador) return;
+  ensureWarrantyDefaults(currentCotizador);
+  if (!currentCotizador.warrantyLabels[tierKey]) {
+    currentCotizador.warrantyLabels[tierKey] = {};
+  }
+  const strVal = String(val ?? "");
+  if (prop === "giftText" && strVal.trim() === "") {
+    delete currentCotizador.warrantyLabels[tierKey].giftText;
+  } else {
+    currentCotizador.warrantyLabels[tierKey][prop] = strVal;
+  }
+  saveCotizadorDraft();
+}
+
 function renderGarantiasSettingsSection() {
   const container = document.getElementById("cotizador-content-area");
   if (!container || !currentCotizador) return;
+  ensureWarrantyDefaults(currentCotizador);
   const adj = getAdminWarrantyAdjustments();
+  const lbls = getAdminWarrantyLabels();
   const calcEx = (p) => `$${Math.round(100000 * Math.max(0, 1 + p / 100)).toLocaleString("es-AR")}`;
 
   container.innerHTML = `
     <div class="cotizador-settings-card">
-      <h2 style="font-size:20px; font-weight:800; margin-bottom:8px;">🛡️ Porcentajes Generales de Garantía y Descuento</h2>
-      <p class="settings-help" style="margin-bottom:18px;">Elegí cuánto porcentaje se <strong>resta</strong> (con signo menos, ej: <code>-20</code>) o se <strong>suma</strong> (ej: <code>30</code>) por defecto en las reparaciones que no tengan precio individual cargado manualmente. Si cargás el precio individual en una reparación, ese precio tiene prioridad y no se muestran porcentajes al cliente.</p>
+      <h2 style="font-size:20px; font-weight:800; margin-bottom:8px;">🛡️ Garantías, Tiempos, Regalos y Porcentajes</h2>
+      <p class="settings-help" style="margin-bottom:18px;">Configurá por separado el nombre, el texto de tiempo de garantía y el porcentaje automático de cada opción (ej: <code>-20</code> resta 20%, <code>30</code> suma 30%). En cada reparación individual también podés personalizar el precio, el tiempo exacto, su propio % de descuento y un regalo para 3 meses.</p>
 
-      <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(210px, 1fr)); gap:14px; margin-bottom:18px;">
-        <div style="background:#f8fafc; border:1px solid #cbd5e1; border-radius:12px; padding:14px;">
-          <label for="gar-warranty-basic" style="font-size:13px; font-weight:800; display:block; margin-bottom:8px;">⚡ Sin garantía (0 días)</label>
-          <div style="display:flex; align-items:center; gap:8px;">
-            <input type="number" id="gar-warranty-basic" step="1" min="-95" max="500" class="repair-inline-input" style="max-width:120px; font-weight:800; font-size:15px;" value="${adj.basic}" oninput="updateWarrantyPercentInput('basic', this.value, 'gar-preview-basic')">
-            <span style="font-weight:800; color:#475569;">%</span>
+      <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(230px, 1fr)); gap:14px; margin-bottom:18px;">
+        <div style="background:#f8fafc; border:1px solid #cbd5e1; border-radius:12px; padding:14px; display:flex; flex-direction:column; gap:8px;">
+          <label style="font-size:13px; font-weight:800;">⚡ Opción 1 (Sin garantía)</label>
+          <div>
+            <small style="display:block; font-size:11px; font-weight:700; color:#475569; margin-bottom:3px;">Título de la opción:</small>
+            <input type="text" id="gar-label-name-basic" class="repair-inline-input" value="${escapeHtml(lbls.basic.name)}" oninput="updateWarrantyLabelInput('basic', 'name', this.value)">
           </div>
-          <small id="gar-preview-basic" style="display:block; margin-top:8px; font-size:12px; font-weight:700; color:#0284c7;">${describeWarrantyPctLabel(adj.basic)}</small>
+          <div>
+            <small style="display:block; font-size:11px; font-weight:700; color:#475569; margin-bottom:3px;">Texto de tiempo de garantía:</small>
+            <input type="text" id="gar-label-dur-basic" class="repair-inline-input" value="${escapeHtml(lbls.basic.duracionText)}" placeholder="Ej: Sin cobertura de garantía" oninput="updateWarrantyLabelInput('basic', 'duracionText', this.value)">
+          </div>
+          <div>
+            <small style="display:block; font-size:11px; font-weight:700; color:#475569; margin-bottom:3px;">Porcentaje automático (%):</small>
+            <div style="display:flex; align-items:center; gap:8px;">
+              <input type="number" id="gar-warranty-basic" step="1" min="-95" max="500" class="repair-inline-input" style="max-width:110px; font-weight:800; font-size:15px;" value="${adj.basic}" oninput="updateWarrantyPercentInput('basic', this.value, 'gar-preview-basic')">
+              <span style="font-weight:800; color:#475569;">%</span>
+            </div>
+            <small id="gar-preview-basic" style="display:block; margin-top:6px; font-size:11.5px; font-weight:700; color:#0284c7;">${describeWarrantyPctLabel(adj.basic)}</small>
+          </div>
         </div>
 
-        <div style="background:#f8fafc; border:1px solid #cbd5e1; border-radius:12px; padding:14px;">
-          <label for="gar-warranty-estandar" style="font-size:13px; font-weight:800; display:block; margin-bottom:8px;">🛡️ Garantía 30 días</label>
-          <div style="display:flex; align-items:center; gap:8px;">
-            <input type="number" id="gar-warranty-estandar" step="1" min="-95" max="500" class="repair-inline-input" style="max-width:120px; font-weight:800; font-size:15px;" value="${adj.estandar}" oninput="updateWarrantyPercentInput('estandar', this.value, 'gar-preview-estandar')">
-            <span style="font-weight:800; color:#475569;">%</span>
+        <div style="background:#f8fafc; border:1px solid #cbd5e1; border-radius:12px; padding:14px; display:flex; flex-direction:column; gap:8px;">
+          <label style="font-size:13px; font-weight:800;">🛡️ Opción 2 (30 días / Estándar)</label>
+          <div>
+            <small style="display:block; font-size:11px; font-weight:700; color:#475569; margin-bottom:3px;">Título de la opción:</small>
+            <input type="text" id="gar-label-name-estandar" class="repair-inline-input" value="${escapeHtml(lbls.estandar.name)}" oninput="updateWarrantyLabelInput('estandar', 'name', this.value)">
           </div>
-          <small id="gar-preview-estandar" style="display:block; margin-top:8px; font-size:12px; font-weight:700; color:#0284c7;">${describeWarrantyPctLabel(adj.estandar)}</small>
+          <div>
+            <small style="display:block; font-size:11px; font-weight:700; color:#475569; margin-bottom:3px;">Texto de tiempo de garantía:</small>
+            <input type="text" id="gar-label-dur-estandar" class="repair-inline-input" value="${escapeHtml(lbls.estandar.duracionText)}" placeholder="Ej: 30 días de garantía" oninput="updateWarrantyLabelInput('estandar', 'duracionText', this.value)">
+          </div>
+          <div>
+            <small style="display:block; font-size:11px; font-weight:700; color:#475569; margin-bottom:3px;">Porcentaje automático (%):</small>
+            <div style="display:flex; align-items:center; gap:8px;">
+              <input type="number" id="gar-warranty-estandar" step="1" min="-95" max="500" class="repair-inline-input" style="max-width:110px; font-weight:800; font-size:15px;" value="${adj.estandar}" oninput="updateWarrantyPercentInput('estandar', this.value, 'gar-preview-estandar')">
+              <span style="font-weight:800; color:#475569;">%</span>
+            </div>
+            <small id="gar-preview-estandar" style="display:block; margin-top:6px; font-size:11.5px; font-weight:700; color:#0284c7;">${describeWarrantyPctLabel(adj.estandar)}</small>
+          </div>
         </div>
 
-        <div style="background:#f8fafc; border:1px solid #cbd5e1; border-radius:12px; padding:14px;">
-          <label for="gar-warranty-ultra" style="font-size:13px; font-weight:800; display:block; margin-bottom:8px;">👑 Garantía 90 días</label>
-          <div style="display:flex; align-items:center; gap:8px;">
-            <input type="number" id="gar-warranty-ultra" step="1" min="-95" max="500" class="repair-inline-input" style="max-width:120px; font-weight:800; font-size:15px;" value="${adj.ultra}" oninput="updateWarrantyPercentInput('ultra', this.value, 'gar-preview-ultra')">
-            <span style="font-weight:800; color:#475569;">%</span>
+        <div style="background:#f8fafc; border:1px solid #cbd5e1; border-radius:12px; padding:14px; display:flex; flex-direction:column; gap:8px;">
+          <label style="font-size:13px; font-weight:800;">👑 Opción 3 (90 días / 3 meses)</label>
+          <div>
+            <small style="display:block; font-size:11px; font-weight:700; color:#475569; margin-bottom:3px;">Título de la opción:</small>
+            <input type="text" id="gar-label-name-ultra" class="repair-inline-input" value="${escapeHtml(lbls.ultra.name)}" oninput="updateWarrantyLabelInput('ultra', 'name', this.value)">
           </div>
-          <small id="gar-preview-ultra" style="display:block; margin-top:8px; font-size:12px; font-weight:700; color:#0284c7;">${describeWarrantyPctLabel(adj.ultra)}</small>
+          <div>
+            <small style="display:block; font-size:11px; font-weight:700; color:#475569; margin-bottom:3px;">Texto de tiempo de garantía:</small>
+            <input type="text" id="gar-label-dur-ultra" class="repair-inline-input" value="${escapeHtml(lbls.ultra.duracionText)}" placeholder="Ej: 90 días de garantía" oninput="updateWarrantyLabelInput('ultra', 'duracionText', this.value)">
+          </div>
+          <div>
+            <small style="display:block; font-size:11px; font-weight:700; color:#475569; margin-bottom:3px;">Porcentaje automático (%):</small>
+            <div style="display:flex; align-items:center; gap:8px;">
+              <input type="number" id="gar-warranty-ultra" step="1" min="-95" max="500" class="repair-inline-input" style="max-width:110px; font-weight:800; font-size:15px;" value="${adj.ultra}" oninput="updateWarrantyPercentInput('ultra', this.value, 'gar-preview-ultra')">
+              <span style="font-weight:800; color:#475569;">%</span>
+            </div>
+            <small id="gar-preview-ultra" style="display:block; margin-top:6px; font-size:11.5px; font-weight:700; color:#0284c7;">${describeWarrantyPctLabel(adj.ultra)}</small>
+          </div>
+          <div>
+            <small style="display:block; font-size:11px; font-weight:700; color:#92400e; margin-bottom:3px;">🎁 Texto regalo general (3 meses, opcional):</small>
+            <input type="text" id="gar-label-gift-ultra" class="repair-inline-input" value="${escapeHtml(lbls.ultra.giftText || "")}" placeholder="Ej: ¡Incluye regalo sorpresa!" oninput="updateWarrantyLabelInput('ultra', 'giftText', this.value)">
+          </div>
         </div>
       </div>
 
@@ -3820,7 +4002,7 @@ function renderGarantiasSettingsSection() {
 
       <div style="display:flex; gap:12px; flex-wrap:wrap;">
         <button type="button" class="btn btn-primary" onclick="saveWarrantyAdjustmentsSettings()">
-          💾 Aplicar y Publicar Porcentajes
+          💾 Guardar y Aplicar Garantías
         </button>
       </div>
     </div>
@@ -3828,6 +4010,7 @@ function renderGarantiasSettingsSection() {
 }
 
 function saveWarrantyAdjustmentsSettings() {
+  ensureWarrantyDefaults(currentCotizador);
   const wb = document.getElementById("gar-warranty-basic");
   const we = document.getElementById("gar-warranty-estandar");
   const wu = document.getElementById("gar-warranty-ultra");
@@ -3836,6 +4019,19 @@ function saveWarrantyAdjustmentsSettings() {
   if (we && !isNaN(Number(we.value))) adj.estandar = Number(we.value);
   if (wu && !isNaN(Number(wu.value))) adj.ultra = Number(wu.value);
   currentCotizador.warrantyAdjustments = adj;
+
+  ["basic", "estandar", "ultra"].forEach(k => {
+    const nEl = document.getElementById(`gar-label-name-${k}`);
+    const dEl = document.getElementById(`gar-label-dur-${k}`);
+    if (nEl && nEl.value.trim()) currentCotizador.warrantyLabels[k].name = nEl.value.trim();
+    if (dEl && dEl.value.trim()) currentCotizador.warrantyLabels[k].duracionText = dEl.value.trim();
+  });
+  const gEl = document.getElementById("gar-label-gift-ultra");
+  if (gEl) {
+    if (gEl.value.trim()) currentCotizador.warrantyLabels.ultra.giftText = gEl.value.trim();
+    else delete currentCotizador.warrantyLabels.ultra.giftText;
+  }
+
   saveCotizadorDraft();
   publishCotizadorDirectlyToGithub();
 }
@@ -4116,12 +4312,20 @@ function openAddRepairModal(targetType, brandName = null, modelIdx = null, devic
 
   document.getElementById("new-repair-name").value = "";
   document.getElementById("new-repair-price").value = "";
-  const pbEl = document.getElementById("new-repair-price-basic");
-  const puEl = document.getElementById("new-repair-price-ultra");
-  const pdEl = document.getElementById("new-repair-discount");
-  if (pbEl) pbEl.value = "";
-  if (puEl) puEl.value = "";
-  if (pdEl) pdEl.value = "";
+  [
+    "new-repair-price-basic",
+    "new-repair-price-ultra",
+    "new-repair-time-basic",
+    "new-repair-time-estandar",
+    "new-repair-time-ultra",
+    "new-repair-discount-basic",
+    "new-repair-discount-estandar",
+    "new-repair-discount-ultra",
+    "new-repair-gift-ultra"
+  ].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.value = "";
+  });
   document.getElementById("new-repair-note").value = "";
 
   if (targetType === "celulares") {
@@ -4161,7 +4365,13 @@ function handleSaveNewRepair(e) {
   const rawPrice = document.getElementById("new-repair-price").value.trim();
   const rawBasic = (document.getElementById("new-repair-price-basic")?.value || "").trim();
   const rawUltra = (document.getElementById("new-repair-price-ultra")?.value || "").trim();
-  const rawDisc = Number(document.getElementById("new-repair-discount")?.value || 0);
+  const timeBasic = (document.getElementById("new-repair-time-basic")?.value || "").trim();
+  const timeEstandar = (document.getElementById("new-repair-time-estandar")?.value || "").trim();
+  const timeUltra = (document.getElementById("new-repair-time-ultra")?.value || "").trim();
+  const discBasic = Number(document.getElementById("new-repair-discount-basic")?.value || 0);
+  const discEstandar = Number(document.getElementById("new-repair-discount-estandar")?.value || 0);
+  const discUltra = Number(document.getElementById("new-repair-discount-ultra")?.value || 0);
+  const giftUltra = (document.getElementById("new-repair-gift-ultra")?.value || "").trim();
   const note = document.getElementById("new-repair-note").value.trim();
 
   if (!name || !rawPrice) return;
@@ -4177,7 +4387,13 @@ function handleSaveNewRepair(e) {
   };
   if (rawBasic !== "") repairObj.priceBasic = normalizeAdminPriceInput(rawBasic);
   if (rawUltra !== "") repairObj.priceUltra = normalizeAdminPriceInput(rawUltra);
-  if (!isNaN(rawDisc) && rawDisc > 0) repairObj.discountPercent = Math.min(95, rawDisc);
+  if (timeBasic !== "") repairObj.timeBasic = timeBasic;
+  if (timeEstandar !== "") repairObj.timeEstandar = timeEstandar;
+  if (timeUltra !== "") repairObj.timeUltra = timeUltra;
+  if (!isNaN(discBasic) && discBasic > 0) repairObj.discountBasic = Math.min(95, discBasic);
+  if (!isNaN(discEstandar) && discEstandar > 0) repairObj.discountEstandar = Math.min(95, discEstandar);
+  if (!isNaN(discUltra) && discUltra > 0) repairObj.discountUltra = Math.min(95, discUltra);
+  if (giftUltra !== "") repairObj.giftTextUltra = giftUltra;
 
   if (type === "celulares") {
     const brandObj = currentCotizador.celulares.find(b => b.brand.toLowerCase() === brandName.toLowerCase());
@@ -4283,8 +4499,9 @@ function handleApplyMassAdjust(e) {
   const op = document.getElementById("mass-operation").value;
   const val = Number(document.getElementById("mass-value").value);
 
-  if (isNaN(val) || (target !== "discount_field" && val <= 0) || (target === "discount_field" && val < 0)) {
-    alert(target === "discount_field" ? "Ingresá un porcentaje de descuento válido (0 o mayor)." : "Por favor ingresá un valor mayor a cero.");
+  const isDiscountTarget = target.startsWith("discount_");
+  if (isNaN(val) || (!isDiscountTarget && val <= 0) || (isDiscountTarget && val < 0)) {
+    alert(isDiscountTarget ? "Ingresá un porcentaje de descuento válido (0 o mayor)." : "Por favor ingresá un valor mayor a cero.");
     return;
   }
 
@@ -4305,9 +4522,24 @@ function handleApplyMassAdjust(e) {
       if (!n.includes(filter)) return;
     }
 
-    if (target === "discount_field") {
-      if (val <= 0) delete r.discountPercent;
-      else r.discountPercent = Math.min(95, val);
+    if (isDiscountTarget) {
+      delete r.discountPercent;
+      const clamped = Math.min(95, val);
+      const setDisc = (key) => {
+        if (val <= 0) delete r[key];
+        else r[key] = clamped;
+      };
+      if (target === "discount_field") {
+        setDisc("discountBasic");
+        setDisc("discountEstandar");
+        setDisc("discountUltra");
+      } else if (target === "discount_basic") {
+        setDisc("discountBasic");
+      } else if (target === "discount_estandar") {
+        setDisc("discountEstandar");
+      } else if (target === "discount_ultra") {
+        setDisc("discountUltra");
+      }
       count++;
       return;
     }
@@ -5632,6 +5864,8 @@ window.syncDescToTab3 = syncDescToTab3;
 window.syncDescFromTab3 = syncDescFromTab3;
 window.clearStoredToken = clearStoredToken;
 window.updateWarrantyPercentInput = updateWarrantyPercentInput;
+window.updateWarrantyLabelInput = updateWarrantyLabelInput;
 window.saveWarrantyAdjustmentsSettings = saveWarrantyAdjustmentsSettings;
 window.updateRepairPriceAndDiscount = updateRepairPriceAndDiscount;
+
 

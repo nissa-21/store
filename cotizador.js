@@ -58,14 +58,51 @@ const WIDGET_WARRANTIES = [
 
 function getDynamicWarranties() {
   const adj = getWarrantyAdjustments();
+  const customLabels = (typeof PRECIOS_WIDGET !== 'undefined' && PRECIOS_WIDGET && PRECIOS_WIDGET.warrantyLabels) || {};
   return WIDGET_WARRANTIES.map(w => {
     const pct = adj[w.id] ?? 0;
+    const lbl = customLabels[w.id] || {};
+    const name = (lbl.name && String(lbl.name).trim()) ? String(lbl.name).trim() : w.name;
+    const duracionText = (lbl.duracionText && String(lbl.duracionText).trim()) ? String(lbl.duracionText).trim() : w.duracionText;
     return {
       ...w,
+      name,
+      duracionText,
       percent: pct,
-      extraLabel: formatWarrantyExtraLabel(w.id)
+      extraLabel: duracionText
     };
   });
+}
+
+function getResolvedWarrantyDuration(repairObj, wObj) {
+  if (repairObj && typeof repairObj === 'object') {
+    if (wObj.id === 'basic' && repairObj.timeBasic && String(repairObj.timeBasic).trim() !== '') {
+      return String(repairObj.timeBasic).trim();
+    }
+    if (wObj.id === 'estandar' && repairObj.timeEstandar && String(repairObj.timeEstandar).trim() !== '') {
+      return String(repairObj.timeEstandar).trim();
+    }
+    if (wObj.id === 'ultra' && repairObj.timeUltra && String(repairObj.timeUltra).trim() !== '') {
+      return String(repairObj.timeUltra).trim();
+    }
+  }
+  return wObj.duracionText || wObj.name;
+}
+
+function getResolvedUltraGiftText(repairObj) {
+  if (repairObj && typeof repairObj === 'object' && repairObj.giftTextUltra && String(repairObj.giftTextUltra).trim() !== '') {
+    return String(repairObj.giftTextUltra).trim();
+  }
+  const globalGift = (typeof PRECIOS_WIDGET !== 'undefined' && PRECIOS_WIDGET && PRECIOS_WIDGET.warrantyLabels && PRECIOS_WIDGET.warrantyLabels.ultra && PRECIOS_WIDGET.warrantyLabels.ultra.giftText) || '';
+  return String(globalGift).trim();
+}
+
+function escapeWidgetHtml(str) {
+  return String(str || '')
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;');
 }
 
 function safeSetStyle(id, prop, value) {
@@ -182,10 +219,21 @@ function computeWarrantyPrice(rawPriceOrRepair, warrantyId) {
 
   if (typeof rawPriceOrRepair === 'object') {
     const rep = rawPriceOrRepair;
-    const disc = Number(rep.discountPercent);
-    if (!isNaN(disc) && disc > 0) {
-      itemDiscountPct = Math.min(95, disc);
-    }
+
+    const resolveTierDiscount = () => {
+      let specific;
+      if (warrantyId === 'basic') specific = rep.discountBasic;
+      else if (warrantyId === 'estandar') specific = rep.discountEstandar;
+      else if (warrantyId === 'ultra') specific = rep.discountUltra;
+
+      if (specific !== undefined && specific !== null && String(specific).trim() !== '') {
+        const dn = Number(specific);
+        return (!isNaN(dn) && dn > 0) ? Math.min(95, dn) : 0;
+      }
+      const legacy = Number(rep.discountPercent);
+      return (!isNaN(legacy) && legacy > 0) ? Math.min(95, legacy) : 0;
+    };
+    itemDiscountPct = resolveTierDiscount();
 
     if (warrantyId === 'basic' && rep.priceBasic !== undefined && rep.priceBasic !== null && String(rep.priceBasic).trim() !== '') {
       rawPrice = rep.priceBasic;
@@ -211,7 +259,7 @@ function computeWarrantyPrice(rawPriceOrRepair, warrantyId) {
     effectivePct = Number(adj[warrantyId] ?? (warrantyId === 'basic' ? -20 : warrantyId === 'ultra' ? 30 : 0));
   }
 
-  // Combinar porcentaje global (si no hay precio individual manual) con el descuento % propio del ítem
+  // Combinar porcentaje global (si no hay precio individual manual) con el descuento % propio de esa garantía
   let baseAfterWarranty = applyPercentToRawPrice(rawPrice, effectivePct);
   if (itemDiscountPct > 0) {
     baseAfterWarranty = applyPercentToRawPrice(baseAfterWarranty, -itemDiscountPct);
@@ -226,10 +274,13 @@ function renderWarrantyCards() {
   const rawBase = repairObj || getBaseRepairPrice();
   if (rawBase === null) return;
 
+  const ultraGiftText = getResolvedUltraGiftText(repairObj);
+
   container.innerHTML = '';
   getDynamicWarranties().forEach(w => {
     const isAct = w.id === selectedWarrantyId;
     const finalPriceStr = computeWarrantyPrice(rawBase, w.id);
+    const resolvedDuration = getResolvedWarrantyDuration(repairObj, w);
     const card = document.createElement('button');
     card.type = 'button';
     card.className = `re-garantia-btn ${isAct ? 'active' : ''}`;
@@ -247,13 +298,18 @@ function renderWarrantyCards() {
       </div>`;
     }
 
+    const giftHtml = (w.id === 'ultra' && ultraGiftText)
+      ? `<div class="re-garantia-gift-note">${escapeWidgetHtml(ultraGiftText)}</div>`
+      : '';
+
     card.innerHTML = `
       <div class="re-garantia-header">
         <div class="re-garantia-title-group">
-          <span class="re-garantia-title">${w.name}</span>
-          <span class="re-garantia-sub">${w.duracionText}</span>
+          <span class="re-garantia-title">${escapeWidgetHtml(w.name)}</span>
+          <span class="re-garantia-sub">${escapeWidgetHtml(resolvedDuration)}</span>
         </div>
       </div>
+      ${giftHtml}
       ${priceTagHtml}
     `;
     container.appendChild(card);
@@ -442,7 +498,11 @@ function updateSelectionTracker() {
 
   if (hasRepairSelected) {
     const wObj = getSelectedWarrantyObj();
-    const warrantyPillLabel = wObj.dias === 0 ? '⚡ Sin garantía' : `🛡️ ${wObj.name} (${wObj.dias} días)`;
+    const repairObj = getSelectedRepairObj();
+    const resolvedDuration = getResolvedWarrantyDuration(repairObj, wObj);
+    const warrantyPillLabel = wObj.id === 'basic'
+      ? (repairObj?.timeBasic && String(repairObj.timeBasic).trim() ? `⚡ ${resolvedDuration}` : `⚡ ${wObj.name}`)
+      : `🛡️ ${wObj.name} (${resolvedDuration})`;
     pillsHtml += arrow;
     pillsHtml += `<button type="button" onclick="focusWarrantySection()" title="Cambiar garantía" style="display:inline-flex;align-items:center;gap:6px;background:#fef3c7;color:#92400e;border:1px solid #fde68a;padding:4px 10px;border-radius:20px;font-size:11px;font-weight:700;cursor:pointer;box-shadow:0 1px 2px rgba(0,0,0,0.05);transition:all 0.15s;">
       <span>${warrantyPillLabel}</span>
@@ -582,7 +642,7 @@ function hideBudgetBox() {
 
 function populateBrands() {
   const grid = document.getElementById('widget-brands-grid');
-  if (!grid) return;
+  if (!grid || typeof PRECIOS_WIDGET === 'undefined' || !PRECIOS_WIDGET || !Array.isArray(PRECIOS_WIDGET.celulares)) return;
   grid.innerHTML = '';
 
   PRECIOS_WIDGET.celulares.forEach(b => {
@@ -1219,6 +1279,8 @@ function calculateAndShowWidgetBudget() {
   if (isValid && box) {
     const wObj = getSelectedWarrantyObj();
     const repairObj = getSelectedRepairObj();
+    const resolvedDuration = getResolvedWarrantyDuration(repairObj, wObj);
+    const ultraGiftText = wObj.id === 'ultra' ? getResolvedUltraGiftText(repairObj) : '';
     sPrice = computeWarrantyPrice(repairObj || rawPrice, wObj.id);
     if (sPrice === 'Consultar' || !sPrice || sPrice === 'A consultar') isQuote = true;
 
@@ -1226,13 +1288,20 @@ function calculateAndShowWidgetBudget() {
     safeSetText('summary-desc', sDesc);
     safeSetText('summary-badge', sBadge);
     safeSetText('summary-price', sPrice);
-    safeSetText('summary-warranty-badge', wObj.dias === 0 ? '⚡ Sin garantía' : `${wObj.icon} Garantía ${wObj.name}: ${wObj.dias} días`);
+    const badgeLabel = wObj.id === 'basic'
+      ? (repairObj?.timeBasic && String(repairObj.timeBasic).trim() ? `⚡ ${wObj.name}: ${resolvedDuration}` : `⚡ ${wObj.name}`)
+      : `${wObj.icon} ${wObj.name}: ${resolvedDuration}`;
+    safeSetText('summary-warranty-badge', badgeLabel);
 
-    let subWarrantyText = '✓ Garantía oficial Estándar (30 días) incluida';
+    let subWarrantyText = `✓ ${resolvedDuration}`;
     if (wObj.id === 'basic') {
-      subWarrantyText = '✓ Opción económica sin cobertura de garantía';
+      subWarrantyText = `✓ ${resolvedDuration}`;
     } else if (wObj.id === 'ultra') {
-      subWarrantyText = '✓ Cobertura total Extendida (90 días)';
+      subWarrantyText = ultraGiftText
+        ? `✓ ${resolvedDuration} · ${ultraGiftText}`
+        : `✓ Cobertura ${resolvedDuration}`;
+    } else {
+      subWarrantyText = `✓ ${resolvedDuration} incluida`;
     }
     safeSetText('summary-warranty-sub', subWarrantyText);
 
@@ -1254,15 +1323,21 @@ function sendWidgetWhatsApp() {
   const badge = document.getElementById('summary-badge')?.innerText || '';
   const price = document.getElementById('summary-price')?.innerText || '';
   const wObj = getSelectedWarrantyObj();
-  const warrantyWaText = wObj.dias === 0
-    ? 'Sin garantía'
-    : `${wObj.name} (${wObj.dias} días)`;
+  const repairObj = getSelectedRepairObj();
+  const resolvedDuration = getResolvedWarrantyDuration(repairObj, wObj);
+  const ultraGiftText = wObj.id === 'ultra' ? getResolvedUltraGiftText(repairObj) : '';
+  const warrantyWaText = wObj.id === 'basic'
+    ? (repairObj?.timeBasic && String(repairObj.timeBasic).trim() ? `${wObj.name} (${resolvedDuration})` : wObj.name)
+    : `${wObj.name} (${resolvedDuration})`;
 
   let text = `¡Hola NISSA! 👋 Armé este presupuesto desde el cotizador de la tienda:\n\n`;
   text += `⚙️ *Categoría:* ${widgetCategory}\n`;
   text += `📦 *Servicio:* ${title}\n`;
   text += `📋 *Detalle:* ${badge}\n`;
   text += `🛡️ *Garantía elegida:* ${warrantyWaText}\n`;
+  if (ultraGiftText) {
+    text += `🎁 *Regalo / Beneficio:* ${ultraGiftText}\n`;
+  }
   text += `💰 *Presupuesto Estimado:* *${price}*\n\n`;
   text += `✓ He leído y acepto los términos y condiciones de servicio técnico.\n\n`;
   text += `¿Tienen disponibilidad de turnos para llevarlo? ¡Muchas gracias!`;
@@ -1285,15 +1360,56 @@ document.addEventListener('click', (e) => {
 });
 
 // Auto-init on page load: estado inicial limpio
-window.selectWarranty = selectWarranty;
-window.focusWarrantySection = focusWarrantySection;
-window.handleTermsConsentChange = handleTermsConsentChange;
-window.triggerTermsAttention = triggerTermsAttention;
-window.toggleTermsCheckbox = toggleTermsCheckbox;
-window.activateModelSearchMode = activateModelSearchMode;
-window.deactivateModelSearchMode = deactivateModelSearchMode;
-window.toggleModelDropdown = toggleModelDropdown;
+if (typeof window !== 'undefined') {
+  window.selectWidgetCategory = selectWidgetCategory;
+  window.changeCategory = changeCategory;
+  window.resetWidget = resetWidget;
+  window.changeBrand = changeBrand;
+  window.selectBrand = selectBrand;
+  window.selectModel = selectModel;
+  window.changeModel = changeModel;
+  window.filterModels = filterModels;
+  window.editCustomPhone = editCustomPhone;
+  window.customInputChanged = customInputChanged;
+  window.advanceCustomPhone = advanceCustomPhone;
+  window.selectPhoneRepair = selectPhoneRepair;
+  window.changePhoneRepair = changePhoneRepair;
+  window.selectConsole = selectConsole;
+  window.changeConsole = changeConsole;
+  window.selectConsoleService = selectConsoleService;
+  window.changeConsoleService = changeConsoleService;
+  window.selectMando = selectMando;
+  window.changeMando = changeMando;
+  window.selectMandoService = selectMandoService;
+  window.changeMandoService = changeMandoService;
+  window.selectCompService = selectCompService;
+  window.changeCompService = changeCompService;
+  window.selectWarranty = selectWarranty;
+  window.focusWarrantySection = focusWarrantySection;
+  window.handleTermsConsentChange = handleTermsConsentChange;
+  window.triggerTermsAttention = triggerTermsAttention;
+  window.toggleTermsCheckbox = toggleTermsCheckbox;
+  window.activateModelSearchMode = activateModelSearchMode;
+  window.deactivateModelSearchMode = deactivateModelSearchMode;
+  window.toggleModelDropdown = toggleModelDropdown;
+  window.sendWidgetWhatsApp = sendWidgetWhatsApp;
+  window.computeWarrantyPrice = computeWarrantyPrice;
+  window.renderWarrantyCards = renderWarrantyCards;
+  window.getDynamicWarranties = getDynamicWarranties;
+}
 
-document.addEventListener('DOMContentLoaded', () => {
+function initCotizadorWidget() {
   resetWidget();
-});
+  if (typeof window !== 'undefined' && window.__pendingWidgetCategory) {
+    const pendingCat = window.__pendingWidgetCategory;
+    window.__pendingWidgetCategory = null;
+    selectWidgetCategory(pendingCat);
+  }
+}
+
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', initCotizadorWidget);
+} else {
+  initCotizadorWidget();
+}
+

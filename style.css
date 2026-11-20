@@ -943,6 +943,24 @@ button,input{font:inherit}
 .re-garantia-btn.active .re-garantia-price-val {
   color: #0284c7;
 }
+.re-garantia-gift-note {
+  margin-top: 3px;
+  font-size: 10px;
+  font-weight: 800;
+  color: #15803d;
+  background: #f0fdf4;
+  border: 1px solid #bbf7d0;
+  border-radius: 6px;
+  padding: 3px 6px;
+  line-height: 1.25;
+  word-break: break-word;
+}
+@media (max-width: 480px) {
+  .re-garantia-gift-note {
+    font-size: 9px;
+    padding: 2px 5px;
+  }
+}
 
 .re-summary-container {
   display: flex;

@@ -11,6 +11,20 @@ var PRECIOS_WIDGET = {
     "estandar": 0,
     "ultra": 30
   },
+  "warrantyLabels": {
+    "basic": {
+      "name": "Sin garantía",
+      "duracionText": "Sin cobertura de garantía"
+    },
+    "estandar": {
+      "name": "Estándar",
+      "duracionText": "30 días de garantía"
+    },
+    "ultra": {
+      "name": "Extendida",
+      "duracionText": "90 días de garantía"
+    }
+  },
   "celulares": [
     {
       "brand": "Apple",
@@ -186,7 +200,7 @@ var PRECIOS_WIDGET = {
             {
               "id": "cel_ap_12m_2",
               "name": "🔋 Batería",
-              "price": 80000,
+              "price": 77000,
               "note": "Condición al 100% sin mensaje de \"Pieza desconocida\""
             },
             {
@@ -239,7 +253,7 @@ var PRECIOS_WIDGET = {
             {
               "id": "cel_ap_12_2",
               "name": "🔋 Batería",
-              "price": 90000,
+              "price": 79000,
               "note": "Condición al 100% sin mensaje de \"Pieza desconocida\""
             },
             {
@@ -292,7 +306,7 @@ var PRECIOS_WIDGET = {
             {
               "id": "cel_ap_12p_2",
               "name": "🔋 Batería",
-              "price": 90000,
+              "price": 79000,
               "note": "Condición al 100% sin mensaje de \"Pieza desconocida\""
             },
             {
@@ -345,7 +359,7 @@ var PRECIOS_WIDGET = {
             {
               "id": "cel_ap_12pm_2",
               "name": "🔋 Batería",
-              "price": 95000,
+              "price": 94000,
               "note": "Condición al 100% sin mensaje de \"Pieza desconocida\""
             },
             {
@@ -398,7 +412,7 @@ var PRECIOS_WIDGET = {
             {
               "id": "cel_ap_13m_2",
               "name": "🔋 Batería",
-              "price": 90000,
+              "price": 79000,
               "note": "Condición al 100% sin mensaje de \"Pieza desconocida\""
             },
             {
@@ -451,7 +465,7 @@ var PRECIOS_WIDGET = {
             {
               "id": "cel_ap_13_2",
               "name": "🔋 Batería",
-              "price": 95000,
+              "price": 81000,
               "note": "Condición al 100% sin mensaje de \"Pieza desconocida\""
             },
             {
@@ -504,7 +518,7 @@ var PRECIOS_WIDGET = {
             {
               "id": "cel_ap_13p_2",
               "name": "🔋 Batería",
-              "price": 100000,
+              "price": 88000,
               "note": "Condición al 100% sin mensaje de \"Pieza desconocida\""
             },
             {
@@ -557,7 +571,7 @@ var PRECIOS_WIDGET = {
             {
               "id": "cel_ap_13pm_2",
               "name": "🔋 Batería",
-              "price": 105000,
+              "price": 112000,
               "note": "Condición al 100% sin mensaje de \"Pieza desconocida\""
             },
             {
@@ -610,7 +624,7 @@ var PRECIOS_WIDGET = {
             {
               "id": "cel_ap_14_2",
               "name": "🔋 Batería",
-              "price": 100000,
+              "price": 99000,
               "note": "Condición al 100% sin mensaje de \"Pieza desconocida\""
             },
             {
@@ -663,7 +677,7 @@ var PRECIOS_WIDGET = {
             {
               "id": "cel_ap_14pl_2",
               "name": "🔋 Batería",
-              "price": 105000,
+              "price": 102000,
               "note": "Condición al 100% sin mensaje de \"Pieza desconocida\""
             },
             {
@@ -716,7 +730,7 @@ var PRECIOS_WIDGET = {
             {
               "id": "cel_ap_14p_2",
               "name": "🔋 Batería",
-              "price": 111500,
+              "price": 106000,
               "note": "Condición al 100% sin mensaje de \"Pieza desconocida\""
             },
             {
@@ -769,7 +783,7 @@ var PRECIOS_WIDGET = {
             {
               "id": "cel_ap_14pm_2",
               "name": "🔋 Batería",
-              "price": 119500,
+              "price": 116000,
               "note": "Condición al 100% sin mensaje de \"Pieza desconocida\""
             },
             {
@@ -822,7 +836,7 @@ var PRECIOS_WIDGET = {
             {
               "id": "cel_ap_15_2",
               "name": "🔋 Batería",
-              "price": 108000,
+              "price": 99000,
               "note": "Condición al 100% sin mensaje de \"Pieza desconocida\""
             },
             {
@@ -928,7 +942,7 @@ var PRECIOS_WIDGET = {
             {
               "id": "cel_ap_15p_2",
               "name": "🔋 Batería",
-              "price": 115000,
+              "price": 108000,
               "note": "Condición al 100% sin mensaje de \"Pieza desconocida\""
             },
             {
@@ -981,7 +995,7 @@ var PRECIOS_WIDGET = {
             {
               "id": "cel_ap_15pm_2",
               "name": "🔋 Batería",
-              "price": 128000,
+              "price": 121000,
               "note": "Condición al 100% sin mensaje de \"Pieza desconocida\""
             },
             {

@@ -241,6 +241,28 @@ export default defineConfig(() => {
             next();
           });
         },
+        async closeBundle() {
+          const fs = await import('fs');
+          const pathMod = await import('path');
+          const distDir = pathMod.resolve(__dirname, 'dist');
+          if (!fs.existsSync(distDir)) return;
+          const runtimeFiles = [
+            'site-config.js',
+            'cotizador-data.js',
+            'products.js',
+            'cotizador.js',
+            'script.js',
+            'reviews.js',
+            'banner-nissa.jpg',
+          ];
+          for (const file of runtimeFiles) {
+            const src = pathMod.resolve(__dirname, file);
+            const dest = pathMod.join(distDir, file);
+            if (fs.existsSync(src)) {
+              fs.copyFileSync(src, dest);
+            }
+          }
+        },
       },
     ],
     server: {

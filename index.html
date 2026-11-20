@@ -12,6 +12,13 @@
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
   <link rel="stylesheet" href="./style.css">
+  <link rel="preload" as="script" href="./cotizador.js">
+  <script>
+    if (typeof window.selectWidgetCategory !== 'function') {
+      window.__pendingWidgetCategory = null;
+      window.selectWidgetCategory = function(cat) { window.__pendingWidgetCategory = cat; };
+    }
+  </script>
 </head>
 <body>
 
@@ -1106,15 +1113,9 @@
 </footer>
 
 <!-- SCRIPTS DE FUNCIONALIDAD -->
-<script>
-  // Carga dinámica anti-caché para asegurar que cada visitante vea siempre la última versión publicada
-  (function() {
-    var ts = Date.now();
-    document.write('<script src="./site-config.js?t=' + ts + '"><\/script>');
-    document.write('<script src="./cotizador-data.js?t=' + ts + '"><\/script>');
-    document.write('<script src="./products.js?t=' + ts + '"><\/script>');
-  })();
-</script>
+<script src="./site-config.js"></script>
+<script src="./cotizador-data.js"></script>
+<script src="./products.js"></script>
 <script src="./cotizador.js"></script>
 <script src="./script.js"></script>
 <script src="./reviews.js"></script>
