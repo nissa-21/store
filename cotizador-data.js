@@ -1,7 +1,7 @@
 // ========================================================
 // Tarifas y modelos exactos del presupuestador NISSA
 // Generado automáticamente desde el Panel de Administración NISSA
-// Fecha de actualización: 20/11/2026, 12:50:42
+// Fecha de actualización: 20/11/2026, 12:53:09
 // 100% Compatible con GitHub Pages (Costo $0)
 // ========================================================
 
@@ -14373,28 +14373,28 @@ let PRECIOS_WIDGET = {
       "repairs": [
         {
           "id": "joy_ps5_1",
-          "name": "🕹️ Cambio de analógico normal (x1)",
-          "price": 20000
+          "name": "🕹️ Cambio de analógico (x1)",
+          "price": 30000
         },
         {
           "id": "joy_ps5_2",
-          "name": "🕹️ Cambio de analógico Hall Effect (x1 - Antidrift)",
-          "price": 33000
+          "name": "🕹️ Cambio de analógico  (x2) (ambos)",
+          "price": 45000
         },
         {
           "id": "joy_ps5_3",
           "name": "🧼 Limpieza, mantenimiento y calibración",
-          "price": 25000
+          "price": 28000
         },
         {
           "id": "joy_ps5_4",
           "name": "🔌 Cambio de pin de carga USB-C",
-          "price": 25000
+          "price": 28000
         },
         {
           "id": "joy_ps5_5",
           "name": "🔋 Cambio de batería interna",
-          "price": 25000
+          "price": 33000
         }
       ]
     }
