@@ -1,6 +1,6 @@
 // Catálogo oficial de productos NISSA
 // Generado automáticamente desde el Panel de Administración NISSA
-// Actualizado: 23/11/2026, 08:39:42
+// Actualizado: 23/11/2026, 08:39:45
 // 100% Compatible con GitHub Pages (Costo $0)
 
 let products = [
@@ -31,36 +31,6 @@ let products = [
       "Potencia de salida": "20W Power Delivery (USB-C)",
       "Conector incluido": "USB-C a Lightning (1 metro)",
       "Compatibilidad": "iPhone 8 hasta iPhone 14 Pro Max / iPad / AirPods"
-    }
-  },
-  {
-    "id": 6,
-    "name": "Vidrio Templado 9D Full Cover Antigolpe",
-    "category": "accesorios",
-    "tag": "Máxima Protección",
-    "price": 8000,
-    "price3": 7200,
-    "price5": 6500,
-    "price20": 5500,
-    "image": "vidrio-templado-9d-full-cover-antigolpe.jpg",
-    "images": [
-      "vidrio-templado-9d-full-cover-antigolpe.jpg",
-      "vidrio-templado-aplicado.jpg"
-    ],
-    "description": "Protector de pantalla 9D de cobertura completa con bordes biselados negros y pegamento estático en toda la superficie. Absorbe impactos directos y caídas protegiendo el módulo original de tu smartphone.",
-    "features": [
-      "Dureza certificada 9H que resiste rayones de llaves, monedas e impactos severos",
-      "Pegado Full Glue total que evita la pérdida de sensibilidad táctil y burbujas",
-      "Bordes pulidos 9D que no se enganchan al colocar fundas o sacar del bolsillo",
-      "Tratamiento oleofóbico superior que reduce notablemente manchas de dedos y grasa",
-      "Instalación profesional bonificada sin cargo en nuestro local NISSA"
-    ],
-    "specs": {
-      "Dureza": "9H Tempered Glass de alta densidad",
-      "Cobertura": "100% de la pantalla (Edge to Edge)",
-      "Espesor": "0.33mm de alta transparencia HD",
-      "Compatibilidad": "Disponible para modelos iPhone, Samsung y Motorola",
-      "Garantía": "90 días oficial escrita NISSA"
     }
   },
   {
