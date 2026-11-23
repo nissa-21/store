@@ -1,7 +1,7 @@
 // ========================================================
 // Tarifas y modelos exactos del presupuestador NISSA
 // Generado automáticamente desde el Panel de Administración NISSA
-// Fecha de actualización: 20/11/2026, 02:21:33
+// Fecha de actualización: 23/11/2026, 08:51:49
 // 100% Compatible con GitHub Pages (Costo $0)
 // ========================================================
 
@@ -252,13 +252,16 @@ let PRECIOS_WIDGET = {
               "id": "cel_ap_12_1",
               "name": "📱 Pantalla / Módulo",
               "price": "120 USD",
-              "note": "Módulo calidad Original sin mensaje de \"Pieza desconocida\""
+              "note": "Módulo calidad Original sin mensaje de \"Pieza desconocida\"",
+              "giftTextUltra": "Vidrio templado de regalo "
             },
             {
               "id": "cel_ap_12_2",
               "name": "🔋 Batería",
               "price": 79000,
-              "note": "Condición al 100% sin mensaje de \"Pieza desconocida\""
+              "note": "Condición al 100% sin mensaje de \"Pieza desconocida\"",
+              "discountUltra": 20,
+              "giftTextUltra": "Vidrio templado de regalo "
             },
             {
               "id": "cel_ap_12_3",
