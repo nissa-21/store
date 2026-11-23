@@ -1,6 +1,6 @@
 // Catálogo oficial de productos NISSA
 // Generado automáticamente desde el Panel de Administración NISSA
-// Actualizado: 23/11/2026, 08:37:25
+// Actualizado: 23/11/2026, 08:39:37
 // 100% Compatible con GitHub Pages (Costo $0)
 
 let products = [
@@ -31,66 +31,6 @@ let products = [
       "Potencia de salida": "20W Power Delivery (USB-C)",
       "Conector incluido": "USB-C a Lightning (1 metro)",
       "Compatibilidad": "iPhone 8 hasta iPhone 14 Pro Max / iPad / AirPods"
-    }
-  },
-  {
-    "id": 2,
-    "name": "Cargador Rápido USB-C 25W Samsung Super Fast",
-    "category": "celulares",
-    "tag": "Super Fast Charge",
-    "price": 35000,
-    "price3": 32000,
-    "price5": 29500,
-    "price20": 27000,
-    "image": "cargador-rapido-usb-c-25w-samsung-super-fast.jpg",
-    "images": [
-      "cargador-rapido-usb-c-25w-samsung-super-fast.jpg",
-      "cargador-samsung-detalle.jpg"
-    ],
-    "description": "Cargador de pared de 25W con protocolo Super Fast Charging (Power Delivery 3.0 PPS). Brinda recarga acelerada para smartphones Samsung Galaxy Series A, S, Z y Note, así como para dispositivos Android y consolas portátiles.",
-    "features": [
-      "Tecnología Samsung Super Fast Charging 25W con control dinámico de voltaje PPS",
-      "Carga del 0% al 60% en aproximadamente 35 minutos",
-      "Cuerpo ignífugo con disipación térmica optimizada para uso continuo seguro",
-      "Compatible con teléfonos Samsung, Xiaomi, Motorola, consolas Nintendo Switch y tablets",
-      "Garantía de laboratorio NISSA por 90 días con soporte técnico especializado"
-    ],
-    "specs": {
-      "Potencia": "25W Super Fast Charging (PD 3.0 PPS)",
-      "Puerto de salida": "USB Tipo-C hembra",
-      "Compatibilidad": "Samsung Galaxy S20 a S24, Galaxy A54/A55/A34/A35, Z Fold/Flip y universales",
-      "Garantía": "90 días oficial escrita NISSA",
-      "Voltaje de entrada": "100-240V auto-regulable para viajes"
-    }
-  },
-  {
-    "id": 3,
-    "name": "Cable USB-C a Lightning 1M Trenzado Reforzado",
-    "category": "accesorios",
-    "tag": "Ultra Resistente",
-    "price": 18000,
-    "price3": 16500,
-    "price5": 15000,
-    "price20": 13500,
-    "image": "cable-usb-c-a-lightning-1m-trenzado-reforzado.jpg",
-    "images": [
-      "cable-usb-c-a-lightning-1m-trenzado-reforzado.jpg",
-      "cable-iphone-conectores.jpg"
-    ],
-    "description": "Cable de alta gama con revestimiento trenzado de nylon de grado militar y cabezales metálicos sellados. Diseñado para resistir más de 20.000 dobleces sin perder conductividad ni pelarse, admitiendo carga rápida de hasta 27W.",
-    "features": [
-      "Estructura exterior en tejido de nylon trenzado antienredos y anti-tirones",
-      "Soporta carga rápida Power Delivery de hasta 27W y sincronización de datos",
-      "Puntas reforzadas de aleación de aluminio que previenen quiebres en los extremos",
-      "Velocidad de transferencia de archivos y fotos a 480 Mbps sin cortes",
-      "Garantía oficial NISSA de hasta 90 días ante cualquier falla de fábrica"
-    ],
-    "specs": {
-      "Conectores": "USB Tipo-C a Lightning",
-      "Longitud": "1.0 metro",
-      "Material exterior": "Nylon trenzado de alta densidad blindado",
-      "Compatibilidad": "Toda la línea iPhone (8 al 14 Pro Max), iPad y accesorios",
-      "Garantía": "90 días oficial escrita NISSA"
     }
   },
   {
