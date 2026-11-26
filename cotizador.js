@@ -210,8 +210,10 @@ function applyPercentToRawPrice(rawPrice, pct) {
   return s;
 }
 
-function computeWarrantyPrice(rawPriceOrRepair, warrantyId) {
-  if (rawPriceOrRepair === undefined || rawPriceOrRepair === null) return '';
+function computeWarrantyPriceDetails(rawPriceOrRepair, warrantyId) {
+  if (rawPriceOrRepair === undefined || rawPriceOrRepair === null) {
+    return { originalPrice: '', finalPrice: '', hasDiscount: false, discountPercent: 0 };
+  }
 
   let rawPrice = rawPriceOrRepair;
   let hasManualOverride = false;
@@ -246,11 +248,14 @@ function computeWarrantyPrice(rawPriceOrRepair, warrantyId) {
     }
   }
 
-  if (rawPrice === undefined || rawPrice === null) return '';
+  if (rawPrice === undefined || rawPrice === null) {
+    return { originalPrice: '', finalPrice: '', hasDiscount: false, discountPercent: 0 };
+  }
   const s = String(rawPrice).trim();
   const lower = s.toLowerCase();
   if (lower.includes('consultar') || s === '' || lower.includes('no realizamos')) {
-    return s || 'Consultar';
+    const txt = s || 'Consultar';
+    return { originalPrice: txt, finalPrice: txt, hasDiscount: false, discountPercent: 0 };
   }
 
   let effectivePct = 0;
@@ -260,11 +265,22 @@ function computeWarrantyPrice(rawPriceOrRepair, warrantyId) {
   }
 
   // Combinar porcentaje global (si no hay precio individual manual) con el descuento % propio de esa garantía
-  let baseAfterWarranty = applyPercentToRawPrice(rawPrice, effectivePct);
+  const baseAfterWarranty = applyPercentToRawPrice(rawPrice, effectivePct);
+  let finalPrice = baseAfterWarranty;
   if (itemDiscountPct > 0) {
-    baseAfterWarranty = applyPercentToRawPrice(baseAfterWarranty, -itemDiscountPct);
+    finalPrice = applyPercentToRawPrice(baseAfterWarranty, -itemDiscountPct);
   }
-  return baseAfterWarranty;
+  const hasDiscount = itemDiscountPct > 0 && baseAfterWarranty !== finalPrice;
+  return {
+    originalPrice: baseAfterWarranty,
+    finalPrice,
+    hasDiscount,
+    discountPercent: itemDiscountPct
+  };
+}
+
+function computeWarrantyPrice(rawPriceOrRepair, warrantyId) {
+  return computeWarrantyPriceDetails(rawPriceOrRepair, warrantyId).finalPrice;
 }
 
 function renderWarrantyCards() {
@@ -279,7 +295,8 @@ function renderWarrantyCards() {
   container.innerHTML = '';
   getDynamicWarranties().forEach(w => {
     const isAct = w.id === selectedWarrantyId;
-    const finalPriceStr = computeWarrantyPrice(rawBase, w.id);
+    const priceDetails = computeWarrantyPriceDetails(rawBase, w.id);
+    const finalPriceStr = priceDetails.finalPrice;
     const resolvedDuration = getResolvedWarrantyDuration(repairObj, w);
     const card = document.createElement('button');
     card.type = 'button';
@@ -289,7 +306,11 @@ function renderWarrantyCards() {
 
     let priceTagHtml = '';
     if (finalPriceStr && finalPriceStr !== 'Consultar' && finalPriceStr !== 'NO REALIZAMOS') {
-      priceTagHtml = `<div class="re-garantia-price-line">
+      const oldPriceHtml = priceDetails.hasDiscount
+        ? `<span class="re-garantia-price-old">${escapeWidgetHtml(priceDetails.originalPrice)}</span>`
+        : '';
+      priceTagHtml = `<div class="re-garantia-price-line${priceDetails.hasDiscount ? ' has-discount' : ''}">
+        ${oldPriceHtml}
         <span class="re-garantia-price-val">${finalPriceStr}</span>
       </div>`;
     } else {
@@ -1281,12 +1302,20 @@ function calculateAndShowWidgetBudget() {
     const repairObj = getSelectedRepairObj();
     const resolvedDuration = getResolvedWarrantyDuration(repairObj, wObj);
     const ultraGiftText = wObj.id === 'ultra' ? getResolvedUltraGiftText(repairObj) : '';
-    sPrice = computeWarrantyPrice(repairObj || rawPrice, wObj.id);
+    const priceDetails = computeWarrantyPriceDetails(repairObj || rawPrice, wObj.id);
+    sPrice = priceDetails.finalPrice;
     if (sPrice === 'Consultar' || !sPrice || sPrice === 'A consultar') isQuote = true;
 
     safeSetText('summary-title', sTitle);
     safeSetText('summary-desc', sDesc);
     safeSetText('summary-badge', sBadge);
+    if (priceDetails.hasDiscount && !isQuote) {
+      safeSetText('summary-price-old', priceDetails.originalPrice);
+      safeSetStyle('summary-price-old', 'display', 'inline-block');
+    } else {
+      safeSetText('summary-price-old', '');
+      safeSetStyle('summary-price-old', 'display', 'none');
+    }
     safeSetText('summary-price', sPrice);
     const badgeLabel = wObj.id === 'basic'
       ? (repairObj?.timeBasic && String(repairObj.timeBasic).trim() ? `⚡ ${wObj.name}: ${resolvedDuration}` : `⚡ ${wObj.name}`)
@@ -1336,7 +1365,7 @@ function sendWidgetWhatsApp() {
   text += `📋 *Detalle:* ${badge}\n`;
   text += `🛡️ *Garantía elegida:* ${warrantyWaText}\n`;
   if (ultraGiftText) {
-    text += `🎁 *Regalo / Beneficio:* ${ultraGiftText}\n`;
+    text += `📝 ${ultraGiftText}\n`;
   }
   text += `💰 *Presupuesto Estimado:* *${price}*\n\n`;
   text += `✓ He leído y acepto los términos y condiciones de servicio técnico.\n\n`;
@@ -1358,6 +1387,45 @@ document.addEventListener('click', (e) => {
     showModelDropdown(false);
   }
 });
+
+function refreshCotizadorWithFreshData() {
+  if (!widgetCategory) {
+    return;
+  }
+  if (widgetCategory === 'Celular') {
+    populateBrands();
+    if (selectedBrand && selectedBrand !== 'Otros' && selectedModelObj && !selectedModelObj.isCustom) {
+      const brandObj = (PRECIOS_WIDGET.celulares || []).find(c => c.brand === selectedBrand);
+      if (brandObj && Array.isArray(brandObj.models)) {
+        const refreshedModel = brandObj.models.find(m => m.name === selectedModelObj.name);
+        if (refreshedModel) {
+          selectedModelObj = refreshedModel;
+        }
+      }
+      if (selectedModelObj) {
+        populatePhoneRepairs();
+      }
+    }
+  } else if (widgetCategory === 'Consola') {
+    populateConsoles();
+    if (selectedConsoleId) {
+      populateConsoleServices();
+    }
+  } else if (widgetCategory === 'Mando') {
+    populateMandos();
+    if (selectedMandoId) {
+      populateMandoServices();
+    }
+  } else if (widgetCategory === 'Computadora') {
+    populateComputadoras();
+  }
+
+  const repairObj = getSelectedRepairObj();
+  if (repairObj) {
+    renderWarrantyCards();
+    calculateAndShowWidgetBudget();
+  }
+}
 
 // Auto-init on page load: estado inicial limpio
 if (typeof window !== 'undefined') {
@@ -1396,6 +1464,7 @@ if (typeof window !== 'undefined') {
   window.computeWarrantyPrice = computeWarrantyPrice;
   window.renderWarrantyCards = renderWarrantyCards;
   window.getDynamicWarranties = getDynamicWarranties;
+  window.refreshCotizadorWithFreshData = refreshCotizadorWithFreshData;
 }
 
 function initCotizadorWidget() {

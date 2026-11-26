@@ -38,6 +38,7 @@ let activeCotizadorCategory = "celulares";
 let activeCelularBrand = "todos"; // Por defecto mostrar todos los modelos
 let cotizadorSearchTerm = "";
 let autoSaveCotizadorTimeout = null;
+const expandedCotizadorModels = new Set();
 
 // Estado de Estética y Diseño de la Tienda
 let currentSiteConfig = null;
@@ -212,14 +213,19 @@ function checkDraftStatus() {
   const catDraft = localStorage.getItem("nissa_catalog_draft");
   const cotDraft = localStorage.getItem("nissa_cotizador_draft");
   const siteDraft = localStorage.getItem("nissa_site_config_draft");
+  const hasPending = Boolean(catDraft || cotDraft || siteDraft);
   const badge = document.getElementById("draft-indicator");
   if (badge) {
-    if (catDraft || cotDraft || siteDraft) {
+    if (hasPending) {
       badge.style.display = "inline-block";
-      badge.textContent = "Cambios sin guardar";
+      badge.textContent = "Cambios pendientes";
     } else {
       badge.style.display = "none";
     }
+  }
+  const masterBtn = document.getElementById("btn-apply-all-modifications");
+  if (masterBtn) {
+    masterBtn.classList.toggle("has-pending-changes", hasPending);
   }
 }
 
@@ -1879,134 +1885,79 @@ async function saveAndPublishProductToGithub(e) {
     return;
   }
 
-  // Verificar si el usuario configuró conexión y Token
-  const cfg = getGithubConfig();
-  if (!cfg.owner || !cfg.repo || !cfg.token) {
-    alert("⚠️ Para guardar y publicar tus cambios en la tienda en línea, necesitás ingresar tu clave de conexión.\n\nPresioná Aceptar para configurarla.");
-    openGithubModal();
-    return;
+  let finalMainImage = (document.getElementById("prod-main-image")?.value || "").trim();
+  let dataUrlToUpload = currentMainImageState.dataUrl || "";
+  let imgFilename = currentMainImageState.filename || "";
+
+  if (!dataUrlToUpload && imgFilename && window.NISSA_IMAGE_CACHE && window.NISSA_IMAGE_CACHE[imgFilename] && window.NISSA_IMAGE_CACHE[imgFilename].startsWith("data:")) {
+    dataUrlToUpload = window.NISSA_IMAGE_CACHE[imgFilename];
+  }
+  if (!dataUrlToUpload && finalMainImage && window.NISSA_IMAGE_CACHE && window.NISSA_IMAGE_CACHE[finalMainImage] && window.NISSA_IMAGE_CACHE[finalMainImage].startsWith("data:")) {
+    dataUrlToUpload = window.NISSA_IMAGE_CACHE[finalMainImage];
+    if (!imgFilename) imgFilename = finalMainImage;
   }
 
-  const publishBtn = document.getElementById("btn-save-and-publish-github");
-  const originalBtnHtml = publishBtn ? publishBtn.innerHTML : "";
-  if (publishBtn) {
-    publishBtn.disabled = true;
-    publishBtn.innerHTML = "⏳ Guardando cambios...";
+  if (dataUrlToUpload && dataUrlToUpload.startsWith("data:")) {
+    let cleanFilename = imgFilename || "producto.jpg";
+    cleanFilename = cleanFilename.replace(/^(\.\/|\/)+/, "").replace(/^fotos\//, "").replace(/[^a-zA-Z0-9._-]/g, "_");
+    if (!cleanFilename || cleanFilename === "producto.jpg" || /^(image|img|foto|screenshot|captura|whatsapp|descarga)/i.test(cleanFilename)) {
+      const slug = name.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "");
+      cleanFilename = `${slug || "producto"}.jpg`;
+    }
+    if (!/\.(jpe?g|png|webp|gif)$/i.test(cleanFilename)) {
+      cleanFilename += ".jpg";
+    }
+
+    finalMainImage = cleanFilename;
+    currentMainImageState.filename = cleanFilename;
+
+    window.NISSA_IMAGE_CACHE = window.NISSA_IMAGE_CACHE || {};
+    window.NISSA_IMAGE_CACHE[cleanFilename] = dataUrlToUpload;
+    persistImageInDB(cleanFilename, dataUrlToUpload);
+    saveRecentImageInLocalStorage(cleanFilename, dataUrlToUpload);
+    saveImageFileToServer(cleanFilename, dataUrlToUpload);
+  } else if (finalMainImage) {
+    finalMainImage = finalMainImage.replace(/^(\.\/|\/)+/, "").replace(/^fotos\//, "");
   }
 
-  try {
-    let finalMainImage = (document.getElementById("prod-main-image")?.value || "").trim();
-    let dataUrlToUpload = currentMainImageState.dataUrl || "";
-    let imgFilename = currentMainImageState.filename || "";
+  const descInput = document.getElementById("prod-desc") || document.getElementById("prod-desc-tab3");
+  const description = descInput ? descInput.value.trim() : "";
 
-    if (!dataUrlToUpload && imgFilename && window.NISSA_IMAGE_CACHE && window.NISSA_IMAGE_CACHE[imgFilename] && window.NISSA_IMAGE_CACHE[imgFilename].startsWith("data:")) {
-      dataUrlToUpload = window.NISSA_IMAGE_CACHE[imgFilename];
-    }
-    if (!dataUrlToUpload && finalMainImage && window.NISSA_IMAGE_CACHE && window.NISSA_IMAGE_CACHE[finalMainImage] && window.NISSA_IMAGE_CACHE[finalMainImage].startsWith("data:")) {
-      dataUrlToUpload = window.NISSA_IMAGE_CACHE[finalMainImage];
-      if (!imgFilename) imgFilename = finalMainImage;
-    }
+  const galleryInputs = document.querySelectorAll(".gallery-input");
+  const images = [];
+  if (finalMainImage) images.push(finalMainImage);
+  galleryInputs.forEach(inp => {
+    let v = inp.value.trim().replace(/^(\.\/|\/)+/, "").replace(/^fotos\//, "");
+    if (v && !images.includes(v)) images.push(v);
+  });
 
-    // Si hay una foto cargada desde el equipo (Data URL Base64), subirla a la carpeta fotos/ de GitHub
-    if (dataUrlToUpload && dataUrlToUpload.startsWith("data:")) {
-      let cleanFilename = imgFilename || "producto.jpg";
-      cleanFilename = cleanFilename.replace(/^(\.\/|\/)+/, "").replace(/^fotos\//, "").replace(/[^a-zA-Z0-9._-]/g, "_");
-      if (!cleanFilename || cleanFilename === "producto.jpg" || /^(image|img|foto|screenshot|captura|whatsapp|descarga)/i.test(cleanFilename)) {
-        const slug = name.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "");
-        cleanFilename = `${slug || "producto"}.jpg`;
-      }
-      if (!/\.(jpe?g|png|webp|gif)$/i.test(cleanFilename)) {
-        cleanFilename += ".jpg";
-      }
+  const featureInputs = document.querySelectorAll(".feature-input");
+  const features = [];
+  featureInputs.forEach(inp => {
+    const v = inp.value.trim();
+    if (v) features.push(v);
+  });
 
-      if (publishBtn) {
-        publishBtn.innerHTML = `⏳ Subiendo foto (${cleanFilename})...`;
-      }
+  const specs = {};
+  const garantia = document.getElementById("prod-spec-garantia")?.value.trim() || "";
+  const stock = document.getElementById("prod-spec-stock")?.value.trim() || "";
+  if (garantia) specs["Garantía"] = garantia;
+  if (stock) specs["Disponibilidad"] = stock;
 
-      // Subir archivo a la carpeta fotos/
-      const photoRes = await uploadSinglePhotoToGithub(cleanFilename, dataUrlToUpload, cfg);
-      if (!photoRes.ok) {
-        const errMsg = photoRes.data?.message || photoRes.statusText || photoRes.error || "";
-        if (photoRes.status === 401 || errMsg.includes("Bad credentials")) {
-          alert("⚠️ La clave de conexión expiró o no es válida. Por favor actualizala en ⚙️ Conexión.");
-          openGithubModal();
-          return;
-        } else {
-          console.warn("Aviso al subir imagen:", errMsg);
-        }
-      }
+  const specKeyInputs = document.querySelectorAll(".spec-key-input");
+  const specValInputs = document.querySelectorAll(".spec-val-input");
+  for (let i = 0; i < specKeyInputs.length; i++) {
+    const k = specKeyInputs[i].value.trim();
+    const v = specValInputs[i].value.trim();
+    if (k && v) specs[k] = v;
+  }
 
-      finalMainImage = cleanFilename;
-      currentMainImageState.filename = cleanFilename;
-
-      window.NISSA_IMAGE_CACHE = window.NISSA_IMAGE_CACHE || {};
-      window.NISSA_IMAGE_CACHE[cleanFilename] = dataUrlToUpload;
-      persistImageInDB(cleanFilename, dataUrlToUpload);
-      saveRecentImageInLocalStorage(cleanFilename, dataUrlToUpload);
-      saveImageFileToServer(cleanFilename, dataUrlToUpload);
-    } else if (finalMainImage) {
-      // Normalizar nombre de archivo si se ingresó con prefijos de ruta
-      finalMainImage = finalMainImage.replace(/^(\.\/|\/)+/, "").replace(/^fotos\//, "");
-    }
-
-    // Recopilar datos completos del producto
-    const descInput = document.getElementById("prod-desc") || document.getElementById("prod-desc-tab3");
-    const description = descInput ? descInput.value.trim() : "";
-
-    const galleryInputs = document.querySelectorAll(".gallery-input");
-    const images = [];
-    if (finalMainImage) images.push(finalMainImage);
-    galleryInputs.forEach(inp => {
-      let v = inp.value.trim().replace(/^(\.\/|\/)+/, "").replace(/^fotos\//, "");
-      if (v && !images.includes(v)) images.push(v);
-    });
-
-    const featureInputs = document.querySelectorAll(".feature-input");
-    const features = [];
-    featureInputs.forEach(inp => {
-      const v = inp.value.trim();
-      if (v) features.push(v);
-    });
-
-    const specs = {};
-    const garantia = document.getElementById("prod-spec-garantia")?.value.trim() || "";
-    const stock = document.getElementById("prod-spec-stock")?.value.trim() || "";
-    if (garantia) specs["Garantía"] = garantia;
-    if (stock) specs["Disponibilidad"] = stock;
-
-    const specKeyInputs = document.querySelectorAll(".spec-key-input");
-    const specValInputs = document.querySelectorAll(".spec-val-input");
-    for (let i = 0; i < specKeyInputs.length; i++) {
-      const k = specKeyInputs[i].value.trim();
-      const v = specValInputs[i].value.trim();
-      if (k && v) specs[k] = v;
-    }
-
-    let finalId;
-    if (idVal) {
-      finalId = Number(idVal);
-      const existingIndex = currentProducts.findIndex(item => Number(item.id) === finalId);
-      if (existingIndex !== -1) {
-        currentProducts[existingIndex] = {
-          id: finalId,
-          name,
-          category,
-          tag: tag || undefined,
-          price,
-          price3,
-          price5,
-          price20,
-          image: finalMainImage,
-          images: images.length > 0 ? images : [finalMainImage],
-          description,
-          features,
-          specs
-        };
-      }
-    } else {
-      const maxId = currentProducts.reduce((max, item) => Math.max(max, Number(item.id) || 0), 0);
-      finalId = maxId + 1;
-      currentProducts.push({
+  let finalId;
+  if (idVal) {
+    finalId = Number(idVal);
+    const existingIndex = currentProducts.findIndex(item => Number(item.id) === finalId);
+    if (existingIndex !== -1) {
+      currentProducts[existingIndex] = {
         id: finalId,
         name,
         category,
@@ -2020,82 +1971,37 @@ async function saveAndPublishProductToGithub(e) {
         description,
         features,
         specs
-      });
+      };
     }
-
-    if (typeof window !== "undefined") {
-      window.products = currentProducts;
-    }
-
-    // Publicar catálogo products.js
-    if (publishBtn) {
-      publishBtn.innerHTML = "⏳ Guardando cambios...";
-    }
-    const productsJsCode = generateProductsJsCode();
-    saveProductsFileToServer(productsJsCode);
-
-    const getUrl = `https://api.github.com/repos/${cfg.owner}/${cfg.repo}/contents/${cfg.path}?ref=${cfg.branch}&t=${Date.now()}`;
-    let currentSha = null;
-    const getRes = await callGithubApi(getUrl, { token: cfg.token });
-    if (getRes.ok && getRes.data && getRes.data.sha) {
-      currentSha = getRes.data.sha;
-    }
-
-    const base64Content = utf8ToBase64(productsJsCode);
-    let putRes = await callGithubApi(`https://api.github.com/repos/${cfg.owner}/${cfg.repo}/contents/${cfg.path}`, {
-      method: "PUT",
-      token: cfg.token,
-      body: {
-        message: `Actualizar producto "${name}" (#${finalId}) y catálogo [Admin NISSA]`,
-        content: base64Content,
-        branch: cfg.branch,
-        sha: currentSha || undefined
-      }
+  } else {
+    const maxId = currentProducts.reduce((max, item) => Math.max(max, Number(item.id) || 0), 0);
+    finalId = maxId + 1;
+    currentProducts.push({
+      id: finalId,
+      name,
+      category,
+      tag: tag || undefined,
+      price,
+      price3,
+      price5,
+      price20,
+      image: finalMainImage,
+      images: images.length > 0 ? images : [finalMainImage],
+      description,
+      features,
+      specs
     });
-
-    if (putRes.status === 409) {
-      const freshGet = await callGithubApi(getUrl, { token: cfg.token });
-      if (freshGet.ok && freshGet.data && freshGet.data.sha) {
-        putRes = await callGithubApi(`https://api.github.com/repos/${cfg.owner}/${cfg.repo}/contents/${cfg.path}`, {
-          method: "PUT",
-          token: cfg.token,
-          body: {
-            message: `Actualizar producto "${name}" (#${finalId}) y catálogo [Admin NISSA]`,
-            content: base64Content,
-            branch: cfg.branch,
-            sha: freshGet.data.sha
-          }
-        });
-      }
-    }
-
-    if (putRes.ok) {
-      // Limpiar borrador local para mantener sincronía pura con la tienda pública
-      localStorage.removeItem("nissa_catalog_draft");
-      checkDraftStatus();
-      closeProductModal();
-      renderCategoryFilter();
-      renderProductsList();
-      showAlert(`✓ ¡Cambios guardados! El producto "${escapeHtml(name)}" ya se publicó y se actualizará en la tienda en unos instantes.`, true);
-    } else {
-      const ghMsg = putRes.data?.message || putRes.statusText || "";
-      if (putRes.status === 401 || ghMsg.includes("Bad credentials")) {
-        alert("⚠️ La clave de conexión expiró o no es válida. Por favor actualizala en ⚙️ Conexión.");
-        openGithubModal();
-      } else {
-        alert(`No se pudieron guardar los cambios (${putRes.status}): ${ghMsg}`);
-      }
-    }
-
-  } catch (err) {
-    console.error("Error al guardar producto:", err);
-    alert("Error de conexión al guardar cambios: " + (err.message || err));
-  } finally {
-    if (publishBtn) {
-      publishBtn.disabled = false;
-      publishBtn.innerHTML = originalBtnHtml;
-    }
   }
+
+  if (typeof window !== "undefined") {
+    window.products = currentProducts;
+  }
+
+  saveDraft();
+  closeProductModal();
+  renderCategoryFilter();
+  renderProductsList();
+  showAlert(`✓ Producto "${name}" preparado. Presioná "✓ Aplicar modificaciones" arriba cuando termines de editar.`);
 }
 
 function editProduct(id) {
@@ -2114,7 +2020,7 @@ function duplicateProduct(id) {
   currentProducts.push(cloned);
   saveDraft();
   renderProductsList();
-  showAlert(`<span>✓ Producto duplicado (#${cloned.id}).</span> <button type="button" class="btn btn-sm btn-save-action" style="margin-left:10px;" onclick="applyAndSaveCatalogChanges()">💾 Guardar cambios</button>`, true);
+  showAlert(`✓ Producto duplicado (#${cloned.id}). Presioná "✓ Aplicar modificaciones" arriba cuando termines.`);
 }
 
 function moveProductOrder(id, direction) {
@@ -2130,7 +2036,7 @@ function moveProductOrder(id, direction) {
 
   saveDraft();
   renderProductsList();
-  showAlert(`<span>✓ Orden actualizado.</span> <button type="button" class="btn btn-sm btn-save-action" style="margin-left:10px;" onclick="applyAndSaveCatalogChanges()">💾 Guardar cambios</button>`, true);
+  showAlert(`✓ Orden actualizado. Presioná "✓ Aplicar modificaciones" arriba cuando termines.`);
 }
 
 function deleteProduct(id) {
@@ -2139,16 +2045,13 @@ function deleteProduct(id) {
 
   if (confirm(`¿Estás seguro de que deseás eliminar el producto "${p.name}" (#${p.id}) de la tienda?`)) {
     currentProducts = currentProducts.filter(item => Number(item.id) !== Number(id));
+    if (typeof window !== "undefined") {
+      window.products = currentProducts;
+    }
+    saveDraft();
     renderCategoryFilter();
     renderProductsList();
-    const cfg = getGithubConfig();
-    if (cfg && cfg.token) {
-      publishDirectlyToGithub();
-    } else {
-      saveDraft();
-      showAlert(`✓ Producto #${id} eliminado. Configurá la conexión para publicar el cambio en la tienda.`);
-      openGithubModal();
-    }
+    showAlert(`✓ Producto #${id} quitado del borrador. Presioná "✓ Aplicar modificaciones" para aplicar en la tienda.`);
   }
 }
 
@@ -2164,7 +2067,7 @@ function generateProductsJsCode() {
 // Actualizado: ${dateStr}
 // 100% Compatible con GitHub Pages (Costo $0)
 
-let products = ${productsJson};
+var products = ${productsJson};
 
 // Exponer en window para compatibilidad global
 if (typeof window !== "undefined") {
@@ -2795,6 +2698,9 @@ function renderCotizadorDynamicActions() {
       <button type="button" class="btn btn-warning btn-sm" onclick="openMassAdjustModal()">
         ⚡ Ajuste Masivo (%)
       </button>
+      <button type="button" class="btn btn-outline btn-sm" onclick="setAllCotizadorAccordions(false)" title="Contraer todos los modelos">
+        ▴ Contraer todo
+      </button>
       <button type="button" class="btn btn-danger-ghost btn-sm" onclick="deleteCelularBrand()" title="Eliminar marca actual">
         🗑️ Quitar Marca
       </button>
@@ -2807,6 +2713,9 @@ function renderCotizadorDynamicActions() {
       <button type="button" class="btn btn-warning btn-sm" onclick="openMassAdjustModal()">
         ⚡ Ajuste Masivo (%)
       </button>
+      <button type="button" class="btn btn-outline btn-sm" onclick="setAllCotizadorAccordions(false)" title="Contraer todas las consolas">
+        ▴ Contraer todo
+      </button>
     `;
   } else if (activeCotizadorCategory === "joysticks") {
     container.innerHTML = `
@@ -2816,6 +2725,9 @@ function renderCotizadorDynamicActions() {
       <button type="button" class="btn btn-warning btn-sm" onclick="openMassAdjustModal()">
         ⚡ Ajuste Masivo (%)
       </button>
+      <button type="button" class="btn btn-outline btn-sm" onclick="setAllCotizadorAccordions(false)" title="Contraer todos los joysticks">
+        ▴ Contraer todo
+      </button>
     `;
   } else if (activeCotizadorCategory === "computadoras") {
     container.innerHTML = `
@@ -2823,18 +2735,8 @@ function renderCotizadorDynamicActions() {
         ➕ Nuevo Servicio PC
       </button>
     `;
-  } else if (activeCotizadorCategory === "garantias") {
-    container.innerHTML = `
-      <button type="button" class="btn btn-primary btn-sm" onclick="saveWarrantyAdjustmentsSettings()">
-        💾 Aplicar Porcentajes
-      </button>
-    `;
-  } else if (activeCotizadorCategory === "general") {
-    container.innerHTML = `
-      <button type="button" class="btn btn-primary btn-sm" onclick="saveGeneralSettings()">
-        💾 Guardar Ajustes
-      </button>
-    `;
+  } else {
+    container.innerHTML = "";
   }
 }
 
@@ -3043,7 +2945,7 @@ function formatAdminWarrantyBreakdown(repairOrRaw) {
     <span class="w-pill w-none" title="${escapeHtml(tSin)}">⚡ ${escapeHtml(tSin)}: <strong>${escapeHtml(dSin.text)}</strong>${db > 0 ? ` (-${db}%)` : ""}</span>
     <span class="w-pill w-std" title="${escapeHtml(t30)}">🛡️ ${escapeHtml(t30)}: <strong>${escapeHtml(d30.text)}</strong>${de > 0 ? ` (-${de}%)` : ""}</span>
     <span class="w-pill w-ext" title="${escapeHtml(t90)}">👑 ${escapeHtml(t90)}: <strong>${escapeHtml(d90.text)}</strong>${du > 0 ? ` (-${du}%)` : ""}</span>
-    ${gift ? `<span class="w-pill w-none" title="Regalo garantía 3 meses">🎁 ${escapeHtml(gift)}</span>` : ""}
+    ${gift ? `<span class="w-pill w-muted" title="Texto 3.ª garantía">${escapeHtml(gift)}</span>` : ""}
   `;
 }
 
@@ -3148,9 +3050,8 @@ function renderRepairPriceEditorHtml(targetType, idx1, idx2, idx3, r) {
       </div>
     </div>
     <div class="repair-gift-row">
-      <span class="repair-gift-label">🎁 Regalo 3 meses:</span>
       <input type="text" class="repair-inline-input repair-gift-input" data-field="giftTextUltra"
-        value="${escapeHtml(valGiftUltra)}" placeholder="Ej: ¡Incluye templado de regalo! (opcional)"
+        value="${escapeHtml(valGiftUltra)}" placeholder="Texto opcional para la 3.ª garantía..."
         onchange="updateRepairPriceAndDiscount('${targetType}', ${idx1}, ${idx2}, ${idx3}, 'giftTextUltra', this.value, this)"
         oninput="updateRepairPriceAndDiscount('${targetType}', ${idx1}, ${idx2}, ${idx3}, 'giftTextUltra', this.value, this)">
     </div>
@@ -3241,6 +3142,35 @@ function updateWarrantyPreviewCell(inputEl) {
   }
 }
 
+function toggleModelAccordion(modelKey, cardEl) {
+  if (!modelKey) return;
+  const isCurrentlyExpanded = expandedCotizadorModels.has(modelKey);
+  if (isCurrentlyExpanded) {
+    expandedCotizadorModels.delete(modelKey);
+  } else {
+    expandedCotizadorModels.add(modelKey);
+  }
+  const el = cardEl || document.querySelector(`.model-accordion[data-accordion-key="${modelKey}"]`);
+  if (el) {
+    el.classList.toggle("is-collapsed", isCurrentlyExpanded);
+  }
+}
+
+function setAllCotizadorAccordions(expand) {
+  const cards = document.querySelectorAll("#cotizador-content-area .model-accordion");
+  cards.forEach(card => {
+    const key = card.getAttribute("data-accordion-key");
+    if (!key) return;
+    if (expand) {
+      expandedCotizadorModels.add(key);
+      card.classList.remove("is-collapsed");
+    } else {
+      expandedCotizadorModels.delete(key);
+      card.classList.add("is-collapsed");
+    }
+  });
+}
+
 function renderCelularesSection() {
   const container = document.getElementById("cotizador-content-area");
   if (!container || !currentCotizador || !currentCotizador.celulares) return;
@@ -3294,6 +3224,8 @@ function renderCelularesSection() {
     const mIdx = item.modelIndex;
     const model = item.model;
     const repairs = model.repairs || [];
+    const accKey = `cel-${bIdx}-${mIdx}`;
+    const isExpanded = expandedCotizadorModels.has(accKey);
 
     const rowsHtml = repairs.map((r, rIdx) => {
       return `
@@ -3323,25 +3255,26 @@ function renderCelularesSection() {
     }).join("");
 
     return `
-      <div class="model-card" id="card-model-${bIdx}-${mIdx}">
-        <div class="model-card-header">
+      <div class="model-card model-accordion ${isExpanded ? "" : "is-collapsed"}" id="card-model-${bIdx}-${mIdx}" data-accordion-key="${accKey}">
+        <div class="model-card-header" onclick="toggleModelAccordion('${accKey}', this.closest('.model-card'))">
           <div class="model-title-wrap">
+            <span class="model-accordion-chevron" aria-hidden="true">▸</span>
             <span class="model-brand-pill ${item.brand.toLowerCase()}">${escapeHtml(item.brand)}</span>
             <span class="model-name-text">${escapeHtml(model.name)}</span>
             <span class="model-count-pill">${repairs.length} reparaciones</span>
           </div>
-          <div class="model-actions">
+          <div class="model-actions" onclick="event.stopPropagation()">
             <button type="button" class="btn btn-sm btn-outline" onclick="renameCelularModel(${bIdx}, ${mIdx})">
               ✏️ Renombrar
             </button>
             <button type="button" class="btn btn-sm btn-secondary" onclick="duplicateCelularModel(${bIdx}, ${mIdx})" title="Duplicar este equipo con todas sus tarifas">
               📑 Duplicar
             </button>
-            <button type="button" class="btn btn-sm btn-success" onclick="openAddRepairModal('celulares', '${escapeHtml(item.brand)}', ${mIdx})">
-              ➕ Agregar Reparación
+            <button type="button" class="btn btn-sm btn-success" onclick="expandedCotizadorModels.add('${accKey}'); openAddRepairModal('celulares', '${escapeHtml(item.brand)}', ${mIdx})">
+              ➕ Reparación
             </button>
-            <button type="button" class="btn btn-sm btn-danger-ghost" onclick="deleteCelularModel(${bIdx}, ${mIdx})">
-              🗑️ Quitar Equipo
+            <button type="button" class="btn btn-sm btn-danger-ghost" onclick="deleteCelularModel(${bIdx}, ${mIdx})" title="Quitar equipo">
+              🗑️
             </button>
           </div>
         </div>
@@ -3363,8 +3296,8 @@ function renderCelularesSection() {
         </div>
 
         <div class="model-card-footer">
-          <span class="quick-save-indicator">✓ Los cambios se guardan automáticamente</span>
-          <button type="button" class="btn btn-sm btn-outline" onclick="openAddRepairModal('celulares', '${escapeHtml(item.brand)}', ${mIdx})">
+          <span class="quick-save-indicator">✓ Modificado en borrador</span>
+          <button type="button" class="btn btn-sm btn-outline" onclick="expandedCotizadorModels.add('${accKey}'); openAddRepairModal('celulares', '${escapeHtml(item.brand)}', ${mIdx})">
             ➕ Agregar otra reparación a este modelo
           </button>
         </div>
@@ -3504,6 +3437,8 @@ function renderConsolasSection() {
   container.innerHTML = consolas.map((c) => {
     const devIdx = currentCotizador.consolas.indexOf(c);
     const repairs = c.repairs || [];
+    const accKey = `con-${devIdx}`;
+    const isExpanded = expandedCotizadorModels.has(accKey);
 
     const rowsHtml = repairs.map((r, rIdx) => {
       return `
@@ -3533,21 +3468,22 @@ function renderConsolasSection() {
     }).join("");
 
     return `
-      <div class="model-card">
-        <div class="model-card-header">
+      <div class="model-card model-accordion ${isExpanded ? "" : "is-collapsed"}" data-accordion-key="${accKey}">
+        <div class="model-card-header" onclick="toggleModelAccordion('${accKey}', this.closest('.model-card'))">
           <div class="model-title-wrap">
+            <span class="model-accordion-chevron" aria-hidden="true">▸</span>
             <span class="model-name-text">🎮 ${escapeHtml(c.name)}</span>
             <span class="model-count-pill">${repairs.length} servicios</span>
           </div>
-          <div class="model-actions">
+          <div class="model-actions" onclick="event.stopPropagation()">
             <button type="button" class="btn btn-sm btn-outline" onclick="renameDevice('consolas', ${devIdx})">
               ✏️ Renombrar
             </button>
-            <button type="button" class="btn btn-sm btn-success" onclick="openAddRepairModal('consolas', null, null, '${escapeHtml(c.id)}')">
-              ➕ Agregar Servicio
+            <button type="button" class="btn btn-sm btn-success" onclick="expandedCotizadorModels.add('${accKey}'); openAddRepairModal('consolas', null, null, '${escapeHtml(c.id)}')">
+              ➕ Servicio
             </button>
-            <button type="button" class="btn btn-sm btn-danger-ghost" onclick="deleteDevice('consolas', ${devIdx})">
-              🗑️ Eliminar Consola
+            <button type="button" class="btn btn-sm btn-danger-ghost" onclick="deleteDevice('consolas', ${devIdx})" title="Eliminar consola">
+              🗑️
             </button>
           </div>
         </div>
@@ -3569,8 +3505,8 @@ function renderConsolasSection() {
         </div>
 
         <div class="model-card-footer">
-          <span class="quick-save-indicator">✓ Los cambios se guardan automáticamente</span>
-          <button type="button" class="btn btn-sm btn-outline" onclick="openAddRepairModal('consolas', null, null, '${escapeHtml(c.id)}')">
+          <span class="quick-save-indicator">✓ Modificado en borrador</span>
+          <button type="button" class="btn btn-sm btn-outline" onclick="expandedCotizadorModels.add('${accKey}'); openAddRepairModal('consolas', null, null, '${escapeHtml(c.id)}')">
             ➕ Agregar otro servicio a esta consola
           </button>
         </div>
@@ -3613,6 +3549,8 @@ function renderJoysticksSection() {
   container.innerHTML = joysticks.map((j) => {
     const devIdx = currentCotizador.joysticks.indexOf(j);
     const repairs = j.repairs || [];
+    const accKey = `joy-${devIdx}`;
+    const isExpanded = expandedCotizadorModels.has(accKey);
 
     const rowsHtml = repairs.map((r, rIdx) => {
       return `
@@ -3642,21 +3580,22 @@ function renderJoysticksSection() {
     }).join("");
 
     return `
-      <div class="model-card">
-        <div class="model-card-header">
+      <div class="model-card model-accordion ${isExpanded ? "" : "is-collapsed"}" data-accordion-key="${accKey}">
+        <div class="model-card-header" onclick="toggleModelAccordion('${accKey}', this.closest('.model-card'))">
           <div class="model-title-wrap">
+            <span class="model-accordion-chevron" aria-hidden="true">▸</span>
             <span class="model-name-text">🕹️ Mando ${escapeHtml(j.name)}</span>
             <span class="model-count-pill">${repairs.length} servicios</span>
           </div>
-          <div class="model-actions">
+          <div class="model-actions" onclick="event.stopPropagation()">
             <button type="button" class="btn btn-sm btn-outline" onclick="renameDevice('joysticks', ${devIdx})">
               ✏️ Renombrar
             </button>
-            <button type="button" class="btn btn-sm btn-success" onclick="openAddRepairModal('joysticks', null, null, '${escapeHtml(j.id)}')">
-              ➕ Agregar Servicio
+            <button type="button" class="btn btn-sm btn-success" onclick="expandedCotizadorModels.add('${accKey}'); openAddRepairModal('joysticks', null, null, '${escapeHtml(j.id)}')">
+              ➕ Servicio
             </button>
-            <button type="button" class="btn btn-sm btn-danger-ghost" onclick="deleteDevice('joysticks', ${devIdx})">
-              🗑️ Eliminar Mando
+            <button type="button" class="btn btn-sm btn-danger-ghost" onclick="deleteDevice('joysticks', ${devIdx})" title="Eliminar mando">
+              🗑️
             </button>
           </div>
         </div>
@@ -3678,8 +3617,8 @@ function renderJoysticksSection() {
         </div>
 
         <div class="model-card-footer">
-          <span class="quick-save-indicator">✓ Los cambios se guardan automáticamente</span>
-          <button type="button" class="btn btn-sm btn-outline" onclick="openAddRepairModal('joysticks', null, null, '${escapeHtml(j.id)}')">
+          <span class="quick-save-indicator">✓ Modificado en borrador</span>
+          <button type="button" class="btn btn-sm btn-outline" onclick="expandedCotizadorModels.add('${accKey}'); openAddRepairModal('joysticks', null, null, '${escapeHtml(j.id)}')">
             ➕ Agregar otro servicio a este mando
           </button>
         </div>
@@ -3927,8 +3866,8 @@ function renderGarantiasSettingsSection() {
 
   container.innerHTML = `
     <div class="cotizador-settings-card">
-      <h2 style="font-size:20px; font-weight:800; margin-bottom:8px;">🛡️ Garantías, Tiempos, Regalos y Porcentajes</h2>
-      <p class="settings-help" style="margin-bottom:18px;">Configurá por separado el nombre, el texto de tiempo de garantía y el porcentaje automático de cada opción (ej: <code>-20</code> resta 20%, <code>30</code> suma 30%). En cada reparación individual también podés personalizar el precio, el tiempo exacto, su propio % de descuento y un regalo para 3 meses.</p>
+      <h2 style="font-size:20px; font-weight:800; margin-bottom:8px;">🛡️ Garantías, Tiempos y Porcentajes</h2>
+      <p class="settings-help" style="margin-bottom:18px;">Configurá por separado el nombre, el texto de tiempo de garantía y el porcentaje automático de cada opción (ej: <code>-20</code> resta 20%, <code>30</code> suma 30%). En cada reparación individual también podés personalizar el precio, el tiempo exacto, su propio % de descuento y un texto libre para la 3.ª opción.</p>
 
       <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(230px, 1fr)); gap:14px; margin-bottom:18px;">
         <div style="background:#f8fafc; border:1px solid #cbd5e1; border-radius:12px; padding:14px; display:flex; flex-direction:column; gap:8px;">
@@ -3990,20 +3929,14 @@ function renderGarantiasSettingsSection() {
             <small id="gar-preview-ultra" style="display:block; margin-top:6px; font-size:11.5px; font-weight:700; color:#0284c7;">${describeWarrantyPctLabel(adj.ultra)}</small>
           </div>
           <div>
-            <small style="display:block; font-size:11px; font-weight:700; color:#92400e; margin-bottom:3px;">🎁 Texto regalo general (3 meses, opcional):</small>
-            <input type="text" id="gar-label-gift-ultra" class="repair-inline-input" value="${escapeHtml(lbls.ultra.giftText || "")}" placeholder="Ej: ¡Incluye regalo sorpresa!" oninput="updateWarrantyLabelInput('ultra', 'giftText', this.value)">
+            <small style="display:block; font-size:11px; font-weight:700; color:#475569; margin-bottom:3px;">Texto adicional general (opcional):</small>
+            <input type="text" id="gar-label-gift-ultra" class="repair-inline-input" value="${escapeHtml(lbls.ultra.giftText || "")}" placeholder="Escribí un texto opcional..." oninput="updateWarrantyLabelInput('ultra', 'giftText', this.value)">
           </div>
         </div>
       </div>
 
-      <div id="garantias-live-example" style="background:#eff6ff; border:1px solid #bfdbfe; color:#1e3a8a; border-radius:10px; padding:12px 14px; font-size:13px; margin-bottom:18px;">
+      <div id="garantias-live-example" style="background:#eff6ff; border:1px solid #bfdbfe; color:#1e3a8a; border-radius:10px; padding:12px 14px; font-size:13px;">
         Ejemplo sobre un arreglo de <strong>$100.000</strong>: ⚡ Sin garantía: <strong>${calcEx(adj.basic)}</strong> · 🛡️ 30 días: <strong>${calcEx(adj.estandar)}</strong> · 👑 90 días: <strong>${calcEx(adj.ultra)}</strong>
-      </div>
-
-      <div style="display:flex; gap:12px; flex-wrap:wrap;">
-        <button type="button" class="btn btn-primary" onclick="saveWarrantyAdjustmentsSettings()">
-          💾 Guardar y Aplicar Garantías
-        </button>
       </div>
     </div>
   `;
@@ -4033,7 +3966,16 @@ function saveWarrantyAdjustmentsSettings() {
   }
 
   saveCotizadorDraft();
-  publishCotizadorDirectlyToGithub();
+}
+
+function updateGeneralSettingField(field, val) {
+  if (!currentCotizador) return;
+  if (field === "showTerms") {
+    currentCotizador.showTerms = Boolean(val);
+  } else {
+    currentCotizador[field] = String(val ?? "").trim();
+  }
+  saveCotizadorDraft();
 }
 
 function renderGeneralSettingsSection() {
@@ -4080,33 +4022,27 @@ function renderGeneralSettingsSection() {
 
       <div class="settings-group">
         <label for="set-cot-whatsapp">Número de WhatsApp receptor:</label>
-        <input type="text" id="set-cot-whatsapp" class="repair-inline-input" value="${escapeHtml(currentCotizador.whatsapp || '5491136620653')}">
+        <input type="text" id="set-cot-whatsapp" class="repair-inline-input" value="${escapeHtml(currentCotizador.whatsapp || '5491136620653')}" oninput="updateGeneralSettingField('whatsapp', this.value)">
         <p class="settings-help">Número con código de país y área sin espacios ni signos + (Ej: 5491136620653 para Argentina).</p>
       </div>
 
       <div class="settings-group">
         <label for="set-cot-business">Nombre Comercial:</label>
-        <input type="text" id="set-cot-business" class="repair-inline-input" value="${escapeHtml(currentCotizador.businessName || 'NISSA')}">
+        <input type="text" id="set-cot-business" class="repair-inline-input" value="${escapeHtml(currentCotizador.businessName || 'NISSA')}" oninput="updateGeneralSettingField('businessName', this.value)">
         <p class="settings-help">Nombre que aparecerá en los encabezados y presupuestos generados.</p>
       </div>
 
       <div class="settings-group">
         <label class="checkbox-label">
-          <input type="checkbox" id="set-cot-showterms" ${currentCotizador.showTerms ? "checked" : ""}>
+          <input type="checkbox" id="set-cot-showterms" ${currentCotizador.showTerms ? "checked" : ""} onchange="updateGeneralSettingField('showTerms', this.checked)">
           <span>Mostrar términos y condiciones legales en el pie del cotizador</span>
         </label>
       </div>
 
-      <div class="settings-group">
+      <div class="settings-group" style="margin-bottom:0;">
         <label for="set-cot-terms">Texto de Términos Legales y Póliza de Garantía:</label>
-        <textarea id="set-cot-terms" class="repair-inline-input" style="min-height:100px; resize:vertical;">${escapeHtml(currentCotizador.termsText || "")}</textarea>
+        <textarea id="set-cot-terms" class="repair-inline-input" style="min-height:100px; resize:vertical;" oninput="updateGeneralSettingField('termsText', this.value)">${escapeHtml(currentCotizador.termsText || "")}</textarea>
         <p class="settings-help">Aclaración visible para los clientes que solicitan presupuestos.</p>
-      </div>
-
-      <div style="margin-top:24px; display:flex; gap:12px;">
-        <button type="button" class="btn btn-primary" onclick="saveGeneralSettings()">
-          💾 Guardar Configuración General
-        </button>
       </div>
     </div>
   `;
@@ -4133,7 +4069,6 @@ function saveGeneralSettings() {
   if (tt) currentCotizador.termsText = tt.value.trim();
 
   saveCotizadorDraft();
-  showAlert("✓ Configuración general y porcentajes de garantía guardados. Recordá pulsar 'Guardar cambios' arriba para publicar en la tienda.");
 }
 
 // --------------------------------------------------------
@@ -4631,7 +4566,7 @@ function generateCotizadorJsCode() {
 // 100% Compatible con GitHub Pages (Costo $0)
 // ========================================================
 
-let PRECIOS_WIDGET = ${jsonStr};
+var PRECIOS_WIDGET = ${jsonStr};
 
 if (typeof window !== "undefined") {
   window.PRECIOS_WIDGET = PRECIOS_WIDGET;
@@ -5717,6 +5652,250 @@ async function saveAndPublishEstetica() {
   }
 }
 
+async function saveVersionFileToServer(version) {
+  if (!version) return;
+  try {
+    await fetch("/api/save-version", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ version })
+    });
+  } catch (err) {
+    console.warn("Servidor no disponible para /api/save-version:", err);
+  }
+}
+
+async function upsertFileToGithub(cfg, filePath, utf8Content, commitMessage) {
+  const getUrl = `https://api.github.com/repos/${cfg.owner}/${cfg.repo}/contents/${filePath}?ref=${cfg.branch}&t=${Date.now()}`;
+  let sha = null;
+  const getRes = await callGithubApi(getUrl, { token: cfg.token });
+  if (getRes.ok && getRes.data && getRes.data.sha) {
+    sha = getRes.data.sha;
+  } else if (getRes.status === 401) {
+    return getRes;
+  }
+
+  const payload = {
+    message: commitMessage,
+    content: utf8ToBase64(utf8Content),
+    branch: cfg.branch
+  };
+  if (sha) payload.sha = sha;
+
+  const putUrl = `https://api.github.com/repos/${cfg.owner}/${cfg.repo}/contents/${filePath}`;
+  let putRes = await callGithubApi(putUrl, {
+    method: "PUT",
+    token: cfg.token,
+    body: payload
+  });
+
+  if (putRes.status === 409) {
+    const freshGet = await callGithubApi(getUrl, { token: cfg.token });
+    if (freshGet.ok && freshGet.data && freshGet.data.sha) {
+      payload.sha = freshGet.data.sha;
+      putRes = await callGithubApi(putUrl, {
+        method: "PUT",
+        token: cfg.token,
+        body: payload
+      });
+    }
+  }
+  return putRes;
+}
+
+// ========================================================
+// BOTÓN ÚNICO UNIFICADO: APLICAR TODAS LAS MODIFICACIONES
+// ========================================================
+async function applyAllModifications() {
+  if (!currentProducts) loadInitialProducts();
+  if (!currentCotizador) loadInitialCotizador();
+  if (!currentSiteConfig) loadInitialSiteConfig();
+
+  // Sincronizar campos visibles si el usuario está dentro de Garantías o General
+  if (activeAdminSection === "cotizador" && activeCotizadorCategory === "garantias") {
+    saveWarrantyAdjustmentsSettings();
+  } else if (activeAdminSection === "cotizador" && activeCotizadorCategory === "general") {
+    saveGeneralSettings();
+  }
+
+  const cfg = getGithubConfig();
+  if (!cfg.owner || !cfg.repo || !cfg.token) {
+    alert("⚠️ Para aplicar y publicar todas las modificaciones en la tienda en línea, primero configurá tu clave de conexión.\n\nPresioná Aceptar para ingresarla.");
+    openGithubModal();
+    return;
+  }
+
+  const masterBtn = document.getElementById("btn-apply-all-modifications");
+  const originalBtnHtml = masterBtn ? masterBtn.innerHTML : "✓ Aplicar modificaciones";
+  if (masterBtn) {
+    masterBtn.disabled = true;
+    masterBtn.innerHTML = "⏳ Aplicando modificaciones...";
+  }
+
+  const hasCatalogDraft = Boolean(localStorage.getItem("nissa_catalog_draft"));
+  const hasCotizadorDraft = Boolean(localStorage.getItem("nissa_cotizador_draft"));
+  const hasSiteDraft = Boolean(localStorage.getItem("nissa_site_config_draft"));
+  const publishAllFallback = !hasCatalogDraft && !hasCotizadorDraft && !hasSiteDraft;
+
+  try {
+    let photosUploaded = 0;
+
+    // 1. Subir imágenes pendientes de Productos (portadas, galería y dataUrls)
+    for (let i = 0; i < currentProducts.length; i++) {
+      const p = currentProducts[i];
+      let img = p.image ? String(p.image).trim() : "";
+
+      if (img.startsWith("data:")) {
+        const slug = (p.name || `producto-${p.id}`).toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "");
+        const cleanFilename = `${slug || `producto-${p.id}`}.jpg`;
+        if (masterBtn) masterBtn.innerHTML = `⏳ Subiendo foto (${cleanFilename})...`;
+        saveImageFileToServer(cleanFilename, img);
+        const upRes = await uploadSinglePhotoToGithub(cleanFilename, img, cfg);
+        if (upRes.status === 401) throw new Error("UNAUTHORIZED_GITHUB");
+        if (upRes.ok) {
+          p.image = cleanFilename;
+          if (Array.isArray(p.images)) {
+            p.images = p.images.map(item => item === img ? cleanFilename : item);
+          }
+          photosUploaded++;
+        }
+      } else if (img && window.NISSA_IMAGE_CACHE && window.NISSA_IMAGE_CACHE[img] && window.NISSA_IMAGE_CACHE[img].startsWith("data:")) {
+        const dataUrl = window.NISSA_IMAGE_CACHE[img];
+        const cleanFilename = img.replace(/^(\.\/|\/)+/, "").replace(/^fotos\//, "");
+        if (masterBtn) masterBtn.innerHTML = `⏳ Subiendo foto (${cleanFilename})...`;
+        saveImageFileToServer(cleanFilename, dataUrl);
+        const upRes = await uploadSinglePhotoToGithub(cleanFilename, dataUrl, cfg);
+        if (upRes.status === 401) throw new Error("UNAUTHORIZED_GITHUB");
+        if (upRes.ok) photosUploaded++;
+      }
+
+      if (Array.isArray(p.images)) {
+        for (let gIdx = 0; gIdx < p.images.length; gIdx++) {
+          const gImg = String(p.images[gIdx] || "").trim();
+          if (gImg && gImg !== img && window.NISSA_IMAGE_CACHE && window.NISSA_IMAGE_CACHE[gImg] && window.NISSA_IMAGE_CACHE[gImg].startsWith("data:")) {
+            const cleanG = gImg.replace(/^(\.\/|\/)+/, "").replace(/^fotos\//, "");
+            if (masterBtn) masterBtn.innerHTML = `⏳ Subiendo galería (${cleanG})...`;
+            saveImageFileToServer(cleanG, window.NISSA_IMAGE_CACHE[gImg]);
+            const upG = await uploadSinglePhotoToGithub(cleanG, window.NISSA_IMAGE_CACHE[gImg], cfg);
+            if (upG.status === 401) throw new Error("UNAUTHORIZED_GITHUB");
+            if (upG.ok) photosUploaded++;
+          }
+        }
+      }
+    }
+
+    // 2. Subir imagen de Banner si fue cargada nueva en Estética
+    if (currentSiteConfig.banner && typeof currentSiteConfig.banner.image === "string" && currentSiteConfig.banner.image.startsWith("data:")) {
+      const filename = (pendingBannerFileState && pendingBannerFileState.filename)
+        ? pendingBannerFileState.filename
+        : `banner-nissa-${Date.now()}.jpg`;
+
+      if (masterBtn) masterBtn.innerHTML = "⏳ Subiendo imagen del banner...";
+      saveImageFileToServer(filename, currentSiteConfig.banner.image);
+      const upBanner = await uploadSinglePhotoToGithub(filename, currentSiteConfig.banner.image, cfg);
+      if (upBanner.status === 401) throw new Error("UNAUTHORIZED_GITHUB");
+      currentSiteConfig.banner.image = `./fotos/${filename}`;
+      pendingBannerFileState = { dataUrl: "", filename: "" };
+      photosUploaded++;
+    }
+
+    if (masterBtn) masterBtn.innerHTML = "⏳ Publicando cambios...";
+
+    const updatedSections = [];
+    const publishVersion = String(Date.now());
+
+    // 3. Publicar Productos (products.js) si cambió o si se re-aplica todo
+    if (hasCatalogDraft || publishAllFallback || photosUploaded > 0) {
+      const productsJsCode = generateProductsJsCode();
+      saveProductsFileToServer(productsJsCode);
+      const putProd = await upsertFileToGithub(
+        cfg,
+        cfg.path || "products.js",
+        productsJsCode,
+        `Aplicar modificaciones catálogo NISSA (${currentProducts.length} productos)`
+      );
+      if (putProd.status === 401) throw new Error("UNAUTHORIZED_GITHUB");
+      if (!putProd.ok) throw new Error(`Error al guardar ${cfg.path || "products.js"} (${putProd.status}): ${putProd.data?.message || putProd.statusText || ""}`);
+      localStorage.removeItem("nissa_catalog_draft");
+      originalProductsBackup = JSON.parse(JSON.stringify(currentProducts));
+      updatedSections.push("Productos");
+    }
+
+    // 4. Publicar Presupuestador (cotizador-data.js)
+    if (hasCotizadorDraft || publishAllFallback) {
+      const cotCode = generateCotizadorJsCode();
+      saveCotizadorFileToServer(cotCode);
+      const putCot = await upsertFileToGithub(
+        cfg,
+        "cotizador-data.js",
+        cotCode,
+        `Aplicar modificaciones presupuestador NISSA (${new Date().toLocaleDateString("es-AR")})`
+      );
+      if (putCot.status === 401) throw new Error("UNAUTHORIZED_GITHUB");
+      if (!putCot.ok) throw new Error(`Error al guardar cotizador-data.js (${putCot.status}): ${putCot.data?.message || putCot.statusText || ""}`);
+      localStorage.removeItem("nissa_cotizador_draft");
+      originalCotizadorBackup = JSON.parse(JSON.stringify(currentCotizador));
+      updatedSections.push("Presupuestador");
+    }
+
+    // 5. Publicar Estética (site-config.js)
+    if (hasSiteDraft || publishAllFallback) {
+      const siteCode = generateSiteConfigJsCode();
+      saveSiteConfigFileToServer(siteCode);
+      const putSite = await upsertFileToGithub(
+        cfg,
+        "site-config.js",
+        siteCode,
+        `Aplicar modificaciones estética y diseño NISSA`
+      );
+      if (putSite.status === 401) throw new Error("UNAUTHORIZED_GITHUB");
+      if (!putSite.ok) throw new Error(`Error al guardar site-config.js (${putSite.status}): ${putSite.data?.message || putSite.statusText || ""}`);
+      localStorage.removeItem("nissa_site_config_draft");
+      originalSiteConfigBackup = JSON.parse(JSON.stringify(currentSiteConfig));
+      updatedSections.push("Estética");
+    }
+
+    // 6. Actualizar version.json para invalidar caché en celulares inmediatamente
+    const versionJsonContent = JSON.stringify({ version: publishVersion }, null, 2) + "\n";
+    saveVersionFileToServer(publishVersion);
+    await upsertFileToGithub(
+      cfg,
+      "version.json",
+      versionJsonContent,
+      `Actualizar versión de caché móvil (${publishVersion})`
+    );
+
+    if (typeof window !== "undefined") {
+      window.products = currentProducts;
+      window.PRECIOS_WIDGET = currentCotizador;
+      window.NISSA_SITE_CONFIG = currentSiteConfig;
+    }
+
+    checkDraftStatus();
+    updateCountsBadge();
+    if (activeAdminSection === "products") renderProductsList();
+    else if (activeAdminSection === "cotizador") renderCotizador();
+    else if (activeAdminSection === "estetica") renderEstetica();
+
+    const photoNote = photosUploaded > 0 ? ` · ${photosUploaded} foto(s)` : "";
+    const detailNote = updatedSections.length > 0 ? ` (${updatedSections.join(", ")}${photoNote})` : "";
+    showAlert(`✓ ¡Modificaciones aplicadas y publicadas${detailNote}! Ya se reflejarán en celulares y PC sin caché viejo.`);
+  } catch (err) {
+    if (err && err.message === "UNAUTHORIZED_GITHUB") {
+      alert("⚠️ La clave de conexión expiró o no es válida. Por favor ingresala nuevamente en ⚙️ Conexión.");
+      openGithubModal();
+    } else {
+      alert("No se pudieron aplicar algunas modificaciones: " + (err.message || err));
+    }
+  } finally {
+    if (masterBtn) {
+      masterBtn.disabled = false;
+      masterBtn.innerHTML = originalBtnHtml;
+    }
+    checkDraftStatus();
+  }
+}
+
 // ========================================================
 // ASIGNACIÓN GLOBAL A WINDOW PARA INVOCACIONES INLINE
 // ========================================================
@@ -5726,6 +5905,7 @@ window.togglePassVisibility = togglePassVisibility;
 window.openPassChangeModal = openPassChangeModal;
 window.closePassModal = closePassModal;
 window.saveNewPass = saveNewPass;
+window.applyAllModifications = applyAllModifications;
 
 // Tienda y Productos
 window.switchAdminSection = switchAdminSection;
@@ -5790,6 +5970,8 @@ window.closeAdminAlert = closeAdminAlert;
 // Presupuestador de Reparaciones
 window.switchCotizadorSubtab = switchCotizadorSubtab;
 window.renderCotizador = renderCotizador;
+window.toggleModelAccordion = toggleModelAccordion;
+window.setAllCotizadorAccordions = setAllCotizadorAccordions;
 window.selectCelularBrand = selectCelularBrand;
 window.openNewBrandModal = openNewBrandModal;
 window.closeNewBrandModal = closeNewBrandModal;
@@ -5821,6 +6003,7 @@ window.updatePcRepairNote = updatePcRepairNote;
 window.updatePcRepairName = updatePcRepairName;
 window.deletePcRepair = deletePcRepair;
 window.saveGeneralSettings = saveGeneralSettings;
+window.updateGeneralSettingField = updateGeneralSettingField;
 window.openMassAdjustModal = openMassAdjustModal;
 window.closeMassAdjustModal = closeMassAdjustModal;
 window.handleApplyMassAdjust = handleApplyMassAdjust;
@@ -5867,5 +6050,6 @@ window.updateWarrantyPercentInput = updateWarrantyPercentInput;
 window.updateWarrantyLabelInput = updateWarrantyLabelInput;
 window.saveWarrantyAdjustmentsSettings = saveWarrantyAdjustmentsSettings;
 window.updateRepairPriceAndDiscount = updateRepairPriceAndDiscount;
+
 
 

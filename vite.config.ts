@@ -167,6 +167,27 @@ export default defineConfig(() => {
               }
             }
 
+            // 3c. Guardar versión de caché version.json en el disco local
+            if (url === '/api/save-version' && req.method === 'POST') {
+              try {
+                const fs = await import('fs');
+                const pathMod = await import('path');
+                const data = await parseBody(req);
+                const version = String(data?.version || Date.now());
+                const verPath = pathMod.resolve(__dirname, 'version.json');
+                fs.writeFileSync(verPath, JSON.stringify({ version }, null, 2) + '\n', 'utf-8');
+                res.statusCode = 200;
+                res.setHeader('Content-Type', 'application/json');
+                res.end(JSON.stringify({ ok: true, version }));
+                return;
+              } catch (err: any) {
+                res.statusCode = 500;
+                res.setHeader('Content-Type', 'application/json');
+                res.end(JSON.stringify({ ok: false, error: err.message }));
+                return;
+              }
+            }
+
             // 4. Proxy seguro a GitHub API (evita CORS, bloqueos de navegador, extensiones e iframes)
             if (url === '/api/github-proxy' && req.method === 'POST') {
               try {
@@ -254,6 +275,7 @@ export default defineConfig(() => {
             'script.js',
             'reviews.js',
             'banner-nissa.jpg',
+            'version.json',
           ];
           for (const file of runtimeFiles) {
             const src = pathMod.resolve(__dirname, file);

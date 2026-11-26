@@ -1,5 +1,5 @@
 // NISSA - Tienda Online
-const WHATSAPP_NUMBER = (typeof window !== "undefined" && window.NISSA_SITE_CONFIG && window.NISSA_SITE_CONFIG.brand && window.NISSA_SITE_CONFIG.brand.whatsappNumber)
+let WHATSAPP_NUMBER = (typeof window !== "undefined" && window.NISSA_SITE_CONFIG && window.NISSA_SITE_CONFIG.brand && window.NISSA_SITE_CONFIG.brand.whatsappNumber)
   ? String(window.NISSA_SITE_CONFIG.brand.whatsappNumber).replace(/\D/g, "") || "541136620653"
   : "541136620653";
 
@@ -1362,6 +1362,181 @@ window.addEventListener("storage", (e) => {
 window.addEventListener("nissa_catalog_updated", handleCatalogLiveUpdate);
 window.addEventListener("focus", handleCatalogLiveUpdate);
 
+// ========================================================
+// SINCRONIZACIÓN ANTI-CACHÉ PARA CELULARES Y BFCACHE
+// Evita que navegadores móviles o CDN muestren versiones viejas tras publicar cambios
+// ========================================================
+let lastFreshSyncAt = 0;
+let freshSyncPromise = null;
+let lastKnownSiteVersion = null;
+try {
+  lastKnownSiteVersion = localStorage.getItem("nissa_last_site_version") || null;
+} catch (e) {}
+
+function evaluateFreshJsValue(code, varName) {
+  if (!code || typeof code !== "string") return undefined;
+  try {
+    const fn = new Function(
+      "window",
+      "document",
+      `var ${varName}; ${code}\n; return typeof ${varName} !== "undefined" ? ${varName} : (window && window["${varName}"]);`
+    );
+    return fn({}, {});
+  } catch (err) {
+    try {
+      const normalized = code.replace(new RegExp(`^\\s*let\\s+${varName}\\b`, "m"), `var ${varName}`);
+      const fn2 = new Function(
+        "window",
+        "document",
+        `var ${varName}; ${normalized}\n; return typeof ${varName} !== "undefined" ? ${varName} : (window && window["${varName}"]);`
+      );
+      return fn2({}, {});
+    } catch (err2) {
+      return undefined;
+    }
+  }
+}
+
+function refreshStylesheetIfNeeded(ver) {
+  if (!ver || typeof document === "undefined") return;
+  const link = document.querySelector('link[rel="stylesheet"][href*="style.css"]');
+  if (!link) return;
+  const currentHref = link.getAttribute("href") || "";
+  if (!currentHref.includes(`v=${ver}`)) {
+    link.setAttribute("href", `./style.css?v=${encodeURIComponent(ver)}`);
+  }
+}
+
+async function syncStoreFreshDataFromNetwork(force = false) {
+  if (typeof window === "undefined" || typeof fetch !== "function") return;
+  if (freshSyncPromise) return freshSyncPromise;
+  const now = Date.now();
+  if (!force && now - lastFreshSyncAt < 4000) return;
+
+  lastFreshSyncAt = now;
+  const nc = String(now);
+
+  freshSyncPromise = (async () => {
+  try {
+    // 1. Verificar versión publicada sin caché
+    let remoteVersion = null;
+    try {
+      const verRes = await fetch(`./version.json?nc=${nc}`, { cache: "no-store" });
+      if (verRes.ok) {
+        const verData = await verRes.json();
+        if (verData && verData.version) {
+          remoteVersion = String(verData.version);
+        }
+      }
+    } catch (e) {}
+
+    // Si ya sincronizamos exactamente esta misma versión y no es carga inicial/forzada, evitar descargas extra
+    if (!force && remoteVersion && lastKnownSiteVersion && remoteVersion === lastKnownSiteVersion) {
+      return;
+    }
+
+    const token = remoteVersion ? `${remoteVersion}_${nc}` : nc;
+    const [cfgText, cotText, prodText] = await Promise.all([
+      fetch(`./site-config.js?nc=${encodeURIComponent(token)}`, { cache: "no-store" }).then(r => r.ok ? r.text() : "").catch(() => ""),
+      fetch(`./cotizador-data.js?nc=${encodeURIComponent(token)}`, { cache: "no-store" }).then(r => r.ok ? r.text() : "").catch(() => ""),
+      fetch(`./products.js?nc=${encodeURIComponent(token)}`, { cache: "no-store" }).then(r => r.ok ? r.text() : "").catch(() => "")
+    ]);
+
+    if (remoteVersion) {
+      if (lastKnownSiteVersion !== remoteVersion) {
+        if (lastKnownSiteVersion) {
+          refreshStylesheetIfNeeded(remoteVersion);
+        }
+        lastKnownSiteVersion = remoteVersion;
+        try {
+          localStorage.setItem("nissa_last_site_version", remoteVersion);
+        } catch (e) {}
+      }
+    }
+
+    // 2. Actualizar configuración estética si cambió
+    if (cfgText) {
+      const freshCfg = evaluateFreshJsValue(cfgText, "NISSA_SITE_CONFIG");
+      if (freshCfg && typeof freshCfg === "object") {
+        let changed = true;
+        try {
+          changed = JSON.stringify(freshCfg) !== JSON.stringify(window.NISSA_SITE_CONFIG);
+        } catch (e) {}
+        if (changed) {
+          window.NISSA_SITE_CONFIG = freshCfg;
+          if (typeof NISSA_SITE_CONFIG !== "undefined") {
+            NISSA_SITE_CONFIG = freshCfg;
+          }
+          if (freshCfg.brand && freshCfg.brand.whatsappNumber) {
+            WHATSAPP_NUMBER = String(freshCfg.brand.whatsappNumber).replace(/\D/g, "") || WHATSAPP_NUMBER;
+          }
+          if (typeof window.applyNissaSiteConfig === "function") {
+            window.applyNissaSiteConfig();
+          }
+        }
+      }
+    }
+
+    // 3. Actualizar tarifas y modelos del presupuestador si cambió
+    if (cotText) {
+      const freshCot = evaluateFreshJsValue(cotText, "PRECIOS_WIDGET");
+      if (freshCot && typeof freshCot === "object" && Array.isArray(freshCot.celulares)) {
+        let changed = true;
+        try {
+          changed = JSON.stringify(freshCot) !== JSON.stringify(window.PRECIOS_WIDGET);
+        } catch (e) {}
+        if (changed) {
+          window.PRECIOS_WIDGET = freshCot;
+          if (typeof PRECIOS_WIDGET !== "undefined") {
+            PRECIOS_WIDGET = freshCot;
+          }
+          if (typeof window.refreshCotizadorWithFreshData === "function") {
+            window.refreshCotizadorWithFreshData();
+          }
+        }
+      }
+    }
+
+    // 4. Actualizar catálogo de productos si cambió
+    if (prodText) {
+      const freshProducts = evaluateFreshJsValue(prodText, "products");
+      if (Array.isArray(freshProducts)) {
+        let changed = true;
+        try {
+          changed = JSON.stringify(freshProducts) !== JSON.stringify(window.products);
+        } catch (e) {}
+        if (changed) {
+          window.products = freshProducts;
+          handleCatalogLiveUpdate();
+          renderCart();
+        }
+      }
+    }
+  } catch (err) {
+    // Silencioso en caso de estar offline
+  } finally {
+    freshSyncPromise = null;
+  }
+  })();
+  return freshSyncPromise;
+}
+
+window.syncStoreFreshDataFromNetwork = syncStoreFreshDataFromNetwork;
+
+window.addEventListener("pageshow", (e) => {
+  if (e && e.persisted) {
+    syncStoreFreshDataFromNetwork(true);
+  } else {
+    syncStoreFreshDataFromNetwork(false);
+  }
+});
+
+document.addEventListener("visibilitychange", () => {
+  if (document.visibilityState === "visible") {
+    syncStoreFreshDataFromNetwork(false);
+  }
+});
+
 // Inicialización de la aplicación y comprobación de URL inicial
 function initApp() {
   reloadProductsFromStorage();
@@ -1369,6 +1544,7 @@ function initApp() {
   renderProducts();
   renderCart();
   checkRoute();
+  syncStoreFreshDataFromNetwork(true);
 }
 
 if (document.readyState === "loading") {

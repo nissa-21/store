@@ -1,11 +1,7 @@
-// ========================================================
 // Tarifas y modelos exactos del presupuestador NISSA
-// Generado automáticamente desde el Panel de Administración NISSA
-// Fecha de actualización: 23/11/2026, 04:23:27
-// 100% Compatible con GitHub Pages (Costo $0)
-// ========================================================
-
-let PRECIOS_WIDGET = {
+// Actualizado: 170 modelos exactos de Samsung individuales (Galaxy A, M, S, Z Flip, Z Fold).
+// Modelos de Samsung y Motorola configurados como "Consultar" presupuesto.
+var PRECIOS_WIDGET = {
   "whatsapp": "5491136620653",
   "businessName": "NISSA",
   "showTerms": true,
@@ -252,16 +248,13 @@ let PRECIOS_WIDGET = {
               "id": "cel_ap_12_1",
               "name": "📱 Pantalla / Módulo",
               "price": "120 USD",
-              "note": "Módulo calidad Original sin mensaje de \"Pieza desconocida\"",
-              "giftTextUltra": "Vidrio templado de regalo "
+              "note": "Módulo calidad Original sin mensaje de \"Pieza desconocida\""
             },
             {
               "id": "cel_ap_12_2",
               "name": "🔋 Batería",
               "price": 79000,
-              "note": "Condición al 100% sin mensaje de \"Pieza desconocida\"",
-              "discountUltra": 20,
-              "giftTextUltra": "Vidrio templado de regalo "
+              "note": "Condición al 100% sin mensaje de \"Pieza desconocida\""
             },
             {
               "id": "cel_ap_12_3",
@@ -467,8 +460,7 @@ let PRECIOS_WIDGET = {
               "id": "cel_ap_13_1",
               "name": "📱 Pantalla / Módulo",
               "price": "150 USD",
-              "note": "Módulo calidad Original sin mensaje de \"Pieza desconocida\"",
-              "giftTextUltra": "Cable USB-C a Lightning de regalo 🎁 "
+              "note": "Módulo calidad Original sin mensaje de \"Pieza desconocida\""
             },
             {
               "id": "cel_ap_13_2",
@@ -14396,13 +14388,13 @@ let PRECIOS_WIDGET = {
       "repairs": [
         {
           "id": "joy_ps5_1",
-          "name": "🕹️ Cambio de analógico  (x1)",
-          "price": 33000
+          "name": "🕹️ Cambio de analógico normal (x1)",
+          "price": 20000
         },
         {
           "id": "joy_ps5_2",
-          "name": "🕹️ Cambio de analógico (x2)",
-          "price": 45000
+          "name": "🕹️ Cambio de analógico Hall Effect (x1 - Antidrift)",
+          "price": 33000
         },
         {
           "id": "joy_ps5_3",
@@ -14469,5 +14461,9 @@ let PRECIOS_WIDGET = {
 };
 
 if (typeof window !== "undefined") {
+  // Limpiar cualquier borrador antiguo para forzar la nueva lista oficial completa
+  try {
+    localStorage.removeItem("nissa_cotizador_draft");
+  } catch (e) {}
   window.PRECIOS_WIDGET = PRECIOS_WIDGET;
 }
