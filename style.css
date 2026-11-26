@@ -923,12 +923,29 @@ button,input{font:inherit}
   display: flex;
   align-items: baseline;
   justify-content: flex-start;
+  flex-wrap: wrap;
+  gap: 5px;
   margin-top: auto;
   border-top: 1px dashed #e2e8f0;
   padding-top: 5px;
 }
 .re-garantia-btn.active .re-garantia-price-line {
   border-top-color: #bae6fd;
+}
+.re-garantia-price-old {
+  font-size: 11px;
+  font-weight: 700;
+  color: #94a3b8;
+  text-decoration: line-through;
+  text-decoration-thickness: 1.5px;
+}
+@media (max-width: 480px) {
+  .re-garantia-price-old {
+    font-size: 10px;
+  }
+}
+.re-garantia-btn.active .re-garantia-price-old {
+  color: #64748b;
 }
 .re-garantia-price-val {
   font-size: 13px;
@@ -1047,6 +1064,15 @@ button,input{font:inherit}
   font-weight: 800;
   text-transform: uppercase;
   letter-spacing: 0.05em;
+}
+.re-summary-price-old {
+  font-size: 14px;
+  font-weight: 700;
+  color: #94a3b8;
+  text-decoration: line-through;
+  text-decoration-thickness: 1.5px;
+  line-height: 1.1;
+  margin-top: 3px;
 }
 .re-summary-price {
   font-size: 26px;

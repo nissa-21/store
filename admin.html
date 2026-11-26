@@ -57,7 +57,7 @@
   <!-- APLICACIÓN PRINCIPAL DE ADMINISTRACIÓN -->
   <div id="admin-app" class="admin-app" style="display: none;">
     
-    <!-- NAVBAR SUPERIOR -->
+    <!-- NAVBAR SUPERIOR MINIMALISTA -->
     <header class="admin-header">
       <div class="admin-header-container">
         <div class="admin-header-left">
@@ -67,13 +67,13 @@
           </div>
           <nav class="admin-top-nav">
             <button type="button" id="btn-nav-products" class="tab-btn active" onclick="switchAdminSection('products')">
-              🛍️ Tienda y Catálogo
+              🛍️ Productos
             </button>
             <button type="button" id="btn-nav-cotizador" class="tab-btn" onclick="switchAdminSection('cotizador')">
               🛠️ Presupuestador
             </button>
             <button type="button" id="btn-nav-estetica" class="tab-btn" onclick="switchAdminSection('estetica')">
-              🎨 Estética y Tienda
+              🎨 Estética
             </button>
           </nav>
           <div class="admin-meta-info">
@@ -83,16 +83,19 @@
         </div>
 
         <div class="admin-header-right">
-          <a href="/" target="_blank" class="btn btn-outline" title="Ver cómo se ve la tienda">
-            👁️ Ver Tienda
+          <button type="button" class="btn btn-apply-master" onclick="applyAllModifications()" id="btn-apply-all-modifications">
+            ✓ Aplicar modificaciones
+          </button>
+          <a href="/" target="_blank" class="btn btn-outline btn-sm" title="Ver tienda pública">
+            👁️ Tienda
           </a>
-          <button type="button" class="btn btn-secondary" onclick="openGithubModal()" title="Configurar acceso y token de publicación">
+          <button type="button" class="btn btn-ghost btn-sm" onclick="openGithubModal()" title="Configurar acceso y token de publicación">
             ⚙️ Conexión
           </button>
-          <button type="button" class="btn btn-ghost" onclick="openPassChangeModal()" title="Cambiar clave de acceso">
+          <button type="button" class="btn btn-ghost btn-sm" onclick="openPassChangeModal()" title="Cambiar clave de acceso">
             🔑 Clave
           </button>
-          <button type="button" class="btn btn-danger-ghost" onclick="handleLogout()" title="Cerrar sesión">
+          <button type="button" class="btn btn-danger-ghost btn-sm" onclick="handleLogout()" title="Cerrar sesión">
             Salir
           </button>
         </div>
@@ -113,22 +116,15 @@
              SECCIÓN 1: PRODUCTOS Y TIENDA
              ======================================================== -->
         <div id="section-products">
-          <!-- HERO / ACCIONES PRINCIPALES -->
-          <section class="admin-action-hero">
-            <div class="action-hero-text">
-              <h1>Gestión de Productos y Precios</h1>
-              <p>Modificá cualquier producto, precio o foto de la tienda y presioná Guardar cambios.</p>
+          <div class="admin-sector-header">
+            <div>
+              <h1>Productos y Precios</h1>
+              <p>Editá el catálogo y presioná <strong>Aplicar modificaciones</strong> arriba al finalizar.</p>
             </div>
-
-            <div class="action-hero-buttons">
-              <button type="button" class="btn btn-success" onclick="openProductModal()">
-                ➕ Nuevo Producto
-              </button>
-              <button type="button" class="btn btn-save-action" onclick="applyAndSaveCatalogChanges()" id="btn-publish-github">
-                💾 Guardar cambios
-              </button>
-            </div>
-          </section>
+            <button type="button" class="btn btn-primary btn-sm" onclick="openProductModal()">
+              ➕ Nuevo Producto
+            </button>
+          </div>
 
           <!-- FILTROS Y BÚSQUEDA -->
           <section class="admin-toolbar">
@@ -171,19 +167,12 @@
              SECCIÓN 2: GESTOR COMPLETO DEL PRESUPUESTADOR
              ======================================================== -->
         <div id="section-cotizador" style="display: none;">
-          <!-- HERO DEL PRESUPUESTADOR -->
-          <section class="admin-action-hero">
-            <div class="action-hero-text">
+          <div class="admin-sector-header">
+            <div>
               <h1>Presupuestador de Reparaciones</h1>
-              <p>Modificá modelos, precios de reparaciones, servicios, porcentajes de garantía, WhatsApp y textos legales. Los precios muestran el cálculo automático para Sin garantía, 30 días y 90 días.</p>
+              <p>Todos los equipos organizados por sector en menús desplegables. Al finalizar, presioná <strong>Aplicar modificaciones</strong>.</p>
             </div>
-
-            <div class="action-hero-buttons">
-              <button type="button" class="btn btn-save-action" onclick="publishCotizadorDirectlyToGithub()" id="btn-publish-cotizador-github">
-                💾 Guardar cambios
-              </button>
-            </div>
-          </section>
+          </div>
 
           <!-- SUBPESTAÑAS DE CATEGORÍA DE DISPOSITIVOS -->
           <div class="cotizador-subtabs">
@@ -191,16 +180,16 @@
               📱 Celulares
             </button>
             <button type="button" class="cotizador-subtab-btn" id="subtab-consolas" onclick="switchCotizadorSubtab('consolas')">
-              🎮 Consolas de Juegos
+              🎮 Consolas
             </button>
             <button type="button" class="cotizador-subtab-btn" id="subtab-joysticks" onclick="switchCotizadorSubtab('joysticks')">
-              🕹️ Mandos / Joysticks
+              🕹️ Joysticks
             </button>
             <button type="button" class="cotizador-subtab-btn" id="subtab-computadoras" onclick="switchCotizadorSubtab('computadoras')">
-              💻 Computadoras & Notebooks
+              💻 PC & Notebooks
             </button>
             <button type="button" class="cotizador-subtab-btn" id="subtab-garantias" onclick="switchCotizadorSubtab('garantias')">
-              🛡️ % Garantías
+              🛡️ Garantías
             </button>
             <button type="button" class="cotizador-subtab-btn" id="subtab-general" onclick="switchCotizadorSubtab('general')">
               ⚙️ WhatsApp y Términos
@@ -235,18 +224,12 @@
              SECCIÓN 3: ESTÉTICA Y CONTENIDO GENERAL DE LA TIENDA
              ======================================================== -->
         <div id="section-estetica" style="display: none;">
-          <section class="admin-action-hero">
-            <div class="action-hero-text">
-              <h1>Estética y Diseño de la Tienda</h1>
-              <p>Editá el banner, orden de secciones, pestañas del menú, título, textos, tarjetas de información, reseñas de clientes y colores.</p>
+          <div class="admin-sector-header">
+            <div>
+              <h1>Estética y Diseño</h1>
+              <p>Banner, orden de secciones, menú, textos, información, reseñas y colores.</p>
             </div>
-
-            <div class="action-hero-buttons">
-              <button type="button" class="btn btn-save-action" onclick="saveAndPublishEstetica()" id="btn-publish-estetica">
-                💾 Guardar cambios
-              </button>
-            </div>
-          </section>
+          </div>
 
           <div class="cotizador-subtabs" id="estetica-subtabs">
             <button type="button" class="cotizador-subtab-btn active" id="est-tab-orden" onclick="switchEsteticaSubtab('orden')">
@@ -635,8 +618,8 @@
           <button type="button" class="btn btn-secondary" onclick="closeProductModal()">
             Cancelar
           </button>
-          <button type="submit" class="btn btn-modal-github" id="btn-save-and-publish-github">
-            💾 Guardar cambios
+          <button type="submit" class="btn btn-primary" id="btn-save-and-publish-github">
+            ✓ Confirmar producto
           </button>
         </div>
       </form>
@@ -869,8 +852,8 @@
           <span class="form-hint" style="display:block; margin-top:-6px; margin-bottom:12px;">Podés ingresar pesos (ej: 85000), dólares (ej: 70 USD) o "Consultar". Dejá el tiempo vacío para usar el texto general.</span>
 
           <div class="form-group">
-            <label for="new-repair-gift-ultra">🎁 Texto de regalo / beneficio para garantía 3 meses (opcional):</label>
-            <input type="text" id="new-repair-gift-ultra" placeholder="Ej: ¡Incluye templado de regalo! o ¡Funda de regalo!">
+            <label for="new-repair-gift-ultra">Texto adicional para la 3.ª garantía (opcional):</label>
+            <input type="text" id="new-repair-gift-ultra" placeholder="Escribí cualquier texto opcional...">
           </div>
 
           <div class="form-group">
