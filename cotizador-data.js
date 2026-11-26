@@ -1,7 +1,7 @@
 // ========================================================
 // Tarifas y modelos exactos del presupuestador NISSA
 // Generado automáticamente desde el Panel de Administración NISSA
-// Fecha de actualización: 26/11/2026, 06:44:39
+// Fecha de actualización: 26/11/2026, 06:45:32
 // 100% Compatible con GitHub Pages (Costo $0)
 // ========================================================
 
@@ -47,7 +47,8 @@ var PRECIOS_WIDGET = {
               "name": "🔋 Batería",
               "price": 80000,
               "note": "Condición al 100% sin mensaje de \"Pieza desconocida\"",
-              "discountUltra": 20
+              "discountUltra": 20,
+              "giftTextUltra": "Vidrio templado de regalo "
             },
             {
               "id": "cel_ap_11_3",
@@ -471,7 +472,9 @@ var PRECIOS_WIDGET = {
               "id": "cel_ap_13_2",
               "name": "🔋 Batería",
               "price": 81000,
-              "note": "Condición al 100% sin mensaje de \"Pieza desconocida\""
+              "note": "Condición al 100% sin mensaje de \"Pieza desconocida\"",
+              "discountUltra": 20,
+              "giftTextUltra": "Vidrio templado de regalo "
             },
             {
               "id": "cel_ap_13_3",
