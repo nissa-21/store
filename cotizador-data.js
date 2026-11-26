@@ -1,6 +1,10 @@
+// ========================================================
 // Tarifas y modelos exactos del presupuestador NISSA
-// Actualizado: 170 modelos exactos de Samsung individuales (Galaxy A, M, S, Z Flip, Z Fold).
-// Modelos de Samsung y Motorola configurados como "Consultar" presupuesto.
+// Generado automáticamente desde el Panel de Administración NISSA
+// Fecha de actualización: 26/11/2026, 06:44:39
+// 100% Compatible con GitHub Pages (Costo $0)
+// ========================================================
+
 var PRECIOS_WIDGET = {
   "whatsapp": "5491136620653",
   "businessName": "NISSA",
@@ -42,7 +46,8 @@ var PRECIOS_WIDGET = {
               "id": "cel_ap_11_2",
               "name": "🔋 Batería",
               "price": 80000,
-              "note": "Condición al 100% sin mensaje de \"Pieza desconocida\""
+              "note": "Condición al 100% sin mensaje de \"Pieza desconocida\"",
+              "discountUltra": 20
             },
             {
               "id": "cel_ap_11_3",
@@ -14461,9 +14466,5 @@ var PRECIOS_WIDGET = {
 };
 
 if (typeof window !== "undefined") {
-  // Limpiar cualquier borrador antiguo para forzar la nueva lista oficial completa
-  try {
-    localStorage.removeItem("nissa_cotizador_draft");
-  } catch (e) {}
   window.PRECIOS_WIDGET = PRECIOS_WIDGET;
 }
